@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:glucocare/login.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -16,12 +17,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'login_page',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+          primarySwatch: Colors.grey,
+          brightness: Brightness.light,
+          textTheme: TextTheme(
+              bodySmall: TextStyle(fontSize: 15, color: Colors.grey[800]),
+              bodyMedium: TextStyle(fontSize: 20, color: Colors.grey[800]),
+              bodyLarge: TextStyle(fontSize: 30, color: Colors.grey[800])
+          ),
+          appBarTheme: AppBarTheme(
+              color: Colors.red[700],
+              elevation: 4
+          ),
+          buttonTheme: ButtonThemeData(
+            buttonColor: Colors.red[700],
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          )
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'main'),
     );
   }
 }
@@ -35,13 +49,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,13 +62,14 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             const Text('You have pushed the button this many times:',),
-            Text('$_counter', style: Theme.of(context).textTheme.headlineMedium,),
+            Text('main page', style: Theme.of(context).textTheme.headlineMedium,),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () => {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()))
+        },
         child: const Icon(Icons.add),
       ),
     );
