@@ -1,0 +1,1 @@
+ C:\\Users\\82109\\StudioProjects\\glucocare\\.dart_tool\\flutter_build\\b3d0c64aef75b7a991679989a5e2dde9\\native_assets.yaml: 
