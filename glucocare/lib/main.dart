@@ -1,13 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:glucocare/login.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
+  await dotenv.load();
+
+  // kakotalk api init
+  WidgetsFlutterBinding.ensureInitialized();
+
+  KakaoSdk.init(
+    nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
+    javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY']
+  );
+
+  // firebase init
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+
   runApp(const MyApp());
 }
 

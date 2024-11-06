@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:glucocare/register.dart';
+import 'package:glucocare/register_info.dart';
+import 'package:glucocare/services/kakao_login_service.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -51,7 +52,7 @@ class _LoginFormState extends State<LoginForm> {
                       )
                   ),
                 ),
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 18),
               ),
             ),
             const SizedBox(height: 10,),
@@ -70,7 +71,7 @@ class _LoginFormState extends State<LoginForm> {
                         )
                     )
                 ),
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 18),
                 obscureText: true,
               ),
             ),
@@ -115,19 +116,22 @@ class _LoginFormState extends State<LoginForm> {
               children: [
                 Expanded(
                     child: GestureDetector(
-                      onTap: () => {},
+                      onTap: KakaoLogin.login,
                       child: Image.asset(
-                        'lib/assets/images/login/kakao_login_medium_wide.png',
+                        'assets/images/login/kakao_login_medium_wide.png',
                       ),
                     )
                 ),
               ],
             ),
             SizedBox(height: 10,),
-            Text('비밀번호 찾기', style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey
-            ),)
+            InkWell(
+              onTap: () {},
+              child: Text(
+                '비밀번호 찾기',
+                style: TextStyle(fontSize: 15, color: Colors.grey),
+              ),
+            )
           ],
         ),
       );
