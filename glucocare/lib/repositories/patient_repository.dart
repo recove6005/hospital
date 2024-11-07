@@ -29,5 +29,4 @@ class PatientRepository {
   static Future<bool> deletePatient(String id) async {
     return true;
   }
-
 }
