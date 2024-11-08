@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:glucocare/taps/pages/gluco_check.dart';
+import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:glucocare/taps/pages/pill_history.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
 
@@ -73,7 +75,9 @@ class _HomeTapForm extends State<HomeTapForm> {
             width: 350,
             height: 130,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const GlucoCheckPage()));
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.orange[200],
                   shape: RoundedRectangleBorder(
@@ -104,7 +108,9 @@ class _HomeTapForm extends State<HomeTapForm> {
             width: 350,
             height: 130,
             child: ElevatedButton(
-              onPressed: (){},
+              onPressed: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => PillHistoryPage()));
+              },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[350],
                   shape: RoundedRectangleBorder(

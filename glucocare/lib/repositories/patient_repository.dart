@@ -1,32 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
 
 class PatientRepository {
   static Logger logger = Logger();
-  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
-  static Future<bool> insertPatient(
-      String name, String id, String gen, Timestamp birthDate
-      ) async {
+  static Future<PatientModel?> selectPatient(String uid) async {
+    try {
+      DocumentSnapshot docSnapshot = await _store.collection('patient').doc(uid).get();
 
-    PatientModel patientModel = PatientModel(name: name, id: id, gen: gen, birthDate: birthDate);
+      if(docSnapshot.exists) {
+        Map<String, dynamic> data = docSnapshot.data() as Map<String, dynamic>;
+        return PatientModel.fromJson(data);
+      } else {
+        logger.e('[glucocare_log] Patient data not found.');
+      }
+    } catch(e) {
+      logger.e('[glucocare_log] Error fetching patient data: $e');
+      rethrow;
+    }
+
+    return null;
+  }
+
+  static Future<void> insertPatient(PatientModel model) async {
+    String id = AuthService.getCurUserUid();
 
     try {
-      await _firestore.collection('patient').doc(id).set(patientModel.toJson());
-      logger.d('glucocare_log : PatientRepository.insertPatient : A patient was created.');
-      return true;
+      await _store.collection('patient').doc(id).set(model.toJson());
     } catch(e) {
-      logger.d('glucocare_log : PatientRepository.insertPatient : Failed to create patient. : $patientModel');
-      return false;
+      logger.e('[glucocare_log] Failed to insert patient : $e');
     }
   }
 
-  static Future<bool> updatePatient(String id) async {
+  static Future<bool> updatePatient() async {
     return true;
   }
 
-  static Future<bool> deletePatient(String id) async {
+  static Future<bool> deletePatient() async {
     return true;
   }
 }
