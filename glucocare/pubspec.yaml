@@ -44,6 +44,7 @@ dependencies:
   firebase_auth: ^5.3.1
   intl: ^0.18.0
   flutter_time_picker_spinner: ^2.0.0
+  custom_cupertino_picker: ^2.0.3
 
 dev_dependencies:
   flutter_test:

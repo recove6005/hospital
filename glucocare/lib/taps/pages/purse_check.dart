@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/models/purse_col_name_model.dart';
 import 'package:glucocare/models/purse_model.dart';
+import 'package:glucocare/repositories/colname_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -97,7 +100,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   void _onSaveButtonPressed() {
     _setStates();
 
-    PurseModel model = PurseModel(
+    PurseModel purseModel = PurseModel(
         checkTimeName: _checkTimeName,
         shrink: _shrink,
         relax: _relax,
@@ -106,8 +109,12 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
         checkTime: _checkTime,
         checkDate: _checkDate
     );
+    PurseRepository.insertPurseCheck(purseModel);
 
-    PurseRepository.insertPurseCheck(model);
+    String uid = AuthService.getCurUserUid();
+    PurseColNameModel nameModel = PurseColNameModel(uid: uid, date: _checkDate);
+    ColNameRepository.insertPurseColName(nameModel);
+    Navigator.pop(context);
   }
 
   @override
@@ -155,11 +162,11 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
               width: 300,
               height: 120,
               child: ListView(
-                padding: const EdgeInsets.all(0),
+                padding: const EdgeInsets.all(10),
                 children: [
                   SizedBox(
                     width: 350,
-                    height: 30,
+                    height: 35,
                     child: ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
@@ -181,7 +188,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                   ),
                   SizedBox(
                     width: 300,
-                    height: 30,
+                    height: 35,
                     child: ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
@@ -203,7 +210,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                   ),
                   SizedBox(
                     width: 300,
-                    height: 30,
+                    height: 35,
                     child: ListTile(
                       dense: true,
                       contentPadding: EdgeInsets.zero,
@@ -218,28 +225,6 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         },
                       ),
                       title: const Text('저녁', style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black,
-                      ),),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 300,
-                    height: 30,
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      leading: Radio<int> (
-                        value: 3,
-                        groupValue: _checkTimeValue,
-                        onChanged: (int? value) {
-                          setState(() {
-                            _checkTimeValue = value!;
-                            logger.d('[glucocare_log] $value');
-                          });
-                        },
-                      ),
-                      title: const Text('복용 후', style: TextStyle(
                         fontSize: 18,
                         color: Colors.black,
                       ),),

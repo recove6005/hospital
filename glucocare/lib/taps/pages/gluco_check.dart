@@ -1,8 +1,11 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/models/gluco_col_name_model.dart';
 import 'package:glucocare/models/gluco_model.dart';
+import 'package:glucocare/repositories/colname_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -48,14 +51,8 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
   String _getStateName(int index) {
     switch (index) {
-      case 0: return '기상 후';
-      case 1: return '아침 식전';
-      case 2: return '아침 식후';
-      case 3: return '점심 식전';
-      case 4: return '점심 식후';
-      case 5: return '저녁 식전';
-      case 6: return '저녁 식후';
-      case 7: return '취침 전';
+      case 0: return '식전';
+      case 1: return '식후';
     }
 
     return 'Err';
@@ -72,15 +69,20 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   void _onSaveButtonPressed() {
     _setState();
 
-    GlucoModel model = GlucoModel(
+    GlucoModel glucoModel = GlucoModel(
         checkTimeName: _checkTimeName,
         value: _value,
         state: _state,
         checkTime: _checkTime,
         checkDate: _checkDate
     );
+    GlucoRepository.insertGlucoCheck(glucoModel);
 
-    GlucoRepository.insertGlucoCheck(model);
+    String uid = AuthService.getCurUserUid();
+    GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
+    ColNameRepository.insertGlucoColName(nameModel);
+
+    Navigator.pop(context);
   }
 
   @override
@@ -121,266 +123,67 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
               color: Colors.black
               ),
             ),
-            const SizedBox(height: 20,),
+            const SizedBox(height: 30,),
             Container(
               width: 350,
-              height: 250,
+              height: 130,
               child: Column(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 0,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('기상 후', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 0;
-                            });
-                          },
-                        ),
+                  SizedBox(
+                    width: 130,
+                    height: 50,
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      visualDensity: VisualDensity(vertical: -4, horizontal: -4),
+                      leading: Radio<int>(
+                        value: 0,
+                        groupValue: _checkTimeValue,
+                        onChanged: (int? value) {
+                          setState(() {
+                            _checkTimeValue = value!;
+                          });
+                        },
                       ),
-                      const SizedBox(width: 30,),
-                      const SizedBox(width: 130, height: 50,),
-                    ],
+                      title: const Text('식전', style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black),),
+                      onTap: () {
+                        setState(() {
+                          _checkTimeValue = 0;
+                        });
+                      },
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 1,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('아침 식전', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 1;
-                            });
-                          },
-                        ),
+                  const SizedBox(width: 30,),
+                  SizedBox(
+                    width: 130,
+                    height: 50,
+                    child: ListTile(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      visualDensity: VisualDensity(vertical: -4, horizontal: -4),
+                      leading: Radio<int>(
+                        value: 1,
+                        groupValue: _checkTimeValue,
+                        onChanged: (int? value) {
+                          setState(() {
+                            _checkTimeValue = value!;
+                          });
+                        },
                       ),
-                      const SizedBox(width: 30,),
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 2,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('아침 식후', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 2;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 3,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('점심 식전', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 3;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 30,),
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 4,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('점심 식후', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 4;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 5,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('저녁 식전', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 5;
-                            });
-                          },
-                        ),
-                      ),
-                      const SizedBox(width: 30,),
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 6,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('저녁 식후', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 6;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(width: 30,),
-                      const SizedBox(width: 130, height: 50,),
-                      SizedBox(
-                        width: 130,
-                        height: 50,
-                        child: ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                          leading: Radio<int>(
-                            value: 7,
-                            groupValue: _checkTimeValue,
-                            onChanged: (int? value) {
-                              setState(() {
-                                _checkTimeValue = value!;
-                              });
-                            },
-                          ),
-                          title: const Text('취침 전', style: TextStyle(
-                              fontSize: 17,
-                              color: Colors.black
-                          ),),
-                          onTap: () {
-                            setState(() {
-                              _checkTimeValue = 7;
-                            });
-                          },
-                        ),
-                      ),
-                    ],
+                      title: const Text('식후', style: TextStyle(
+                          fontSize: 17,
+                          color: Colors.black),),
+                      onTap: () {
+                        setState(() {
+                          _checkTimeValue = 1;
+                        });
+                      },
+                    ),
                   ),
                 ],
-              ) ,
+              ),
             ),
             const SizedBox(height: 10,),
             Container(

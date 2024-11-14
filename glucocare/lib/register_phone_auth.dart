@@ -132,5 +132,4 @@ class _RegisterPhoneFormState extends State<RegisterPhoneForm> {
       ),
     );
   }
-
 }

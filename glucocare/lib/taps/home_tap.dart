@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
-import 'package:glucocare/taps/pages/pill_check.dart';
-import 'package:glucocare/taps/pages/pill_history.dart';
+import 'package:glucocare/taps/pages/pill_alarm_history.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
 
 class HomeTap extends StatelessWidget {
@@ -109,7 +108,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             height: 130,
             child: ElevatedButton(
               onPressed: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => PillHistoryPage()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const PillAlarmHistoryPage()));
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[350],
@@ -125,7 +124,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                     width: 50,
                     height: 50,),
                   const SizedBox(width: 10,),
-                  const Text('복약/투약',
+                  const Text('복약 알림',
                     style: TextStyle(
                         fontSize: 30,
                         fontWeight: FontWeight.bold,
@@ -274,7 +273,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             height: 40,
             child: ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const PillHistoryPage()));
+
               },
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[350],
@@ -285,19 +284,11 @@ class _HomeTapForm extends State<HomeTapForm> {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('다음 복약 ',
+                  Text('진료 예약',
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black54
-                    ),
-                  ),
-                  SizedBox(width: 20,),
-                  Text('오후 06:00',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
+                        color: Colors.black,
                     ),
                   ),
                 ],

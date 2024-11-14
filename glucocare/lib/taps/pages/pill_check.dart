@@ -1,8 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/models/pill_alarm_col_name_model.dart';
+import 'package:glucocare/models/pill_alarm_model.dart';
+import 'package:glucocare/models/pill_model.dart';
+import 'package:glucocare/repositories/colname_repository.dart';
+import 'package:glucocare/repositories/pill_alarm_repository.dart';
+import 'package:glucocare/repositories/pill_repository.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-import 'package:flutter_time_picker_spinner/flutter_time_picker_spinner.dart';
 
 class PillCheckPage extends StatelessWidget {
   const PillCheckPage({super.key});
@@ -28,18 +35,28 @@ class PillCheckForm extends StatefulWidget {
 
 class _PillCheckFormState extends State<PillCheckForm> {
   Logger logger = Logger();
+  String uid = AuthService.getCurUserUid();
 
-  final TextEditingController _pillNameController = TextEditingController();
+  int _alarmHourValue = 1;
+  final List<int> _alarmHourOptions = List.generate(12, (index) => (index+=1));
+  int? get previousHourOption => _alarmHourValue > 0 && _alarmHourValue != 1 ? _alarmHourValue - 1 : null;
+  int? get nextHourOption => _alarmHourValue < _alarmHourOptions.length ? _alarmHourValue + 1 : null;
+
+  int _alarmMinuteValue = 0;
+  final List<String> _alarmMinuteOptions = List.generate(59, (index) => (index+=1).toString());
+  String? get previousMinuteOption => _alarmMinuteValue > 0 ? _alarmMinuteOptions[_alarmMinuteValue - 1] : null;
+  String? get nextMinuteOption => _alarmMinuteValue < _alarmMinuteOptions.length - 1 ? _alarmMinuteOptions[_alarmMinuteValue + 1] : null;
+
+  String _alarmTimeAreaValue = '오전';
+  final List<String> _alarmTimeAreaOptions = ['오전', '오후'];
+
   int _pillCategoryValue = 0;
   int _pillEatTimeValue = 0;
-
-  String _pillName = '';
   String _pillCategory = '당뇨';
   String _eatTime = '';
   String _saveTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
-  String _saveDate = DateFormat('yyyy년 MM월 dd일 (E)').format(DateTime.now());
-
-  String _alarmTime = '';
+  String _saveDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
+  Timestamp _alarmTime = Timestamp.fromDate(DateTime.now());
 
   String _getPillCategoryName(index) {
       switch (index) {
@@ -59,26 +76,33 @@ class _PillCheckFormState extends State<PillCheckForm> {
     return 'Err';
   }
 
-  void _setState() {
-    _pillName = _pillNameController.text;
+  void _setStates() {
     _pillCategory = _getPillCategoryName(_pillCategoryValue);
     _eatTime = _getEatTimeName(_pillEatTimeValue);
     _saveTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
-    _saveDate = DateFormat('yyyy년 MM월 dd일 (E)').format(DateTime.now());
+    _saveDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
 
     // _alarmTime
+    if(_alarmTimeAreaValue == '오후') _alarmHourValue + 12;
+    _alarmTime = Timestamp.fromDate(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, _alarmHourValue, _alarmMinuteValue));
   }
 
   void _onSaveButtonPressed() {
-    _setState();
+    _setStates();
+    PillModel pillModel = PillModel(pillCategory: _pillCategory, eatTime: _eatTime, saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime);
+    PillAlarmModel pillAlarmModel = PillAlarmModel(saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime);
+    PillAlarmColNameModel alarmNameModel = PillAlarmColNameModel(date: _saveDate, uid: uid);
 
+    PillRepository.insertPillCheck(pillModel);
+    PillAlarmRepository.insertPillAlarm(pillAlarmModel);
+    ColNameRepository.insertAlarmColName(alarmNameModel);
 
+    Navigator.pop(context, true);
   }
 
   @override
   void initState() {
     super.initState();
-
     _pillEatTimeValue = 0;
     _pillCategoryValue = 0;
   }
@@ -89,41 +113,10 @@ class _PillCheckFormState extends State<PillCheckForm> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(height: 30,),
-          Container(
-            width: MediaQuery.of(context).size.width,
-            height: 150,
-            child: Center(
-              child: Container(
-                width: 350,
-                height: 150,
-                padding: EdgeInsets.all(50),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                child: const Center(
-                  child: TextField(
-                    decoration: InputDecoration(
-                        hintText: '약품명',
-                        hintStyle: TextStyle(
-                          fontSize: 35,
-                          color: Colors.black45,
-                        )
-                    ),
-                    style: TextStyle(
-                      fontSize: 35,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 0,),
+          SizedBox(height: 50,),
           Container(
             width: 350,
-            padding: EdgeInsets.all(20),
+            padding: EdgeInsets.only(left: 70),
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,7 +194,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 30,),
+                  const SizedBox(height: 70,),
                   const Text('복약/투약 시간대'),
                   Container(
                     height: 40,
@@ -281,32 +274,139 @@ class _PillCheckFormState extends State<PillCheckForm> {
               ),
             ),
           ),
+          const SizedBox(height: 70,),
           Container(
             width: 350,
-            height: 45,
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.only(left: 70),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('복약/투약 시간대'),
-                TimePickerSpinner(
-                  is24HourMode: false,
-                  normalTextStyle: const TextStyle(
-                    fontSize: 25,
-                    color: Colors.grey,
-                  ),
-                  highlightedTextStyle: const TextStyle(
-                    fontSize: 25,
-                    color: Colors.black,
-                  ),
-                  itemHeight: 40,
-                  spacing: 30,
-                  isForce2Digits: true,
-                  onTimeChange: (time) {
-                    setState(() {
-                      _saveTime = time as String;
-                    });
-                  },
+                const Text('알림 시간'),
+                const SizedBox(height: 20,),
+                Row(
+                  children: [
+                    Container(
+                      width: 90,
+                      height: 120,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if(_alarmTimeAreaValue == '오전') 
+                            const Text(''),
+                          if(_alarmTimeAreaValue == '오후')
+                            const Text('오전', style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                            ),),
+                          CupertinoPicker(
+                              itemExtent: 50,
+                              onSelectedItemChanged: (index) {
+                                setState(() {
+                                  _alarmTimeAreaValue = _alarmTimeAreaOptions[index];
+                                });
+                              },
+                              children: _alarmTimeAreaOptions.map((item) => Center(
+                                child: Text(item, style: const TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.black,
+                                ),),
+                              )).toList(),
+                          ),
+                          if(_alarmTimeAreaValue == '오후')
+                            const Text(''),
+                          if(_alarmTimeAreaValue == '오전')
+                            const Text('오후', style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                            ),),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      height: 120,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if(previousHourOption != null)
+                            Text(previousHourOption.toString(), style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                            ),),
+                          if(previousHourOption == null)
+                            const Text(''),
+                          CupertinoPicker(
+                              itemExtent: 50,
+                              onSelectedItemChanged: (index) {
+                                setState(() {
+                                  _alarmHourValue = index+1;
+                                });
+                              },
+                              children: _alarmHourOptions.map((item) => Center(
+                                child: Text(item.toString(), style: const TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.black,
+                                ),),
+                              )).toList(),
+                          ),
+                          if(nextHourOption != null)
+                            Text(nextHourOption.toString(), style: const TextStyle(
+                              fontSize: 18,
+                              color: Colors.black54,
+                            ),),
+                          if(nextHourOption == null)
+                            const Text(''),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      width: 90,
+                      height: 120,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if(previousMinuteOption != null)
+                            Text(previousMinuteOption!,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),),
+                          if(previousMinuteOption == null)
+                            const Text('',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),),
+                          CupertinoPicker(
+                            itemExtent: 50,
+                            onSelectedItemChanged: (index) {
+                              setState(() {
+                                _alarmMinuteValue = index;
+                              });
+                            },
+                            children: _alarmMinuteOptions.map((item) => Center(
+                              child: Text(item, style: const TextStyle(
+                                fontSize: 25,
+                                color: Colors.black,
+                              ),),
+                            )).toList(),
+                          ),
+                          if(nextMinuteOption != null)
+                            Text(nextMinuteOption!,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),),
+                          if(nextMinuteOption == null)
+                            const Text('',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.black54,
+                              ),),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),

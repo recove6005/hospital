@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
+import 'colname_repository.dart';
 
 class PillRepository {
   static Logger logger = Logger();
@@ -16,5 +17,28 @@ class PillRepository {
     } catch(e) {
       logger.e('[glucocare_log] Failed to insert pill_check : $e');
     }
+  }
+  
+  static Future<List<PillModel>> selectAllPillModels() async {
+    String uid = AuthService.getCurUserUid();
+    List<PillModel> models = <PillModel>[];
+    List<String> namelist = await ColNameRepository.selectAllAlarmColName();
+
+    for(String subColName in namelist) {
+      try {
+        var querySnapshot = await _store.collection('pill_check').doc(uid)
+            .collection(subColName)
+            .orderBy('alarm_time', descending: false).get();
+        for(var doc in querySnapshot.docs) {
+          PillModel model = PillModel.fromJson(doc.data());
+          models.add(model);
+        }
+      } catch (e) {
+        logger.d('[glucocare_log] Failed to select pill models : $e');
+        return [];
+      }
+    }
+
+    return models;
   }
 }

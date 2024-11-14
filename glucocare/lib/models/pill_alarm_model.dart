@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class PillAlarmModel {
   final String saveDate;
   final String saveTime;
-  final String alarmTime;
+  final Timestamp alarmTime;
 
   PillAlarmModel({
     required this.saveDate,
@@ -13,7 +15,7 @@ class PillAlarmModel {
     return {
       'save_date': saveDate,
       'save_time': saveTime,
-      'alarm_time': alarmTime
+      'alarm_time': alarmTime,
     };
   }
 
