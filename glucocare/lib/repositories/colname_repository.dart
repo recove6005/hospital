@@ -12,7 +12,7 @@ class ColNameRepository {
   static Future<void> insertAlarmColName(PillAlarmColNameModel model) async {
     String uid = AuthService.getCurUserUid();
     try {
-      _store.collection('alarm_name').doc(uid).set(model.toJson());
+      _store.collection('alarm_name').doc('${model.date} $uid').set(model.toJson());
     } catch (e) {
       logger.e('[gluccare_log] Failed to insert alarm collection name : $e');
     }
@@ -32,8 +32,9 @@ class ColNameRepository {
 
   static Future<void> insertPurseColName(PurseColNameModel model) async {
     String uid = AuthService.getCurUserUid();
+
     try {
-      _store.collection('purse_name').doc(uid).set(model.toJson());
+      _store.collection('purse_name').doc('${model.date} $uid').set(model.toJson());
     } catch (e) {
       logger.e('[glucocare_log] Failed to insert purse check coll name : $e');
     }
@@ -53,8 +54,9 @@ class ColNameRepository {
 
   static Future<void> insertGlucoColName(GlucoColNameModel model) async {
     String uid = AuthService.getCurUserUid();
+
     try {
-      _store.collection('gluco_name').doc(uid).set(model.toJson());
+      _store.collection('gluco_name').doc('${model.date} $uid').set(model.toJson());
     } catch(e) {
       logger.d('[glucocare_log] Failed to insert gluco col name : $e');
     }

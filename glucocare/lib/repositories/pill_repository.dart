@@ -24,10 +24,10 @@ class PillRepository {
     List<PillModel> models = <PillModel>[];
     List<String> namelist = await ColNameRepository.selectAllAlarmColName();
 
-    for(String subColName in namelist) {
+    for(var name in namelist) {
       try {
         var querySnapshot = await _store.collection('pill_check').doc(uid)
-            .collection(subColName)
+            .collection(name)
             .orderBy('alarm_time', descending: false).get();
         for(var doc in querySnapshot.docs) {
           PillModel model = PillModel.fromJson(doc.data());

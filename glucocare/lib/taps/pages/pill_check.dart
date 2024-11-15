@@ -43,7 +43,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
   int? get nextHourOption => _alarmHourValue < _alarmHourOptions.length ? _alarmHourValue + 1 : null;
 
   int _alarmMinuteValue = 0;
-  final List<String> _alarmMinuteOptions = List.generate(59, (index) => (index+=1).toString());
+  final List<String> _alarmMinuteOptions = List.generate(60, (index) => index.toString());
   String? get previousMinuteOption => _alarmMinuteValue > 0 ? _alarmMinuteOptions[_alarmMinuteValue - 1] : null;
   String? get nextMinuteOption => _alarmMinuteValue < _alarmMinuteOptions.length - 1 ? _alarmMinuteOptions[_alarmMinuteValue + 1] : null;
 
@@ -83,8 +83,18 @@ class _PillCheckFormState extends State<PillCheckForm> {
     _saveDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
 
     // _alarmTime
-    if(_alarmTimeAreaValue == '오후') _alarmHourValue + 12;
-    _alarmTime = Timestamp.fromDate(DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, _alarmHourValue, _alarmMinuteValue));
+    int adjustedHour = _alarmHourValue;
+    if(_alarmTimeAreaValue == '오후') adjustedHour += 12;
+    if(_alarmTimeAreaValue == '오전' && _alarmHourValue == 12) adjustedHour = 0;
+    _alarmTime = Timestamp.fromDate(
+        DateTime(
+            DateTime.now().year,
+            DateTime.now().month,
+            DateTime.now().day,
+            adjustedHour,
+            _alarmMinuteValue
+        ).toUtc()
+    );
   }
 
   void _onSaveButtonPressed() {

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:glucocare/models/pill_alarm_col_name_model.dart';
 import 'package:glucocare/models/pill_alarm_model.dart';
 import 'package:glucocare/repositories/colname_repository.dart';
 import 'package:glucocare/services/auth_service.dart';

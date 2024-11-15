@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
 import 'package:glucocare/taps/pages/pill_alarm_history.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
+import 'package:logger/logger.dart';
+
+import '../services/notification_service.dart';
 
 class HomeTap extends StatelessWidget {
   const HomeTap({super.key});
@@ -22,6 +25,14 @@ class HomeTapForm extends StatefulWidget {
 }
 
 class _HomeTapForm extends State<HomeTapForm> {
+  Logger logger = Logger();
+
+  void _sendPushMsg() async {
+    // notification testing
+    NotificationService.sendForegroundMsg();
+    NotificationService.sendBackgroundMsg();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -30,11 +41,8 @@ class _HomeTapForm extends State<HomeTapForm> {
       child: Column(
         children: [
           SizedBox(
-            width: MediaQuery.of(context).size.width,
             height: 50,
-            child: Center(
-              child: Image.asset('assets/images/ic_temp_logo.png'),
-            )
+            child: Image.asset('assets/images/ic_temp_logo.png'),
           ),
           const SizedBox(height: 10,),
           SizedBox(
@@ -272,9 +280,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             width: 350,
             height: 40,
             child: ElevatedButton(
-              onPressed: () {
-
-              },
+              onPressed: _sendPushMsg,
               style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey[350],
                   shape: RoundedRectangleBorder(

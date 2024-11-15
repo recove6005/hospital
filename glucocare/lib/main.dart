@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:glucocare/login.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/notification_service.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
@@ -31,6 +32,9 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // notification service init
+  NotificationService.initialize();
 
   runApp(const MyApp());
 }

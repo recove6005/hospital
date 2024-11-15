@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/pill_model.dart';
@@ -6,7 +7,6 @@ import 'package:glucocare/repositories/pill_repository.dart';
 import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-
 import '../../models/pill_alarm_model.dart';
 
 class PillAlarmHistoryPage extends StatelessWidget {
@@ -43,15 +43,13 @@ class _PillAlarmHistoryFormState extends State<PillAlarmHistoryForm> {
     // setStete() 내에서 해당 데이터를 옮겨 줌
     try {
       List<PillModel> models = await PillRepository.selectAllPillModels();
-      logger.d('[glucocare_log] $models');
       setState(() {
         _pillModels = models;
         _childCount = _pillModels.length;
         _isLoading = false;
-        _isLoading = false;
       });
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load pill hostories : $e');
+      logger.e('[glucocare_log] Failed to load pill histories : $e');
     }
   }
 
@@ -70,6 +68,14 @@ class _PillAlarmHistoryFormState extends State<PillAlarmHistoryForm> {
         _setPillModels();
       });
     }
+  }
+
+  String _getLocaleTime(Timestamp time) {
+    DateTime utcTime = time.toDate();
+    DateTime krTime = utcTime.toLocal();
+    String formattedTime = DateFormat('a hh:mm', 'ko_KR').format(krTime);
+
+    return formattedTime;
   }
 
   @override
@@ -156,7 +162,7 @@ class _PillAlarmHistoryFormState extends State<PillAlarmHistoryForm> {
                                       color: Colors.black54
                                   ),
                                 ),
-                                SizedBox(height: 5,),
+                                const SizedBox(height: 5,),
                                 Container(
                                   decoration: BoxDecoration(
                                     color: Colors.grey[300],
@@ -175,9 +181,9 @@ class _PillAlarmHistoryFormState extends State<PillAlarmHistoryForm> {
                                                 height: 25,
                                                 child: Image.asset('assets/images/ic_clock.png'),
                                               ),
-                                              SizedBox(width: 10,),
-                                              Text('${DateFormat('a HH:mm', 'ko_KR').format((_pillModels[index].alarmTime).toDate())} ${_pillModels[index].eatTime}',
-                                                style: TextStyle(
+                                              const SizedBox(width: 10,),
+                                              Text('${_getLocaleTime(_pillModels[index].alarmTime)} ${_pillModels[index].eatTime}',
+                                                style: const TextStyle(
                                                   fontSize: 15,
                                                 ),)
                                             ],

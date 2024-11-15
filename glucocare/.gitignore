@@ -36,6 +36,7 @@ lib/cloud_firestore.dart
 firebase.json
 android/app/google-services.json
 .env
+serviceAccountKey.json
 
 # Symbolication related
 app.*.symbols
