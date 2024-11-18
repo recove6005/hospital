@@ -22,7 +22,7 @@ class ColNameRepository {
     String uid = AuthService.getCurUserUid();
     List<String> pillAlarmColNameList = <String>[];
 
-    var docSnapshot = await _store.collection('alarm_name').where('uid', isEqualTo: uid).orderBy('date', descending: false).get();
+    var docSnapshot = await _store.collection('alarm_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
     for(var doc in docSnapshot.docs) {
       PillAlarmColNameModel alarmData = PillAlarmColNameModel.fromJson(doc.data());
       pillAlarmColNameList.add(alarmData.date);
@@ -44,12 +44,25 @@ class ColNameRepository {
     String uid = AuthService.getCurUserUid();
     List<String> purseColNameList = <String>[];
 
-    var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).orderBy('date', descending: false).get();
+    var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
     for(var doc in docSnapshot.docs) {
       PurseColNameModel purseData = PurseColNameModel.fromJson(doc.data());
       purseColNameList.add(purseData.date);
     }
     return purseColNameList;
+  }
+
+  static Future<String> selectPurseColNameNyDay(String docName) async {
+    String uid = AuthService.getCurUserUid();
+    String purseColName = '';
+
+    var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).get();
+    for(var doc in docSnapshot.docs) {
+      PurseColNameModel purseDate = PurseColNameModel.fromJson(doc.data());
+      if(purseDate.date == docName) purseColName = purseDate.date;
+    }
+
+    return purseColName;
   }
 
   static Future<void> insertGlucoColName(GlucoColNameModel model) async {
@@ -66,7 +79,7 @@ class ColNameRepository {
     String uid = AuthService.getCurUserUid();
     List<String> glucoColNameList = <String>[];
 
-    var docSnapshot = await _store.collection('gluco_name').where('uid', isEqualTo: uid).orderBy('date', descending: false).get();
+    var docSnapshot = await _store.collection('gluco_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
     for(var doc in docSnapshot.docs) {
       GlucoColNameModel glucoData = GlucoColNameModel.fromJson(doc.data());
       glucoColNameList.add(glucoData.date);

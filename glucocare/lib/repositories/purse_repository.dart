@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:glucocare/models/purse_model.dart';
 import 'package:glucocare/repositories/colname_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
@@ -41,5 +42,72 @@ class PurseRepository {
     }
 
     return models;
+  }
+
+  static Future<List<PurseModel>> selectPurseByDay(String checkDate) async {
+    String uid = AuthService.getCurUserUid();
+    List<PurseModel> models = <PurseModel>[];
+    
+    var docSnapshot = await _store.collection('purse_check').doc(uid).collection(checkDate).get();
+    for(var doc in docSnapshot.docs) {
+      PurseModel purseModel = PurseModel.fromJson(doc.data());
+      models.add(purseModel);
+    }
+
+    return models;
+  }
+
+  static Future<List<FlSpot>> getShrinkData(list) async {
+    String uid = AuthService.getCurUserUid();
+
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+
+    List<String> colNames = await ColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+    for(String name in colNames) {
+
+      var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+          .orderBy('check_time', descending: false).get();
+
+      for(var doc in docSnapshot.docs) {
+        PurseModel model = PurseModel.fromJson(doc.data());
+        chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+        list.add(name.substring(10,12));
+
+        index++;
+
+        if(chartDatas.length >= 30) return chartDatas;
+      }
+    }
+
+    return chartDatas;
+  }
+
+  static Future<List<FlSpot>> getRelaxData(list) async {
+    String uid = AuthService.getCurUserUid();
+
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+
+    List<String> colNames = await ColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    for(String name in colNames) {
+
+      var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+          .orderBy('check_time', descending: false).get();
+
+      for(var doc in docSnapshot.docs) {
+        PurseModel model = PurseModel.fromJson(doc.data());
+        chartDatas.add(FlSpot(index, model.relax.toDouble()));
+
+        index++;
+
+        if(chartDatas.length >= 30) return chartDatas;
+      }
+    }
+
+    return chartDatas;
   }
 }

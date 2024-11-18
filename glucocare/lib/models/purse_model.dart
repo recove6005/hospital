@@ -1,5 +1,4 @@
 class PurseModel {
-  final String checkTimeName;
   final int shrink;
   final int relax;
   final int purse;
@@ -8,7 +7,6 @@ class PurseModel {
   final String checkDate;
 
   PurseModel({
-    required this.checkTimeName,
     required this.shrink,
     required this.relax,
     required this.purse,
@@ -19,7 +17,6 @@ class PurseModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'check_time_name': checkTimeName,
       'shrink': shrink,
       'relax': relax,
       'purse': purse,
@@ -30,7 +27,7 @@ class PurseModel {
   }
 
   factory PurseModel.fromJson(Map<String, dynamic> json) {
-    return PurseModel(checkTimeName: json['check_time_name'],
+    return PurseModel(
         shrink: json['shrink'],
         relax: json['relax'],
         purse: json['purse'],
