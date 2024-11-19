@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyCf1gmtc2c2QYWBdQn28oTU9qiw-aKZkdA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>561626369672</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.gluecocare.glucocare</string>
+	<key>PROJECT_ID</key>
+	<string>glucocare-7820b</string>
+	<key>STORAGE_BUCKET</key>
+	<string>glucocare-7820b.firebasestorage.app</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:561626369672:ios:5256a3222c0cafd0d4593d</string>
+</dict>
+</plist>
