@@ -18,6 +18,19 @@ class PurseCheckPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         toolbarHeight: 40,
+        leadingWidth: 300,
+        leading: const Row(
+          children: [
+            BackButton(
+              color: Colors.black,
+            ),
+            Text('혈압 입력', style: TextStyle(
+              fontSize: 18,
+              color: Colors.black54,
+              fontWeight: FontWeight.bold,
+            ),),
+          ],
+        )
       ),
       body: const PurseCheckForm(),
     );
@@ -43,9 +56,6 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   final TextEditingController _purseController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
 
-  static int _checkTimeValue = 0;
-  static List<bool> _stateValue = List.generate(11, (index) => false);
-
   int _shrink = 0;
   int _relax = 0;
   int _purse = 0;
@@ -58,7 +68,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     _relax = int.parse(_relaxController.text);
     _purse = int.parse(_purseController.text);
 
-    _state = '${_stateController.text}';
+    _state = _stateController.text;
 
     _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
@@ -80,17 +90,23 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     String uid = AuthService.getCurUserUid();
     PurseColNameModel nameModel = PurseColNameModel(uid: uid, date: _checkDate);
     ColNameRepository.insertPurseColName(nameModel);
-    Navigator.pop(context);
+    Navigator.pop(context, true);
+  }
+
+  String krTime = '';
+  String _getKrTime() {
+    krTime = DateFormat('hh:mm', 'ko_KR').format(DateTime.now());
+    if(DateFormat('a').format(DateTime.now()) == 'AM') {
+      krTime = '오전 $krTime';
+    } else {
+      krTime = '오후 $krTime';
+    }
+    return krTime;
   }
 
   @override
   void initState() {
     super.initState();
-
-    _checkTimeValue = 0;
-
-    _stateValue = List.generate(11, (index) => false);
-
     _timerTime = Timer.periodic(const Duration(seconds: 5), (timer){
       setState(() {
         _formattedTime = DateFormat('a hh시 mm분', 'ko_KR').format(DateTime.now());
@@ -107,33 +123,39 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 10,),
-            Text(
-              _formattedDate,
-              style: const TextStyle(
-                  fontSize: 25,
-                  color: Colors.black
-              ),
-            ),
-            const SizedBox(height: 10,),
-            Text(
-              _formattedTime,
-              style: const TextStyle(
-                  fontSize: 22,
-                  color: Colors.black
+            SizedBox(
+              width: 350,
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                  Text(_getKrTime(),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                    ),
+                  ),
+                ],
               ),
             ),
             Container(
               width: 350,
               decoration: BoxDecoration(
-                color: Colors.grey[300],
+                color: const Color(0xFFF9F9F9),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 15,),
+                  const SizedBox(height: 15,),
                   Container(
                     width: 350,
                     child: Center(
@@ -170,7 +192,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Container(
                     width: 350,
                     child: Center(
@@ -207,7 +229,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Container(
                     width: 350,
                     child: Center(
@@ -264,25 +286,26 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
             Container(
               width: 350,
               child: TextField(
+                controller: _stateController,
                 maxLines: null,
                 minLines: 1,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(25),
                     borderSide: const BorderSide(color: Colors.transparent),
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(25),
                     borderSide: const BorderSide(color: Colors.transparent),
                   ),
                   focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(25),
                     borderSide: const BorderSide(color: Colors.transparent),
                   ),
                   filled: true,
-                  fillColor: Colors.grey[300],
+                  fillColor: const Color(0xFFF9F9F9),
                   hintText: '메모를 입력하세요',
-                  hintStyle: const TextStyle(fontSize: 15),
+                  hintStyle: const TextStyle(fontSize: 20),
                 ),
                 textAlign: TextAlign.start,
                 style: const TextStyle(
@@ -299,8 +322,11 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
         width: 350,
         height: 50,
         child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
           onPressed: _onSaveButtonPressed,
-          backgroundColor: const Color(0xFF1FA1AA),
+          backgroundColor: const Color(0xFF28C2CE),
           child: const Text('저장하기',
             style: TextStyle(
               fontSize: 20,

@@ -9,15 +9,17 @@ import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   await dotenv.load();
 
-  // locale init
+  // locale init - 기본 지역 설정
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR', null);
+  Intl.defaultLocale = 'ko_KR';
 
   // kakotalk api init
   WidgetsFlutterBinding.ensureInitialized();
@@ -47,21 +49,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'HOME',
       theme: ThemeData(
-          primarySwatch: Colors.grey,
+          scaffoldBackgroundColor: Colors.white,
           brightness: Brightness.light,
-          textTheme: TextTheme(
-              bodySmall: TextStyle(fontSize: 15, color: Colors.grey[800]),
-              bodyMedium: TextStyle(fontSize: 20, color: Colors.grey[800]),
-              bodyLarge: TextStyle(fontSize: 30, color: Colors.grey[800])
-          ),
-          appBarTheme: AppBarTheme(
-              color: Colors.red[700],
-              elevation: 4
-          ),
-          buttonTheme: ButtonThemeData(
-            buttonColor: Colors.red[700],
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          )
       ),
       home: const HomePage(),
     );
@@ -79,10 +68,11 @@ class _HomePageState extends State<HomePage> {
   static var _user = FirebaseAuth.instance.currentUser!.uid;
 
   int _tappedIndex = 0;
-  static List<Widget> _tapPages = <Widget> [
-    HomeTap(),
-    PurseHistoryTap(),
-    GlucoHistoryTap(),
+  static final List<Widget> _tapPages = <Widget> [
+    const HomeTap(),
+    const GlucoHistoryTap(),
+    const PurseHistoryTap(),
+    const GlucoHistoryTap(),
   ];
 
   void _onItemTapped(int index) {
@@ -94,7 +84,62 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.white, toolbarHeight: 40,),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        shadowColor: Colors.transparent,
+        toolbarHeight: 60,
+        leadingWidth: MediaQuery.of(context).size.width,
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: 350,
+              child: Row(
+                children: [
+                  SizedBox(
+                    width: 50,
+                    height: 50,
+                    child: Builder(
+                      builder: (context) => IconButton(
+                        onPressed: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        icon: const Icon(Icons.menu, size: 40,),
+                        padding: EdgeInsets.zero,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    child: SizedBox(
+                      width: 250,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 130,
+                            height: 40,
+                            child: Image.asset('assets/images/logo_daol.png'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width - 50,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+              ),
+            ),
+          ],
+        ),
+      ),
       drawer: Drawer(
           child: ListView(
             children: <Widget>[
@@ -132,23 +177,40 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _tapPages.elementAt(_tappedIndex),
       bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem> [
+          currentIndex: _tappedIndex,
+          selectedItemColor: const Color(0xFF28C0CC),
+          unselectedItemColor: Colors.grey,
+          onTap: _onItemTapped,
+          backgroundColor: Colors.white,
+          showUnselectedLabels: true,
+          showSelectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          items: <BottomNavigationBarItem> [
             BottomNavigationBarItem(
-                icon: Icon(Icons.local_hospital),
+                icon: _tappedIndex == 0
+                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_home_b.png'),)
+                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_home_g.png'),) ,
                 label: '홈'
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.monitor_heart),
+                icon: _tappedIndex == 1
+                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodsugar_b.png'),)
+                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodsugar_g.png'),) ,
+                label: '혈당'
+            ),
+            BottomNavigationBarItem(
+                icon: _tappedIndex == 2
+                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodpressure_b.png'),)
+                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodpressure_g.png'),) ,
                 label: '혈압'
             ),
             BottomNavigationBarItem(
-                icon: Icon(Icons.bloodtype),
-                label: '혈당'
+                icon: _tappedIndex == 3
+                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_b.png'),)
+                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_g.png'),) ,
+                label: '상담'
             ),
           ],
-        currentIndex: _tappedIndex,
-        selectedItemColor: Colors.red[800],
-        onTap: _onItemTapped,
       ),
     );
   }

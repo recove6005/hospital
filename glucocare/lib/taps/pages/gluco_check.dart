@@ -82,7 +82,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
     ColNameRepository.insertGlucoColName(nameModel);
 
-    Navigator.pop(context);
+    Navigator.pop(context, true);
   }
 
   @override

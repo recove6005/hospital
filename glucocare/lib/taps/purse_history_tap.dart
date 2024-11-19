@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
@@ -131,7 +130,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                      color: Colors.grey,
                   ),
                   softWrap: false, // 줄바꿈X
                   overflow: TextOverflow.visible,
@@ -161,7 +160,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                       child: Text(_shrinkX[index], style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: Colors.black54,
                       ),
                     ),
                   ),
@@ -198,37 +197,54 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
               children: [
                 Column(
                   children: [
+                    const SizedBox(height: 10,),
+                    const SizedBox(
+                      width: 350,
+                      height: 30,
+                      child: Text(
+                        '내 혈압 관리',
+                        style: TextStyle(
+                          fontSize: 24,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.start,
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
                     // 헤더
                     GestureDetector(
                       onTap: () async {
                         // 년월 선택 다이얼로그 호출
                         _searchYearMonth(context);
                       },
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                      child: SizedBox(
+                        width: 350,
                         child: Row(
                           children: [
-                            SizedBox(width: 30,),
                             Text(
                               '${_focusedDate.year}년 ${_focusedDate.month}월',
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 17,
+                                color: Colors.grey,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Icon(Icons.arrow_drop_down, color: Colors.black,)
+                            const Icon(Icons.arrow_drop_down, color: Colors.grey,)
                           ],
                         ),
                       ),
                     ),
                     // 요일 헤더
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 8),
+                    const SizedBox(height: 10,),
+                    // 요일 헤더
+                    SizedBox(
+                      width: 350,
                       child: Row(
                         children: ['월', '화', '수', '목', '금', '토', '일'].map((day) {
                           return Expanded(
                             child: Center(
-                                child: Text(day,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
+                                child: Text(day,style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black38),)
                             ),
                           );
                         }).toList(),
@@ -237,6 +253,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   ],
                 ),
                 SizedBox(
+                  width: 350,
                   height: 60,
                   child: TableCalendar(
                     headerVisible: false, // 헤더 숨김
@@ -244,33 +261,51 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     calendarStyle: CalendarStyle(
                       // cellMargin: EdgeInsets.all(5),
                       // cellPadding: EdgeInsets.all(0),
-                        selectedDecoration: BoxDecoration(
-                          color: Colors.red[300],
-                          shape: BoxShape.circle,
-
+                        selectedTextStyle: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
                         ),
-                        todayDecoration: BoxDecoration(
-                          color: Colors.red[200],
-                          shape: BoxShape.circle,
+                        todayTextStyle: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
                         ),
-                        defaultTextStyle: TextStyle(
+                        defaultTextStyle: const TextStyle(
                             fontSize: 20,
                             color: Colors.black
                         ),
-                        defaultDecoration: BoxDecoration(
+                        selectedDecoration: BoxDecoration(
+                          color: const Color(0xFFDCF9F9),
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: Colors.redAccent,
-                              width: 2,
+                              color: Color(0xFF1FA1AA),
+                              width: 1,
+                              style: BorderStyle.solid
+                          ),
+                        ),
+                        todayDecoration: BoxDecoration(
+                          color: const Color(0xFFDCF9F9),
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: Colors.transparent,
+                              width: 1,
+                              style: BorderStyle.solid
+                          ),
+                        ),
+                        defaultDecoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(0xFFF9F9F9),
+                          border: Border.all(
+                              color: Colors.transparent,
+                              width: 1,
                               style: BorderStyle.solid
                           ),
                         )
                     ),
                     daysOfWeekStyle: DaysOfWeekStyle( //
-                        weekdayStyle: TextStyle(
+                        weekdayStyle: const TextStyle(
                           fontSize: 20,
                         ),
-                        weekendStyle: TextStyle(
+                        weekendStyle: const TextStyle(
                           fontSize: 20,
                         ),
                         decoration: BoxDecoration(
@@ -295,33 +330,112 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     },
                   ),
                 ),
-                const SizedBox(height: 30,),
+                const SizedBox(height: 10,),
                 Column(
                   children: [
-                    SizedBox(
+                  Container(
+                  width: 350,
+                  height: 280,
+                  decoration: BoxDecoration(
+                      color: Color(0xFFF9F9F9),
+                      borderRadius: BorderRadius.circular(15)
+                  ),
+                  child: Row(
+                    children: [
+                      const SizedBox(width: 20,),
+                      Column(
+                        children: [
+                          const SizedBox(height: 10,),
+                          SizedBox(
+                            width: 300,
+                            height: 35,
+                            child: Text(
+                              '${_focusedDate.month}월 ${_focusedDate.day}일',
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10,),
+                          const SizedBox(
+                            width: 280,
+                            child: Text('혈압 측정 내역이 없습니다.',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ]
+                  ),
+                  ),
+                    const SizedBox(height: 15,),
+                    Container(
                       width: 350,
-                      height: 280,
-                      child: const Text('혈압 측정 내역이 없습니다.'),
-                    ),
-                    SizedBox(
-                      width: 350,
-                      height: 280,
-                      child: LineChart(
-                        LineChartData(
-                          lineBarsData: [_shrinkLine!, _relaxLine!],
-                          titlesData: _buildTitles(),
-                          gridData: FlGridData(show: true),
-                          borderData: FlBorderData(show: true),
-                          minX: _minX,
-                          maxX: _maxX,
-                          minY: _minY,
-                          maxY: _maxY,
-                        ),
+                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: const Color(0xFFFF9F9F9),
+                      ),
+                      child: Column(
+                        children: [
+                          const SizedBox(
+                            width: 350,
+                            height: 30,
+                            child: Text('변화 그래프', style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
+                            width: 350,
+                            height: 200,
+                            child: LineChart(
+                              LineChartData(
+                                lineBarsData: [_shrinkLine!, _relaxLine!],
+                                titlesData: _buildTitles(),
+                                gridData: FlGridData(
+                                    show: true,
+                                    drawVerticalLine: false,
+                                    horizontalInterval: 10,
+                                    getDrawingHorizontalLine: (value) {
+                                      return const FlLine(
+                                        color: Colors.grey,
+                                        strokeWidth: 1,
+                                      );
+                                    }
+                                ),
+                                borderData: FlBorderData(
+                                  show: true,
+                                  border: const Border(
+                                    top: BorderSide(
+                                      color: Colors.grey,
+                                      width: 0.5,
+                                    ),
+                                    bottom: BorderSide(
+                                      color: Colors.grey,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                minX: _minX,
+                                maxX: _maxX,
+                                minY: _minY,
+                                maxY: _maxY,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ]
+                  ],
                 ),
-              ]
+              ],
           ),
         ),
       );
@@ -335,37 +449,53 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
             children: [
               Column(
                 children: [
+                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    width: 350,
+                    height: 30,
+                    child: Text(
+                      '내 혈압 관리',
+                      style: TextStyle(
+                        fontSize: 24,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                  const SizedBox(height: 10,),
                   // 헤더
                   GestureDetector(
                     onTap: () async {
                       // 년월 선택 다이얼로그 호출
                       _searchYearMonth(context);
                     },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                    child: SizedBox(
+                      width: 350,
                       child: Row(
                         children: [
-                          SizedBox(width: 30,),
                           Text(
                             '${_focusedDate.year}년 ${_focusedDate.month}월',
                             style: const TextStyle(
-                              fontSize: 20,
+                              fontSize: 17,
+                              color: Colors.grey,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Icon(Icons.arrow_drop_down, color: Colors.black,)
+                          const Icon(Icons.arrow_drop_down, color: Colors.grey,)
                         ],
                       ),
                     ),
                   ),
+                  const SizedBox(height: 10,),
                   // 요일 헤더
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                  SizedBox(
+                    width: 350,
                     child: Row(
                       children: ['월', '화', '수', '목', '금', '토', '일'].map((day) {
                         return Expanded(
                           child: Center(
-                              child: Text(day,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),)
+                              child: Text(day,style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.black38),)
                           ),
                         );
                       }).toList(),
@@ -374,6 +504,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 ],
               ),
               SizedBox(
+                width: 350,
                 height: 60,
                 child: TableCalendar(
                   headerVisible: false, // 헤더 숨김
@@ -381,33 +512,51 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   calendarStyle: CalendarStyle(
                     // cellMargin: EdgeInsets.all(5),
                     // cellPadding: EdgeInsets.all(0),
-                    selectedDecoration: BoxDecoration(
-                      color: Colors.red[300],
-                      shape: BoxShape.circle,
-
-                    ),
-                    todayDecoration: BoxDecoration(
-                      color: Colors.red[200],
-                      shape: BoxShape.circle,
-                    ),
-                    defaultTextStyle: TextStyle(
+                      selectedTextStyle: const TextStyle(
                         fontSize: 20,
-                        color: Colors.black
-                    ),
-                    defaultDecoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: Colors.redAccent,
-                        width: 2,
-                        style: BorderStyle.solid
+                        color: Colors.black,
                       ),
-                    )
+                      todayTextStyle: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                      defaultTextStyle: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black
+                      ),
+                      selectedDecoration: BoxDecoration(
+                        color: const Color(0xFFDCF9F9),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Color(0xFF28C2CE),
+                            width: 1,
+                            style: BorderStyle.solid
+                        ),
+                      ),
+                      todayDecoration: BoxDecoration(
+                        color: const Color(0xFFDCF9F9),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Colors.transparent,
+                            width: 1,
+                            style: BorderStyle.solid
+                        ),
+                      ),
+                      defaultDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFF9F9F9),
+                        border: Border.all(
+                            color: Colors.transparent,
+                            width: 1,
+                            style: BorderStyle.solid
+                        ),
+                      )
                   ),
                   daysOfWeekStyle: DaysOfWeekStyle( //
-                      weekdayStyle: TextStyle(
+                      weekdayStyle: const TextStyle(
                         fontSize: 20,
                       ),
-                      weekendStyle: TextStyle(
+                      weekendStyle: const TextStyle(
                         fontSize: 20,
                       ),
                       decoration: BoxDecoration(
@@ -433,157 +582,174 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 ),
               ),
               const SizedBox(height: 10,),
-              SizedBox(
+              Container(
                 width: 350,
                 height: 280,
-                child: CustomScrollView(
-                  slivers: [
-                    SliverList(delegate: SliverChildBuilderDelegate(
-                        childCount: _childCount,
-                            (context, index) => Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '${_purseModels[index].checkDate}', style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.black54,
-                              ),
-                              ),
-                              const SizedBox(height: 5,),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.red[300],
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFF9F9F9),
+                  borderRadius: BorderRadius.circular(20)
+                ),
+                child: Row(
+                  children: [
+                    const SizedBox(width: 20,),
+                    Column(
+                      children: [
+                        const SizedBox(height: 10,),
+                        SizedBox(
+                          width: 300,
+                          height: 30,
+                          child: Text(
+                            '${_focusedDate.month}월 ${_focusedDate.day}일',
+                            style: const TextStyle(
+                              fontSize: 22,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 300,
+                          height: 230,
+                          child: CustomScrollView(
+                            slivers: [
+                              SliverList(delegate: SliverChildBuilderDelegate(
+                                  childCount: _childCount,
+                                      (context, index) => Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            SizedBox(
-                                              width: 25,
-                                              height: 25,
-                                              child: Image.asset('assets/images/ic_clock.png'),
-                                            ),
-                                            const SizedBox(width: 10,),
-                                            Text('${_purseModels[index].checkTime}',
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black,
-                                              ),),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10,),
-                                      Container(
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: 25,
-                                              height: 25,
-                                              child: Image.asset('assets/images/ic_purse_check.png'),
-                                            ),
-                                            const SizedBox(width: 10,),
-                                            Text('${_purseModels[index].shrink}/${_purseModels[index].relax} mmHg    ${_purseModels[index].purse}회/1분',
-                                              style: const TextStyle(
-                                                fontSize: 15,
-                                                color: Colors.black,
-                                              ),),
-                                          ],
-                                        ),
-                                      ),
-                                      const SizedBox(height: 10,),
-                                      Container(
-                                        child: Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            SizedBox(
-                                              width: 25,
-                                              height: 25,
-                                              child: Image.asset('assets/images/ic_memo.png'),
-                                            ),
-                                            const SizedBox(width: 10,),
-                                            SizedBox(
-                                              width: 250,
-                                              child: Text(_purseModels[index].state,
-                                                style: const TextStyle(
-                                                  fontSize: 15,
-                                                  color: Colors.black,
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(15),
+                                              ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    if(_purseModels[index].checkTime.substring(0,2) == 'AM')
+                                                      Text('오전 ${_purseModels[index].checkTime.substring(3,8)}',
+                                                        style: const TextStyle(
+                                                          fontSize: 19,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.black,
+                                                        ),),
+                                                    if(_purseModels[index].checkTime.substring(0,2) == 'PM')
+                                                      Text('오후 ${_purseModels[index].checkTime.substring(3,8)}',
+                                                        style: const TextStyle(
+                                                          fontSize: 19,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.black,
+                                                        ),),
+                                                    Text('${_purseModels[index].shrink}/${_purseModels[index].relax} mmHg  |  ${_purseModels[index].purse}회/1분',
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.black,
+                                                      ),),
+                                                    if(_purseModels[index].state != '')
+                                                      Text('${_purseModels[index].state}',
+                                                        style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    const SizedBox(height: 10,),
+                                                    Container(
+                                                      width: 350,
+                                                      height: 10,
+                                                      decoration: const BoxDecoration(
+                                                        border: Border(
+                                                          bottom: BorderSide(
+                                                            width: 1,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
                                                 ),
-                                                maxLines: 1,
-                                                overflow: TextOverflow.ellipsis,
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                                      )
+                              ),),
                             ],
                           ),
-                        )
-                    )),
+                        ),
+                        const SizedBox(height: 10,),
+                        // const SizedBox(height: 20,),
+                      ],
+                    ),
                   ],
-                ),
+                )
               ),
-              const SizedBox(height: 20,),
+              const SizedBox(height: 15,),
               Container(
+                width: 350,
+                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Colors.black12,
+                  color: const Color(0xFFFF9F9F9),
                 ),
-                padding: EdgeInsets.only(left: 15, right: 20, top: 30, bottom: 20),
-                width: 350,
-                height: 280,
-                child: LineChart(
-                  LineChartData(
-                    lineBarsData: [_shrinkLine!, _relaxLine!],
-                    titlesData: _buildTitles(),
-                    gridData: FlGridData(
-                      show: true,
-                      drawVerticalLine: false,
-                      horizontalInterval: 10,
-                      getDrawingHorizontalLine: (value) {
-                        return const FlLine(
-                          color: Colors.black54,
-                          strokeWidth: 1,
-                          dashArray: [5, 5],
-                        );
-                      }
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      width: 350,
+                      height: 30,
+                      child: Text('변화 그래프', style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),),
                     ),
-                    borderData: FlBorderData(
-                        show: true,
-                        border: const Border(
-                          top: BorderSide(
-                            color: Colors.black54,
-                            width: 2,
+                    Container(
+                      padding: EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
+                      width: 350,
+                      height: 200,
+                      child: LineChart(
+                        LineChartData(
+                          lineBarsData: [_shrinkLine!, _relaxLine!],
+                          titlesData: _buildTitles(),
+                          gridData: FlGridData(
+                              show: true,
+                              drawVerticalLine: false,
+                              horizontalInterval: 10,
+                              getDrawingHorizontalLine: (value) {
+                                return const FlLine(
+                                  color: Colors.grey,
+                                  strokeWidth: 1,
+                                );
+                              }
                           ),
-                          bottom: BorderSide(
-                            color: Colors.black54,
-                            width: 2
+                          borderData: FlBorderData(
+                            show: true,
+                            border: const Border(
+                              top: BorderSide(
+                                color: Colors.grey,
+                                width: 0.5,
+                              ),
+                              bottom: BorderSide(
+                                color: Colors.grey,
+                                width: 1,
+                              ),
+                            ),
                           ),
+                          minX: _minX,
+                          maxX: _maxX,
+                          minY: _minY,
+                          maxY: _maxY,
                         ),
+                      ),
                     ),
-                    minX: _minX,
-                    maxX: _maxX,
-                    minY: _minY,
-                    maxY: _maxY,
-                  ),
+                  ],
                 ),
               ),
             ],
           ),
         ),
-      )
+      ),
     );
   }
 }

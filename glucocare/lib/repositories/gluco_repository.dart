@@ -44,6 +44,20 @@ class GlucoRepository {
     return models;
   }
 
+  static Future<GlucoModel?>? selectGlucoByColName(String colName) async {
+    String uid = AuthService.getCurUserUid();
+
+    try {
+      var docSnapshot = await _store.collection('gluco_check').doc(uid).collection(colName)
+          .orderBy('check_time', descending: true).limit(1).get();
+      GlucoModel model = GlucoModel.fromJson(docSnapshot.docs.first.data());
+      return model;
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to load gluco check history $e');
+      return null;
+    }
+  }
+
   static Future<void> updateGlucoCheck(GlucoModel model) async {
 
   }

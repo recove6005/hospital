@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:glucocare/models/purse_model.dart';
@@ -55,6 +57,20 @@ class PurseRepository {
     }
 
     return models;
+  }
+
+  static Future<PurseModel?>? selectPurseByColName(String colName) async {
+    String uid = AuthService.getCurUserUid();
+
+    try{
+      var docSnapshot = await _store.collection('purse_check').doc(uid)
+          .collection(colName).orderBy('check_time', descending: true).limit(1).get();
+      PurseModel? model = PurseModel.fromJson(docSnapshot.docs.first.data());
+      return model;
+    } catch(e) {
+      logger.d('[glucocare_log] Failed to load purse check by colname : $e');
+      return null;
+    }
   }
 
   static Future<List<FlSpot>> getShrinkData(list) async {
