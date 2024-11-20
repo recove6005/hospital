@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -11,6 +10,7 @@ import 'package:glucocare/taps/home_tap.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:logger/logger.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -65,7 +65,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static var _user = FirebaseAuth.instance.currentUser!.uid;
+  Logger logger = Logger();
+  static final String _user = AuthService.getCurUserUid();
 
   int _tappedIndex = 0;
   static final List<Widget> _tapPages = <Widget> [
@@ -81,137 +82,157 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void _moveToLogin() {
+    if(_user == '') {
+      WidgetsBinding.instance.addPostFrameCallback((_) { // 위젯 트리가 빌드된 후 실행
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    logger.d('[glucocare_log] ${AuthService.getCurUserUid()}');
+    _moveToLogin();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        shadowColor: Colors.transparent,
-        toolbarHeight: 60,
-        leadingWidth: MediaQuery.of(context).size.width,
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 350,
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 50,
-                    height: 50,
-                    child: Builder(
-                      builder: (context) => IconButton(
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                        icon: const Icon(Icons.menu, size: 40,),
-                        padding: EdgeInsets.zero,
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    child: SizedBox(
-                      width: 250,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 130,
-                            height: 40,
-                            child: Image.asset('assets/images/logo_daol.png'),
+      return Scaffold(
+        appBar: _user == ''
+        ? null
+        : AppBar(
+            backgroundColor: Color(0xFFFFFFFF),
+            shadowColor: Colors.transparent,
+            toolbarHeight: 60,
+            leadingWidth: MediaQuery.of(context).size.width,
+            leading: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 350,
+                  child: Row(
+                    children: [
+                      SizedBox(
+                        width: 50,
+                        height: 50,
+                        child: Builder(
+                          builder: (context) => IconButton(
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            icon: const Icon(Icons.menu, size: 40,),
+                            padding: EdgeInsets.zero,
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: SizedBox(
+                          width: 250,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 130,
+                                height: 40,
+                                child: Image.asset('assets/images/logo_daol.png'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width - 50,
-              height: 1,
-              decoration: const BoxDecoration(
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-      drawer: Drawer(
-          child: ListView(
-            children: <Widget>[
-              DrawerHeader(
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width - 50,
+                  height: 1,
                   decoration: const BoxDecoration(
                     color: Colors.grey,
                   ),
-                  child: Center(
-                    child: Text(
-                      _user,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 20
-                      ),
+                ),
+              ],
+            ),
+          ),
+        drawer: Drawer(
+            child: ListView(
+              children: <Widget>[
+                DrawerHeader(
+                    decoration: const BoxDecoration(
+                      color: Colors.grey,
                     ),
-                  )
+                    child: Center(
+                      child: Text(
+                        _user,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 20
+                        ),
+                      ),
+                    )
+                ),
+                ListTile(
+                    leading: Icon(Icons.logout),
+                    title: const Text('로그아웃', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      AuthService.signOut();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginPage())
+                      );
+                    }
+                    ),
+              ],
+            )
+        ),
+        body: _user == ''
+            ? Container()
+            : _tapPages.elementAt(_tappedIndex),
+        bottomNavigationBar: _user == ''
+            ? null
+            : BottomNavigationBar(
+                currentIndex: _tappedIndex,
+                selectedItemColor: const Color(0xFF28C0CC),
+                unselectedItemColor: Colors.grey,
+                onTap: _onItemTapped,
+                backgroundColor: Colors.white,
+                showUnselectedLabels: true,
+                showSelectedLabels: true,
+                type: BottomNavigationBarType.fixed,
+                items: <BottomNavigationBarItem> [
+                  BottomNavigationBarItem(
+                      icon: _tappedIndex == 0
+                          ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_home_b.png'),)
+                          : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_home_g.png'),) ,
+                      label: '홈'
+                  ),
+                  BottomNavigationBarItem(
+                      icon: _tappedIndex == 1
+                          ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodsugar_b.png'),)
+                          : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodsugar_g.png'),) ,
+                      label: '혈당'
+                  ),
+                  BottomNavigationBarItem(
+                      icon: _tappedIndex == 2
+                          ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodpressure_b.png'),)
+                          : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodpressure_g.png'),) ,
+                      label: '혈압'
+                  ),
+                  BottomNavigationBarItem(
+                      icon: _tappedIndex == 3
+                          ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_b.png'),)
+                          : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_g.png'),) ,
+                      label: '상담'
+                  ),
+                ],
               ),
-              ListTile(
-                  leading: Icon(Icons.logout),
-                  title: const Text('로그아웃', style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.black
-                  ),),
-                  onTap: () async {
-                    // logout logic
-                    AuthService.signOut();
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginPage())
-                    );
-                  }
-              ),
-            ],
-          )
-      ),
-      body: _tapPages.elementAt(_tappedIndex),
-      bottomNavigationBar: BottomNavigationBar(
-          currentIndex: _tappedIndex,
-          selectedItemColor: const Color(0xFF28C0CC),
-          unselectedItemColor: Colors.grey,
-          onTap: _onItemTapped,
-          backgroundColor: Colors.white,
-          showUnselectedLabels: true,
-          showSelectedLabels: true,
-          type: BottomNavigationBarType.fixed,
-          items: <BottomNavigationBarItem> [
-            BottomNavigationBarItem(
-                icon: _tappedIndex == 0
-                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_home_b.png'),)
-                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_home_g.png'),) ,
-                label: '홈'
-            ),
-            BottomNavigationBarItem(
-                icon: _tappedIndex == 1
-                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodsugar_b.png'),)
-                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodsugar_g.png'),) ,
-                label: '혈당'
-            ),
-            BottomNavigationBarItem(
-                icon: _tappedIndex == 2
-                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodpressure_b.png'),)
-                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_bloodpressure_g.png'),) ,
-                label: '혈압'
-            ),
-            BottomNavigationBarItem(
-                icon: _tappedIndex == 3
-                    ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_b.png'),)
-                    : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_g.png'),) ,
-                label: '상담'
-            ),
-          ],
-      ),
-    );
+      );
   }
 }

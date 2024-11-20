@@ -14,7 +14,8 @@ class RegisterPageForKakao extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('회원가입', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.transparent,
+        shadowColor: Colors.transparent,
       ),
       body: const RegisterFormForKakao(),
     );
@@ -71,49 +72,73 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('GLUCOCARE', style: TextStyle(fontSize: 40),),
+            SizedBox(
+              width: 280,
+              child: Image.asset('assets/images/login_daol.png'),
+            ),
             const SizedBox(height: 40,),
             Container(
-              width: 300,
-              height: 50,
+              width: 280,
+              height: 45,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Color(0xFFF9F9F9),
+              ),
               child: TextField(
                 controller: _nameController,
-                keyboardType: TextInputType.text,
-                decoration: InputDecoration(
-                    label: Text('이름'),
-                    labelStyle: TextStyle(fontSize: 15),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: const BorderSide(
-                          color:  Colors.red,
-                        )
-                    )
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: '이름',
+                  hintStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFB4B4B4),
+                  ),
                 ),
-                style: TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             Container(
-              width: 300,
+              width: 280,
               height: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: const Color(0xFFF9F9F9),
+              ),
               child: DropdownButtonFormField(
                 value: _dropdownValue,
-                hint: const Text('성별'),
-                decoration: InputDecoration(
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.grey, width: 1),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(color: Colors.grey, width: 1),
-                    )
+                icon: Container(
+                  child: const Icon(Icons.keyboard_arrow_down_sharp, color: Colors.black,),
+                ),
+                padding: EdgeInsets.zero,
+                alignment: Alignment.center,
+                decoration: const InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(horizontal: 115,),
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
                 ),
                 items: ['남', '여'].map((String value) {
                   return DropdownMenuItem<String>(
                     value: value,
-                    child: Text(value, style: const TextStyle(fontSize: 15, color: Colors.black54),),
+                    child: Container(
+                      padding: EdgeInsets.zero,
+                      alignment: Alignment.center,
+                      child: Text(
+                        value,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   );
                 }).toList(),
                 onChanged: (newValue) {
@@ -124,20 +149,19 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
               ),
             ),
             const SizedBox(height: 10,),
-            Container(
-              width: 300,
+            SizedBox(
+              width: 280,
               height: 50,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text(
+                  const Text(
                     '생년월일',
-                    style: TextStyle(fontSize: 16, color: Colors.black),
+                    style: TextStyle(fontSize: 18, color: Colors.black),
                   ),
-                  SizedBox(width: 30,),
                   DropdownButton(
                     value: _birthYear,
-                    hint: Text('2024'),
+                    hint: const Text('2024'),
                     onChanged: (newValue) {
                       setState(() {
                         _birthYear = newValue!;
@@ -151,10 +175,9 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
                         )
                     ],
                   ),
-                  SizedBox(width: 20,),
                   DropdownButton(
                     value: _birthMonth,
-                    hint: Text('1'),
+                    hint: const Text('1'),
                     onChanged: (newValue) {
                       setState(() {
                         _birthMonth = newValue!;
@@ -168,10 +191,9 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
                         )
                     ],
                   ),
-                  SizedBox(width: 20,),
                   DropdownButton(
                     value: _birthDay,
-                    hint: Text('01'),
+                    hint: const Text('01'),
                     onChanged: (newValue) {
                       setState(() {
                         _birthDay = newValue!;
@@ -188,21 +210,21 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
                 ],
               ),
             ),
-            SizedBox(height: 40,),
+            const SizedBox(height: 40,),
             Container(
-              width: 300,
+              width: 280,
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[700],
+                    backgroundColor: Color(0xFF28C2CE),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
+                        borderRadius: BorderRadius.circular(30)
                     )
                 ),
                 onPressed: _kakaoRegister,
                 child: const Text(
                   '다음',
-                  style: TextStyle(fontSize: 18, color: Colors.white),
+                  style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             )

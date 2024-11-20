@@ -56,8 +56,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
 
   // 달력 설정 함수
   Future<void> _searchYearMonth(BuildContext context) async {
-    logger.e('[glucocare_log] tap $e');
-
     final DateTime? picked = await showMonthYearPicker(
       context: context,
       initialDate: _focusedDate,
@@ -93,7 +91,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         isCurved: true,
         color: Colors.red[300],
         barWidth: 2,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
       );
 
       _relaxLine = LineChartBarData(
@@ -190,7 +188,8 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
     }
     if(_purseModels.isEmpty) {
       return Scaffold(
-        body: Container(
+        body: SingleChildScrollView(
+          child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Column(
@@ -258,48 +257,64 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   child: TableCalendar(
                     headerVisible: false, // 헤더 숨김
                     daysOfWeekVisible: false, // 요일 표시 숨김
+                    firstDay: DateTime.utc(2023,1,1),
+                    lastDay: DateTime.utc(2100,12,31),
+                    focusedDay: _selectedDate,
+                    calendarFormat: CalendarFormat.week,
                     calendarStyle: CalendarStyle(
-                      // cellMargin: EdgeInsets.all(5),
-                      // cellPadding: EdgeInsets.all(0),
-                        selectedTextStyle: const TextStyle(
+                      selectedTextStyle: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                      todayTextStyle: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                      defaultTextStyle: const TextStyle(
                           fontSize: 20,
-                          color: Colors.black,
+                          color: Colors.black
+                      ),
+                      outsideTextStyle: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                      outsideDaysVisible: false,
+                      selectedDecoration: BoxDecoration(
+                        color: const Color(0xFFDCF9F9),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Color(0xFF1FA1AA),
+                            width: 1,
+                            style: BorderStyle.solid
                         ),
-                        todayTextStyle: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.black,
+                      ),
+                      todayDecoration: BoxDecoration(
+                        color: const Color(0xFFDCF9F9),
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                            color: Colors.transparent,
+                            width: 1,
+                            style: BorderStyle.solid
                         ),
-                        defaultTextStyle: const TextStyle(
-                            fontSize: 20,
-                            color: Colors.black
+                      ),
+                      defaultDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFF9F9F9),
+                        border: Border.all(
+                            color: Colors.transparent,
+                            width: 1,
+                            style: BorderStyle.solid
                         ),
-                        selectedDecoration: BoxDecoration(
-                          color: const Color(0xFFDCF9F9),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: Color(0xFF1FA1AA),
-                              width: 1,
-                              style: BorderStyle.solid
-                          ),
+                      ),
+                      outsideDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFF9F9F9),
+                        border: Border.all(
+                            color: Colors.transparent,
+                            width: 1,
+                            style: BorderStyle.solid
                         ),
-                        todayDecoration: BoxDecoration(
-                          color: const Color(0xFFDCF9F9),
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              color: Colors.transparent,
-                              width: 1,
-                              style: BorderStyle.solid
-                          ),
-                        ),
-                        defaultDecoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: const Color(0xFFF9F9F9),
-                          border: Border.all(
-                              color: Colors.transparent,
-                              width: 1,
-                              style: BorderStyle.solid
-                          ),
-                        )
+                      ),
                     ),
                     daysOfWeekStyle: DaysOfWeekStyle( //
                         weekdayStyle: const TextStyle(
@@ -313,10 +328,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                           borderRadius: BorderRadius.circular(8),
                         )
                     ),
-                    firstDay: DateTime.utc(2023,1,1),
-                    lastDay: DateTime.utc(2100,12,31),
-                    focusedDay: _selectedDate,
-                    calendarFormat: CalendarFormat.week,
                     selectedDayPredicate: (day) {
                       return isSameDay(_selectedDate, day);
                     },
@@ -333,46 +344,46 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 const SizedBox(height: 10,),
                 Column(
                   children: [
-                  Container(
-                  width: 350,
-                  height: 280,
-                  decoration: BoxDecoration(
-                      color: Color(0xFFF9F9F9),
-                      borderRadius: BorderRadius.circular(15)
-                  ),
-                  child: Row(
-                    children: [
-                      const SizedBox(width: 20,),
-                      Column(
-                        children: [
-                          const SizedBox(height: 10,),
-                          SizedBox(
-                            width: 300,
-                            height: 35,
-                            child: Text(
-                              '${_focusedDate.month}월 ${_focusedDate.day}일',
-                              style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10,),
-                          const SizedBox(
-                            width: 280,
-                            child: Text('혈압 측정 내역이 없습니다.',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        ],
+                    Container(
+                      width: 350,
+                      height: 280,
+                      decoration: BoxDecoration(
+                          color: Color(0xFFF9F9F9),
+                          borderRadius: BorderRadius.circular(15)
                       ),
-                    ]
-                  ),
-                  ),
+                      child: Row(
+                          children: [
+                            const SizedBox(width: 20,),
+                            Column(
+                              children: [
+                                const SizedBox(height: 10,),
+                                SizedBox(
+                                  width: 300,
+                                  height: 35,
+                                  child: Text(
+                                    '${_focusedDate.month}월 ${_focusedDate.day}일',
+                                    style: const TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 10,),
+                                const SizedBox(
+                                  width: 280,
+                                  child: Text('혈압 측정 내역이 없습니다.',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ]
+                      ),
+                    ),
                     const SizedBox(height: 15,),
                     Container(
                       width: 350,
@@ -436,8 +447,9 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   ],
                 ),
               ],
+            ),
           ),
-        ),
+        )
       );
     }
     return Scaffold(
@@ -509,9 +521,12 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 child: TableCalendar(
                   headerVisible: false, // 헤더 숨김
                   daysOfWeekVisible: false, // 요일 표시 숨김
+                  firstDay: DateTime.utc(2023,1,1),
+                  lastDay: DateTime.utc(2100,12,31),
+                  focusedDay: _selectedDate,
+                  calendarFormat: CalendarFormat.week, // 주단위 표시
                   calendarStyle: CalendarStyle(
-                    // cellMargin: EdgeInsets.all(5),
-                    // cellPadding: EdgeInsets.all(0),
+                      outsideDaysVisible: true,
                       selectedTextStyle: const TextStyle(
                         fontSize: 20,
                         color: Colors.black,
@@ -521,8 +536,12 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         color: Colors.black,
                       ),
                       defaultTextStyle: const TextStyle(
-                          fontSize: 20,
-                          color: Colors.black
+                        fontSize: 20,
+                        color: Colors.black
+                      ),
+                      outsideTextStyle: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
                       ),
                       selectedDecoration: BoxDecoration(
                         color: const Color(0xFFDCF9F9),
@@ -550,7 +569,16 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                             width: 1,
                             style: BorderStyle.solid
                         ),
-                      )
+                      ),
+                      outsideDecoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: const Color(0xFFF9F9F9),
+                        border: Border.all(
+                            color: Colors.transparent,
+                            width: 1,
+                            style: BorderStyle.solid
+                        ),
+                      ),
                   ),
                   daysOfWeekStyle: DaysOfWeekStyle( //
                       weekdayStyle: const TextStyle(
@@ -564,10 +592,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         borderRadius: BorderRadius.circular(8),
                       )
                   ),
-                  firstDay: DateTime.utc(2023,1,1),
-                  lastDay: DateTime.utc(2100,12,31),
-                  focusedDay: _selectedDate,
-                  calendarFormat: CalendarFormat.week,
                   selectedDayPredicate: (day) {
                     return isSameDay(_selectedDate, day);
                   },
@@ -621,9 +645,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(15),
-                                              ),
                                               child: Padding(
                                                 padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
                                                 child: Column(

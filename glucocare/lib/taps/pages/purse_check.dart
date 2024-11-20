@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
 import 'package:glucocare/models/purse_model.dart';
-import 'package:glucocare/repositories/colname_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import '../../repositories/purse_colname_repository.dart';
 
 class PurseCheckPage extends StatelessWidget {
   const PurseCheckPage({super.key});
@@ -89,7 +89,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
 
     String uid = AuthService.getCurUserUid();
     PurseColNameModel nameModel = PurseColNameModel(uid: uid, date: _checkDate);
-    ColNameRepository.insertPurseColName(nameModel);
+    PurseColNameRepository.insertPurseColName(nameModel);
     Navigator.pop(context, true);
   }
 
@@ -164,15 +164,23 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const SizedBox(width: 55,),
-                          const Text('수축기', style: TextStyle(
-                              fontSize: 25,
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                          ),),
+                          const SizedBox(
+                            width: 70,
+                            height: 35,
+                            child: Text(
+                              '수축기',
+                              style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
                           const SizedBox(width: 20,),
                           SizedBox(
                             width: 80,
-                            height: 50,
+                            height: 35,
                             child: TextField(
                               controller: _shrinkController,
                               keyboardType: TextInputType.number,
@@ -187,7 +195,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                               ),
                             ),
                           ),
-                          const Text('mmHg'),
+                          const Text('mmHg', style: TextStyle(fontSize: 18),),
                         ],
                       ),
                     ),
@@ -201,15 +209,19 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const SizedBox(width: 55,),
-                          const Text('이완기', style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                          ),),
+                          const SizedBox(
+                            width: 70,
+                            height: 35,
+                            child: Text('이완기', style: TextStyle(
+                              fontSize: 25,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),),
+                          ),
                           const SizedBox(width: 20,),
                           SizedBox(
                             width: 80,
-                            height: 50,
+                            height: 35,
                             child: TextField(
                               controller: _relaxController,
                               keyboardType: TextInputType.number,
@@ -224,7 +236,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                               ),
                             ),
                           ),
-                          const Text('mmHg'),
+                          const Text('mmHg', style: TextStyle(fontSize: 18),),
                         ],
                       ),
                     ),
@@ -238,15 +250,19 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           const SizedBox(width: 55,),
-                          const Text('맥박', style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                          ),),
+                          const SizedBox(
+                            width: 70,
+                            height: 35,
+                            child: Text('맥박', style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black
+                            ),),
+                          ),
                           const SizedBox(width: 20,),
                           SizedBox(
                             width: 80,
-                            height: 50,
+                            height: 35,
                             child: TextField(
                                 controller: _purseController,
                                 keyboardType: TextInputType.number,
@@ -262,7 +278,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                             ),
                           ),
                           const SizedBox(width: 10,),
-                          const Text('회/1분'),
+                          const Text('회/1분', style: TextStyle(fontSize: 18),),
                         ],
                       ),
                     ),
@@ -314,7 +330,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                 ),
               ),
             ),
-          ]
+          ],
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

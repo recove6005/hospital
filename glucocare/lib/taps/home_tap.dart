@@ -9,7 +9,6 @@ import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import '../models/gluco_model.dart';
 import '../models/purse_model.dart';
-import '../services/notification_service.dart';
 
 class HomeTap extends StatelessWidget {
   const HomeTap({super.key});
@@ -36,41 +35,83 @@ class _HomeTapForm extends State<HomeTapForm> {
   bool _isLoadingpill = true;
 
   String colName = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-  GlucoModel? _todayGlucoModel = null;
-  PurseModel? _todayPurseModel = null;
+  GlucoModel? _lastGlucoModel = null;
+  PurseModel? _lastPurseModel = null;
   PillModel? _todayPillModel = null;
 
-  Future<void> _getTodayGluco() async {
-    try {
-      GlucoModel? model = await GlucoRepository.selectGlucoByColName(colName);
-      setState(() {
-        _todayGlucoModel = model;
-        _isLoadingGluco = false;
-      });
+  String _passedPurseTimer = '';
+  String _passedGlucoTimer = '';
 
+  Future<void> _getLastPurseCheck() async {
+    try {
+      PurseModel? model = await PurseRepository.selectLastPurseCheck();
+      setState(() {
+        _lastPurseModel = model;
+        _isLoadingPurse = false;
+        _getPursePassedTimer();
+      });
     } catch(e) {
       logger.e('[glucocare_log] Failed to load gluco model $e');
       setState(() {
-        _todayGlucoModel = null;
-        _isLoadingGluco = false;
+        _lastPurseModel = null;
+        _isLoadingPurse = false;
       });
     }
   }
 
-  Future<void> _getTodayPurse() async {
-    try {
-      PurseModel? model = await PurseRepository.selectPurseByColName(colName);
-      setState(() {
-        _todayPurseModel = model;
-        _isLoadingPurse = false;
-      });
+  Future<void> _getLastGlucoCheck() async {
+    try{
+      GlucoModel? model = await GlucoRepository.selectLastGlucoCheck();
+      _lastGlucoModel = model;
+      _isLoadingGluco = false;
+      _getGlucoPassedTimer();
     } catch(e) {
       logger.e('[glucocare_log] Failed to load gluco model $e');
       setState(() {
-        _todayGlucoModel = null;
-        _isLoadingPurse = false;
+        _lastGlucoModel = null;
+        _isLoadingGluco = false;
       });
     }
+  }
+  
+  // 마지막 측정 후 지난 시간 계산
+  String _getPastTimer(String lastDate, String lastTime) {
+    DateTime nowTime = DateTime.now();
+    DateTime parsedCheckDateTime = _parseDateTime(lastDate, lastTime);
+    
+    Duration difference = nowTime.difference(parsedCheckDateTime);
+    
+    int days = difference.inDays;
+    int hours = difference.inHours;
+    int minutes = difference.inMinutes;
+    
+    if(minutes < 60) return '$minutes분 전';
+    if(hours < 60) return '$hours시간 전';
+    return '$days일 전';
+  }
+  
+  DateTime _parseDateTime(String date, String time) {
+    DateFormat dateFormat = DateFormat("yyyy년 MM월 dd일");
+    DateTime parsedDate = dateFormat.parse(date);
+    
+    DateFormat timeFormat = DateFormat('a hh:mm', 'ko_KR');
+    DateTime parsedTime = timeFormat.parse(time);
+    
+    return DateTime(
+      parsedDate.year,
+      parsedDate.month,
+      parsedDate.day,
+      parsedTime.hour,
+      parsedTime.minute
+    );
+  }
+
+  void _getPursePassedTimer() {
+    _passedPurseTimer = _getPastTimer(_lastPurseModel!.checkDate, _lastPurseModel!.checkTime);
+  }
+
+  void _getGlucoPassedTimer() {
+    _passedGlucoTimer  = _getPastTimer(_lastGlucoModel!.checkDate, _lastGlucoModel!.checkTime);
   }
 
   // void _sendPushMsg() async {
@@ -82,8 +123,8 @@ class _HomeTapForm extends State<HomeTapForm> {
   @override
   void initState() {
     super.initState();
-    _getTodayGluco();
-    _getTodayPurse();
+    _getLastGlucoCheck();
+    _getLastPurseCheck();
   }
 
   @override
@@ -148,15 +189,15 @@ class _HomeTapForm extends State<HomeTapForm> {
               onPressed: () async {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const GlucoCheckPage()));
                 if(result == true) {
-                  _todayGlucoModel = null;
+                  _lastGlucoModel = null;
                   _isLoadingGluco = true;
                   setState(() {
-                    _getTodayGluco();
+                    _getLastGlucoCheck();
                   });
                 }
                 },
               style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFFF8FFFF),
+                  backgroundColor: const Color(0xFFF8FFFF),
                   side: const BorderSide(
                     width: 1,
                     color: Color(0xFF22BED3),
@@ -194,8 +235,8 @@ class _HomeTapForm extends State<HomeTapForm> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        child: Text('방금 추가됨', style: TextStyle(
+                      SizedBox(
+                        child: Text(_passedGlucoTimer, style: TextStyle(
                           fontSize: 15,
                           color: Color(0xFF777777),
                         ),),
@@ -209,7 +250,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                       color: Color(0xFFD5EFEF),
                     ),
                   ),
-                  if(_todayGlucoModel == null)
+                  if(_lastGlucoModel == null)
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
@@ -228,12 +269,12 @@ class _HomeTapForm extends State<HomeTapForm> {
                       ),
                     ],
                   ),
-                  if(_todayGlucoModel != null)
+                  if(_lastGlucoModel != null)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         SizedBox(
-                          child: Text('${_todayGlucoModel!.value}.0', style: const TextStyle(
+                          child: Text('${_lastGlucoModel!.value}.0', style: const TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,
@@ -258,11 +299,11 @@ class _HomeTapForm extends State<HomeTapForm> {
             child: ElevatedButton(
               onPressed: () async {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PurseCheckPage()));
-                _todayPurseModel = null;
+                _lastPurseModel = null;
                 _isLoadingPurse = true;
                 if(result == true) {
                   setState(() {
-                    _getTodayPurse();
+                    _getLastPurseCheck();
                   });
                 }
                 },
@@ -305,8 +346,8 @@ class _HomeTapForm extends State<HomeTapForm> {
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        child: Text('방금 추가됨', style: TextStyle(
+                      SizedBox(
+                        child: Text(_passedPurseTimer, style: const TextStyle(
                           fontSize: 15,
                           color: Color(0xFF777777),
                         ),),
@@ -320,7 +361,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                       color: Color(0xFFedd6d6),
                     ),
                   ),
-                  if(_todayPurseModel == null)
+                  if(_lastPurseModel == null)
                     const Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -339,12 +380,12 @@ class _HomeTapForm extends State<HomeTapForm> {
                         ),
                       ],
                     ),
-                  if(_todayPurseModel != null)
+                  if(_lastPurseModel != null)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         SizedBox(
-                          child: Text('${_todayPurseModel!.shrink} / ${_todayPurseModel!.relax}', style: const TextStyle(
+                          child: Text('${_lastPurseModel!.shrink} / ${_lastPurseModel!.relax}', style: const TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,

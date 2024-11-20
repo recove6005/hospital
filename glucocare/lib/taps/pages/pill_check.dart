@@ -11,6 +11,8 @@ import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
+import '../../repositories/pill_colname_repository.dart';
+
 class PillCheckPage extends StatelessWidget {
   const PillCheckPage({super.key});
 
@@ -105,7 +107,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
 
     PillRepository.insertPillCheck(pillModel);
     PillAlarmRepository.insertPillAlarm(pillAlarmModel);
-    ColNameRepository.insertAlarmColName(alarmNameModel);
+    PillColNameRepository.insertAlarmColName(alarmNameModel);
 
     Navigator.pop(context, true);
   }

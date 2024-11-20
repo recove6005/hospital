@@ -10,9 +10,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('로그인', style: TextStyle(color: Colors.white),),
-      ),
+      appBar: null,
       body: const LoginForm(),
     );
   }
@@ -31,8 +29,6 @@ class _LoginFormState extends State<LoginForm> {
   void _login() async {
     String phone = _idInputController.text;
     // AuthService.sendPhoneAuth(phone);
-
-    // ====================
     // master account
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: phone,
@@ -42,9 +38,10 @@ class _LoginFormState extends State<LoginForm> {
 
     User? user = FirebaseAuth.instance.currentUser;
     if(user != null) {
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage()));
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      });
     }
-
   }
 
   @override
@@ -56,70 +53,112 @@ class _LoginFormState extends State<LoginForm> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('GLUCOCARE', style: TextStyle(fontSize: 40),),
-            const SizedBox(height: 80,),
             SizedBox(
-              width: 300,
-              height: 50,
+              width: 280,
+              child: Image.asset('assets/images/login_daol.png'),
+            ),
+            const SizedBox(height: 25,),
+            Container(
+              width: 280,
+              height: 45,
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Color(0xFFF9F9F9),
+              ),
               child: TextField(
                 controller: _idInputController,
-                decoration: InputDecoration(
-                  labelText: '전화번호 (-없이 입력)',
-                  labelStyle: const TextStyle(fontSize: 15, color: Colors.grey),
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                      borderSide: const BorderSide(
-                        color: Colors.red,
-                      )
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: '전화번호',
+                  hintStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFB4B4B4),
                   ),
                 ),
                 style: const TextStyle(fontSize: 18),
-              ),
-            ),
-            const SizedBox(height: 30,),
-            SizedBox(
-              width: 300,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _login,
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[600],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
-                    )
-                ),
-                child: const Text('로그인', style: TextStyle(fontSize: 15, color: Colors.white),),
-              ),
-            ),
-            const SizedBox(height: 5,),
-            SizedBox(
-              width: 300,
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () => {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()))
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.red[600],
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
-                    )
-                ),
-                child: const Text('회원가입', style: TextStyle(fontSize: 15, color: Colors.white),),
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
               ),
             ),
             const SizedBox(height: 10,),
             SizedBox(
-              width: 350,
+              width: 280,
+              height: 45,
+              child: ElevatedButton(
+                onPressed: _login,
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFF28C2CE),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)
+                    )
+                ),
+                child: const Text(
+                  '로그인',
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 25,),
+            Container(
+              width: 280,
+              height: 1,
+              decoration: const BoxDecoration(
+                color: Color(0xFFD1D1D1),
+              ),
+            ),
+            const SizedBox(height: 25,),
+            Container(
+              width: 280,
               height: 50,
-              child: GestureDetector(
-                onTap: () => {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const RegisterPageForKakao()))
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPageForKakao()));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    backgroundColor: const Color(0xFFFBE300),
+                    shadowColor: Colors.transparent,
+                  ),
+                  child: Image.asset('assets/images/login/kakao_login_large_narrow.png'),
+              ),
+            ),
+            const SizedBox(height: 10,),
+            Container(
+              width: 65,
+              height: 20,
+              padding: EdgeInsets.zero,
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()));
                 },
-                child: Image.asset(
-                  'assets/images/login/kakao_login_medium_wide.png',
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.zero,
+                  backgroundColor: Colors.transparent,
+                  shadowColor: Colors.transparent,
+                  splashFactory: NoSplash.splashFactory,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.zero,
+                  ),
+                ),
+                child: const Text(
+                  '회원가입',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Color(0xFF5C5C5C),
+                  ),
+                  textAlign: TextAlign.center,
                 ),
               ),
             ),

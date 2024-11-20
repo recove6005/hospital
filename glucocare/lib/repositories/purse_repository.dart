@@ -1,9 +1,7 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:glucocare/models/purse_model.dart';
-import 'package:glucocare/repositories/colname_repository.dart';
+import 'package:glucocare/repositories/purse_colname_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
 
@@ -28,7 +26,7 @@ class PurseRepository {
   static Future<List<PurseModel>> selectAllPurseCheck() async {
     String uid = AuthService.getCurUserUid();
     List<PurseModel> models = [];
-    List<String> namelist = await ColNameRepository.selectAllPurseColName();
+    List<String> namelist = await PurseColNameRepository.selectAllPurseColName();
 
     for(var name in namelist) {
       try {
@@ -51,26 +49,43 @@ class PurseRepository {
     List<PurseModel> models = <PurseModel>[];
     
     var docSnapshot = await _store.collection('purse_check').doc(uid).collection(checkDate).get();
-    for(var doc in docSnapshot.docs) {
-      PurseModel purseModel = PurseModel.fromJson(doc.data());
-      models.add(purseModel);
-    }
 
-    return models;
+    try {
+      for(var doc in docSnapshot.docs) {
+        PurseModel purseModel = PurseModel.fromJson(doc.data());
+        models.add(purseModel);
+      }
+
+      return models;
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to load purse history by day : $e');
+      return [];
+    }
   }
 
-  static Future<PurseModel?>? selectPurseByColName(String colName) async {
+  static Future<PurseModel?>? selectLastPurseCheck() async {
     String uid = AuthService.getCurUserUid();
-
+    PurseModel? model = null;
+    
     try{
-      var docSnapshot = await _store.collection('purse_check').doc(uid)
-          .collection(colName).orderBy('check_time', descending: true).limit(1).get();
-      PurseModel? model = PurseModel.fromJson(docSnapshot.docs.first.data());
-      return model;
+      String lastColName = await PurseColNameRepository.selectLastPurseColName();
+
+      if(lastColName != '') {
+        var docSnapshot = await _store
+            .collection('purse_check').doc(uid)
+            .collection(lastColName)
+            .orderBy('check_time')
+            .limit(1)
+            .get();
+
+        model = await PurseModel.fromJson(docSnapshot.docs.first.data());
+        return model;
+      }
     } catch(e) {
       logger.d('[glucocare_log] Failed to load purse check by colname : $e');
-      return null;
     }
+
+    return model;
   }
 
   static Future<List<FlSpot>> getShrinkData(list) async {
@@ -79,21 +94,25 @@ class PurseRepository {
     List<FlSpot> chartDatas = [];
     double index = 0;
 
-    List<String> colNames = await ColNameRepository.selectAllPurseColName();
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
     colNames = colNames.reversed.toList();
     for(String name in colNames) {
+      try{
+        var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+            .orderBy('check_time', descending: false).get();
 
-      var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
-          .orderBy('check_time', descending: false).get();
+        for(var doc in docSnapshot.docs) {
+          PurseModel model = PurseModel.fromJson(doc.data());
+          chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+          list.add(name.substring(10,12));
 
-      for(var doc in docSnapshot.docs) {
-        PurseModel model = PurseModel.fromJson(doc.data());
-        chartDatas.add(FlSpot(index, model.shrink.toDouble()));
-        list.add(name.substring(10,12));
+          index++;
 
-        index++;
-
-        if(chartDatas.length >= 30) return chartDatas;
+          if(chartDatas.length >= 30) return chartDatas;
+        }
+      } catch(e) {
+        logger.e('[glucocare_log] Faeild to load purse chart data : $e');
+        return chartDatas;
       }
     }
 
@@ -106,21 +125,27 @@ class PurseRepository {
     List<FlSpot> chartDatas = [];
     double index = 0;
 
-    List<String> colNames = await ColNameRepository.selectAllPurseColName();
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
     colNames = colNames.reversed.toList();
 
     for(String name in colNames) {
+      try {
+        var docSnapshot = await _store.collection('purse_check').doc(uid)
+            .collection(name)
+            .orderBy('check_time', descending: false)
+            .get();
 
-      var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
-          .orderBy('check_time', descending: false).get();
+        for (var doc in docSnapshot.docs) {
+          PurseModel model = PurseModel.fromJson(doc.data());
+          chartDatas.add(FlSpot(index, model.relax.toDouble()));
 
-      for(var doc in docSnapshot.docs) {
-        PurseModel model = PurseModel.fromJson(doc.data());
-        chartDatas.add(FlSpot(index, model.relax.toDouble()));
+          index++;
 
-        index++;
-
-        if(chartDatas.length >= 30) return chartDatas;
+          if (chartDatas.length >= 30) return chartDatas;
+        }
+      } catch (e) {
+        logger.e('[glucocare_log] Faeild to load purse chart data : $e');
+        return chartDatas;
       }
     }
 

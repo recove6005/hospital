@@ -23,7 +23,7 @@ class RegisterPhonePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('회원가입', style: TextStyle(color: Colors.white),),
+        backgroundColor: Colors.white,
       ),
       body: RegisterPhoneForm(
         name: name,
@@ -81,53 +81,62 @@ class _RegisterPhoneFormState extends State<RegisterPhoneForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text('GLUCOCARE', style: TextStyle(fontSize: 40),),
-            const SizedBox(height: 100,),
+            SizedBox(
+              width: 280,
+              child: Image.asset('assets/images/login_daol.png'),
+            ),
+            const SizedBox(height: 40,),
             Container(
-                  width: 300,
-                  height: 50,
-                  child: TextField(
-                    controller: _phoneController,
-                    decoration: InputDecoration(
-                        label: Text('전화번호 (-없이 입력)'),
-                        labelStyle: const TextStyle(fontSize: 15,),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(
-                              color: Colors.red,
-                            )
-                        )
-                    ),
-                    style: const TextStyle(fontSize: 18),
+              width: 280,
+              height: 45,
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: const Color(0xFFF9F9F9),
+              ),
+              child: TextField(
+                controller: _phoneController,
+                decoration: const InputDecoration(
+                  border: InputBorder.none,
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  hintText: '전화번호',
+                  hintStyle: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Color(0xFFB4B4B4),
                   ),
                 ),
-            SizedBox(height: 30,),
-            Container(
-              width: 300,
+                style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+                textAlignVertical: TextAlignVertical.center,
+              ),
+            ),
+            const SizedBox(height: 20,),
+            SizedBox(
+              width: 280,
               height: 50,
               child: ElevatedButton(
-                  onPressed: _register,
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red[700],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)
-                      )
-                  ),
-                  child: const Text('가입하기',
-                    style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.white
-                    ),
-                  )
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF28C2CE),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30)
+                    )
+                ),
+                onPressed: _register,
+                child: const Text(
+                  '가입하기',
+                  style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
+                ),
               ),
-            )
+            ),
           ]
       ),
     );

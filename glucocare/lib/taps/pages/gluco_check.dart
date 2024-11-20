@@ -9,6 +9,8 @@ import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
+import '../../repositories/gluco_colname_repository.dart';
+
 class GlucoCheckPage extends StatelessWidget {
   const GlucoCheckPage({super.key});
 
@@ -80,7 +82,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
     String uid = AuthService.getCurUserUid();
     GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
-    ColNameRepository.insertGlucoColName(nameModel);
+    GlucoColNameRepository.insertGlucoColName(nameModel);
 
     Navigator.pop(context, true);
   }
