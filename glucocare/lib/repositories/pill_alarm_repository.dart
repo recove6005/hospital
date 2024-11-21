@@ -9,19 +9,19 @@ class PillAlarmRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertPillAlarm(PillAlarmModel model) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     try {
       await _store.collection('pill_alarm').doc(uid)
           .collection(model.saveDate).doc(model.saveTime)
           .set(model.toJson());
     } catch (e) {
-      logger.e('[glucocare_log] Failed to insert pill alarm : $e');
+      logger.e('[glucocare_log] Failed to insert pill alarm (insertPillAlarm) : $e');
     }
   }
 
   static Future<List<PillAlarmModel>> selectAllPillAlarm() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<PillAlarmModel> pillAlarmModels = <PillAlarmModel>[];
     List<String> namelist = await PillColNameRepository.selectAllAlarmColName();
 
@@ -34,7 +34,7 @@ class PillAlarmRepository {
         }
 
       } catch(e) {
-        logger.e('[glucocare_log] Failed to select pill alarms : $e');
+        logger.e('[glucocare_log] Failed to select pill alarms (selectAllPillAlarm) : $e');
         return [];
       }
     }

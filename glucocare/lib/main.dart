@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glucocare/login.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/notification_service.dart';
@@ -11,10 +13,14 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:logger/logger.dart';
+import 'package:month_year_picker/month_year_picker.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   await dotenv.load();
+
+  // 터치 영역 디버깅 활성화
+  debugPaintPointersEnabled = false;
 
   // locale init - 기본 지역 설정
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,6 +58,16 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.white,
           brightness: Brightness.light,
       ),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        MonthYearPickerLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('en', ''),
+        Locale('ko', ''),
+      ],
       home: const HomePage(),
     );
   }
@@ -66,7 +82,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Logger logger = Logger();
-  static final String _user = AuthService.getCurUserUid();
+  static final String? _user = AuthService.getCurUserUid();
 
   int _tappedIndex = 0;
   static final List<Widget> _tapPages = <Widget> [
@@ -82,28 +98,34 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _moveToLogin() {
-    if(_user == '') {
+  void _CheckUserAndMoveToLogin() async {
+    String? isLogined = await AuthService.getCurUserUid();
+    if(isLogined == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) { // 위젯 트리가 빌드된 후 실행
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
       });
     }
   }
 
+  String _getUserName() {
+    if(_user == null) return 'Not eixtst';
+    return _user.toString();
+  }
+
   @override
   void initState() {
     super.initState();
     logger.d('[glucocare_log] ${AuthService.getCurUserUid()}');
-    _moveToLogin();
+    _CheckUserAndMoveToLogin();
   }
 
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        appBar: _user == ''
+        appBar: _user == null
         ? null
         : AppBar(
-            backgroundColor: Color(0xFFFFFFFF),
+            backgroundColor: const Color(0xFFFFFFFF),
             shadowColor: Colors.transparent,
             toolbarHeight: 60,
             leadingWidth: MediaQuery.of(context).size.width,
@@ -167,7 +189,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: Center(
                       child: Text(
-                        _user,
+                        _getUserName(),
                         style: const TextStyle(
                             color: Colors.white,
                             fontSize: 20

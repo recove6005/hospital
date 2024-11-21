@@ -8,17 +8,17 @@ class GlucoColNameRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertGlucoColName(GlucoColNameModel model) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     try {
       _store.collection('gluco_name').doc('${model.date} $uid').set(model.toJson());
     } catch(e) {
-      logger.d('[glucocare_log] Failed to insert gluco col name : $e');
+      logger.d('[glucocare_log] Failed to insert gluco col name (insertGlucoColName) : $e');
     }
   }
 
   static Future<List<String>> selectAllGlucoColName() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<String> glucoColNameList = <String>[];
 
     var docSnapshot = await _store.collection('gluco_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
@@ -30,7 +30,7 @@ class GlucoColNameRepository {
   }
 
   static Future<String> selectLastGlucoColName() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     String lastGlucoColName = '';
 
     try {
@@ -44,7 +44,7 @@ class GlucoColNameRepository {
         lastGlucoColName = GlucoColNameModel.fromJson(docSnapshot.docs.first.data()).date;
       }
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load gluco col name : $e');
+      logger.e('[glucocare_log] Failed to load gluco col name (selectLastGlucoColName) : $e');
     }
 
     return lastGlucoColName;

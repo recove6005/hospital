@@ -10,7 +10,7 @@ class PurseRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertPurseCheck(PurseModel model) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     try {
       await _store
@@ -24,7 +24,7 @@ class PurseRepository {
   }
 
   static Future<List<PurseModel>> selectAllPurseCheck() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<PurseModel> models = [];
     List<String> namelist = await PurseColNameRepository.selectAllPurseColName();
 
@@ -36,7 +36,7 @@ class PurseRepository {
           models.add(model);
         }
       } catch(e) {
-        logger.d('[glucocare_log] Failed to load purse history : $e');
+        logger.d('[glucocare_log] Failed to load purse history (selectAllPurseCheck) : $e');
         return [];
       }
     }
@@ -45,7 +45,7 @@ class PurseRepository {
   }
 
   static Future<List<PurseModel>> selectPurseByDay(String checkDate) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<PurseModel> models = <PurseModel>[];
     
     var docSnapshot = await _store.collection('purse_check').doc(uid).collection(checkDate).get();
@@ -58,13 +58,13 @@ class PurseRepository {
 
       return models;
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load purse history by day : $e');
+      logger.e('[glucocare_log] Failed to load purse history by day (selectPurseByDay) : $e');
       return [];
     }
   }
 
   static Future<PurseModel?>? selectLastPurseCheck() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     PurseModel? model = null;
     
     try{
@@ -74,7 +74,7 @@ class PurseRepository {
         var docSnapshot = await _store
             .collection('purse_check').doc(uid)
             .collection(lastColName)
-            .orderBy('check_time')
+            .orderBy('check_time', descending: true)
             .limit(1)
             .get();
 
@@ -82,14 +82,15 @@ class PurseRepository {
         return model;
       }
     } catch(e) {
-      logger.d('[glucocare_log] Failed to load purse check by colname : $e');
+      logger.d('[glucocare_log] Failed to load purse check by colname (selectLastPurseCheck) : $e');
     }
 
+    logger.d('[glucocare_log] $model');
     return model;
   }
 
   static Future<List<FlSpot>> getShrinkData(list) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     List<FlSpot> chartDatas = [];
     double index = 0;
@@ -111,7 +112,7 @@ class PurseRepository {
           if(chartDatas.length >= 30) return chartDatas;
         }
       } catch(e) {
-        logger.e('[glucocare_log] Faeild to load purse chart data : $e');
+        logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
         return chartDatas;
       }
     }
@@ -120,7 +121,7 @@ class PurseRepository {
   }
 
   static Future<List<FlSpot>> getRelaxData(list) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     List<FlSpot> chartDatas = [];
     double index = 0;
@@ -144,7 +145,7 @@ class PurseRepository {
           if (chartDatas.length >= 30) return chartDatas;
         }
       } catch (e) {
-        logger.e('[glucocare_log] Faeild to load purse chart data : $e');
+        logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
         return chartDatas;
       }
     }

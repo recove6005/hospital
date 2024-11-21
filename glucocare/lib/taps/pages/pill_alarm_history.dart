@@ -182,7 +182,7 @@ class _PillAlarmHistoryFormState extends State<PillAlarmHistoryForm> {
                                                 child: Image.asset('assets/images/ic_clock.png'),
                                               ),
                                               const SizedBox(width: 10,),
-                                              Text('${_getLocaleTime(_pillModels[index].alarmTime)} ${_pillModels[index].eatTime}',
+                                              Text('${_getLocaleTime(_pillModels[index].alarmTime)}',
                                                 style: const TextStyle(
                                                   fontSize: 15,
                                                 ),)
@@ -199,8 +199,8 @@ class _PillAlarmHistoryFormState extends State<PillAlarmHistoryForm> {
                                                 height: 25,
                                                 child: Image.asset('assets/images/ic_pill_check.png'),
                                               ),
-                                              SizedBox(width: 10,),
-                                              Text(_pillModels[index].pillCategory,
+                                              const SizedBox(width: 10,),
+                                              Text(_pillModels[index].state,
                                                 style: const TextStyle(
                                                   fontSize: 15,
                                                 ),)

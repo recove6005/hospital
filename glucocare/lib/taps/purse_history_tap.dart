@@ -413,7 +413,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                 gridData: FlGridData(
                                     show: true,
                                     drawVerticalLine: false,
-                                    horizontalInterval: 10,
+                                    horizontalInterval: 25,
                                     getDrawingHorizontalLine: (value) {
                                       return const FlLine(
                                         color: Colors.grey,
@@ -736,7 +736,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                           gridData: FlGridData(
                               show: true,
                               drawVerticalLine: false,
-                              horizontalInterval: 10,
+                              horizontalInterval: 25,
                               getDrawingHorizontalLine: (value) {
                                 return const FlLine(
                                   color: Colors.grey,

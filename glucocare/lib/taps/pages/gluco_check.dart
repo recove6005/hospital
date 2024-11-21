@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/gluco_col_name_model.dart';
 import 'package:glucocare/models/gluco_model.dart';
-import 'package:glucocare/repositories/colname_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
@@ -20,6 +19,19 @@ class GlucoCheckPage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         toolbarHeight: 40,
+          leadingWidth: 300,
+          leading: const Row(
+            children: [
+              BackButton(
+                color: Colors.black,
+              ),
+              Text('혈당 입력', style: TextStyle(
+                fontSize: 18,
+                color: Colors.black54,
+                fontWeight: FontWeight.bold,
+              ),),
+            ],
+          ),
       ),
       body: const GlucoCheckForm(),
     );
@@ -36,32 +48,31 @@ class GlucoCheckForm extends StatefulWidget {
 class _GlucoCheckFormState extends State<GlucoCheckForm> {
   Logger logger = Logger();
 
-  String _formattedDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-  String _formattedTime = DateFormat('a hh시 mm분', 'ko_KR').format(DateTime.now());
-  late Timer _timerTime;
-
   final TextEditingController _valueController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
 
-  static int _checkTimeValue = 0;
+  int _checkTimeValue = 0;
+  bool _btnToggle = true;
 
-  String _checkTimeName = '기상 후';
+  String _checkTimeName = '식전';
   int _value = 0;
   String _state = '없음';
   String _checkTime = '';
   String _checkDate = '';
 
-  String _getStateName(int index) {
-    switch (index) {
-      case 0: return '식전';
-      case 1: return '식후';
+  String krTime = '';
+  String _getKrTime() {
+    krTime = DateFormat('hh:mm', 'ko_KR').format(DateTime.now());
+    if(DateFormat('a').format(DateTime.now()) == 'AM') {
+      krTime = '오전 $krTime';
+    } else {
+      krTime = '오후 $krTime';
     }
-
-    return 'Err';
+    return krTime;
   }
 
   void _setState() {
-    _checkTimeName = _getStateName(_checkTimeValue);
+    _checkTimeName = _checkTimeName;
     _value = int.parse(_valueController.text);
     _state = _stateController.text;
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
@@ -80,25 +91,18 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     );
     GlucoRepository.insertGlucoCheck(glucoModel);
 
-    String uid = AuthService.getCurUserUid();
-    GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
-    GlucoColNameRepository.insertGlucoColName(nameModel);
-
+    String? uid = AuthService.getCurUserUid();
+    if(uid != null) {
+      GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
+      GlucoColNameRepository.insertGlucoColName(nameModel);
+    }
     Navigator.pop(context, true);
   }
 
   @override
   void initState() {
     super.initState();
-
     _checkTimeValue = 0;
-
-    _timerTime = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        _formattedDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-        _formattedTime = DateFormat('a hh시 mm분', 'ko_KR').format(DateTime.now());
-      });
-    });
   }
 
   @override
@@ -109,79 +113,24 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 10,),
-            Text(
-              _formattedDate,
-              style: const TextStyle(
-              fontSize: 25,
-              color: Colors.black
-              ),
-            ),
-            const SizedBox(height: 10,),
-            Text(
-              _formattedTime,
-              style: const TextStyle(
-              fontSize: 22,
-              color: Colors.black
-              ),
-            ),
-            const SizedBox(height: 30,),
-            Container(
+            SizedBox(height: 20,),
+            SizedBox(
               width: 350,
-              height: 130,
-              child: Column(
+              height: 60,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  SizedBox(
-                    width: 130,
-                    height: 50,
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                      leading: Radio<int>(
-                        value: 0,
-                        groupValue: _checkTimeValue,
-                        onChanged: (int? value) {
-                          setState(() {
-                            _checkTimeValue = value!;
-                          });
-                        },
-                      ),
-                      title: const Text('식전', style: TextStyle(
-                          fontSize: 17,
-                          color: Colors.black),),
-                      onTap: () {
-                        setState(() {
-                          _checkTimeValue = 0;
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(width: 30,),
-                  SizedBox(
-                    width: 130,
-                    height: 50,
-                    child: ListTile(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      visualDensity: VisualDensity(vertical: -4, horizontal: -4),
-                      leading: Radio<int>(
-                        value: 1,
-                        groupValue: _checkTimeValue,
-                        onChanged: (int? value) {
-                          setState(() {
-                            _checkTimeValue = value!;
-                          });
-                        },
-                      ),
-                      title: const Text('식후', style: TextStyle(
-                          fontSize: 17,
-                          color: Colors.black),),
-                      onTap: () {
-                        setState(() {
-                          _checkTimeValue = 1;
-                        });
-                      },
+                  Text(
+                    DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                  Text(_getKrTime(),
+                    style: const TextStyle(
+                      fontSize: 22,
+                      color: Colors.black,
                     ),
                   ),
                 ],
@@ -190,19 +139,19 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
             const SizedBox(height: 10,),
             Container(
               width: 350,
-              height: 180,
+              height: 150,
               decoration: BoxDecoration(
-                color: Colors.orange[200],
-                borderRadius: BorderRadius.circular(20)
+                color: const Color(0xFFF9F9F9),
+                borderRadius: BorderRadius.circular(20),
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text('혈당', style: TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black
                   ),),
                   const SizedBox(width: 50,),
                   SizedBox(
@@ -224,35 +173,136 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                   ),
                   const SizedBox(width: 10,),
                   const Text('mmHg', style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87
                   ),)
                 ],
               ),
             ),
             const SizedBox(height: 30,),
-            SizedBox(
-              width: 350,
-              height: 200,
-              child: TextField(
-                controller: _stateController,
-                maxLength: 100,
-                maxLines: 4,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  hintText: '특이사항',
-                  hintStyle: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 100,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Color(0xFFF9F9F9),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      backgroundColor: _btnToggle
+                          ? const Color(0xFFDCF9F9)
+                          : const Color(0xFFF9F9F9),
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: _btnToggle
+                            ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
+                            : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _btnToggle = true;
+                      });
+                    },
+                    child: const Text(
+                      '식전',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                 ),
-                style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.black
+                const SizedBox(width: 50,),
+                Container(
+                  width: 100,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: Color(0xFFF9F9F9),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      backgroundColor: !_btnToggle
+                          ? const Color(0xFFDCF9F9)
+                          : const Color(0xFFF9F9F9),
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: !_btnToggle
+                            ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
+                            : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _btnToggle = false;
+                      });
+                    },
+                    child: const Text(
+                      '식후',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 50,),
+            const SizedBox(
+              width: 350,
+              child: Text('메모',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
               ),
-            )
+            ),
+            const SizedBox(height: 10,),
+            Container(
+              width: 350,
+              child: TextField(
+                controller: _stateController,
+                maxLines: null,
+                minLines: 1,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: const BorderSide(color: Colors.transparent),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: const BorderSide(color: Colors.transparent),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(25),
+                    borderSide: const BorderSide(color: Colors.transparent),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xFFF9F9F9),
+                  hintText: '메모를 입력하세요',
+                  hintStyle: const TextStyle(fontSize: 20),
+                ),
+                textAlign: TextAlign.start,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                ),
+              ),
+            ),
           ]
         ),
       ),
@@ -261,9 +311,17 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
         width: 350,
         height: 50,
         child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
           onPressed: _onSaveButtonPressed,
-          backgroundColor: Colors.orange[200],
-          child: const Icon(Icons.add),
+          backgroundColor: const Color(0xFF28C2CE),
+          child: const Text('저장하기',
+            style: TextStyle(
+              fontSize: 20,
+              color: Colors.white,
+            ),
+          ),
         ),
       ),
     );

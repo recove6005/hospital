@@ -26,7 +26,7 @@ class PatientRepository {
   }
 
   static Future<void> insertPatient(PatientModel model) async {
-    String id = AuthService.getCurUserUid();
+    String? id = AuthService.getCurUserUid();
 
     try {
       await _store.collection('patient').doc(id).set(model.toJson());

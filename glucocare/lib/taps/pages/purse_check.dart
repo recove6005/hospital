@@ -47,10 +47,6 @@ class PurseCheckForm extends StatefulWidget {
 class _PurseCheckFormState extends State<PurseCheckForm> {
   Logger logger = Logger();
 
-  String _formattedDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-  String _formattedTime = DateFormat('a hh시 mm분', 'ko_KR').format(DateTime.now());
-  late Timer _timerTime;
-
   final TextEditingController _shrinkController = TextEditingController();
   final TextEditingController _relaxController = TextEditingController();
   final TextEditingController _purseController = TextEditingController();
@@ -87,8 +83,8 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     );
     PurseRepository.insertPurseCheck(purseModel);
 
-    String uid = AuthService.getCurUserUid();
-    PurseColNameModel nameModel = PurseColNameModel(uid: uid, date: _checkDate);
+    String? uid = AuthService.getCurUserUid();
+    PurseColNameModel nameModel = PurseColNameModel(uid: uid!, date: _checkDate);
     PurseColNameRepository.insertPurseColName(nameModel);
     Navigator.pop(context, true);
   }
@@ -107,12 +103,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   @override
   void initState() {
     super.initState();
-    _timerTime = Timer.periodic(const Duration(seconds: 5), (timer){
-      setState(() {
-        _formattedTime = DateFormat('a hh시 mm분', 'ko_KR').format(DateTime.now());
-        _formattedDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-      });
-    });
+
   }
 
   @override

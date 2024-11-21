@@ -3,25 +3,24 @@ import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/repositories/pill_colname_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
-import 'colname_repository.dart';
 
 class PillRepository {
   static Logger logger = Logger();
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertPillCheck(PillModel model) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     try {
       await _store.collection('pill_check').doc(uid)
           .collection(model.saveDate).doc(model.saveTime)
           .set(model.toJson());
     } catch(e) {
-      logger.e('[glucocare_log] Failed to insert pill_check : $e');
+      logger.e('[glucocare_log] Failed to insert pill_check (insertPillCheck) : $e');
     }
   }
   
   static Future<List<PillModel>> selectAllPillModels() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<PillModel> models = <PillModel>[];
     List<String> namelist = await PillColNameRepository.selectAllAlarmColName();
 
@@ -35,7 +34,7 @@ class PillRepository {
           models.add(model);
         }
       } catch (e) {
-        logger.d('[glucocare_log] Failed to select pill models : $e');
+        logger.d('[glucocare_log] Failed to select pill models (selectAllPillModels) : $e');
         return [];
       }
     }

@@ -9,17 +9,17 @@ class PurseColNameRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertPurseColName(PurseColNameModel model) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     try {
       _store.collection('purse_name').doc('${model.date} $uid').set(model.toJson());
     } catch (e) {
-      logger.e('[glucocare_log] Failed to insert purse check coll name : $e');
+      logger.e('[glucocare_log] Failed to insert purse check coll name (insertPurseColName) : $e');
     }
   }
 
   static Future<List<String>> selectAllPurseColName() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<String> purseColNameList = <String>[];
 
     var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
@@ -31,7 +31,7 @@ class PurseColNameRepository {
   }
 
   static Future<String> selectPurseColNameNyDay(String docName) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     String purseColName = '';
 
     var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).get();
@@ -44,7 +44,7 @@ class PurseColNameRepository {
   }
 
   static Future<String> selectLastPurseColName() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     String lastPurseColName = '';
 
     try {
@@ -54,11 +54,10 @@ class PurseColNameRepository {
           .limit(1)
           .get();
 
-      if(docSnapshot.docs.first.exists) {
-        lastPurseColName = PurseColNameModel.fromJson(docSnapshot.docs.first.data()).date;
-      }
+      if(docSnapshot.docs.isNotEmpty) lastPurseColName = PurseColNameModel.fromJson(docSnapshot.docs.first.data()).date;
+
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load purse col name : $e');
+      logger.e('[glucocare_log] Failed to load purse col name (selectLastPurseColName) : $e');
     }
 
     return lastPurseColName;

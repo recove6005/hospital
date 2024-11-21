@@ -4,6 +4,7 @@ import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
 import 'package:glucocare/taps/pages/pill_alarm_history.dart';
+import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -45,14 +46,20 @@ class _HomeTapForm extends State<HomeTapForm> {
   Future<void> _getLastPurseCheck() async {
     try {
       PurseModel? model = await PurseRepository.selectLastPurseCheck();
-      setState(() {
-        _lastPurseModel = model;
-        _isLoadingPurse = false;
-        _getPursePassedTimer();
-      });
+      if(model != null){
+        setState(() {
+          _lastPurseModel = model;
+          _isLoadingPurse = false;
+          _getPursePassedTimer();
+        });
+      } else {
+        setState(() {
+          _isLoadingPurse = false;
+        });
+      }
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load gluco model $e');
       setState(() {
+        logger.e('[glucocare_log] Failed to load purse model (_getLastPurseCheck) $e');
         _lastPurseModel = null;
         _isLoadingPurse = false;
       });
@@ -62,11 +69,20 @@ class _HomeTapForm extends State<HomeTapForm> {
   Future<void> _getLastGlucoCheck() async {
     try{
       GlucoModel? model = await GlucoRepository.selectLastGlucoCheck();
-      _lastGlucoModel = model;
-      _isLoadingGluco = false;
-      _getGlucoPassedTimer();
+
+      if(model != null) {
+        setState(() {
+          _lastGlucoModel = model;
+          _isLoadingGluco = false;
+          _getGlucoPassedTimer();
+        });
+      } else {
+        setState(() {
+          _isLoadingGluco = false;
+        });
+      }
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load gluco model $e');
+      logger.e('[glucocare_log] Failed to load gluco model (_getLastGlucoCheck) $e');
       setState(() {
         _lastGlucoModel = null;
         _isLoadingGluco = false;
@@ -84,14 +100,16 @@ class _HomeTapForm extends State<HomeTapForm> {
     int days = difference.inDays;
     int hours = difference.inHours;
     int minutes = difference.inMinutes;
-    
+    int sec = difference.inSeconds;
+
+    if(sec < 60) return '방금 추가됨';
     if(minutes < 60) return '$minutes분 전';
     if(hours < 60) return '$hours시간 전';
     return '$days일 전';
   }
   
   DateTime _parseDateTime(String date, String time) {
-    DateFormat dateFormat = DateFormat("yyyy년 MM월 dd일");
+    DateFormat dateFormat = DateFormat('yyyy년 MM월 dd일');
     DateTime parsedDate = dateFormat.parse(date);
     
     DateFormat timeFormat = DateFormat('a hh:mm', 'ko_KR');
@@ -113,12 +131,6 @@ class _HomeTapForm extends State<HomeTapForm> {
   void _getGlucoPassedTimer() {
     _passedGlucoTimer  = _getPastTimer(_lastGlucoModel!.checkDate, _lastGlucoModel!.checkTime);
   }
-
-  // void _sendPushMsg() async {
-  //   // notification testing
-  //   NotificationService.sendForegroundMsg();
-  //   NotificationService.sendBackgroundMsg();
-  // }
 
   @override
   void initState() {
@@ -155,26 +167,35 @@ class _HomeTapForm extends State<HomeTapForm> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Row(
-                    children: [
-                      const Text('진료예약일',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFFFF4E00),
+                  SizedBox(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text('진료예약일',
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFFFF4E00),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 5,),
-                      Text(DateFormat('yy.MM.dd(E) a hh:mm', 'ko_KR').format(DateTime.now()),
-                        style: const TextStyle(
-                          fontSize: 17,
-                          color: Colors.black,
-                        ),),
-                    ],
+                        const SizedBox(width: 5,),
+                        Text(() {
+                          String time = DateFormat('a hh:mm').format(DateTime.now());
+                          if(time.substring(0,2) == 'AM') time = time.replaceRange(0, 2, '오전');
+                          else time = time.replaceRange(0, 2, '오후');
+                          return '${DateFormat('MM월 dd일 (E)').format(DateTime.now())}  $time';
+                        }(),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),),
+                      ],
+                    ),
                   ),
                   const SizedBox(
-                    width: 39,
-                    height: 39,
+                    width: 20,
+                    height: 20,
                     child: Icon(Icons.keyboard_arrow_right, color: Color(0xFFFF4E00),),
                   ),
                 ],
@@ -189,8 +210,6 @@ class _HomeTapForm extends State<HomeTapForm> {
               onPressed: () async {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const GlucoCheckPage()));
                 if(result == true) {
-                  _lastGlucoModel = null;
-                  _isLoadingGluco = true;
                   setState(() {
                     _getLastGlucoCheck();
                   });
@@ -208,7 +227,7 @@ class _HomeTapForm extends State<HomeTapForm> {
               ),
               child: Column(
                 children: [
-                  SizedBox(height: 10,),
+                  const SizedBox(height: 10,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -236,7 +255,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                         ],
                       ),
                       SizedBox(
-                        child: Text(_passedGlucoTimer, style: TextStyle(
+                        child: Text(_passedGlucoTimer, style: const TextStyle(
                           fontSize: 15,
                           color: Color(0xFF777777),
                         ),),
@@ -299,8 +318,6 @@ class _HomeTapForm extends State<HomeTapForm> {
             child: ElevatedButton(
               onPressed: () async {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PurseCheckPage()));
-                _lastPurseModel = null;
-                _isLoadingPurse = true;
                 if(result == true) {
                   setState(() {
                     _getLastPurseCheck();
@@ -409,8 +426,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             height: 160,
             child: ElevatedButton(
               onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillAlarmHistoryPage()));
-
+                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillCheckPage()));
                 if(result == true) {
                   setState(() {
 

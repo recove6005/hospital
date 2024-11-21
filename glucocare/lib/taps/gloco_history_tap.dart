@@ -61,6 +61,23 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       initialDate: _focusedDate,
       firstDate: DateTime(2020, 1, 1),
       lastDate: DateTime(2100, 12, 31),
+      locale: const Locale('ko', 'KR'),
+      builder: (context, child) {
+        return Theme(
+            data: ThemeData.light().copyWith(
+              dialogBackgroundColor: Color(0xFFF9F9F9), // 팝업 배경 색상
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFF1FA1AA), // 팝업 선택된 항목 색상
+                onSurface: Colors.black, // 팝업 텍스트 색상
+              ),
+              textTheme: const TextTheme(
+                headlineMedium: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                bodySmall: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+            ),
+            child: child!,
+        );
+      }
     );
 
     if(picked != null && picked != _focusedDate) {
@@ -70,6 +87,87 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       });
     }
   }
+
+  // 커스텀 다이얼로그 - 년월 선택
+  Future<void> _selectMonthYear() async {
+    int selectedYear = DateTime.now().year;
+    int selectedMonth = DateTime.now().month;
+      await showDialog(
+          context: context,
+          builder: (context) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Container(
+                width: 300,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                padding: const EdgeInsets.all(15),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      '년월 선택',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),),
+                    DropdownButton<int>(
+                      value: selectedYear,
+                      items: List.generate(30, (index) {
+                        int year = 2000 + index;
+                        return DropdownMenuItem(
+                          value: year,
+                          child: Text('$year 년'),
+                        );
+                      }),
+                      onChanged: (value) {
+                        selectedYear = value!;
+                      },
+                    ),
+                    GridView.builder(
+                      shrinkWrap: true,
+                      itemCount: 12,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,
+                        crossAxisSpacing: 8,
+                        mainAxisSpacing: 8,
+                      ),
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            selectedMonth = index + 1;
+                            setState(() {
+                              _selectedDate = DateTime(selectedYear, selectedMonth);
+                              _focusedDate = _selectedDate;
+                            });
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Color(0xFFF9F9F9),
+                            ),
+                            child: Text('${index + 1}월'),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+
+              ),
+            );
+          }
+      );
+  }
+
 
   // 차트 설정
   List<String> _glucoX = [];
@@ -202,8 +300,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                     // 헤더
                     GestureDetector(
                       onTap: () async {
-                        // 년월 선택 다이얼로그 호출
-                        _searchYearMonth(context);
+                        _selectMonthYear();
                       },
                       child: SizedBox(
                         width: 350,
@@ -329,6 +426,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                     onDaySelected: (selectedDay, focustedDay) {
                       setState(() {
                         _selectedDate = selectedDay;
+                        _focusedDate = focustedDay;
                         _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR')
                             .format(_selectedDate);
 
@@ -357,8 +455,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                   width: 300,
                                   height: 35,
                                   child: Text(
-                                    '${_focusedDate.month}월 ${_focusedDate
-                                        .day}일',
+                                    '${_focusedDate.month}월 ${_focusedDate.day}일',
                                     style: const TextStyle(
                                       fontSize: 22,
                                       fontWeight: FontWeight.bold,
@@ -410,7 +507,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                 gridData: FlGridData(
                                     show: true,
                                     drawVerticalLine: false,
-                                    horizontalInterval: 30,
+                                    horizontalInterval: 50,
                                     getDrawingHorizontalLine: (value) {
                                       return const FlLine(
                                         color: Colors.grey,
@@ -476,8 +573,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   // 헤더
                   GestureDetector(
                     onTap: () async {
-                      // 년월 선택 다이얼로그 호출
-                      _searchYearMonth(context);
+                      _selectMonthYear();
                     },
                     child: SizedBox(
                       width: 350,
@@ -595,6 +691,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   onDaySelected: (selectedDay, focustedDay) {
                     setState(() {
                       _selectedDate = selectedDay;
+                      _focusedDate = focustedDay;
                       _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(_selectedDate);
                       _setGlucoModels();
                     });
@@ -732,7 +829,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                           gridData: FlGridData(
                               show: true,
                               drawVerticalLine: false,
-                              horizontalInterval: 30,
+                              horizontalInterval: 50,
                               getDrawingHorizontalLine: (value) {
                                 return const FlLine(
                                   color: Colors.grey,

@@ -11,7 +11,7 @@ class GlucoRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertGlucoCheck(GlucoModel model) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     try {
       await _store
@@ -19,12 +19,12 @@ class GlucoRepository {
           .collection(model.checkDate).doc(model.checkTime)
           .set(model.toJson());
     } catch(e) {
-      logger.e('[glucocare_log] Failed to insert GlucoCheck field : $e');
+      logger.e('[glucocare_log] Failed to insert GlucoCheck field (insertGlucoCheck) : $e');
     }
   }
 
   static Future<List<GlucoModel>> selectAllGlucoCheck() async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<GlucoModel> models = <GlucoModel>[];
 
     List<String> namelist = await GlucoColNameRepository.selectAllGlucoColName();
@@ -38,7 +38,7 @@ class GlucoRepository {
           models.add(model);
         }
       } catch(e) {
-        logger.e('[glucocare_log] Failed to load gluco check history $e');
+        logger.e('[glucocare_log] Failed to load gluco check history (selectAllGlucoCheck) $e');
         return [];
       }
     }
@@ -47,7 +47,7 @@ class GlucoRepository {
   }
 
   static Future<GlucoModel?>? selectGlucoByColName(String colName) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     try {
       var docSnapshot = await _store.collection('gluco_check').doc(uid).collection(colName)
@@ -55,13 +55,13 @@ class GlucoRepository {
       GlucoModel model = GlucoModel.fromJson(docSnapshot.docs.first.data());
       return model;
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load gluco check history $e');
+      logger.e('[glucocare_log] Failed to load gluco check history (selectGlucoByColName) $e');
       return null;
     }
   }
 
   static Future<List<GlucoModel>> selectGlucoByDay(String checkDate) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
     List<GlucoModel> models = <GlucoModel>[];
 
     try{
@@ -74,14 +74,14 @@ class GlucoRepository {
 
       return models;
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load gluco history by day : $e');
+      logger.e('[glucocare_log] Failed to load gluco history by day (selectGlucoByDay) : $e');
       return [];
     }
 
   }
 
   static Future<List<FlSpot>> getGlucoData(list) async {
-    String uid = AuthService.getCurUserUid();
+    String? uid = AuthService.getCurUserUid();
 
     List<FlSpot> chartDatas = [];
     double index = 0;
@@ -103,7 +103,7 @@ class GlucoRepository {
           if(chartDatas.length >= 30) return chartDatas;
         }
       } catch(e) {
-        logger.e('[glucocare_log] Failed to load gluco chart data : $e');
+        logger.e('[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
         return chartDatas;
       }
     }
@@ -112,8 +112,7 @@ class GlucoRepository {
   }
 
   static Future<GlucoModel?> selectLastGlucoCheck() async {
-    String uid = AuthService.getCurUserUid();
-    GlucoModel? model = null;
+    String? uid = AuthService.getCurUserUid();
 
     try{
       String lastColName = await GlucoColNameRepository.selectLastGlucoColName();
@@ -123,24 +122,21 @@ class GlucoRepository {
           var docSnapshot = await _store
               .collection('gluco_check').doc(uid)
               .collection(lastColName)
-              .orderBy('check_time')
+              .orderBy('check_time', descending: true)
               .limit(1)
               .get();
 
-          model = GlucoModel.fromJson(docSnapshot.docs.first.data());
+          GlucoModel model = GlucoModel.fromJson(docSnapshot.docs.first.data());
           return model;
         } catch(e) {
-          logger.d('[glucocare_log] Failed to load gluco check by colname : $e');
+          logger.d('[glucocare_log] Failed to load gluco check by colname (selectLastGlucoCheck if1) : $e');
         }
-
-
-
       }
     } catch(e) {
-      logger.d('[glucocare_log] Failed to load gluco check by colname : $e');
+      logger.d('[glucocare_log] Failed to load gluco check by colname (selectLastGlucoCheck if2)  : $e');
     }
 
-    return model;
+    return null;
   }
 
   static Future<void> updateGlucoCheck(GlucoModel model) async {

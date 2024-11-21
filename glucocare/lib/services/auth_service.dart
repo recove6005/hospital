@@ -14,13 +14,13 @@ class AuthService {
     }
   }
 
-  static String getCurUserUid() {
+  static String? getCurUserUid() {
     if(_auth.currentUser != null) {
       return _auth.currentUser!.uid;
     } else {
       logger.d('[glucocare_log] User is not exist.');
     }
-    return '';
+    return null;
   }
 
   static void sendPhoneAuth(String phone) async {
