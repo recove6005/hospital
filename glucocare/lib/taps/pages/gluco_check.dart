@@ -113,7 +113,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            SizedBox(height: 20,),
+            const SizedBox(height: 20,),
             SizedBox(
               width: 350,
               height: 60,
@@ -148,21 +148,25 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Text('혈당', style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                  ),),
-                  const SizedBox(width: 50,),
+                  const SizedBox(
+                    width: 60,
+                    height: 40,
+                    child: Text('혈당', style: TextStyle(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black
+                    ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  const SizedBox(width: 30,),
                   SizedBox(
-                    width: 80,
-                    height: 70,
+                    width: 90,
+                    height: 50,
                     child: TextField(
                       controller: _valueController,
                       maxLength: 3,
                       decoration: const InputDecoration(
-                        hintText: '0',
-                        hintStyle: TextStyle(fontSize: 40,color: Colors.grey),
                         counterText: '',
                       ),
                       style: const TextStyle(
@@ -171,15 +175,18 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10,),
-                  const Text('mmHg', style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black87
-                  ),)
+                  const SizedBox(
+                    height: 40,
+                    child: Text('mg/dL', style: TextStyle(
+                        fontSize: 25,
+                        color: Colors.black87
+                    ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 ],
               ),
-            ),
+              ),
             const SizedBox(height: 30,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -190,7 +197,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                   height: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Color(0xFFF9F9F9),
+                    color: const Color(0xFFF9F9F9),
                   ),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
@@ -227,7 +234,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                   height: 50,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
-                    color: Color(0xFFF9F9F9),
+                    color: const Color(0xFFF9F9F9),
                   ),
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(

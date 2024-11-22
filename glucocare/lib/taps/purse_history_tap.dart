@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
@@ -54,7 +53,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
     }
   }
 
-  // 달력 설정 함수
+  // 달력 설정
   Future<void> _searchYearMonth(BuildContext context) async {
     final DateTime? picked = await showMonthYearPicker(
       context: context,
@@ -69,6 +68,86 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         _selectedDate = picked;
       });
     }
+  }
+
+  // 커스텀 다이얼로그 - 년월 선택
+  Future<void> _selectMonthYear() async {
+    int selectedYear = DateTime.now().year;
+    int selectedMonth = DateTime.now().month;
+    await showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Container(
+              width: 300,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: const EdgeInsets.all(15),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    '년월 선택',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),),
+                  DropdownButton<int>(
+                    value: selectedYear,
+                    items: List.generate(30, (index) {
+                      int year = 2000 + index;
+                      return DropdownMenuItem(
+                        value: year,
+                        child: Text('$year 년'),
+                      );
+                    }),
+                    onChanged: (value) {
+                      selectedYear = value!;
+                    },
+                  ),
+                  GridView.builder(
+                    shrinkWrap: true,
+                    itemCount: 12,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          selectedMonth = index + 1;
+                          setState(() {
+                            _selectedDate = DateTime(selectedYear, selectedMonth);
+                            _focusedDate = _selectedDate;
+                          });
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            color: Color(0xFFF9F9F9),
+                          ),
+                          child: Text('${index + 1}월'),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+
+            ),
+          );
+        }
+    );
   }
 
   // 차트 설정 함수
@@ -214,8 +293,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     // 헤더
                     GestureDetector(
                       onTap: () async {
-                        // 년월 선택 다이얼로그 호출
-                        _searchYearMonth(context);
+                        _selectMonthYear();
                       },
                       child: SizedBox(
                         width: 350,
@@ -334,7 +412,9 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     onDaySelected: (selectedDay, focustedDay) {
                       setState(() {
                         _selectedDate = selectedDay;
-                        _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(_selectedDate);
+                        _focusedDate = focustedDay;
+                        _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR')
+                            .format(_selectedDate);
 
                         _setPurseModels();
                       });
@@ -348,7 +428,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                       width: 350,
                       height: 280,
                       decoration: BoxDecoration(
-                          color: Color(0xFFF9F9F9),
+                          color: const Color(0xFFF9F9F9),
                           borderRadius: BorderRadius.circular(15)
                       ),
                       child: Row(
@@ -387,7 +467,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     const SizedBox(height: 15,),
                     Container(
                       width: 350,
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: const Color(0xFFFF9F9F9),
@@ -403,7 +483,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                             ),),
                           ),
                           Container(
-                            padding: EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
+                            padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
                             width: 350,
                             height: 200,
                             child: LineChart(
@@ -479,8 +559,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   // 헤더
                   GestureDetector(
                     onTap: () async {
-                      // 년월 선택 다이얼로그 호출
-                      _searchYearMonth(context);
+                      _selectMonthYear();
                     },
                     child: SizedBox(
                       width: 350,
@@ -547,7 +626,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         color: const Color(0xFFDCF9F9),
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color: Color(0xFF28C2CE),
+                            color: const Color(0xFF28C2CE),
                             width: 1,
                             style: BorderStyle.solid
                         ),
@@ -710,7 +789,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
               const SizedBox(height: 15,),
               Container(
                 width: 350,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: const Color(0xFFFF9F9F9),
@@ -726,7 +805,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                       ),),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
+                      padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
                       width: 350,
                       height: 200,
                       child: LineChart(

@@ -6,6 +6,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glucocare/login.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/notification_service.dart';
+import 'package:glucocare/taps/councel_tap.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
@@ -29,7 +30,6 @@ Future<void> main() async {
 
   // kakotalk api init
   WidgetsFlutterBinding.ensureInitialized();
-
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY']
@@ -89,7 +89,7 @@ class _HomePageState extends State<HomePage> {
     const HomeTap(),
     const GlucoHistoryTap(),
     const PurseHistoryTap(),
-    const GlucoHistoryTap(),
+    CouncelTap(),
   ];
 
   void _onItemTapped(int index) {

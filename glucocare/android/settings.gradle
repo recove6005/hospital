@@ -8,11 +8,11 @@ pluginManagement {
     }()
 
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
-
     repositories {
         google()
         mavenCentral()
         gradlePluginPortal()
+        maven { url = "https://devrepo.kakao.com/nexus/content/groups/public/" }
     }
 }
 

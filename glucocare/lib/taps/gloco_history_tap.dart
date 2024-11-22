@@ -442,7 +442,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                       width: 350,
                       height: 280,
                       decoration: BoxDecoration(
-                          color: Color(0xFFF9F9F9),
+                          color: const Color(0xFFF9F9F9),
                           borderRadius: BorderRadius.circular(15)
                       ),
                       child: Row(
@@ -481,7 +481,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                     const SizedBox(height: 15,),
                     Container( // 차트 위젯
                       width: 350,
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: const Color(0xFFFF9F9F9),
@@ -640,7 +640,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                       color: const Color(0xFFDCF9F9),
                       shape: BoxShape.circle,
                       border: Border.all(
-                          color: Color(0xFF28C2CE),
+                          color: const Color(0xFF28C2CE),
                           width: 1,
                           style: BorderStyle.solid
                       ),
@@ -803,7 +803,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
               const SizedBox(height: 15,),
               Container( // 차트 위젯
                 width: 350,
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
                   color: const Color(0xFFFF9F9F9),
@@ -819,7 +819,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                       ),),
                     ),
                     Container(
-                      padding: EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
+                      padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
                       width: 350,
                       height: 200,
                       child: LineChart(

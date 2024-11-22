@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glucocare/main.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/kakao_login_service.dart';
 import 'package:logger/logger.dart';
 
@@ -50,17 +51,20 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
     // 카카오 로그인
     bool loginResult = KakaoLogin.login() as bool;
     if(loginResult) {
-      User? user = FirebaseAuth.instance.currentUser;
-      logger.d('glucocare_log user: $user');
-      if(user != null) {
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => HomePage()),
-            (Route<dynamic> route) => false,
-        );
-      }
+      // if(user != null) {
+      //   Navigator.pushReplacement(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => const HomePage()),);
+      // } else {
+      //   logger.e('[glucocare_log] There\'s no user (_kakaoRegister) $user');
+      // }
+      logger.d('[glucocare_log] logined');
     }
+  }
 
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -216,7 +220,7 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF28C2CE),
+                    backgroundColor: const Color(0xFF28C2CE),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)
                     )

@@ -53,13 +53,13 @@ class _PillCheckFormState extends State<PillCheckForm> {
 
   int _alarmHourValue = 1;
   final List<int> _alarmHourOptions = List.generate(12, (index) => (index+=1));
-  int? get previousHourOption => _alarmHourValue > 0 && _alarmHourValue != 1 ? _alarmHourValue - 1 : null;
-  int? get nextHourOption => _alarmHourValue < _alarmHourOptions.length ? _alarmHourValue + 1 : null;
+  int? get _previousHourOption => _alarmHourValue > 0 && _alarmHourValue != 1 ? _alarmHourValue - 1 : null;
+  int? get _nextHourOption => _alarmHourValue < _alarmHourOptions.length ? _alarmHourValue + 1 : null;
 
   int _alarmMinuteValue = 0;
   final List<String> _alarmMinuteOptions = List.generate(60, (index) => index.toString());
-  String? get previousMinuteOption => _alarmMinuteValue > 0 ? _alarmMinuteOptions[_alarmMinuteValue - 1] : null;
-  String? get nextMinuteOption => _alarmMinuteValue < _alarmMinuteOptions.length - 1 ? _alarmMinuteOptions[_alarmMinuteValue + 1] : null;
+  String? get _previousMinuteOption => _alarmMinuteValue > 0 ? _alarmMinuteOptions[_alarmMinuteValue - 1] : null;
+  String? get _nextMinuteOption => _alarmMinuteValue < _alarmMinuteOptions.length - 1 ? _alarmMinuteOptions[_alarmMinuteValue + 1] : null;
 
   String _alarmTimeAreaValue = '오전';
   final List<String> _alarmTimeAreaOptions = ['오전', '오후'];
@@ -122,10 +122,13 @@ class _PillCheckFormState extends State<PillCheckForm> {
   }
 
   void _initValues() {
-    _stateContoller.text = '';
-    _alarmTimeAreaValue = '오전';
-    _alarmHourValue = 1;
-    _alarmMinuteValue = 0;
+    setState(() {
+      _stateContoller.text = '';
+      _alarmTimeAreaValue = '오전';
+      _alarmHourValue = 1;
+      _alarmMinuteValue = 0;
+
+    });
   }
 
   void _onSaveButtonPressed() {
@@ -238,18 +241,18 @@ class _PillCheckFormState extends State<PillCheckForm> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          if(previousHourOption != null)
+                          if(_previousHourOption != null)
                             SizedBox(
                               width: 60,
                               height: 50,
-                              child: Text(previousHourOption.toString(), style: const TextStyle(
+                              child: Text(_previousHourOption.toString(), style: const TextStyle(
                                 fontSize: 30,
                                 color: Color(0xFFB7B7B7),
                               ),
                               textAlign: TextAlign.center,
                               ),
                             ),
-                          if(previousHourOption == null)
+                          if(_previousHourOption == null)
                             const SizedBox(
                               width: 60,
                               height: 50,
@@ -259,7 +262,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                             width: 90,
                             height: 50,
                             child: CupertinoPicker(
-                              backgroundColor: Color(0xFFF9F9F9),
+                              backgroundColor: const Color(0xFFF9F9F9),
                               itemExtent: 50,
                               onSelectedItemChanged: (index) {
                                 setState(() {
@@ -267,7 +270,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                 });
                               },
                               children: _alarmHourOptions.map((item) => Center(
-                                child: Text(item.toString(), style: const TextStyle(
+                                child: Text(_alarmHourValue.toString(), style: const TextStyle(
                                   fontSize: 35,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -277,18 +280,18 @@ class _PillCheckFormState extends State<PillCheckForm> {
                               )).toList(),
                             ),
                           ),
-                          if(nextHourOption != null)
+                          if(_nextHourOption != null)
                             SizedBox(
                               width: 60,
                               height: 50,
-                              child: Text(nextHourOption.toString(), style: const TextStyle(
+                              child: Text(_nextHourOption.toString(), style: const TextStyle(
                                 fontSize: 30,
                                 color: Color(0xFFB7B7B7),
                               ),
                               textAlign: TextAlign.center,
                               ),
                             ),
-                          if(nextHourOption == null)
+                          if(_nextHourOption == null)
                             const SizedBox(
                               width: 60,
                               height: 50,
@@ -302,11 +305,11 @@ class _PillCheckFormState extends State<PillCheckForm> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          if(previousMinuteOption != null)
+                          if(_previousMinuteOption != null)
                             SizedBox(
                               width: 60,
                               height: 50,
-                              child: Text(previousMinuteOption!,
+                              child: Text(_previousMinuteOption!,
                                 style: const TextStyle(
                                   fontSize: 30,
                                   color: Color(0xFFB7B7B7),
@@ -314,7 +317,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                               textAlign: TextAlign.center,
                               ),
                             ),
-                          if(previousMinuteOption == null)
+                          if(_previousMinuteOption == null)
                             const SizedBox(
                               width: 60,
                               height: 50,
@@ -337,7 +340,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                 });
                               },
                               children: _alarmMinuteOptions.map((item) => Center(
-                                child: Text(item, style: const TextStyle(
+                                child: Text(_alarmMinuteValue.toString(), style: const TextStyle(
                                   fontSize: 35,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
@@ -345,11 +348,11 @@ class _PillCheckFormState extends State<PillCheckForm> {
                               )).toList(),
                             ),
                           ),
-                          if(nextMinuteOption != null)
+                          if(_nextMinuteOption != null)
                             SizedBox(
                               width: 60,
                               height: 50,
-                              child: Text(nextMinuteOption!,
+                              child: Text(_nextMinuteOption!,
                                 style: const TextStyle(
                                   fontSize: 30,
                                   color: Color(0xFFB7B7B7),
@@ -357,7 +360,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                               textAlign: TextAlign.center,
                               ),
                             ),
-                          if(nextMinuteOption == null)
+                          if(_nextMinuteOption == null)
                             const SizedBox(
                               width: 60,
                               height: 50,
@@ -369,13 +372,13 @@ class _PillCheckFormState extends State<PillCheckForm> {
                   ],
                 ),
               ),
-              SizedBox(height: 30,),
+              const SizedBox(height: 30,),
               Container(
                 width: 300,
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: Color(0xFFF9F9F9),
+                  color: const Color(0xFFF9F9F9),
                 ),
                 child: TextField(
                   controller: _stateContoller,
@@ -437,7 +440,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                               child: Image.asset('assets/images/ic_clock.png'),
                                             ),
                                             const SizedBox(width: 10,),
-                                            Text('${_getLocaleTime(_pillModels[index].alarmTime)}',
+                                            Text(_getLocaleTime(_pillModels[index].alarmTime),
                                               style: const TextStyle(
                                                 fontSize: 15,
                                               ),)
@@ -474,8 +477,6 @@ class _PillCheckFormState extends State<PillCheckForm> {
                   ],
                 ),
               ),
-
-
             ],
           ),
         ),
@@ -486,7 +487,10 @@ class _PillCheckFormState extends State<PillCheckForm> {
         height: 50,
         child: FloatingActionButton(
           onPressed: _onSaveButtonPressed,
-          backgroundColor: Color(0xFF28C2CE),
+          backgroundColor: const Color(0xFF28C2CE),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(30),
+          ),
           child: const Text(
             '추가하기',
             style: TextStyle(
