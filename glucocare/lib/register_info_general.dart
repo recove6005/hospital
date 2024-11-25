@@ -42,8 +42,7 @@ class _RegisterFormState extends State<RegisterForm> {
     );
     String gen = _dropdownValue;
 
-    Navigator.push(context, MaterialPageRoute(builder:
-        (context) => RegisterPhonePage(name, gen, birthDate)));
+    Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterPhonePage('', name, gen, birthDate)));
   }
 
   @override

@@ -1,8 +1,8 @@
-class PillAlarmColNameModel {
+class PillColNameModel {
   final String uid;
   final String date;
 
-  PillAlarmColNameModel({
+  PillColNameModel({
     required this.uid,
     required this.date,
   });
@@ -14,8 +14,8 @@ class PillAlarmColNameModel {
     };
   }
 
-  factory PillAlarmColNameModel.fromJson(Map<String, dynamic> json) {
-    return PillAlarmColNameModel(
+  factory PillColNameModel.fromJson(Map<String, dynamic> json) {
+    return PillColNameModel(
       uid: json['uid'],
       date: json['date'],
     );

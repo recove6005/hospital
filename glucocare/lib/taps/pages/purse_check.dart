@@ -70,7 +70,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
   }
 
-  void _onSaveButtonPressed() {
+  void _onSaveButtonPressed() async {
     _setStates();
 
     PurseModel purseModel = PurseModel(
@@ -83,9 +83,16 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     );
     PurseRepository.insertPurseCheck(purseModel);
 
-    String? uid = AuthService.getCurUserUid();
-    PurseColNameModel nameModel = PurseColNameModel(uid: uid!, date: _checkDate);
-    PurseColNameRepository.insertPurseColName(nameModel);
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      PurseColNameModel nameModel = PurseColNameModel(uid: uid!, date: _checkDate);
+      PurseColNameRepository.insertPurseColName(nameModel);
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      PurseColNameModel nameModel = PurseColNameModel(uid: kakaoId!, date: _checkDate);
+      PurseColNameRepository.insertPurseColName(nameModel);
+    }
+
     Navigator.pop(context, true);
   }
 

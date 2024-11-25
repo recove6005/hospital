@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
+import 'package:glucocare/repositories/pill_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
-import 'package:glucocare/taps/pages/pill_alarm_history.dart';
 import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
 import 'package:intl/intl.dart';
@@ -33,12 +34,13 @@ class _HomeTapForm extends State<HomeTapForm> {
   Logger logger = Logger();
   bool _isLoadingGluco = true;
   bool _isLoadingPurse = true;
-  bool _isLoadingpill = true;
+  bool _isLoadingPill = true;
 
   String colName = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
   GlucoModel? _lastGlucoModel = null;
   PurseModel? _lastPurseModel = null;
-  PillModel? _todayPillModel = null;
+  PillModel? _lastPillModel = null;
+  String _alarmTime = '';
 
   String _passedPurseTimer = '';
   String _passedGlucoTimer = '';
@@ -48,45 +50,81 @@ class _HomeTapForm extends State<HomeTapForm> {
       PurseModel? model = await PurseRepository.selectLastPurseCheck();
       if(model != null){
         setState(() {
-          _lastPurseModel = model;
-          _isLoadingPurse = false;
-          _getPursePassedTimer();
+          if(mounted) {
+            _lastPurseModel = model;
+            _isLoadingPurse = false;
+            _getPursePassedTimer();
+          }
         });
       } else {
-        setState(() {
-          _isLoadingPurse = false;
-        });
+        if(mounted) {
+          setState(() {
+            _isLoadingPurse = false;
+          });
+        }
       }
     } catch(e) {
-      setState(() {
-        logger.e('[glucocare_log] Failed to load purse model (_getLastPurseCheck) $e');
+      logger.e('[glucocare_log] Failed to load purse model (_getLastPurseCheck) $e');
+      if(mounted) {
         _lastPurseModel = null;
         _isLoadingPurse = false;
-      });
+      }
     }
   }
 
   Future<void> _getLastGlucoCheck() async {
     try{
       GlucoModel? model = await GlucoRepository.selectLastGlucoCheck();
-
       if(model != null) {
-        setState(() {
-          _lastGlucoModel = model;
-          _isLoadingGluco = false;
-          _getGlucoPassedTimer();
-        });
+        if(mounted) {
+          setState(() {
+            _lastGlucoModel = model;
+            _isLoadingGluco = false;
+            _getGlucoPassedTimer();
+          });
+        }
       } else {
-        setState(() {
-          _isLoadingGluco = false;
-        });
+        if(mounted) {
+          setState(() {
+            _isLoadingGluco = false;
+          });
+        }
       }
     } catch(e) {
       logger.e('[glucocare_log] Failed to load gluco model (_getLastGlucoCheck) $e');
-      setState(() {
+      if(mounted) {
         _lastGlucoModel = null;
         _isLoadingGluco = false;
-      });
+      }
+    }
+  }
+
+  Future<void> _getLastPillAlarm() async {
+    try {
+      PillModel? model = await PillRepository.selectLastPillAlarm();
+      if(model != null) {
+        if(mounted) {
+          setState(() {
+            _lastPillModel = model;
+            Timestamp alarm = model.alarmTime;
+            _alarmTime = DateFormat('a hh:mm').format(alarm.toDate());
+            _isLoadingPill = false;
+          });
+        }
+      } else {
+        if(mounted) {
+          setState(() {
+            _isLoadingPill = false;
+          });
+        }
+      }
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to load pill model (_getLastPillAlarm) $e');
+      if(mounted) {
+        _lastPillModel = null;
+        _alarmTime = '';
+        _isLoadingPill = false;
+      }
     }
   }
   
@@ -137,6 +175,7 @@ class _HomeTapForm extends State<HomeTapForm> {
     super.initState();
     _getLastGlucoCheck();
     _getLastPurseCheck();
+    _getLastPillAlarm();
   }
 
   @override
@@ -429,7 +468,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillCheckPage()));
                 if(result == true) {
                   setState(() {
-
+                    _getLastPillAlarm();
                   });
                 }
               },
@@ -486,7 +525,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                       color: Color(0xFFD6EDE1),
                     ),
                   ),
-                  if(_todayPillModel == null)
+                  if(_lastPillModel == null)
                     const SizedBox(
                       width: 300,
                       child: Text(' -- : -- ',
@@ -498,11 +537,11 @@ class _HomeTapForm extends State<HomeTapForm> {
                         textAlign: TextAlign.end,
                       ),
                     ),
-                  if(_todayPillModel != null)
-                    const SizedBox(
+                  if(_lastPillModel != null)
+                    SizedBox(
                       width: 300,
-                      child: Text('  ', // 알람시간 --------------------------------------------------------------------------
-                        style: TextStyle(
+                      child: Text(_alarmTime,
+                        style: const TextStyle(
                           fontSize: 45,
                           fontWeight: FontWeight.bold,
                           color: Colors.black,

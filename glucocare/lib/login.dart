@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:glucocare/main.dart';
 import 'package:glucocare/register_info_general.dart';
 import 'package:glucocare/register_info_kakao.dart';
+import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/kakao_login_service.dart';
+import 'package:logger/logger.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -25,22 +28,38 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController _idInputController = TextEditingController();
+  Logger logger = Logger();
 
   void _login() async {
     String phone = _idInputController.text;
-    // AuthService.sendPhoneAuth(phone);
-    // master account
     await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: phone,
       password: "112233",
     );
 
-    User? user = FirebaseAuth.instance.currentUser;
+    if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+  }
+
+  void _autoLogin() async {
+    // 자동 로그인
+    var user = FirebaseAuth.instance.currentUser;
     if(user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       });
     }
+
+    String? kakaoUser = await AuthService.getCurUserId();
+    if(kakaoUser != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -121,8 +140,11 @@ class _LoginFormState extends State<LoginForm> {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPageForKakao()));
+                  onPressed: () async {
+                    bool loginResult = await KakaoLogin.login();
+                    if(loginResult) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     padding: EdgeInsets.zero,

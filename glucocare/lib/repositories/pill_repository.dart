@@ -9,36 +9,111 @@ class PillRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertPillCheck(PillModel model) async {
-    String? uid = AuthService.getCurUserUid();
-    try {
-      await _store.collection('pill_check').doc(uid)
-          .collection(model.saveDate).doc(model.saveTime)
-          .set(model.toJson());
-    } catch(e) {
-      logger.e('[glucocare_log] Failed to insert pill_check (insertPillCheck) : $e');
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      try {
+        await _store.collection('pill_check').doc(uid)
+            .collection(model.saveDate).doc(model.saveTime)
+            .set(model.toJson());
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to insert pill_check (insertPillCheck) : $e');
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      try {
+        await _store.collection('pill_check').doc(kakaoId)
+            .collection(model.saveDate).doc(model.saveTime)
+            .set(model.toJson());
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to insert pill_check (insertPillCheck) : $e');
+      }
     }
+
   }
   
   static Future<List<PillModel>> selectAllPillModels() async {
-    String? uid = AuthService.getCurUserUid();
     List<PillModel> models = <PillModel>[];
     List<String> namelist = await PillColNameRepository.selectAllAlarmColName();
 
-    for(var name in namelist) {
-      try {
-        var querySnapshot = await _store.collection('pill_check').doc(uid)
-            .collection(name)
-            .orderBy('alarm_time', descending: false).get();
-        for(var doc in querySnapshot.docs) {
-          PillModel model = PillModel.fromJson(doc.data());
-          models.add(model);
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(var name in namelist) {
+        try {
+          var querySnapshot = await _store.collection('pill_check').doc(uid)
+              .collection(name)
+              .orderBy('alarm_time', descending: false).get();
+          for(var doc in querySnapshot.docs) {
+            PillModel model = PillModel.fromJson(doc.data());
+            models.add(model);
+          }
+        } catch (e) {
+          logger.d('[glucocare_log] Failed to select pill models (selectAllPillModels) : $e');
+          return [];
         }
-      } catch (e) {
-        logger.d('[glucocare_log] Failed to select pill models (selectAllPillModels) : $e');
-        return [];
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(var name in namelist) {
+        try {
+          var querySnapshot = await _store.collection('pill_check').doc(kakaoId)
+              .collection(name)
+              .orderBy('alarm_time', descending: false).get();
+          for(var doc in querySnapshot.docs) {
+            PillModel model = PillModel.fromJson(doc.data());
+            models.add(model);
+          }
+        } catch (e) {
+          logger.d('[glucocare_log] Failed to select pill models (selectAllPillModels) : $e');
+          return [];
+        }
       }
     }
 
     return models;
   }
+
+  static Future<PillModel?>? selectLastPillAlarm() async {
+    PillModel? model = null;
+
+      if(await AuthService.userLoginedFa()) {
+        String? uid = AuthService.getCurUserUid();
+        try {
+          String lastColName = await PillColNameRepository.selectLastPillColName();
+          if(lastColName != '') {
+            var docSnapshot = await _store
+                .collection('pill_check').doc(uid)
+                .collection(lastColName)
+                .orderBy('alarm_time', descending: false)
+                .limit(1)
+                .get();
+
+            model = await PillModel.fromJson(docSnapshot.docs.first.data());
+            logger.d('glucocare_log ${model.alarmTime}');
+            return model;
+          }
+        } catch(e) {
+          logger.d('[glucocare_log] Failed to load pill check by colname (selectLastPurseCheck) : $e');
+        }
+    } else {
+        String? kakaoId = await AuthService.getCurUserId();
+        try {
+          String lastColName = await PillColNameRepository.selectLastPillColName();
+          if(lastColName != '') {
+            var docSnapshot = await _store
+                .collection('pill_check').doc(kakaoId)
+                .collection(lastColName)
+                .orderBy('alarm_time', descending: false)
+                .limit(1)
+                .get();
+
+            model = await PillModel.fromJson(docSnapshot.docs.first.data());
+            return model;
+          }
+
+        } catch(e) {
+          logger.d('[glucocare_log] Failed to load pill check by colname (selectLastPurseCheck) : $e');
+        }
+    }
+  }
+
 }

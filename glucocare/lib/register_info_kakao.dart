@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glucocare/main.dart';
-import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/kakao_login_service.dart';
 import 'package:logger/logger.dart';
 
@@ -46,19 +44,10 @@ class _RegisterFormStateForKakao extends State<RegisterFormForKakao> {
     );
     String gen = _dropdownValue;
 
-    // 회원 등록
-
     // 카카오 로그인
     bool loginResult = KakaoLogin.login() as bool;
     if(loginResult) {
-      // if(user != null) {
-      //   Navigator.pushReplacement(
-      //       context,
-      //       MaterialPageRoute(builder: (context) => const HomePage()),);
-      // } else {
-      //   logger.e('[glucocare_log] There\'s no user (_kakaoRegister) $user');
-      // }
-      logger.d('[glucocare_log] logined');
+      Navigator.of(context).popUntil((route) => route.isFirst);
     }
   }
 

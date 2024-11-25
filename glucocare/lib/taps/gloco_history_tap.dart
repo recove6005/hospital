@@ -732,140 +732,146 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                 SliverList(delegate: SliverChildBuilderDelegate(
                                     childCount: _childCount,
                                         (context, index) => Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            child: Padding(
-                                              padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  if(_glucoModels[index].checkTime.substring(0,2) == 'AM')
-                                                    Text('오전 ${_glucoModels[index].checkTime.substring(3,8)}',
-                                                      style: const TextStyle(
-                                                        fontSize: 19,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),),
-                                                  if(_glucoModels[index].checkTime.substring(0,2) == 'PM')
-                                                    Text('오후 ${_glucoModels[index].checkTime.substring(3,8)}',
-                                                      style: const TextStyle(
-                                                        fontSize: 19,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.black,
-                                                      ),),
-                                                  Text('${_glucoModels[index].value} mg/dL',
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                      color: Colors.black,
-                                                    ),),
-                                                  if(_glucoModels[index].state != '')
-                                                    Text(_glucoModels[index].state,
-                                                      style: const TextStyle(
+                                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                child: Padding(
+                                                  padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      if(
+                                                      _glucoModels[index].checkTime.substring(0,2) == 'AM' ||
+                                                          _glucoModels[index].checkTime.substring(0,2) == '오전'
+                                                      )
+                                                        Text('오전 ${_glucoModels[index].checkTime.substring(3,8)}',
+                                                          style: const TextStyle(
+                                                          fontSize: 19,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.black,
+                                                        ),),
+                                                      if(
+                                                      _glucoModels[index].checkTime.substring(0,2) == 'PM' || 
+                                                          _glucoModels[index].checkTime.substring(0,2) == '오후'
+                                                      )
+                                                        Text('오후 ${_glucoModels[index].checkTime.substring(3,8)}',
+                                                          style: const TextStyle(
+                                                            fontSize: 19,
+                                                            fontWeight: FontWeight.bold,
+                                                            color: Colors.black,
+                                                          ),),
+                                                      Text('${_glucoModels[index].value} mg/dL',
+                                                        style: const TextStyle(
                                                         fontSize: 18,
                                                         color: Colors.black,
+                                                      ),),
+                                                      if(_glucoModels[index].state != '')
+                                                        Text(_glucoModels[index].state,
+                                                          style: const TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.black,
+                                                        ),
                                                       ),
-                                                    ),
-                                                  const SizedBox(height: 10,),
-                                                  Container(
-                                                    width: 350,
-                                                    height: 10,
-                                                    decoration: const BoxDecoration(
-                                                      border: Border(
-                                                        bottom: BorderSide(
-                                                          width: 1,
-                                                          color: Colors.grey,
+                                                    const SizedBox(height: 10,),
+                                                    Container(
+                                                      width: 350,
+                                                      height: 10,
+                                                      decoration: const BoxDecoration(
+                                                        border: Border(
+                                                          bottom: BorderSide(
+                                                            width: 1,
+                                                            color: Colors.grey,
+                                                          ),
                                                         ),
                                                       ),
                                                     ),
-                                                  ),
-                                                ],
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                ),),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(height: 10,),
-                          // const SizedBox(height: 20,),
-                        ],
-                      ),
-                    ],
-                  )
-              ),
-              const SizedBox(height: 15,),
-              Container( // 차트 위젯
-                width: 350,
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xFFFF9F9F9),
-                ),
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      width: 350,
-                      height: 30,
-                      child: Text('변화 그래프', style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
-                      width: 350,
-                      height: 200,
-                      child: LineChart(
-                        LineChartData(
-                          lineBarsData: [_glucoLine!],
-                          titlesData: _buildTitles(),
-                          gridData: FlGridData(
-                              show: true,
-                              drawVerticalLine: false,
-                              horizontalInterval: 50,
-                              getDrawingHorizontalLine: (value) {
-                                return const FlLine(
-                                  color: Colors.grey,
-                                  strokeWidth: 1,
-                                );
-                              }
-                          ),
-                          borderData: FlBorderData(
-                            show: true,
-                            border: const Border(
-                              top: BorderSide(
-                                color: Colors.grey,
-                                width: 0.5,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
+                                          ],
+                                        ),
+                                      )
+                                  ),),
+                                ],
                               ),
                             ),
-                          ),
-                          minX: _minX,
-                          maxX: _maxX,
-                          minY: _minY,
-                          maxY: _maxY,
+                            const SizedBox(height: 10,),
+                            // const SizedBox(height: 20,),
+                          ],
                         ),
-                      ),
+                      ],
                     )
-
-                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 15,),
+                Container( // 차트 위젯
+                  width: 350,
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: const Color(0xFFFF9F9F9),
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        width: 350,
+                        height: 30,
+                        child: Text('변화 그래프', style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
+                        width: 350,
+                        height: 200,
+                        child: LineChart(
+                          LineChartData(
+                            lineBarsData: [_glucoLine!],
+                            titlesData: _buildTitles(),
+                            gridData: FlGridData(
+                                show: true,
+                                drawVerticalLine: false,
+                                horizontalInterval: 50,
+                                getDrawingHorizontalLine: (value) {
+                                  return const FlLine(
+                                    color: Colors.grey,
+                                    strokeWidth: 1,
+                                  );
+                                }
+                            ),
+                            borderData: FlBorderData(
+                              show: true,
+                              border: const Border(
+                                top: BorderSide(
+                                  color: Colors.grey,
+                                  width: 0.5,
+                                ),
+                                bottom: BorderSide(
+                                  color: Colors.grey,
+                                  width: 1,
+                                ),
+                              ),
+                            ),
+                            minX: _minX,
+                            maxX: _maxX,
+                            minY: _minY,
+                            maxY: _maxY,
+                          ),
+                        ),
+                      )
+
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
+    }
 
-}
+  }

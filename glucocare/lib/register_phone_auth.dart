@@ -2,17 +2,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/patient_model.dart';
-import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
 
 class RegisterPhonePage extends StatelessWidget {
+  final String kakaoId;
   final String name;
   final String gen;
   final Timestamp birthDate;
 
   const RegisterPhonePage(
+        this.kakaoId,
         this.name,
         this.gen,
         this.birthDate,
@@ -26,6 +26,7 @@ class RegisterPhonePage extends StatelessWidget {
         backgroundColor: Colors.white,
       ),
       body: RegisterPhoneForm(
+        kakaoId: kakaoId,
         name: name,
         gen: gen,
         birthDate: birthDate
@@ -35,12 +36,14 @@ class RegisterPhonePage extends StatelessWidget {
 }
 
 class RegisterPhoneForm extends StatefulWidget {
+  final String kakaoId;
   final String name;
   final String gen;
   final Timestamp birthDate;
 
   const RegisterPhoneForm({
     super.key,
+    required this.kakaoId,
     required this.name,
     required this.gen,
     required this.birthDate
@@ -58,18 +61,19 @@ class _RegisterPhoneFormState extends State<RegisterPhoneForm> {
   Future<void> _register() async {
     // 전화번호 인증
     String phone = _phoneController.text;
-    AuthService.sendPhoneAuth(phone);
+    AuthService.authPhoneNumber(phone);
 
     User? user = FirebaseAuth.instance.currentUser;
     if(user != null) {
       // 인증 성공
       // 회원 등록
-      PatientModel model = PatientModel(
-          name: widget.name,
-          gen: widget.gen,
-          birthDate: widget.birthDate
-      );
-      PatientRepository.insertPatient(model);
+      // PatientModel model = PatientModel(
+      //     kakaoId: widget.kakaoId,
+      //     name: widget.name,
+      //     gen: widget.gen,
+      //     birthDate: widget.birthDate
+      // );
+      // PatientRepository.insertPatient(model);
 
       //화면 전환
       Navigator.of(context).popUntil((route) => route.isFirst);

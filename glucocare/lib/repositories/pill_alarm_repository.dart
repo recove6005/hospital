@@ -9,36 +9,63 @@ class PillAlarmRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertPillAlarm(PillAlarmModel model) async {
-    String? uid = AuthService.getCurUserUid();
-
-    try {
-      await _store.collection('pill_alarm').doc(uid)
-          .collection(model.saveDate).doc(model.saveTime)
-          .set(model.toJson());
-    } catch (e) {
-      logger.e('[glucocare_log] Failed to insert pill alarm (insertPillAlarm) : $e');
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      try {
+        await _store.collection('pill_alarm').doc(uid)
+            .collection(model.saveDate).doc(model.saveTime)
+            .set(model.toJson());
+      } catch (e) {
+        logger.e('[glucocare_log] Failed to insert pill alarm (insertPillAlarm) : $e');
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      try {
+        await _store.collection('pill_alarm').doc(kakaoId)
+            .collection(model.saveDate).doc(model.saveTime)
+            .set(model.toJson());
+      } catch (e) {
+        logger.e('[glucocare_log] Failed to insert pill alarm (insertPillAlarm) : $e');
+      }
     }
+
   }
 
   static Future<List<PillAlarmModel>> selectAllPillAlarm() async {
-    String? uid = AuthService.getCurUserUid();
     List<PillAlarmModel> pillAlarmModels = <PillAlarmModel>[];
     List<String> namelist = await PillColNameRepository.selectAllAlarmColName();
 
-    for(String subColName in namelist) {
-      try{
-        var querySnapshot = await _store.collection('pill_alarm').doc(uid).collection(subColName).get();
-        for(var doc in querySnapshot.docs) {
-          PillAlarmModel model = PillAlarmModel.fromJson(doc.data());
-          pillAlarmModels.add(model);
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String subColName in namelist) {
+        try{
+          var querySnapshot = await _store.collection('pill_alarm').doc(uid).collection(subColName).get();
+          for(var doc in querySnapshot.docs) {
+            PillAlarmModel model = PillAlarmModel.fromJson(doc.data());
+            pillAlarmModels.add(model);
+          }
+        } catch(e) {
+          logger.e('[glucocare_log] Failed to select pill alarms (selectAllPillAlarm) : $e');
+          return [];
         }
-
-      } catch(e) {
-        logger.e('[glucocare_log] Failed to select pill alarms (selectAllPillAlarm) : $e');
-        return [];
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String subColName in namelist) {
+        try{
+          var querySnapshot = await _store.collection('pill_alarm').doc(kakaoId).collection(subColName).get();
+          for(var doc in querySnapshot.docs) {
+            PillAlarmModel model = PillAlarmModel.fromJson(doc.data());
+            pillAlarmModels.add(model);
+          }
+        } catch(e) {
+          logger.e('[glucocare_log] Failed to select pill alarms (selectAllPillAlarm) : $e');
+          return [];
+        }
       }
     }
 
     return pillAlarmModels;
+
   }
 }

@@ -79,7 +79,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
   }
 
-  void _onSaveButtonPressed() {
+  Future<void> _onSaveButtonPressed() async {
     _setState();
 
     GlucoModel glucoModel = GlucoModel(
@@ -91,11 +91,18 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     );
     GlucoRepository.insertGlucoCheck(glucoModel);
 
-    String? uid = AuthService.getCurUserUid();
-    if(uid != null) {
+    if(await AuthService.userLoginedFa()) {
+      String? uid = await AuthService.getCurUserUid();
+      logger.d('[glucocare_log] user fa: $uid');
       GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
       GlucoColNameRepository.insertGlucoColName(nameModel);
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      logger.d('[glucocare_log] user ka : $kakaoId');
+      GlucoColNameModel nameModel = GlucoColNameModel(uid: kakaoId, date: _checkDate);
+      GlucoColNameRepository.insertGlucoColName(nameModel);
     }
+
     Navigator.pop(context, true);
   }
 

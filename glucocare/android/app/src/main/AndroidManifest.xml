@@ -13,18 +13,17 @@
         android:label="glucocare"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <activity
-            android:name="com.kakao.sdk.auth.AuthCodeCustomTabsActivity"
-            android:launchMode="singleTask"
-            android:exported="true">
-            <intent-filter android:label="flutter_web_auth">
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="kakao" android:host="oauth"/>
-            </intent-filter>
-        </activity>
+<!--        <activity-->
+<!--            android:name="com.kakao.sdk.auth.AppHandlerActivity"-->
+<!--            android:exported="true">-->
+<!--            <intent-filter android:label="flutter_web_auth">-->
+<!--                <action android:name="android.intent.action.VIEW" />-->
+<!--                <category android:name="android.intent.category.DEFAULT" />-->
+<!--                <category android:name="android.intent.category.BROWSABLE" />-->
+<!--                <data android:scheme="kakaodc65b60daa0814bc5aa8fcbcfb427a70" android:host="oauth"/>-->
+<!--                <data android:host="address"/>-->
+<!--            </intent-filter>-->
+<!--        </activity>-->
         <activity
             android:name=".MainActivity"
             android:exported="true"

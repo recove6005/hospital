@@ -32,7 +32,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
-    javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY']
+    javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY'],
+    loggingEnabled: true,
   );
 
   // firebase init
@@ -99,8 +100,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _CheckUserAndMoveToLogin() async {
-    String? isLogined = await AuthService.getCurUserUid();
-    if(isLogined == null) {
+    if(await AuthService.userLoginedFa() == false && await AuthService.userLoginedKa() == false) {
       WidgetsBinding.instance.addPostFrameCallback((_) { // 위젯 트리가 빌드된 후 실행
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
       });
@@ -115,14 +115,13 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    logger.d('[glucocare_log] ${AuthService.getCurUserUid()}');
     _CheckUserAndMoveToLogin();
   }
 
   @override
   Widget build(BuildContext context) {
       return Scaffold(
-        appBar: _user == null
+        appBar: (_user == null && AuthService.getCurUserId() == null)
         ? null
         : AppBar(
             backgroundColor: const Color(0xFFFFFFFF),

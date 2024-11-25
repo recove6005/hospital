@@ -1,16 +1,25 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ka;
 import 'package:logger/logger.dart';
 
 class AuthService {
   static Logger logger = Logger();
+  static final fa.FirebaseAuth _auth = fa.FirebaseAuth.instance;
 
-  static final FirebaseAuth _auth = FirebaseAuth.instance;
+  static Future<bool> userLoginedFa() async {
+    if(_auth.currentUser == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
 
-  static User? getCurUser() {
-    if(_auth.currentUser != null) return _auth.currentUser;
-    else {
-      logger.d('[glucocare_log] User is not exist.');
-      return null;
+  static Future<bool> userLoginedKa() async {
+    try {
+      ka.User user = await ka.UserApi.instance.me();
+      return true;
+    } catch(e) {
+      return false;
     }
   }
 
@@ -18,21 +27,64 @@ class AuthService {
     if(_auth.currentUser != null) {
       return _auth.currentUser!.uid;
     } else {
-      logger.d('[glucocare_log] User is not exist.');
+
     }
     return null;
   }
 
-  static void sendPhoneAuth(String phone) async {
-    String phoneNumSet = phone.substring(1);
+  static Future<String?>? getCurUserId() async{
+    try {
+      ka.User user = await ka.UserApi.instance.me();
+      return user.id.toString();
+    } catch(e) {
+      logger.e('[glucocare_log] $e');
+      return null;
+    }
+  }
+
+    static void authPhoneNumber(String phoneNumber) async {
+      await _auth.verifyPhoneNumber(
+          phoneNumber: '+82$phoneNumber',
+          verificationCompleted: (fa.PhoneAuthCredential credential) async {
+            // Android only
+            // Sign the user in (or link) with the auto-generated credential
+            await _auth.signInWithCredential(credential);
+          },
+          verificationFailed: (fa.FirebaseAuthException e) {
+            if (e.code == 'invalid-phone-number') {
+              logger.e('[glucocare_log] The provided phone number is not valid.');
+            }
+          },
+          codeSent: (String verificationId, int? resendToken) async {
+            logger.d('[glucocare_log] id: ${verificationId}');
+            String smsCode = 'xxxxxx';
+
+            // Create a PhoneAuthCredential with the code
+            fa.PhoneAuthCredential credential = fa.PhoneAuthProvider.credential(
+                verificationId: verificationId,
+                smsCode: smsCode
+            );
+
+            // Sign the user in (or link) with the credential
+            _auth.signInWithCredential(credential);
+          },
+          timeout: const Duration(seconds: 60),
+          codeAutoRetrievalTimeout: (String veficicationId) {
+            // Auto-resolution timed out...
+          },
+      );
+    }
+
+    static void sendPhoneAuth(String phone) async {
+      String phoneNumSet = phone.substring(1);
     String formatPhone = "+82$phoneNumSet";
 
-    await FirebaseAuth.instance.verifyPhoneNumber(
+    await fa.FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: formatPhone,
         timeout: const Duration(seconds: 60),
 
         // Android 기기 sms코드 자동처리
-        verificationCompleted: (PhoneAuthCredential credential) async {
+        verificationCompleted: (fa.PhoneAuthCredential credential) async {
           try {
             await _auth.signInWithCredential(credential);
           } catch(e) {
@@ -40,7 +92,7 @@ class AuthService {
           }
         },
 
-        verificationFailed: (FirebaseAuthException e) {
+        verificationFailed: (fa.FirebaseAuthException e) {
           // 잘못된 번호나 sms할당량 초과 여부 등 실패 이벤트 처리
           if (e.code == 'invalid-phone-number') {
             logger.d('[glucocare_log] Failed to send a code : $e');
@@ -50,7 +102,7 @@ class AuthService {
         codeSent: (String verificationId, int? resendToken) async {
           // 사용자에게 메시지 표시
           logger.d('glucocare_log : Verification code sent to $phone');
-          PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          fa.PhoneAuthCredential credential = fa.PhoneAuthProvider.credential(
               verificationId: verificationId,
               smsCode: '인증번호를 확인해 주세요.'
           );
@@ -71,5 +123,6 @@ class AuthService {
 
   static Future<void> signOut() async {
     await _auth.signOut();
+    await ka.UserApi.instance.logout();
   }
 }
