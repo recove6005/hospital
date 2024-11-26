@@ -5,7 +5,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glucocare/login.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/firebase_fcm_service.dart';
 import 'package:glucocare/services/notification_service.dart';
+import 'package:glucocare/services/permission_service.dart';
 import 'package:glucocare/taps/councel_tap.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
@@ -43,7 +45,10 @@ Future<void> main() async {
   );
 
   // notification service init
-  NotificationService.initialize();
+  // PermissionService.requestExactAlarmPermission();
+  // PermissionService.requestNotificationPermissions();
+  NotificationService.initNotification();
+  // FCMService.initialize();
 
   runApp(const MyApp());
 }
@@ -210,6 +215,19 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                     ),
+                ListTile(
+                    leading: Icon(Icons.logout),
+                    title: const Text('알람', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () {
+                      logger.e('requested to permit exax');
+                      PermissionService.requestExactAlarmPermission();
+                      PermissionService.requestNotificationPermissions();
+                      NotificationService.showNotification();
+                    }
+                ),
               ],
             )
         ),

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/repositories/pill_colname_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 class PillRepository {
@@ -116,4 +117,45 @@ class PillRepository {
     }
   }
 
+  static Future<List<PillModel>> selectTodaysPillAlarms() async {
+    List<PillModel> todaysAlarm = [];
+    String today = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      var docSnapshot = await _store.collection('pill_check').doc(uid).collection(today).get();
+      for(var doc in docSnapshot.docs) {
+        PillModel model = PillModel.fromJson(doc.data());
+        todaysAlarm.add(model);
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      var docSnapshot = await _store.collection('pill_check').doc(kakaoId).collection(today).get();
+      for(var doc in docSnapshot.docs) {
+        PillModel model = PillModel.fromJson(doc.data());
+        todaysAlarm.add(model);
+      }
+    }
+    return todaysAlarm;
+  }
+
+  static Future<void> deletePillCheckBySaveTime(String saveDate, String saveTime) async {
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      await _store.collection('pill_check').doc(uid).collection(saveDate).doc(saveTime).delete();
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      await _store.collection('pill_check').doc(kakaoId).collection(saveDate).doc(saveTime).delete();
+    }
+
+
+  }
+
+  // 지난 일자 알람 자동 삭제
+  // static Future<void> deletePastPillCheck() async {
+  //   if(await AuthService.userLoginedFa()) {
+  //     String? uid = AuthService.getCurUserUid();
+  //     String yesterday = DateFormat('yyyy년 MM월 dd일 a (E)', 'ko_KR').format(DateTime.now());
+  //   }
+  // }
 }

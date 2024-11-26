@@ -4,6 +4,7 @@ import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/repositories/pill_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
+import 'package:glucocare/services/notification_service.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
 import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
@@ -32,6 +33,7 @@ class HomeTapForm extends StatefulWidget {
 
 class _HomeTapForm extends State<HomeTapForm> {
   Logger logger = Logger();
+
   bool _isLoadingGluco = true;
   bool _isLoadingPurse = true;
   bool _isLoadingPill = true;
@@ -176,11 +178,13 @@ class _HomeTapForm extends State<HomeTapForm> {
     _getLastGlucoCheck();
     _getLastPurseCheck();
     _getLastPillAlarm();
+
+    NotificationService.showNotification();
   }
 
   @override
   Widget build(BuildContext context) {
-    if(_isLoadingGluco || _isLoadingPurse) return const Center(child: CircularProgressIndicator(),);
+    if(_isLoadingGluco || _isLoadingPurse || _isLoadingPill) return const Center(child: CircularProgressIndicator(),);
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,

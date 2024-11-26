@@ -81,7 +81,6 @@ class PillColNameRepository {
         logger.e('[glucocare_log] Failed to load pill col name (selectLastPillColName) : $e');
       }
     }
-
     return lastPillColName;
   }
 }

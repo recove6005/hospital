@@ -28,7 +28,6 @@ class PillAlarmRepository {
         logger.e('[glucocare_log] Failed to insert pill alarm (insertPillAlarm) : $e');
       }
     }
-
   }
 
   static Future<List<PillAlarmModel>> selectAllPillAlarm() async {
@@ -64,8 +63,11 @@ class PillAlarmRepository {
         }
       }
     }
-
     return pillAlarmModels;
+  }
 
+  static Future<void> deletePillAlarmBySaveTime(String saveDate, String saveTime) async {
+    String? uid = AuthService.getCurUserUid();
+    await _store.collection('pill_alarm').doc(uid).collection(saveDate).doc(saveTime).delete();
   }
 }

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:glucocare/models/pill_col_name_model.dart';
 import 'package:glucocare/models/pill_alarm_model.dart';
 import 'package:glucocare/models/pill_model.dart';
+import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/pill_alarm_repository.dart';
 import 'package:glucocare/repositories/pill_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
@@ -80,7 +81,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
     // setState() 이전에 먼저 async-await 작업 후
     // setStete() 내에서 해당 데이터를 옮겨 줌
     try {
-      List<PillModel> models = await PillRepository.selectAllPillModels();
+      List<PillModel> models = await AlarmRepository.selectAllAlarm();
       setState(() {
         _pillModels = models;
         _childCount = _pillModels.length;
@@ -91,8 +92,6 @@ class _PillCheckFormState extends State<PillCheckForm> {
     }
   }
 
-
-
   String _getLocaleTime(Timestamp time) {
     DateTime utcTime = time.toDate();
     DateTime krTime = utcTime.toLocal();
@@ -100,7 +99,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
 
     return formattedTime;
   }
-
+  
   void _setStates() {
     _saveTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
     _saveDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
@@ -143,13 +142,14 @@ class _PillCheckFormState extends State<PillCheckForm> {
       userId = await AuthService.getCurUserId();
     }
 
-    PillModel pillModel = PillModel(saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime, state: _state);
-    PillAlarmModel pillAlarmModel = PillAlarmModel(saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime);
-    PillColNameModel alarmNameModel = PillColNameModel(date: _saveDate, uid: userId!);
+    PillModel pillModel = PillModel(uid: userId!, saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime, state: _state);
+    // PillAlarmModel pillAlarmModel = PillAlarmModel(saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime);
+    // PillColNameModel alarmNameModel = PillColNameModel(date: _saveDate, uid: userId);
 
-    PillRepository.insertPillCheck(pillModel);
-    PillAlarmRepository.insertPillAlarm(pillAlarmModel);
-    PillColNameRepository.insertAlarmColName(alarmNameModel);
+    AlarmRepository.insertAlarm(pillModel);
+    // PillRepository.insertPillCheck(pillModel);
+    // PillAlarmRepository.insertPillAlarm(pillAlarmModel);
+    // PillColNameRepository.insertAlarmColName(alarmNameModel);
 
     _setPillModels();
     _initValues();
@@ -159,7 +159,6 @@ class _PillCheckFormState extends State<PillCheckForm> {
   void initState() {
     super.initState();
     _setPillModels();
-    // _setPillAlarmModels();
   }
 
   @override
@@ -177,7 +176,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                 children: [
                   const SizedBox(height: 40,),
                   Container(
-                    width: 300,
+                    width: 350,
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -386,9 +385,9 @@ class _PillCheckFormState extends State<PillCheckForm> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 30,),
+                  const SizedBox(height: 20,),
                   Container(
-                    width: 300,
+                    width: 350,
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
@@ -427,81 +426,98 @@ class _PillCheckFormState extends State<PillCheckForm> {
                       )
                     ),
                   if(_pillModels.isNotEmpty)
-                    SizedBox(
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      decoration: BoxDecoration(
+                        color: const Color(0xffF9F9F9),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
                       width: 350,
-                      height: 400,
-                      child: CustomScrollView(
-                        slivers: [
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              childCount: _childCount,
-                                  (context, index) => Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _pillModels[index].saveDate,
-                                      style: const TextStyle(
-                                          fontSize: 15,
-                                          color: Colors.black54
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5,),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Colors.grey[300],
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-                                        child: Column(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                              '오늘의 알림',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                          ),
+                          const SizedBox(height: 10,),
+                          SizedBox(
+                            width: 350,
+                            height: 330,
+                            child: CustomScrollView(
+                              slivers: [
+                                SliverList(
+                                  delegate: SliverChildBuilderDelegate(
+                                    childCount: _childCount,
+                                        (context, index) => Column(
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
-                                            Container(
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  SizedBox(
-                                                    width: 25,
-                                                    height: 25,
-                                                    child: Image.asset('assets/images/ic_clock.png'),
+                                            const SizedBox(height: 10,),
+                                            Row(
+                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  width: 200,
+                                                  padding: const EdgeInsets.only(left: 10),
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      Text(_getLocaleTime(_pillModels[index].alarmTime),
+                                                        style: const TextStyle(
+                                                          fontSize: 20,
+                                                          color: Colors.black,
+                                                        ),),
+                                                      Text(_pillModels[index].state,
+                                                        style: const TextStyle(
+                                                          fontSize: 20,
+                                                          color: Colors.black,
+                                                        ),),
+                                                    ],
                                                   ),
-                                                  const SizedBox(width: 10,),
-                                                  Text(_getLocaleTime(_pillModels[index].alarmTime),
-                                                    style: const TextStyle(
-                                                      fontSize: 15,
-                                                    ),)
-                                                ],
-                                              ),
+                                                ),
+                                                const SizedBox(width: 15,),
+                                                ElevatedButton(
+                                                  onPressed: () {
+                                                    logger.d('[glucocare_log] clicked.');
+                                                    AlarmRepository.deleteAlarm(_pillModels[index].alarmTime);
+                                                    _setPillModels();
+                                                    _initValues();
+                                                  },
+                                                  style: ElevatedButton.styleFrom(
+                                                      padding: EdgeInsets.zero,
+                                                      backgroundColor: const Color(0xffdcf9f9),
+                                                      shadowColor: Colors.transparent,
+                                                      shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(20),
+                                                      )
+                                                  ),
+                                                  child: const Icon(Icons.delete, color: Color(0xff28c2ce),),
+                                                ),
+                                              ],
                                             ),
-                                            const SizedBox(height: 5,),
+                                            const SizedBox(height: 15,),
                                             Container(
-                                              child: Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  SizedBox(
-                                                    width: 25,
-                                                    height: 25,
-                                                    child: Image.asset('assets/images/ic_pill_check.png'),
-                                                  ),
-                                                  const SizedBox(width: 10,),
-                                                  Text(_pillModels[index].state,
-                                                    style: const TextStyle(
-                                                      fontSize: 15,
-                                                    ),)
-                                                ],
+                                              width: 300,
+                                              height: 1,
+                                              decoration: const BoxDecoration(
+                                                color: Color(0xffb7b7b7),
                                               ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ),
+                          )
                         ],
                       ),
                     ),

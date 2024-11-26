@@ -102,7 +102,6 @@ class PurseColNameRepository {
         logger.e('[glucocare_log] Failed to load purse col name (selectLastPurseColName) : $e');
       }
     }
-
     return lastPurseColName;
   }
 }

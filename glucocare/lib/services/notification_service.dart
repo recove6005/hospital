@@ -1,89 +1,88 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:logger/logger.dart';
-import 'package:http/http.dart' as http;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class NotificationService {
   static Logger logger = Logger();
-  static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  static FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
-  static Future<String?> _getToken() async {
-    // FCM 토큰 획득
-    String? token = await _messaging.getToken();
-    logger.d('[glucocare_log] A FCM token was gatted : $token');
-    return token;
+  static void initNotification() {
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        logger.d('Notification clicked with payload: ${response.payload}');
+      },
+    );
+
+    logger.d('[glucocare_log] init set times.');
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
   }
 
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage msg) async {
-    logger.d('Background message received: ${msg.notification?.body}');
-  }
+  static Future<void> showNotification() async {
+    // const AndroidNotificationDetails androidNotificationDetails =
+    //     AndroidNotificationDetails(
+    //       'asdf1029jjasdf',
+    //       '12120iasdnz,mxcnvklahdklaef',
+    //       channelDescription: 'channel_description',
+    //       importance: Importance.max,
+    //       priority: Priority.high,
+    //       ticker: 'ticker',
+    //     );
+    //
+    // const NotificationDetails notificationDetails = NotificationDetails(
+    //     android: androidNotificationDetails
+    // );
+    //
+    // await flutterLocalNotificationsPlugin.show(
+    //   0,
+    //   'plain title',
+    //   'plain body',
+    //   notificationDetails,
+    //   payload: 'item x',
+    // );
 
-  static Future<void> sendBackgroundMsg() async {
-    _getToken();
 
-    // 백그라운드 알림 처리
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  }
-
-  static Future<void> sendForegroundMsg() async {
-    _getToken();
-
-    // 포그라운드 알림 처리
-    FirebaseMessaging.onMessage.listen((RemoteMessage msg) async {
-      RemoteNotification? notification = msg.notification;
-
-      if(notification != null) {
-
-        FlutterLocalNotificationsPlugin().show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          const NotificationDetails(
-            android: AndroidNotificationDetails(
-                'high_importance_ch',
-                'high_importance_ntc',
-                importance: Importance.max
-            ),
+    try {
+      await flutterLocalNotificationsPlugin.zonedSchedule(
+        0,
+        'Test Title',
+        'Test Body',
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
+        const NotificationDetails(
+          android: AndroidNotificationDetails(
+            'send_me_the_exaxtime_channel_id3522',
+            'send_me_the_exaxtime_channel_name987655',
+            channelDescription: 'channel_description',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
           ),
-        );
-      }
-
-      String msgString = msg.notification!.body!;
-      logger.d('[glucocare_log] Foreground message: $msgString');
-    });
+        ),
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+        androidScheduleMode: AndroidScheduleMode.inexact,
+        //allowWhileIdle: true,
+      );
+    } catch(e) {
+      logger.d('[glucocare_log] Failed (showNotification) : $e');
+    }
   }
 
-  static Future<void> initialize() async {
-    // ios 권한
-    NotificationSettings iosSetting = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(const AndroidNotificationChannel(
-        'high_importance_ch',
-        'high_importance_ntc',
-        importance: Importance.max)
-    );
-
-    await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-      android: AndroidInitializationSettings("@mipmap/ic_launcher"),
-    ));
-
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-  }
-
-
-  static Future<void> sendNotificationToServer() async {
-
-
+  static tz.TZDateTime _makeDate(h, m, s) {
+    var now = tz.TZDateTime.now(tz.local);
+    var when = tz.TZDateTime(tz.local, now.year, now.month, now.day, h, m, s);
+    if(when.isBefore(now)) {
+      when = when.add(const Duration(days: 1));
+    }
+    logger.d('[glucocare_log] setTime: ${when}');
+    return when;
   }
 }
