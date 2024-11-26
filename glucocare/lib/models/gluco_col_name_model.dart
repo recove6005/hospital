@@ -1,5 +1,5 @@
 class GlucoColNameModel {
-  final String uid;
+  final String? uid;
   final String date;
 
   GlucoColNameModel({

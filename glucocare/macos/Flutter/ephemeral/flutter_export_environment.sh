@@ -1,7 +1,12 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
+<<<<<<< HEAD
 export "FLUTTER_ROOT=C:\Users\hanib\FlutterSDK\flutter_windows_3.24.3-stable\flutter"
 export "FLUTTER_APPLICATION_PATH=C:\Users\hanib\repository\purse_gluco_check\glucocare"
+=======
+export "FLUTTER_ROOT=C:\Users\82109\flutter_windows_3.24.4-stable\flutter"
+export "FLUTTER_APPLICATION_PATH=D:\StudioProjects\glucocare"
+>>>>>>> origin/main
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"

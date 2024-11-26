@@ -29,6 +29,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   Logger logger = Logger();
   bool _isLoading = true;
   bool _isChartLoading = true;
+  bool _isPillLoading = true;
 
   // 히스토리 내역 설정 함수
   List<PurseModel> _purseModels = [];
@@ -39,10 +40,8 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
 
   void _setPurseModels() async {
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(_selectedDate);
-
     try {
       List<PurseModel> models = await PurseRepository.selectPurseByDay(_checkDate);
-
       setState(() {
         _purseModels = models;
         _childCount = _purseModels.length;
@@ -729,14 +728,16 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                                 child: Column(
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
-                                                    if(_purseModels[index].checkTime.substring(0,2) == 'AM')
+                                                    if(_purseModels[index].checkTime.substring(0,2) == 'AM' ||
+                                                        _purseModels[index].checkTime.substring(0,2) == '오전')
                                                       Text('오전 ${_purseModels[index].checkTime.substring(3,8)}',
                                                         style: const TextStyle(
                                                           fontSize: 19,
                                                           fontWeight: FontWeight.bold,
                                                           color: Colors.black,
                                                         ),),
-                                                    if(_purseModels[index].checkTime.substring(0,2) == 'PM')
+                                                    if(_purseModels[index].checkTime.substring(0,2) == 'PM' ||
+                                                        _purseModels[index].checkTime.substring(0,2) == '오후')
                                                       Text('오후 ${_purseModels[index].checkTime.substring(3,8)}',
                                                         style: const TextStyle(
                                                           fontSize: 19,

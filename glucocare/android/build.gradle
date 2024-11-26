@@ -18,3 +18,9 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
+
+//buildscript {
+//    dependencies {
+//        classpath 'com.android.tools.build:gradle:8.7.2'
+//    }
+//}
