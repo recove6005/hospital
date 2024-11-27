@@ -27,17 +27,25 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController _idInputController = TextEditingController();
+  final TextEditingController _codeInputController = TextEditingController();
   Logger logger = Logger();
   bool _isKakaoLogind = false;
+  bool _isCodeSent = false;
 
-  void _login() async {
+  void _sendCode() async {
     String phone = _idInputController.text;
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: phone,
-      password: "112233",
-    );
+    setState(() {
+      _isCodeSent = true;
+    });
+    AuthService.authPhoneNumber(phone);
+  }
 
-    if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+  void _authCode() async {
+    await AuthService.authCodeAndLogin(_codeInputController.text);
+    logger.d('[glucocare_log] user = ${AuthService.getCurUserUid()}');
+    setState(() async {
+      if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+    });
   }
 
   void _autoLogin() async {
@@ -94,6 +102,7 @@ class _LoginFormState extends State<LoginForm> {
               child: Image.asset('assets/images/login_daol.png'),
             ),
             const SizedBox(height: 25,),
+            if(_isCodeSent == false)
             Container(
               width: 280,
               height: 45,
@@ -120,12 +129,40 @@ class _LoginFormState extends State<LoginForm> {
                 textAlignVertical: TextAlignVertical.center,
               ),
             ),
+            if(_isCodeSent == true)
+              Container(
+                width: 280,
+                height: 45,
+                padding: EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: Color(0xFFF9F9F9),
+                ),
+                child: TextField(
+                  controller: _codeInputController,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    hintText: '인증번호',
+                    hintStyle: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFB4B4B4),
+                    ),
+                  ),
+                  style: const TextStyle(fontSize: 18),
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.center,
+                ),
+              ),
             const SizedBox(height: 10,),
+            if(_isCodeSent == false)
             SizedBox(
               width: 280,
               height: 45,
               child: ElevatedButton(
-                onPressed: _login,
+                onPressed: _sendCode,
                 style: ElevatedButton.styleFrom(
                     backgroundColor: Color(0xFF28C2CE),
                     shape: RoundedRectangleBorder(
@@ -133,7 +170,7 @@ class _LoginFormState extends State<LoginForm> {
                     )
                 ),
                 child: const Text(
-                  '로그인',
+                  '인증',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -142,6 +179,28 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
             ),
+            if(_isCodeSent == true)
+              SizedBox(
+                width: 280,
+                height: 45,
+                child: ElevatedButton(
+                  onPressed: _authCode,
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xFF28C2CE),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)
+                      )
+                  ),
+                  child: const Text(
+                    '로그인',
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white
+                    ),
+                  ),
+                ),
+              ),
             const SizedBox(height: 25,),
             Container(
               width: 280,

@@ -62,8 +62,7 @@ class _HomeTapForm extends State<HomeTapForm> {
       }
     } catch (e) {
       logger.e('[glucocare_log] failed (_showFillInBox) : $e');
-      PatientRepository.insertInitPatient();
-      _showFillInBox();
+      await PatientRepository.insertInitPatient();
     }
   }
 
