@@ -1,16 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/pill_col_name_model.dart';
-import 'package:glucocare/models/pill_alarm_model.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/repositories/alarm_repository.dart';
-import 'package:glucocare/repositories/pill_alarm_repository.dart';
-import 'package:glucocare/repositories/pill_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-import '../../repositories/pill_colname_repository.dart';
 
 class PillCheckPage extends StatelessWidget {
   const PillCheckPage({super.key});
@@ -73,6 +68,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
   String _saveDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
   String _state = '';
   Timestamp _alarmTime = Timestamp.fromDate(DateTime.now());
+  String _alarmTimeStr = '';
 
   List<PillModel> _pillModels = [];
   int _childCount = 0;
@@ -109,6 +105,14 @@ class _PillCheckFormState extends State<PillCheckForm> {
     int adjustedHour = _alarmHourValue;
     if(_alarmTimeAreaValue == '오후') adjustedHour += 12;
     if(_alarmTimeAreaValue == '오전' && _alarmHourValue == 12) adjustedHour = 0;
+    _alarmTimeStr = DateFormat('HH:mm', 'ko_KR')
+        .format(DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+        adjustedHour,
+        _alarmMinuteValue)
+    );
     _alarmTime = Timestamp.fromDate(
         DateTime(
             DateTime.now().year,
@@ -141,15 +145,8 @@ class _PillCheckFormState extends State<PillCheckForm> {
     } else {
       userId = await AuthService.getCurUserId();
     }
-
-    PillModel pillModel = PillModel(uid: userId!, saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime, state: _state);
-    // PillAlarmModel pillAlarmModel = PillAlarmModel(saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime);
-    // PillColNameModel alarmNameModel = PillColNameModel(date: _saveDate, uid: userId);
-
+    PillModel pillModel = PillModel(uid: userId!, saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime, alarmTimeStr: _alarmTimeStr, state: _state);
     AlarmRepository.insertAlarm(pillModel);
-    // PillRepository.insertPillCheck(pillModel);
-    // PillAlarmRepository.insertPillAlarm(pillAlarmModel);
-    // PillColNameRepository.insertAlarmColName(alarmNameModel);
 
     _setPillModels();
     _initValues();
@@ -438,7 +435,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                              '오늘의 알림',
+                              '복용 시간',
                               style: TextStyle(
                                 fontSize: 25,
                                 fontWeight: FontWeight.bold,
@@ -487,7 +484,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                                 ElevatedButton(
                                                   onPressed: () {
                                                     logger.d('[glucocare_log] clicked.');
-                                                    AlarmRepository.deleteAlarm(_pillModels[index].alarmTime);
+                                                    AlarmRepository.deleteAlarm(_pillModels[index].alarmTimeStr);
                                                     _setPillModels();
                                                     _initValues();
                                                   },

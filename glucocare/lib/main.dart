@@ -4,11 +4,13 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glucocare/login.dart';
+import 'package:glucocare/drawer/patient_info.dart';
+import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
-import 'package:glucocare/services/firebase_fcm_service.dart';
 import 'package:glucocare/services/notification_service.dart';
-import 'package:glucocare/services/permission_service.dart';
-import 'package:glucocare/taps/councel_tap.dart';
+import 'package:glucocare/services/workmanager_service.dart';
+import 'package:glucocare/taps/notice_board.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
@@ -17,21 +19,23 @@ import 'package:intl/intl.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:logger/logger.dart';
 import 'package:month_year_picker/month_year_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   await dotenv.load();
 
+  WidgetsFlutterBinding.ensureInitialized();
+
   // 터치 영역 디버깅 활성화
   debugPaintPointersEnabled = false;
 
   // locale init - 기본 지역 설정
-  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('ko_KR', null);
   Intl.defaultLocale = 'ko_KR';
 
   // kakotalk api init
-  WidgetsFlutterBinding.ensureInitialized();
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY'],
@@ -39,16 +43,16 @@ Future<void> main() async {
   );
 
   // firebase init
-  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
   // notification service init
-  // PermissionService.requestExactAlarmPermission();
-  // PermissionService.requestNotificationPermissions();
-  NotificationService.initNotification();
   // FCMService.initialize();
+  NotificationService.initNotification();
+
+  // Workmanager init
+  Workmanager().initialize(WorkManagerService.callbackDispatcher, isInDebugMode: true);
 
   runApp(const MyApp());
 }
@@ -90,17 +94,25 @@ class _HomePageState extends State<HomePage> {
   Logger logger = Logger();
   static final String? _user = AuthService.getCurUserUid();
 
+  String _userName = '';
+
   int _tappedIndex = 0;
   static final List<Widget> _tapPages = <Widget> [
     const HomeTap(),
     const GlucoHistoryTap(),
     const PurseHistoryTap(),
-    CouncelTap(),
+    const Center(child: Text('')),
   ];
 
   void _onItemTapped(int index) {
     setState(() {
-      _tappedIndex = index;
+      if(index == 3) {
+          launchUrl(
+            Uri.parse('http://pf.kakao.com/_Hkkxoxj'),
+          );
+      } else {
+        _tappedIndex = index;
+      }
     });
   }
 
@@ -112,15 +124,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  String _getUserName() {
-    if(_user == null) return 'Not eixtst';
-    return _user.toString();
+  Future<void> _getUserName() async {
+    try{
+      PatientModel? model = await PatientRepository.selectPatientByUid();
+      setState(() {
+        _userName = model!.name;
+      });
+    } catch(e) {
+      logger.e('[glucocare_log] Theres not exist user info. (_getUserName): $e');
+    }
   }
 
   @override
   void initState() {
     super.initState();
     _CheckUserAndMoveToLogin();
+    _getUserName();
   }
 
   @override
@@ -191,15 +210,53 @@ class _HomePageState extends State<HomePage> {
                     decoration: const BoxDecoration(
                       color: Colors.grey,
                     ),
-                    child: Center(
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       child: Text(
-                        _getUserName(),
+                        '$_userName 님',
                         style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 20
+                          color: Colors.white,
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.start,
                       ),
                     )
+                ),
+                ListTile(
+                    leading: Icon(Icons.person),
+                    title: const Text('회원 정보', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async {
+                        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientInfoPage()));
+                        if(result) {
+                          setState(() {
+                            _getUserName();
+                          });
+                        }
+                    }
+                ),
+                ListTile(
+                    leading: Icon(Icons.doorbell),
+                    title: const Text('알람 테스팅', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () {
+                      WorkManagerService.addPeriodicWork();
+                    }
+                ),
+                ListTile(
+                    leading: Icon(Icons.doorbell),
+                    title: const Text('모든 작업 삭제', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () {
+                      WorkManagerService.deleteAllTasks();
+                    }
                 ),
                 ListTile(
                     leading: Icon(Icons.logout),
@@ -213,19 +270,6 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(builder: (context) => const LoginPage())
                       );
-                    }
-                    ),
-                ListTile(
-                    leading: Icon(Icons.logout),
-                    title: const Text('알람', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () {
-                      logger.e('requested to permit exax');
-                      PermissionService.requestExactAlarmPermission();
-                      PermissionService.requestNotificationPermissions();
-                      NotificationService.showNotification();
                     }
                 ),
               ],
@@ -266,8 +310,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                   BottomNavigationBarItem(
                       icon: _tappedIndex == 3
-                          ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_b.png'),)
-                          : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_g.png'),) ,
+                          ? SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_b.png', color: Colors.orange,),)
+                          : SizedBox(width: 25, height: 25, child: Image.asset('assets/images/icon_counsel_g.png', color: Colors.orange,),) ,
                       label: '상담'
                   ),
                 ],

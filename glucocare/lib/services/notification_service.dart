@@ -49,19 +49,17 @@ class NotificationService {
     //   payload: 'item x',
     // );
 
-    final tz.TZDateTime scheduledDate = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 2));
-    logger.d('[glucocare_log] Scheduled Date: $scheduledDate');
 
     try {
       await flutterLocalNotificationsPlugin.zonedSchedule(
         0,
         'Test Title',
         'Test Body',
-        scheduledDate,
+        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
         const NotificationDetails(
           android: AndroidNotificationDetails(
-            'send_me_the_exaxtime_channel_id352asd2',
-            'send_me_the_exaxtime_channel_name9asdfew7655',
+            'send_me_the_exaxtime_channel_id3522',
+            'send_me_the_exaxtime_channel_name987655',
             channelDescription: 'channel_description',
             importance: Importance.max,
             priority: Priority.high,
@@ -70,7 +68,7 @@ class NotificationService {
         ),
         uiLocalNotificationDateInterpretation:
         UILocalNotificationDateInterpretation.absoluteTime,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+        androidScheduleMode: AndroidScheduleMode.inexact,
         //allowWhileIdle: true,
       );
     } catch(e) {

@@ -5,6 +5,7 @@ class PillModel {
   final String saveDate;
   final String saveTime;
   final Timestamp alarmTime;
+  final String alarmTimeStr;
   final String state;
 
   PillModel({
@@ -12,6 +13,7 @@ class PillModel {
     required this.saveDate,
     required this.saveTime,
     required this.alarmTime,
+    required this.alarmTimeStr,
     required this.state,
   });
 
@@ -21,6 +23,7 @@ class PillModel {
       'save_date': saveDate,
       'save_time': saveTime,
       'alarm_time': alarmTime,
+      'alarm_time_str': alarmTimeStr,
       'state': state,
     };
   }
@@ -31,6 +34,7 @@ class PillModel {
         saveDate: json['save_date'],
         saveTime: json['save_time'],
         alarmTime: json['alarm_time'],
+        alarmTimeStr: json['alarm_time_str'],
         state: json['state'],
     );
   }

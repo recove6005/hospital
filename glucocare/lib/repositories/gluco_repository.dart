@@ -192,7 +192,6 @@ class GlucoRepository {
   }
 
   static Future<GlucoModel?> selectLastGlucoCheck() async {
-
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       try{
@@ -212,6 +211,8 @@ class GlucoRepository {
           } catch(e) {
             logger.d('[glucocare_log] Failed to load gluco check by colname (selectLastGlucoCheck if1) : $e');
           }
+        } else {
+          logger.d('[glucocare_log] Failed to load gluco check by colname (selectLastGlucoCheck if1)');
         }
       } catch(e) {
         logger.d('[glucocare_log] Failed to load gluco check by colname (selectLastGlucoCheck if2)  : $e');
@@ -244,13 +245,5 @@ class GlucoRepository {
     }
 
     return null;
-  }
-
-  static Future<void> updateGlucoCheck(GlucoModel model) async {
-
-  }
-
-  static Future<void> deleteGlucoCheck(GlucoModel model) async {
-
   }
 }

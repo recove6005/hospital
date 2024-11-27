@@ -9,16 +9,12 @@ class AlarmRepository {
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
   static Future<void> insertAlarm(PillModel model) async {
-    DateTime dateTime = model.alarmTime.toDate().toLocal().subtract(const Duration(hours: 3));
-    String formattedData = DateFormat('yyyy년 MM월 dd일 a h시 m분 s초', 'ko_KR').format(dateTime);
-    String date = formattedData + ' UTC+9';
-
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
-      _store.collection('alarm').doc('$uid $date').set(model.toJson());
+      _store.collection('alarm').doc('$uid ${model.alarmTimeStr}').set(model.toJson());
     } else {
       String? kakaoId = await AuthService.getCurUserId();
-      _store.collection('alarm').doc('$kakaoId $date').set(model.toJson());
+      _store.collection('alarm').doc('$kakaoId ${model.alarmTimeStr}').set(model.toJson());
     }
   }
 
@@ -45,19 +41,40 @@ class AlarmRepository {
     return models;
   }
 
-  static Future<void> deleteAlarm(Timestamp alarmTime) async {
-    logger.d('[glucocare_log] $alarmTime');
-    DateTime dateTime = alarmTime.toDate();
-    String formattedData = DateFormat('yyyy년 MM월 dd일 a h시 m분 s초', 'ko_KR').format(dateTime);
-    String date = formattedData + ' UTC+9';
-    logger.d('[glucocare_log] $date');
+  static Future<PillModel?> selectSoonerAlarm() async {
+    PillModel? model = null;
+    String nowTime = DateFormat('HH:mm').format(DateTime.now());
 
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
-      _store.collection('alarm').doc('$uid $date}').delete();
+      var docSnapshot = await _store.collection('alarm')
+          .where('uid', isEqualTo: uid)
+          .where('alarm_time_str', isGreaterThan: nowTime)
+          .orderBy('alarm_time_str', descending: false)
+          .limit(1)
+          .get();
+      model = PillModel.fromJson(docSnapshot.docs.first.data());
+
     } else {
       String? kakaoId = await AuthService.getCurUserId();
-      _store.collection('alarm').doc('$kakaoId $date}').delete();
+      var docSnapshot = await _store.collection('alarm')
+          .where('uid', isEqualTo: kakaoId)
+          .where('alarm_time_str', isGreaterThan: nowTime)
+          .orderBy('alarm_time_str', descending: false)
+          .limit(1)
+          .get();
+      model = PillModel.fromJson(docSnapshot.docs.first.data());
+    }
+    return model;
+  }
+
+  static Future<void> deleteAlarm(String alarmTimeStr) async {
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      _store.collection('alarm').doc('$uid $alarmTimeStr').delete();
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      _store.collection('alarm').doc('$kakaoId $alarmTimeStr').delete();
     }
   }
 }

@@ -1,15 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/models/patient_model.dart';
 import 'package:glucocare/models/pill_model.dart';
+import 'package:glucocare/popup/fill_in_box.dart';
+import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
-import 'package:glucocare/repositories/pill_repository.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
-import 'package:glucocare/services/notification_service.dart';
+import 'package:glucocare/taps/notice_board.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
 import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/gluco_model.dart';
 import '../models/purse_model.dart';
 
@@ -47,6 +51,22 @@ class _HomeTapForm extends State<HomeTapForm> {
   String _passedPurseTimer = '';
   String _passedGlucoTimer = '';
 
+  void _showFillInBox() async {
+    try {
+      PatientModel? model = await PatientRepository.selectPatientByUid();
+      if (model != null) {
+        if (model.isFilledIn == false) {
+          Navigator.pushReplacement(context, MaterialPageRoute(
+              builder: (context) => const FillInPatientInfoPage()));
+        }
+      }
+    } catch (e) {
+      logger.e('[glucocare_log] failed (_showFillInBox) : $e');
+      PatientRepository.insertInitPatient();
+      _showFillInBox();
+    }
+  }
+
   Future<void> _getLastPurseCheck() async {
     try {
       PurseModel? model = await PurseRepository.selectLastPurseCheck();
@@ -68,8 +88,10 @@ class _HomeTapForm extends State<HomeTapForm> {
     } catch(e) {
       logger.e('[glucocare_log] Failed to load purse model (_getLastPurseCheck) $e');
       if(mounted) {
-        _lastPurseModel = null;
-        _isLoadingPurse = false;
+        setState(() {
+          _lastPurseModel = null;
+          _isLoadingPurse = false;
+        });
       }
     }
   }
@@ -95,15 +117,17 @@ class _HomeTapForm extends State<HomeTapForm> {
     } catch(e) {
       logger.e('[glucocare_log] Failed to load gluco model (_getLastGlucoCheck) $e');
       if(mounted) {
-        _lastGlucoModel = null;
-        _isLoadingGluco = false;
+        setState(() {
+          _lastGlucoModel = null;
+          _isLoadingGluco = false;
+        });
       }
     }
   }
 
-  Future<void> _getLastPillAlarm() async {
+  Future<void> _getSoonerPillAlarm() async {
     try {
-      PillModel? model = await PillRepository.selectLastPillAlarm();
+      PillModel? model = await AlarmRepository.selectSoonerAlarm();
       if(model != null) {
         if(mounted) {
           setState(() {
@@ -121,7 +145,7 @@ class _HomeTapForm extends State<HomeTapForm> {
         }
       }
     } catch(e) {
-      logger.e('[glucocare_log] Failed to load pill model (_getLastPillAlarm) $e');
+      logger.e('[glucocare_log] Failed to load pill model (_getSoonerPillAlarm) $e');
       if(mounted) {
         _lastPillModel = null;
         _alarmTime = '';
@@ -144,7 +168,7 @@ class _HomeTapForm extends State<HomeTapForm> {
 
     if(sec < 60) return '방금 추가됨';
     if(minutes < 60) return '$minutes분 전';
-    if(hours < 60) return '$hours시간 전';
+    if(hours <= 24) return '$hours시간 전';
     return '$days일 전';
   }
   
@@ -175,11 +199,11 @@ class _HomeTapForm extends State<HomeTapForm> {
   @override
   void initState() {
     super.initState();
+    _showFillInBox();
+
     _getLastGlucoCheck();
     _getLastPurseCheck();
-    _getLastPillAlarm();
-
-    NotificationService.showNotification();
+    _getSoonerPillAlarm();
   }
 
   @override
@@ -472,7 +496,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                 final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillCheckPage()));
                 if(result == true) {
                   setState(() {
-                    _getLastPillAlarm();
+                    _getSoonerPillAlarm();
                   });
                 }
               },
@@ -571,7 +595,11 @@ class _HomeTapForm extends State<HomeTapForm> {
                       height: 80,
                       padding: EdgeInsets.zero,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          launchUrl(
+                            Uri.parse('https://booking.naver.com/booking/13/bizes/742389?area=pll'),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           backgroundColor: const Color(0xFFF9F9F9),
@@ -627,7 +655,9 @@ class _HomeTapForm extends State<HomeTapForm> {
                       height: 80,
                       padding: EdgeInsets.zero,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => NoticeBoardPage()));
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           backgroundColor: const Color(0xFFF9F9F9),

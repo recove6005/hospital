@@ -147,15 +147,5 @@ class PillRepository {
       String? kakaoId = await AuthService.getCurUserId();
       await _store.collection('pill_check').doc(kakaoId).collection(saveDate).doc(saveTime).delete();
     }
-
-
   }
-
-  // 지난 일자 알람 자동 삭제
-  // static Future<void> deletePastPillCheck() async {
-  //   if(await AuthService.userLoginedFa()) {
-  //     String? uid = AuthService.getCurUserUid();
-  //     String yesterday = DateFormat('yyyy년 MM월 dd일 a (E)', 'ko_KR').format(DateTime.now());
-  //   }
-  // }
 }
