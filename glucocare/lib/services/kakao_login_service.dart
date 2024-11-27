@@ -1,6 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:logger/logger.dart';
 
@@ -12,8 +11,6 @@ class KakaoLogin {
       try {
         // 카카오톡 로그인
         OAuthToken oauthToken = await UserApi.instance.loginWithKakaoTalk();
-        logger.e('[glucocare_log] Succeed to login with kakaotalke ${oauthToken.accessToken}');
-        // var user = await UserApi.instance.me();
         return true;
       } catch (e) {
         if (e is PlatformException && e.code == 'CANCELED') {
@@ -22,8 +19,7 @@ class KakaoLogin {
         }
       }
     }
-
-    logger.d('[glucocare_log] Failed to login with kakao.');
+    Fluttertoast.showToast(msg: '카카오톡을 설치해 주세요.');
     return false;
   }
 }

@@ -173,7 +173,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
   List<String> _glucoX = [];
   LineChartBarData? _glucoLine;
   double _minX = 0;
-  double _maxX = 30;
+  double _maxX = 4;
   double _minY = 20;
   double _maxY = 200;
 
@@ -287,7 +287,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                       width: 350,
                       height: 30,
                       child: Text(
-                        '내 혈압 관리',
+                        '내 혈당 관리',
                         style: TextStyle(
                           fontSize: 24,
                           color: Colors.black,
@@ -466,7 +466,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                 const SizedBox(height: 10,),
                                 const SizedBox(
                                   width: 280,
-                                  child: Text('혈압 측정 내역이 없습니다.',
+                                  child: Text('혈당 측정 내역이 없습니다.',
                                     style: TextStyle(
                                       fontSize: 18,
                                       color: Colors.grey,
@@ -560,7 +560,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                     width: 350,
                     height: 30,
                     child: Text(
-                      '내 혈압 관리',
+                      '내 혈당 관리',
                       style: TextStyle(
                         fontSize: 24,
                         color: Colors.black,

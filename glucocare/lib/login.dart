@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/main.dart';
-import 'package:glucocare/register_info_general.dart';
-import 'package:glucocare/register_info_kakao.dart';
+import 'package:glucocare/popup/fill_in_box.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/kakao_login_service.dart';
 import 'package:logger/logger.dart';
@@ -29,6 +28,7 @@ class LoginForm extends StatefulWidget {
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController _idInputController = TextEditingController();
   Logger logger = Logger();
+  bool _isKakaoLogind = false;
 
   void _login() async {
     String phone = _idInputController.text;
@@ -42,15 +42,15 @@ class _LoginFormState extends State<LoginForm> {
 
   void _autoLogin() async {
     // 자동 로그인
-    var user = FirebaseAuth.instance.currentUser;
-    if(user != null) {
+    var userFa = FirebaseAuth.instance.currentUser;
+    if(userFa != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       });
     }
 
-    String? kakaoUser = await AuthService.getCurUserId();
-    if(kakaoUser != null) {
+    String? kakaoKa = await AuthService.getCurUserId();
+    if(kakaoKa != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       });
@@ -64,6 +64,24 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
+    if(_isKakaoLogind) {
+      return const Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text('로그인 중입니다.', style:
+              TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey,
+              ),),
+            SizedBox(height: 10,),
+            CircularProgressIndicator(),
+          ],
+        ),
+      );
+    }
     return Container(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
@@ -141,9 +159,13 @@ class _LoginFormState extends State<LoginForm> {
               ),
               child: ElevatedButton(
                   onPressed: () async {
+                    setState(() {
+                      _isKakaoLogind = true;
+                    });
                     bool loginResult = await KakaoLogin.login();
                     if(loginResult) {
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                      _isKakaoLogind = false;
+                      _autoLogin();
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -162,7 +184,7 @@ class _LoginFormState extends State<LoginForm> {
               alignment: Alignment.center,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const RegisterPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const FillInPatientInfoPage()));
                 },
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.zero,

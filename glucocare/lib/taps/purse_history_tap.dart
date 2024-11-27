@@ -29,7 +29,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   Logger logger = Logger();
   bool _isLoading = true;
   bool _isChartLoading = true;
-  bool _isPillLoading = true;
 
   // 히스토리 내역 설정 함수
   List<PurseModel> _purseModels = [];
@@ -155,7 +154,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   List<String> _relaxX = [];
   LineChartBarData? _relaxLine;
   double _minX = 0;
-  double _maxX = 30;
+  double _maxX = 4;
   double _minY = 50;
   double _maxY = 150;
 

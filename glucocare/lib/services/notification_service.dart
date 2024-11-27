@@ -27,53 +27,53 @@ class NotificationService {
   }
 
   static Future<void> showNotification() async {
-    // const AndroidNotificationDetails androidNotificationDetails =
-    //     AndroidNotificationDetails(
-    //       'asdf1029jjasdf',
-    //       '12120iasdnz,mxcnvklahdklaef',
-    //       channelDescription: 'channel_description',
-    //       importance: Importance.max,
-    //       priority: Priority.high,
-    //       ticker: 'ticker',
-    //     );
-    //
-    // const NotificationDetails notificationDetails = NotificationDetails(
-    //     android: androidNotificationDetails
-    // );
-    //
-    // await flutterLocalNotificationsPlugin.show(
-    //   0,
-    //   'plain title',
-    //   'plain body',
-    //   notificationDetails,
-    //   payload: 'item x',
-    // );
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+          'scheduled_pill_time_noti_id',
+          'scheduled_pill_time_noti_name',
+          channelDescription: 'channel_description',
+          importance: Importance.max,
+          priority: Priority.high,
+          ticker: 'ticker',
+        );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+        android: androidNotificationDetails
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      '[다올연합의원]',
+      '약 먹을 시간이에요',
+      notificationDetails,
+      payload: 'item x',
+    );
 
 
-    try {
-      await flutterLocalNotificationsPlugin.zonedSchedule(
-        0,
-        'Test Title',
-        'Test Body',
-        tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
-        const NotificationDetails(
-          android: AndroidNotificationDetails(
-            'send_me_the_exaxtime_channel_id3522',
-            'send_me_the_exaxtime_channel_name987655',
-            channelDescription: 'channel_description',
-            importance: Importance.max,
-            priority: Priority.high,
-            ticker: 'ticker',
-          ),
-        ),
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-        androidScheduleMode: AndroidScheduleMode.inexact,
-        //allowWhileIdle: true,
-      );
-    } catch(e) {
-      logger.d('[glucocare_log] Failed (showNotification) : $e');
-    }
+    // try {
+    //   await flutterLocalNotificationsPlugin.zonedSchedule(
+    //     0,
+    //     'Test Title',
+    //     'Test Body',
+    //     tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
+    //     const NotificationDetails(
+    //       android: AndroidNotificationDetails(
+    //         'send_me_the_exaxtime_channel_id3522',
+    //         'send_me_the_exaxtime_channel_name987655',
+    //         channelDescription: 'channel_description',
+    //         importance: Importance.max,
+    //         priority: Priority.high,
+    //         ticker: 'ticker',
+    //       ),
+    //     ),
+    //     uiLocalNotificationDateInterpretation:
+    //     UILocalNotificationDateInterpretation.absoluteTime,
+    //     androidScheduleMode: AndroidScheduleMode.inexact,
+    //     //allowWhileIdle: true,
+    //   );
+    // } catch(e) {
+    //   logger.d('[glucocare_log] Failed (showNotification) : $e');
+    // }
   }
 
   static tz.TZDateTime _makeDate(h, m, s) {
