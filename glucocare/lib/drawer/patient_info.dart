@@ -43,7 +43,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
       setState(() {
         _name = model.name;
         _gen = model.gen;
-        _birthDate = DateFormat('yyyy년 MM월 DD일').format(model.birthDate.toDate());
+        _birthDate = DateFormat('yyyy년 MM월 dd일').format(model.birthDate.toDate());
       });
     }
   }

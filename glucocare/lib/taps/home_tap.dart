@@ -7,7 +7,8 @@ import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
-import 'package:glucocare/taps/notice_board.dart';
+import 'package:glucocare/taps/pages/clinic_schedule.dart';
+import 'package:glucocare/taps/pages/notice_board.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
 import 'package:glucocare/taps/pages/pill_check.dart';
 import 'package:glucocare/taps/pages/purse_check.dart';
@@ -59,10 +60,18 @@ class _HomeTapForm extends State<HomeTapForm> {
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => const FillInPatientInfoPage()));
         }
+      } else {
+        await PatientRepository.insertInitPatient();
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => const FillInPatientInfoPage()));
       }
     } catch (e) {
       logger.e('[glucocare_log] failed (_showFillInBox) : $e');
       await PatientRepository.insertInitPatient();
+      if(mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => const FillInPatientInfoPage()));
+      }
     }
   }
 
@@ -626,7 +635,9 @@ class _HomeTapForm extends State<HomeTapForm> {
                       height: 80,
                       padding: EdgeInsets.zero,
                       child: ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ClinicScheduleScreen()));
+                        },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,
                           backgroundColor: const Color(0xFFF9F9F9),

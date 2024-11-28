@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
 import 'package:glucocare/models/purse_model.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
@@ -58,11 +59,15 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   String _state = '없음';
   String _checkTime = '';
   String _checkDate = '';
+  bool _shrinkDanger = false;
+  bool _relaxDanger = false;
 
   void _setStates() {
     _shrink = int.parse(_shrinkController.text);
     _relax = int.parse(_relaxController.text);
     _purse = int.parse(_purseController.text);
+    _shrinkDanger = DangerCheck.purseShrinkDangerCheck(_shrink);
+    _relaxDanger = DangerCheck.purseRelaxDangerCheck(_relax);
 
     _state = _stateController.text;
 
@@ -73,15 +78,24 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   void _onSaveButtonPressed() async {
     _setStates();
 
-    PurseModel purseModel = PurseModel(
+    String? uid = '';
+    if(await AuthService.userLoginedFa()) uid = await AuthService.getCurUserUid();
+    else uid = await AuthService.getCurUserId();
+
+    if(uid != null) {
+      PurseModel purseModel = PurseModel(
+        uid: uid,
         shrink: _shrink,
         relax: _relax,
         purse: _purse,
         state: _state,
         checkTime: _checkTime,
-        checkDate: _checkDate
-    );
-    PurseRepository.insertPurseCheck(purseModel);
+        checkDate: _checkDate,
+        shrinkDanger: _shrinkDanger,
+        relaxDanger: _relaxDanger,
+      );
+      PurseRepository.insertPurseCheck(purseModel);
+    }
 
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();

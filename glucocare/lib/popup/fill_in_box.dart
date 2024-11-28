@@ -49,7 +49,7 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
     }
     String name = _nameController.text;
     Timestamp birthDate = Timestamp.fromDate(
-        DateTime(int.parse(_birthYear), int.parse(_birthMonth), int.parse(_birthDay))
+        DateTime(int.parse(_birthYear), int.parse(_birthMonth), int.parse(_birthDay), 0, 0)
     );
     String gen = _dropdownValue;
     bool isFilledIn = true;
@@ -57,9 +57,13 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
     final regex = RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]');
     if(uid != '' || kakaoId != '') {
       if(name.length >= 2 && !regex.hasMatch(name)) {
-        PatientModel model = PatientModel(uid: uid!, kakaoId: kakaoId!, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn);
-        PatientRepository.updatePatientInfo(model);
-
+        if(uid != null && kakaoId != null ) {
+          PatientModel model = PatientModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false);
+          PatientRepository.updatePatientInfo(model);
+        } else {
+          PatientModel model = PatientModel(uid: '', kakaoId: '', name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false);
+          PatientRepository.updatePatientInfo(model);
+        }
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {
         Fluttertoast.showToast(msg: '정확한 이름을 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
@@ -201,7 +205,7 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
                   ),
                   DropdownButton(
                     value: _birthDay,
-                    hint: const Text('01'),
+                    hint: const Text('1'),
                     onChanged: (newValue) {
                       setState(() {
                         _birthDay = newValue!;

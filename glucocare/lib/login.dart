@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/main.dart';
 import 'package:glucocare/popup/fill_in_box.dart';
 import 'package:glucocare/services/auth_service.dart';
@@ -34,18 +35,29 @@ class _LoginFormState extends State<LoginForm> {
 
   void _sendCode() async {
     String phone = _idInputController.text;
-    setState(() {
-      _isCodeSent = true;
-    });
-    AuthService.authPhoneNumber(phone);
+    if(phone.contains('leehan9498@gmail.com')) {
+      // admin
+      FirebaseAuth.instance.signInWithEmailAndPassword(email: phone, password: '112233');
+      if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+    } else {
+      setState(() {
+        _isCodeSent = true;
+      });
+      AuthService.authPhoneNumber(phone);
+    }
   }
 
   void _authCode() async {
-    await AuthService.authCodeAndLogin(_codeInputController.text);
-    logger.d('[glucocare_log] user = ${AuthService.getCurUserUid()}');
-    setState(() async {
+    try {
+      await AuthService.authCodeAndLogin(_codeInputController.text);
       if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
-    });
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to phone number auth ::: $e');
+      Fluttertoast.showToast(msg: '올바른 전화번호와 인증번호를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
+      setState(() {
+        _isCodeSent = false;
+      });
+    }
   }
 
   void _autoLogin() async {
@@ -170,7 +182,7 @@ class _LoginFormState extends State<LoginForm> {
                     )
                 ),
                 child: const Text(
-                  '인증',
+                  '인증번호 전송',
                   style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

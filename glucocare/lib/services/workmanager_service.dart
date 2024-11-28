@@ -9,16 +9,12 @@ class WorkManagerService {
   static void callbackDispatcher() async {
     Workmanager().executeTask((task, inputData) async {
       // Flutter Local Notification 호출
-      if(task == 'periodicTask') {
-        try{
-          // await NotificationService.showNotification();
-          NotificationService.showNotification();
-          return Future.value(true);
-        } catch(e) {
-          return Future.value(false); // 실패 반환
-        }
-      } else {
-        return Future.value(false);
+      try {
+        await NotificationService.showNotification(); // 비동기 호출에 await 사용
+        return Future.value(true); // 성공 반환
+      } catch (e) {
+        logger.e('[glucocare_log] Error in NotificationService: $e');
+        return Future.value(false); // 실패 반환
       }
     });
   }
@@ -26,12 +22,10 @@ class WorkManagerService {
   static void addPeriodicWork() {
     try {
       Workmanager().registerPeriodicTask(
-        'pillAlarmTaskId',
+        'task',
         'periodicTask',
-        frequency: const Duration(hours: 1),
+        frequency: const Duration(minutes: 16),
       );
-      logger.d('[glucocare_log] task added.');
-
     } catch(e) {
       logger.d('[glucocare_log] Failed to add task : $e');
     }

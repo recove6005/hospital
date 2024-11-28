@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:glucocare/drawer/patient_search.dart';
+import 'package:glucocare/drawer/patient_worning.dart';
 import 'package:glucocare/login.dart';
 import 'package:glucocare/drawer/patient_info.dart';
 import 'package:glucocare/models/patient_model.dart';
@@ -10,7 +12,7 @@ import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/notification_service.dart';
 import 'package:glucocare/services/workmanager_service.dart';
-import 'package:glucocare/taps/notice_board.dart';
+import 'package:glucocare/taps/pages/notice_board.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
@@ -95,6 +97,7 @@ class _HomePageState extends State<HomePage> {
   static final String? _user = AuthService.getCurUserUid();
 
   String _userName = '';
+  bool _isAdmin = false;
 
   int _tappedIndex = 0;
   static final List<Widget> _tapPages = <Widget> [
@@ -129,6 +132,7 @@ class _HomePageState extends State<HomePage> {
       PatientModel? model = await PatientRepository.selectPatientByUid();
       setState(() {
         _userName = model!.name;
+        _isAdmin = model.isAdmined;
       });
     } catch(e) {
       logger.e('[glucocare_log] Theres not exist user info. (_getUserName): $e');
@@ -211,7 +215,7 @@ class _HomePageState extends State<HomePage> {
                       color: Colors.grey,
                     ),
                     child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                       child: Text(
                         '$_userName 님',
                         style: const TextStyle(
@@ -224,7 +228,7 @@ class _HomePageState extends State<HomePage> {
                     )
                 ),
                 ListTile(
-                    leading: Icon(Icons.person),
+                    leading: const Icon(Icons.person),
                     title: const Text('회원 정보', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
@@ -238,9 +242,42 @@ class _HomePageState extends State<HomePage> {
                         }
                     }
                 ),
+                if(_isAdmin)
                 ListTile(
-                    leading: Icon(Icons.doorbell),
-                    title: const Text('알람 테스팅', style: TextStyle(
+                    leading: const Icon(Icons.search),
+                    title: const Text('회원 검색', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientSearchPage()));
+                    }
+                ),
+                if(_isAdmin)
+                ListTile(
+                    leading: const Icon(Icons.local_hospital),
+                    title: const Text('위험 회원 관리', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientWorningPage()));
+                    }
+                ),
+                if(_isAdmin)
+                ListTile(
+                    leading: const Icon(Icons.post_add),
+                    title: const Text('공지 사항 입력', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientWorningPage()));
+                    }
+                ),
+                ListTile(
+                    leading: const Icon(Icons.notifications),
+                    title: const Text('테스크 추가 테스팅', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
@@ -249,8 +286,8 @@ class _HomePageState extends State<HomePage> {
                     }
                 ),
                 ListTile(
-                    leading: Icon(Icons.doorbell),
-                    title: const Text('모든 작업 삭제', style: TextStyle(
+                    leading: const Icon(Icons.delete),
+                    title: const Text('모든 테스크 삭제', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
@@ -259,7 +296,7 @@ class _HomePageState extends State<HomePage> {
                     }
                 ),
                 ListTile(
-                    leading: Icon(Icons.logout),
+                    leading: const Icon(Icons.logout),
                     title: const Text('로그아웃', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black

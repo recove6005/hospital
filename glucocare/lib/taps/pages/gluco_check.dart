@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/gluco_col_name_model.dart';
 import 'package:glucocare/models/gluco_model.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
@@ -59,6 +60,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   String _state = '없음';
   String _checkTime = '';
   String _checkDate = '';
+  bool _glucoDanger = false;
 
   String krTime = '';
   String _getKrTime() {
@@ -74,6 +76,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   void _setState() {
     _checkTimeName = _checkTimeName;
     _value = int.parse(_valueController.text);
+    _glucoDanger = DangerCheck.glucoDangerCheck(_value);
     _state = _stateController.text;
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
     _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
@@ -82,12 +85,18 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   Future<void> _onSaveButtonPressed() async {
     _setState();
 
+    String? uid = '';
+    if(await AuthService.userLoginedFa()) uid = await AuthService.getCurUserUid();
+    else uid = await AuthService.getCurUserId();
+
     GlucoModel glucoModel = GlucoModel(
-        checkTimeName: _checkTimeName,
-        value: _value,
-        state: _state,
-        checkTime: _checkTime,
-        checkDate: _checkDate
+      uid: uid!,
+      checkTimeName: _checkTimeName,
+      value: _value,
+      state: _state,
+      checkTime: _checkTime,
+      checkDate: _checkDate,
+      glucoDanger: _glucoDanger,
     );
     GlucoRepository.insertGlucoCheck(glucoModel);
 
@@ -102,7 +111,6 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
       GlucoColNameModel nameModel = GlucoColNameModel(uid: kakaoId, date: _checkDate);
       GlucoColNameRepository.insertGlucoColName(nameModel);
     }
-
     Navigator.pop(context, true);
   }
 

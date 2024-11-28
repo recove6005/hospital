@@ -50,6 +50,18 @@ class GlucoColNameRepository {
     return glucoColNameList;
   }
 
+  static Future<List<String>> selectAllGlucoColNameByAllUid() async {
+    List<String> glucoColNameList = <String>[];
+
+    var docSnapshot = await _store.collection('gluco_name').get();
+    for(var doc in docSnapshot.docs) {
+      GlucoColNameModel model = GlucoColNameModel.fromJson(doc.data());
+      glucoColNameList.add(model.date.toString());
+    }
+
+    return glucoColNameList;
+  }
+
   static Future<String> selectLastGlucoColName() async {
     String lastGlucoColName = '';
 

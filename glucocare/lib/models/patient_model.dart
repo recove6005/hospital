@@ -7,6 +7,7 @@ class PatientModel {
   final String gen;
   final Timestamp birthDate;
   final bool isFilledIn;
+  final bool isAdmined;
 
   PatientModel({
     required this.uid,
@@ -15,6 +16,7 @@ class PatientModel {
     required this.gen,
     required this.birthDate,
     required this.isFilledIn,
+    required this.isAdmined,
   });
 
   Map<String, dynamic> toJson() {
@@ -25,6 +27,7 @@ class PatientModel {
       'gen': gen,
       'birth_date': birthDate,
       'is_filled_in': isFilledIn,
+      'is_admined': isAdmined,
     };
   }
 
@@ -36,6 +39,7 @@ class PatientModel {
         gen: json['gen'],
         birthDate: json['birth_date'],
         isFilledIn: json['is_filled_in'],
+        isAdmined: json['is_admined'],
     );
   }
 }

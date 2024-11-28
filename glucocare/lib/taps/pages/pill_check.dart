@@ -457,7 +457,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                           children: [
                                             const SizedBox(height: 10,),
                                             Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
+                                              mainAxisAlignment: MainAxisAlignment.spaceAround,
                                               crossAxisAlignment: CrossAxisAlignment.center,
                                               children: [
                                                 Container(
