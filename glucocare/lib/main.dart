@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:glucocare/drawer/notice_posting.dart';
 import 'package:glucocare/drawer/patient_search.dart';
 import 'package:glucocare/drawer/patient_worning.dart';
 import 'package:glucocare/login.dart';
@@ -12,7 +13,6 @@ import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/notification_service.dart';
 import 'package:glucocare/services/workmanager_service.dart';
-import 'package:glucocare/taps/pages/notice_board.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
@@ -272,27 +272,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black
                     ),),
                     onTap: () async {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientWorningPage()));
-                    }
-                ),
-                ListTile(
-                    leading: const Icon(Icons.notifications),
-                    title: const Text('테스크 추가 테스팅', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () {
-                      WorkManagerService.addPeriodicWork();
-                    }
-                ),
-                ListTile(
-                    leading: const Icon(Icons.delete),
-                    title: const Text('모든 테스크 삭제', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () {
-                      WorkManagerService.deleteAllTasks();
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const NoticePostingPage()));
                     }
                 ),
                 ListTile(
