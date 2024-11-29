@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
+import 'package:glucocare/models/purse_danger_model.dart';
 import 'package:glucocare/models/purse_model.dart';
+import 'package:glucocare/repositories/purse_danger_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
@@ -84,17 +87,26 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
 
     if(uid != null) {
       PurseModel purseModel = PurseModel(
-        uid: uid,
         shrink: _shrink,
         relax: _relax,
         purse: _purse,
         state: _state,
         checkTime: _checkTime,
         checkDate: _checkDate,
-        shrinkDanger: _shrinkDanger,
-        relaxDanger: _relaxDanger,
       );
       PurseRepository.insertPurseCheck(purseModel);
+
+      if(_shrinkDanger || _relaxDanger) {
+        PurseDangerModel dangerModel = PurseDangerModel(
+          uid: uid,
+          shrink: _shrink,
+          relax: _relax,
+          shrinkDanger: _shrinkDanger,
+          relaxDanger: _relaxDanger,
+          checkTime: Timestamp.fromDate(DateTime.now()),
+        );
+        PurseDangerRepository.insertDanger(dangerModel);
+      }
     }
 
     if(await AuthService.userLoginedFa()) {
@@ -106,7 +118,6 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
       PurseColNameModel nameModel = PurseColNameModel(uid: kakaoId!, date: _checkDate);
       PurseColNameRepository.insertPurseColName(nameModel);
     }
-
     Navigator.pop(context, true);
   }
 

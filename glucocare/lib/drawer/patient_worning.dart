@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/gluco_model.dart';
-import 'package:glucocare/models/purse_model.dart';
+import 'package:glucocare/models/gluco_danger_model.dart';
+import 'package:glucocare/models/purse_danger_model.dart';
+import 'package:glucocare/repositories/gluco_danger_repository.dart';
+import 'package:glucocare/repositories/purse_danger_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-
 import '../models/patient_model.dart';
 import '../repositories/patient_repository.dart';
 
@@ -42,8 +43,10 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
   Logger logger = Logger();
   bool _isPurseWornLoading = true;
   bool _isGlucoWornLoading = true;
-  List<PurseModel> _loadPurseWornings = [];
-  List<GlucoModel> _loadGlucoWornings = [];
+  List<PurseDangerModel> _purseWornings = [];
+  List<PatientModel> _pursePatients = [];
+  List<GlucoDangerModel> _glucoWornings = [];
+  List<PatientModel> _glucoPatients = [];
 
   List<PatientModel> _searchModels = [];
   TextEditingController _nameController = TextEditingController();
@@ -51,40 +54,39 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
   bool _page = true; // true: gluco, false: purse
 
   void _loadPurseWorningPatient() async {
-
+    List<PurseDangerModel> models = await PurseDangerRepository.selectAllDanger();
+    for(PurseDangerModel model in models) {
+      PatientModel? patient = await PatientRepository.selectPatientBySpecificUid(model.uid);
+      if(patient != null) _pursePatients.add(patient);
+    }
+    setState(() {
+      _purseWornings = models;
+      _isPurseWornLoading = false;
+    });
   }
 
   void _loadGlucoWorningPatient() async {
-
+    List<GlucoDangerModel> models = await GlucoDangerRepository.selectAllDanger();
+    for(GlucoDangerModel model in models) {
+      PatientModel? patient = await PatientRepository.selectPatientBySpecificUid(model.uid);
+      if(patient != null) _glucoPatients.add(patient);
+    }
+    setState(() {
+      _glucoWornings = models;
+      _isGlucoWornLoading = false;
+    });
   }
-
-  Future<String> _getPatientName(String uid) async {
-    PatientModel? model = await PatientRepository.selectPatientBySpecificUid(uid);
-    return model!.name;
-  }
-
-  Future<String> _getPatientGen(String uid) async {
-    PatientModel? model = await PatientRepository.selectPatientBySpecificUid(uid);
-    return model!.gen;
-  }
-
-  Future<String> _getPatientBirth(String uid) async {
-    PatientModel? model = await PatientRepository.selectPatientBySpecificUid(uid);
-    String birth = DateFormat('yyyy년 MM월 dd일').format(model!.birthDate.toDate());
-    return birth;
-  }
-
 
   @override
   void initState() {
     super.initState();
-    //_loadGlucoWorningPatient();
-    //_loadPurseWorningPatient();
+    _loadGlucoWorningPatient();
+    _loadPurseWorningPatient();
   }
 
   @override
   Widget build(BuildContext context) {
-    //if(_isGlucoWornLoading) return const Center(child: CircularProgressIndicator(),);
+    if(_isGlucoWornLoading || _isPurseWornLoading) return const Center(child: CircularProgressIndicator(),);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -103,7 +105,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xD6EFC987),
+                  backgroundColor: const Color(0xD6EFC987),
                   shadowColor: Colors.transparent,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
@@ -207,18 +209,34 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
               color: Colors.white
             ),
             child: ListView.builder(
-              itemCount: 30,
+              itemCount: _glucoWornings.length,
               itemBuilder: (context, index) {
                 return Card(
                   margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                   child: ListTile(
                     leading: const Icon(Icons.account_box),
-                    title: Text('옹감자여사 (남)'),
+                    title: Text('${_glucoPatients[index].name} (${_glucoPatients[index].gen})', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),),
                     subtitle: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('2024년 7월 7일 오후 2시 32분'),
-                        Text('식후 146 mg/dL'),
+                        const SizedBox(height: 5,),
+                        Text('측정 일시', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text('${DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko_KR').format(_glucoWornings[index].checkTime.toDate())}'),
+                        const SizedBox(height: 5,),
+                        Container(
+                          height: 1,
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                          ),
+                        ),
+                        const SizedBox(height: 5,),
+                        Text('측정 수치', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Row(
+                          children: [
+                            Text('${_glucoWornings[index].value}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
+                            Text(' mg/dL'),
+                          ],
+                        ),
                       ],
                     ),
                     onTap: () {
@@ -230,7 +248,6 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
             ),
           ),
         ),
-
         if(!_page)
           Align(
             alignment: Alignment.center,
@@ -242,18 +259,55 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                   color: Colors.white
               ),
               child: ListView.builder(
-                itemCount: 20,
+                itemCount: _purseWornings.length,
                 itemBuilder: (context, index) {
                   return Card(
                     margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                     child: ListTile(
                       leading: const Icon(Icons.account_box),
-                      title: Text('똥감자도령 (여)'),
+                      title: Text('${_pursePatients[index].name} (${_pursePatients[index].gen})', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('2024년 11월 11일 오후 1시 32분'),
-                          Text('130 mg/dL'),
+                          const SizedBox(height: 5,),
+                          const Text('측정 일시', style: TextStyle(fontWeight: FontWeight.bold),),
+                          Text('${DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko_KR').format(_purseWornings[index].checkTime.toDate())}'),
+                          const SizedBox(height: 5,),
+                          Container(
+                            height: 1,
+                            decoration: const BoxDecoration(
+                              color: Colors.grey,
+                            ),
+                          ),
+                          const SizedBox(height: 5,),
+                          const Text('측정 수치', style: TextStyle(fontWeight: FontWeight.bold),),
+                          if(_purseWornings[index].shrinkDanger && _purseWornings[index].relaxDanger)
+                            Row(
+                              children: [
+                                Text('${_purseWornings[index].shrink}', style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                const Text('/'),
+                                Text('${_purseWornings[index].relax}', style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                const Text(' mmHg'),
+                              ],
+                            ),
+                          if(_purseWornings[index].shrinkDanger && !_purseWornings[index].relaxDanger)
+                            Row(
+                              children: [
+                                Text('${_purseWornings[index].shrink}', style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                const Text('/'),
+                                Text('${_purseWornings[index].relax}'),
+                                const Text(' mmHg'),
+                              ],
+                            ),
+                          if(!_purseWornings[index].shrinkDanger && _purseWornings[index].relaxDanger)
+                            Row(
+                              children: [
+                                Text('${_purseWornings[index].shrink}',),
+                                const Text('/'),
+                                Text('${_purseWornings[index].relax}', style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.red),),
+                                const Text(' mmHg'),
+                              ],
+                            ),
                         ],
                       ),
                       onTap: () {

@@ -160,27 +160,6 @@ class PurseRepository {
     return model;
   }
 
-  static Future<List<PurseModel>> selectPurseWornings() async {
-    List<PurseModel> models = [];
-    try {
-      var shrinkDocSnapshot = await _store.collection('purse_check')
-          .where('shrink_danger', isEqualTo: true)
-          .where('relax_danger', isEqualTo: true)
-          .orderBy('check_date')
-          .orderBy('check_time')
-          .get();
-
-      for(var doc in shrinkDocSnapshot.docs) {
-        PurseModel model = PurseModel.fromJson(doc.data());
-        models.add(model);
-      }
-    } catch(e) {
-      logger.e('[glucocare_log] Failed to load purse wornings : $e');
-    }
-
-    return models;
-  }
-
   static Future<List<FlSpot>> getShrinkData(list) async {
     List<FlSpot> chartDatas = [];
     double index = 0;

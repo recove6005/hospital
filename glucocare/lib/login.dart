@@ -34,7 +34,7 @@ class _LoginFormState extends State<LoginForm> {
   bool _isCodeSent = false;
 
   void _sendCode() async {
-    String phone = _idInputController.text;
+    String phone = _idInputController.text.trim();
     if(phone.contains('leehan9498@gmail.com')) {
       // admin
       FirebaseAuth.instance.signInWithEmailAndPassword(email: phone, password: '112233');
@@ -49,7 +49,7 @@ class _LoginFormState extends State<LoginForm> {
 
   void _authCode() async {
     try {
-      await AuthService.authCodeAndLogin(_codeInputController.text);
+      await AuthService.authCodeAndLogin(_codeInputController.text.trim());
       if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } catch(e) {
       logger.e('[glucocare_log] Failed to phone number auth ::: $e');
@@ -237,6 +237,10 @@ class _LoginFormState extends State<LoginForm> {
                     if(loginResult) {
                       _isKakaoLogind = false;
                       _autoLogin();
+                    } else {
+                      setState(() {
+                        _isKakaoLogind = false;
+                      });
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -248,34 +252,34 @@ class _LoginFormState extends State<LoginForm> {
               ),
             ),
             const SizedBox(height: 10,),
-            Container(
-              width: 65,
-              height: 20,
-              padding: EdgeInsets.zero,
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => const FillInPatientInfoPage()));
-                },
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.zero,
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  splashFactory: NoSplash.splashFactory,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.zero,
-                  ),
-                ),
-                child: const Text(
-                  '회원가입',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF5C5C5C),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ),
+            // Container(
+            //   width: 65,
+            //   height: 20,
+            //   padding: EdgeInsets.zero,
+            //   alignment: Alignment.center,
+            //   child: ElevatedButton(
+            //     onPressed: () {
+            //       Navigator.push(context, MaterialPageRoute(builder: (context) => const FillInPatientInfoPage()));
+            //     },
+            //     style: ElevatedButton.styleFrom(
+            //       padding: EdgeInsets.zero,
+            //       backgroundColor: Colors.transparent,
+            //       shadowColor: Colors.transparent,
+            //       splashFactory: NoSplash.splashFactory,
+            //       shape: const RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.zero,
+            //       ),
+            //     ),
+            //     child: const Text(
+            //       '회원가입',
+            //       style: TextStyle(
+            //         fontSize: 16,
+            //         color: Color(0xFF5C5C5C),
+            //       ),
+            //       textAlign: TextAlign.center,
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       );

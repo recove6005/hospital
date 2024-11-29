@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:glucocare/models/gluco_col_name_model.dart';
 import 'package:glucocare/models/gluco_model.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
@@ -246,35 +245,5 @@ class GlucoRepository {
     }
 
     return null;
-  }
-  
-  static Future<List<GlucoModel>> selectGlucoWornings() async {
-    List<GlucoModel> models = [];
-    List<String> colNames = await GlucoColNameRepository.selectAllGlucoColNameByAllUid();
-
-    var task = <Future>[];
-    try {
-      var mainDocSnapshot = await _store.collection('gluco_check').get();
-      logger.d('[glucocare_log] ${mainDocSnapshot.docs.length}');
-      for(var doc in mainDocSnapshot.docs) {;
-        logger.d('[glucocare_log] ${doc.id}');
-        // for(String colName in colNames) {
-        //   task.add(
-        //     _store.collection('gluco_check').doc(doc.id)
-        //         .collection(colName).where('gluco_danger', isEqualTo: true).get()
-        //         .then((subDocsnapshot) {
-        //       for(var subDoc in subDocsnapshot.docs) {
-        //         GlucoModel model = GlucoModel.fromJson(subDoc.data());
-        //         logger.d('[glucocare_log] model: $model');
-        //         models.add(model);
-        //       }
-        //     }),
-        //   );
-        // }
-      }
-    } catch(e) {
-      logger.e('[glucocare_log] Failed to load gluco wornings(main col) : $e');
-    }
-    return models;
   }
 }

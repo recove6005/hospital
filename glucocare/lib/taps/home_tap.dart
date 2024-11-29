@@ -477,7 +477,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         SizedBox(
-                          child: Text('${_lastPurseModel!.shrink} / ${_lastPurseModel!.relax}', style: const TextStyle(
+                          child: Text('${_lastPurseModel!.shrink}/${_lastPurseModel!.relax}', style: const TextStyle(
                             fontSize: 50,
                             fontWeight: FontWeight.bold,
                             color: Colors.black,

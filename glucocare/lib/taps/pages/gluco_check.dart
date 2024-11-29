@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/gluco_col_name_model.dart';
+import 'package:glucocare/models/gluco_danger_model.dart';
 import 'package:glucocare/models/gluco_model.dart';
+import 'package:glucocare/repositories/gluco_danger_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
@@ -80,6 +83,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     _state = _stateController.text;
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
     _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
+    _glucoDanger = DangerCheck.glucoDangerCheck(_value);
   }
 
   Future<void> _onSaveButtonPressed() async {
@@ -89,16 +93,26 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     if(await AuthService.userLoginedFa()) uid = await AuthService.getCurUserUid();
     else uid = await AuthService.getCurUserId();
 
-    GlucoModel glucoModel = GlucoModel(
-      uid: uid!,
-      checkTimeName: _checkTimeName,
-      value: _value,
-      state: _state,
-      checkTime: _checkTime,
-      checkDate: _checkDate,
-      glucoDanger: _glucoDanger,
-    );
-    GlucoRepository.insertGlucoCheck(glucoModel);
+    if(uid != null) {
+      GlucoModel glucoModel = GlucoModel(
+        checkTimeName: _checkTimeName,
+        value: _value,
+        state: _state,
+        checkTime: _checkTime,
+        checkDate: _checkDate,
+      );
+      GlucoRepository.insertGlucoCheck(glucoModel);
+
+      if(_glucoDanger) {
+        GlucoDangerModel model = GlucoDangerModel(
+            uid: uid,
+            value: _value,
+            danger: _glucoDanger,
+            checkTime: Timestamp.fromDate(DateTime.now()),
+        );
+        GlucoDangerRepository.insertDanger(model);
+      }
+    }
 
     if(await AuthService.userLoginedFa()) {
       String? uid = await AuthService.getCurUserUid();

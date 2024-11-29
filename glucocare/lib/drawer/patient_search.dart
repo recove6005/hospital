@@ -38,21 +38,79 @@ class PatientSearchForm extends StatefulWidget {
 class _PatientSearchFormState extends State<PatientSearchForm> {
   Logger logger = Logger();
   bool _isPatienLoading = true;
+  List<PatientModel> _allPatientModels = [];
+  List<PatientModel> _nameSearchedModels = [];
+  List<PatientModel> _birthSearchedModels = [];
+
   List<PatientModel> _searchModels = [];
   TextEditingController _nameController = TextEditingController();
+  TextEditingController _birthController = TextEditingController();
 
   void _loadAllPatient() async {
-    _searchModels = await PatientRepository.selectAllPatient();
+    _allPatientModels = await PatientRepository.selectAllPatient();
     setState(() {
+      _searchModels = _allPatientModels;
       _isPatienLoading = false;
     });
   }
 
-  void _searchPatient(String str) async {
-    List<PatientModel> models = await PatientRepository.selectAllPatientByName(_nameController.text);
-    setState(() {
-      _searchModels = models;
-    });
+  // 회원 서치 로직
+  void _searchPatientByName(String? keyword) {
+    _nameSearchedModels = [];
+    if(keyword != null && _birthSearchedModels.isNotEmpty) {
+      for(PatientModel model in _birthSearchedModels) {
+        if (model.name.contains(keyword)) _nameSearchedModels.add(model);
+      }
+      setState(() {
+        _searchModels = List.from(_nameSearchedModels);
+      });
+    } else if(keyword != null && _birthSearchedModels.isEmpty) {
+      for(PatientModel model in _allPatientModels) {
+        if (model.name.contains(keyword)) _nameSearchedModels.add(model);
+      }
+      setState(() {
+        _searchModels = List.from(_nameSearchedModels);
+      });
+    }
+    else if(keyword == null && _birthSearchedModels.isNotEmpty) {
+      setState(() {
+        _searchModels = List.from(_birthSearchedModels);
+      });
+    } else {
+      setState(() {
+        _searchModels = List.from(_allPatientModels);
+      });
+    }
+  }
+
+  void _searchPatientByBirth(String? keyword) {
+    _birthSearchedModels = [];
+    if(keyword != null && _nameSearchedModels.isNotEmpty) {
+      for(PatientModel model in _nameSearchedModels) {
+        String formattedBirth = DateFormat('yyMMdd').format(model.birthDate.toDate());
+        if(formattedBirth.contains(keyword)) _birthSearchedModels.add(model);
+      }
+      setState(() {
+        _searchModels = List.from(_birthSearchedModels);
+      });
+    } else if(keyword != null && _nameSearchedModels.isEmpty) {
+      for(PatientModel model in _allPatientModels) {
+        String formattedBirth = DateFormat('yyMMdd').format(model.birthDate.toDate());
+        if (formattedBirth.contains(keyword)) _birthSearchedModels.add(model);
+      }
+      setState(() {
+        _searchModels = List.from(_birthSearchedModels);
+      });
+    }
+    else if(keyword == null && _nameSearchedModels.isNotEmpty) {
+      setState(() {
+        _searchModels = List.from(_nameSearchedModels);
+      });
+    } else {
+      setState(() {
+        _searchModels = List.from(_allPatientModels);
+      });
+    }
   }
 
   @override
@@ -76,7 +134,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
             child: TextField(
               controller: _nameController,
               decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.search),
+                  prefixIcon: Icon(Icons.person_search),
                   filled: true,
                   fillColor: Color(0xfff9f9f9),
                   border: InputBorder.none,
@@ -91,10 +149,40 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
               ),
               textAlign: TextAlign.start,
               textAlignVertical: TextAlignVertical.center,
-              onChanged: _searchPatient,
+              onChanged: _searchPatientByName,
             ),
           ),
         ),
+        const SizedBox(height: 10,),
+        Align(
+          alignment: Alignment.center,
+          child: Container(
+            padding: EdgeInsets.zero,
+            width: 350,
+            height: 50,
+            child: TextField(
+              controller: _birthController,
+              decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.date_range),
+                  filled: true,
+                  fillColor: Color(0xfff9f9f9),
+                  border: InputBorder.none,
+                  hintText: '생년월일 6자리',
+                  hintStyle: TextStyle(
+                    fontSize: 18,
+                    color: Colors.grey,
+                  )
+              ),
+              style: const TextStyle(
+                fontSize: 18,
+              ),
+              textAlign: TextAlign.start,
+              textAlignVertical: TextAlignVertical.center,
+              onChanged: _searchPatientByBirth,
+            ),
+          ),
+        ),
+        const SizedBox(height: 10,),
         Align(
           alignment: Alignment.center,
           child: Container(
@@ -105,9 +193,9 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
                 itemCount: _searchModels.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                    margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                     child: ListTile(
-                      leading: Icon(Icons.account_box),
+                      leading: const Icon(Icons.account_box),
                       title: Text(_searchModels[index].name),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +214,6 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
               ),
           ),
         ),
-
       ],
     );
   }
