@@ -61,5 +61,15 @@
             <string>glucocare.com</string>
         </dict>
     </array>
+    <key>UIBackgroundModes</key>
+    <array>
+      <string>audio</string>
+    </array>
+    <key>NSUserTrackingUsageDescription</key>
+    <string>알림 권한을 허용해주세요.</string>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+    </array>
 </dict>
 </plist>

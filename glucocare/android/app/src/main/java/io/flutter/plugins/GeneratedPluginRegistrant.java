@@ -16,6 +16,11 @@ public final class GeneratedPluginRegistrant {
   private static final String TAG = "GeneratedPluginRegistrant";
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
     try {
+      flutterEngine.getPlugins().add(new com.transistorsoft.flutter.backgroundfetch.BackgroundFetchPlugin());
+    } catch (Exception e) {
+      Log.e(TAG, "Error registering plugin background_fetch, com.transistorsoft.flutter.backgroundfetch.BackgroundFetchPlugin", e);
+    }
+    try {
       flutterEngine.getPlugins().add(new io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestorePlugin());
     } catch (Exception e) {
       Log.e(TAG, "Error registering plugin cloud_firestore, io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestorePlugin", e);

@@ -154,9 +154,12 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   List<String> _relaxX = [];
   LineChartBarData? _relaxLine;
   double _minX = 0;
-  double _maxX = 4;
-  double _minY = 50;
-  double _maxY = 150;
+  double _maxX = 21;
+  double _minY = 0;
+  double _maxY = 200;
+
+  String? _chartSelectedValeu = '1주일';
+  double _chartSize = 500;
 
   Future<void> _setLines() async {
     List<FlSpot> shrinkData = await PurseRepository.getShrinkData(_shrinkX);
@@ -192,28 +195,29 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
           sideTitles: SideTitles(showTitles: false),
         ),
         leftTitles: AxisTitles(
-          sideTitles: SideTitles(
-              showTitles: true,
-              interval: 50, // 간격 설정
-              reservedSize: 40, // 그래프와의 마진 거리 조정 (기본 40)
-            getTitlesWidget: (double value, TitleMeta meta) {
-              return SideTitleWidget(
-                axisSide: meta.axisSide,
-                space: 20,
-                child: Text(
-                  value.toInt().toString(),
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey,
-                  ),
-                  softWrap: false, // 줄바꿈X
-                  overflow: TextOverflow.visible,
-                  textAlign: TextAlign.left,
-                ),
-              );
-            }
-          ),
+          sideTitles: SideTitles(showTitles: false),
+          // sideTitles: SideTitles(
+          //     showTitles: true,
+          //     interval: 50, // 간격 설정
+          //     reservedSize: 40, // 그래프와의 마진 거리 조정 (기본 40)
+          //   getTitlesWidget: (double value, TitleMeta meta) {
+          //     return SideTitleWidget(
+          //       axisSide: meta.axisSide,
+          //       space: 20,
+          //       child: Text(
+          //         value.toInt().toString(),
+          //         style: const TextStyle(
+          //             fontSize: 14,
+          //             fontWeight: FontWeight.bold,
+          //             color: Colors.grey,
+          //         ),
+          //         softWrap: false, // 줄바꿈X
+          //         overflow: TextOverflow.visible,
+          //         textAlign: TextAlign.left,
+          //       ),
+          //     );
+          //   }
+          // ),
         ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
@@ -541,52 +545,116 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 ),
                 child: Column(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       width: 350,
                       height: 30,
-                      child: Text('변화 그래프', style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(left: 0, right: 0, top: 15, bottom: 15),
-                      width: 350,
-                      height: 200,
-                      child: LineChart(
-                        LineChartData(
-                          lineBarsData: [_shrinkLine!, _relaxLine!],
-                          titlesData: _buildTitles(),
-                          gridData: FlGridData(
-                              show: true,
-                              drawVerticalLine: false,
-                              horizontalInterval: 25,
-                              getDrawingHorizontalLine: (value) {
-                                return const FlLine(
-                                  color: Colors.grey,
-                                  strokeWidth: 1,
-                                );
-                              }
+                      child: Row(
+                        children: [
+                          const Text('변화 그래프', style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),),
+                          const SizedBox(width: 140,),
+                          DropdownButton<String>(
+                            value: _chartSelectedValeu,
+                            items: <String>['3개월', '1개월', '1주일', '1일']
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                // 차트 값 변경
+                                _chartSelectedValeu = newValue!;
+                                switch(_chartSelectedValeu) {
+                                  case '3개월' :
+                                    _maxX = 270;
+                                    _chartSize = 2500;
+                                    break;
+                                  case '1개월' :
+                                    _maxX = 90;
+                                    _chartSize = 900;
+                                    break;
+                                  case '1주일' :
+                                    _maxX = 21;
+                                    _chartSize = 500;
+                                    break;
+                                  case '1일' :
+                                    _maxX = 4;
+                                    _chartSize = 280;
+                                    break;
+                                }
+                              });
+                            },
                           ),
-                          borderData: FlBorderData(
-                            show: true,
-                            border: const Border(
-                              top: BorderSide(
-                                color: Colors.grey,
-                                width: 0.5,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(left: 0, right: 0, top: 5, bottom: 5),
+                          height: 175,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: List.generate(5, (index) {
+                              final reversedIndex = 4 - index;
+                              return Text('${(_minY + reversedIndex * 50).toInt()}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),);
+                            }),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 270,
+                          height: 200,
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.horizontal,
+                            child: Container(
+                              padding: const EdgeInsets.only(left: 25, right: 10, top: 15, bottom: 15),
+                              width: _chartSize,
+                              height: 200,
+                              child: LineChart(
+                                LineChartData(
+                                  lineBarsData: [_shrinkLine!, _relaxLine!],
+                                  titlesData: _buildTitles(),
+                                  gridData: FlGridData(
+                                      show: true,
+                                      drawVerticalLine: false,
+                                      horizontalInterval: 50,
+                                      getDrawingHorizontalLine: (value) {
+                                        return const FlLine(
+                                          color: Colors.grey,
+                                          strokeWidth: 1,
+                                        );
+                                      }
+                                  ),
+                                  borderData: FlBorderData(
+                                    show: true,
+                                    border: const Border(
+                                      top: BorderSide(
+                                        color: Colors.grey,
+                                        width: 0.5,
+                                      ),
+                                      bottom: BorderSide(
+                                        color: Colors.grey,
+                                        width: 1,
+                                      ),
+                                    ),
+                                  ),
+                                  minX: _minX,
+                                  maxX: _maxX,
+                                  minY: _minY,
+                                  maxY: _maxY,
+                                ),
                               ),
                             ),
                           ),
-                          minX: _minX,
-                          maxX: _maxX,
-                          minY: _minY,
-                          maxY: _maxY,
                         ),
-                      ),
+                      ],
                     ),
                   ],
                 ),

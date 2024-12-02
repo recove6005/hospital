@@ -39,9 +39,6 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
   Logger logger = Logger();
   bool _isPatienLoading = true;
   List<PatientModel> _allPatientModels = [];
-  List<PatientModel> _nameSearchedModels = [];
-  List<PatientModel> _birthSearchedModels = [];
-
   List<PatientModel> _searchModels = [];
   TextEditingController _nameController = TextEditingController();
   TextEditingController _birthController = TextEditingController();
@@ -56,27 +53,23 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
 
   // 회원 서치 로직
   void _searchPatientByName(String? keyword) {
-    _nameSearchedModels = [];
-    if(keyword != null && _birthSearchedModels.isNotEmpty) {
-      for(PatientModel model in _birthSearchedModels) {
-        if (model.name.contains(keyword)) _nameSearchedModels.add(model);
+    List<PatientModel> nameSearchedModels = [];
+    if(keyword != null && keyword != '' && _searchModels.isNotEmpty) {
+      for(PatientModel model in _searchModels) {
+        if (model.name.contains(keyword)) nameSearchedModels.add(model);
       }
       setState(() {
-        _searchModels = List.from(_nameSearchedModels);
+        _searchModels = List.from(nameSearchedModels);
       });
-    } else if(keyword != null && _birthSearchedModels.isEmpty) {
+    } else if(keyword != null && keyword != '' && _searchModels.isEmpty) {
       for(PatientModel model in _allPatientModels) {
-        if (model.name.contains(keyword)) _nameSearchedModels.add(model);
+        if (model.name.contains(keyword)) nameSearchedModels.add(model);
       }
       setState(() {
-        _searchModels = List.from(_nameSearchedModels);
+        _searchModels = List.from(nameSearchedModels);
       });
     }
-    else if(keyword == null && _birthSearchedModels.isNotEmpty) {
-      setState(() {
-        _searchModels = List.from(_birthSearchedModels);
-      });
-    } else {
+    else {
       setState(() {
         _searchModels = List.from(_allPatientModels);
       });
@@ -84,29 +77,25 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
   }
 
   void _searchPatientByBirth(String? keyword) {
-    _birthSearchedModels = [];
-    if(keyword != null && _nameSearchedModels.isNotEmpty) {
-      for(PatientModel model in _nameSearchedModels) {
+    List<PatientModel> birthSearchedModels = [];
+    if(keyword != null && keyword != '' && _searchModels.isNotEmpty) {
+      for(PatientModel model in _searchModels) {
         String formattedBirth = DateFormat('yyMMdd').format(model.birthDate.toDate());
-        if(formattedBirth.contains(keyword)) _birthSearchedModels.add(model);
+        if(formattedBirth.contains(keyword)) birthSearchedModels.add(model);
       }
       setState(() {
-        _searchModels = List.from(_birthSearchedModels);
+        _searchModels = List.from(birthSearchedModels);
       });
-    } else if(keyword != null && _nameSearchedModels.isEmpty) {
+    } else if(keyword != null && keyword != '' && _searchModels.isEmpty) {
       for(PatientModel model in _allPatientModels) {
         String formattedBirth = DateFormat('yyMMdd').format(model.birthDate.toDate());
-        if (formattedBirth.contains(keyword)) _birthSearchedModels.add(model);
+        if (formattedBirth.contains(keyword)) birthSearchedModels.add(model);
       }
       setState(() {
-        _searchModels = List.from(_birthSearchedModels);
+        _searchModels = List.from(birthSearchedModels);
       });
     }
-    else if(keyword == null && _nameSearchedModels.isNotEmpty) {
-      setState(() {
-        _searchModels = List.from(_nameSearchedModels);
-      });
-    } else {
+    else {
       setState(() {
         _searchModels = List.from(_allPatientModels);
       });

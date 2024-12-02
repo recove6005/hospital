@@ -1,9 +1,15 @@
 allprojects {
-    repositories {
+        repositories {
          google()
          mavenCentral()
          gradlePluginPortal()
+
+         // Kakao API
          maven { url = "https://devrepo.kakao.com/nexus/content/groups/public/" }
+
+         // background fetch
+         // maven { url "https://maven.transistorsoft.com/release" }
+         maven { url = "${project(':background_fetch').projectDir}/libs" }
     }
 }
 

@@ -1,3 +1,4 @@
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
@@ -7,12 +8,12 @@ import 'package:glucocare/drawer/notice_posting.dart';
 import 'package:glucocare/drawer/patient_search.dart';
 import 'package:glucocare/drawer/patient_worning.dart';
 import 'package:glucocare/login.dart';
-import 'package:glucocare/drawer/patient_info.dart';
+import 'package:glucocare/drawer/user_info.dart';
 import 'package:glucocare/models/patient_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
+import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/notification_service.dart';
-import 'package:glucocare/services/workmanager_service.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
 import 'package:glucocare/taps/home_tap.dart';
@@ -22,7 +23,6 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:logger/logger.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:workmanager/workmanager.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -50,11 +50,11 @@ Future<void> main() async {
   );
 
   // notification service init
-  // FCMService.initialize();
   NotificationService.initNotification();
 
-  // Workmanager init
-  Workmanager().initialize(WorkManagerService.callbackDispatcher, isInDebugMode: true);
+  // Background Fetch Headless Init
+  // FetchService.initConfigureBackgroundFetch();
+  FetchService.headlessInit();
 
   runApp(const MyApp());
 }
@@ -234,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black
                     ),),
                     onTap: () async {
-                        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PatientInfoPage()));
+                        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const UserInfoPage()));
                         if(result) {
                           setState(() {
                             _getUserName();
@@ -287,6 +287,56 @@ class _HomePageState extends State<HomePage> {
                           context,
                           MaterialPageRoute(builder: (context) => const LoginPage())
                       );
+                    }
+                ),
+                ListTile(
+                    leading: const Icon(Icons.add_task),
+                    title: const Text('메인 테스크 추가', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      FetchService.initConfigureBackgroundFetch();
+                    }
+                ),
+                ListTile(
+                    leading: const Icon(Icons.add_task),
+                    title: const Text('테스크 추가', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      FetchService.initScheduleBackgroundFetch('single_task');
+                    }
+                ),
+                ListTile(
+                    leading: const Icon(Icons.stop),
+                    title: const Text('테스크 삭제', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      FetchService.stopBackgroundFetchByTaskId('single_task');
+                    }
+                ),
+                ListTile(
+                    leading: const Icon(Icons.multiple_stop),
+                    title: const Text('테스크 일괄 삭제', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      FetchService.stopBackgroundFetch();
+                    }
+                ),
+                ListTile(
+                    leading: const Icon(Icons.alarm),
+                    title: const Text('로컬 알림 테스트', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      NotificationService.showNotification();
                     }
                 ),
               ],
