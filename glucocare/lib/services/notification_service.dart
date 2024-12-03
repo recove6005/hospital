@@ -24,8 +24,6 @@ class NotificationService {
         logger.d('Notification clicked with payload: ${response.payload}');
       },
     );
-
-    logger.d('[glucocare_log] init set times.');
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation('Asia/Seoul'));
 

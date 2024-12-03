@@ -6,45 +6,11 @@ import 'package:logger/logger.dart';
 class FetchService {
   static Logger logger = Logger();
 
-  static Future<void> trigTask(String taskId) async {
-    int intervalMilliSec = 0;
-
-    DateTime now = DateTime.now();
-    DateTime parsedTime = DateFormat("HH:mm").parse(taskId);
-    DateTime firstTask = DateTime(now.year, now.month, now.day, parsedTime.hour, parsedTime.minute);
-    intervalMilliSec = firstTask.difference(now).inMilliseconds;
-    logger.d('[glucocare_log] task will be started in $firstTask $intervalMilliSec');
-  }
-
-  static Future<void> initConfigureBackgroundFetch() async {
-    await BackgroundFetch.configure(
-        BackgroundFetchConfig(
-          minimumFetchInterval: 1,
-          stopOnTerminate: false,
-          enableHeadless: true,
-          forceAlarmManager: true,
-        ),
-            (taskId) async {
-          logger.d('[glucocare_log] init main background fatch.');
-          NotificationService.showNotification();
-        });
-    }
-
-  static Future<void> initScheduleBackgroundFetch(String taskId) async {
-    await BackgroundFetch.scheduleTask(TaskConfig(
-      taskId: taskId, //'first_${taskId}',
-      periodic: true,
-      delay: 60000,
-      stopOnTerminate: false,
-      enableHeadless: true,
-      forceAlarmManager: true,
-    ));
-  }
-
-  // 실행할 작업 함수
+  // Headless Init 실행 작업 함수
   @pragma('vm:entry-point')
-  static Future<void> _executeFetchTask(String taskId) async {
-    logger.d('[glucocare_log] task startd.');
+  static Future<void> _executeFetchTask(HeadlessTask task) async {
+    String taskId = task.taskId;
+    logger.d('[glucocare_log] task startd. taskId: $taskId');
     try {
       await NotificationService.showNotification();
     } catch (e) {
@@ -52,6 +18,75 @@ class FetchService {
     } finally {
       BackgroundFetch.finish(taskId);
     }
+  }
+
+  static void headlessInit() async {
+    // 헤드리스 작업 등록 (앱 종료 상태에서 실행 가능)
+    BackgroundFetch.registerHeadlessTask(_executeFetchTask);
+    logger.d('[glucocare_log] Headless Init..');
+  }
+
+  static Future<void> initConfigureBackgroundFetch() async {
+    await BackgroundFetch.configure(
+      BackgroundFetchConfig(
+        minimumFetchInterval: 86400000,
+        stopOnTerminate: false,
+        enableHeadless: true,
+        forceAlarmManager: true,
+      ),
+          (taskId) async {
+        try {
+          if(taskId.toString().contains('first')) {
+            await NotificationService.showNotification();
+
+            String secondTaskId = taskId.toString().substring(5);
+
+            await BackgroundFetch.scheduleTask(TaskConfig(
+              taskId: secondTaskId,
+              periodic: true,
+              delay: 86400000,
+              stopOnTerminate: false,
+              enableHeadless: true,
+              forceAlarmManager: true,
+            ),);
+          }
+          else if(taskId.toString().contains(':')) {
+            await NotificationService.showNotification();
+          }
+        } catch (e) {
+          logger.e("[glucocare_log] BackgroundFetchConfig Error: $e");
+        } finally {
+          BackgroundFetch.finish(taskId);
+        }
+      },
+          (String taskId) async {
+        logger.e("[glucocare_log] Task failed: $taskId");
+        BackgroundFetch.finish(taskId);
+      },
+    );
+  }
+
+  static Future<void> initScheduleBackgroundFetch(String taskId) async {
+    DateTime nowDatetime = DateTime.now();
+    DateTime alarmDateTimeStr = DateFormat("HH:mm").parse(taskId);
+    DateTime alarmdatetime = DateTime(
+        nowDatetime.year,
+        nowDatetime.month,
+        nowDatetime.day,
+        alarmDateTimeStr.hour,
+        alarmDateTimeStr.minute
+    );
+    Duration differTime = alarmdatetime.difference(nowDatetime);
+
+    await BackgroundFetch.scheduleTask(TaskConfig(
+      taskId: 'first${taskId}',
+      periodic: false,
+      delay: differTime.inMilliseconds,
+      stopOnTerminate: false,
+      enableHeadless: true,
+      forceAlarmManager: true,
+    ),);
+    logger.d('[glucocare_log] Schedule Background Fetch started.');
   }
 
   // 작업 일괄 중지
@@ -62,10 +97,5 @@ class FetchService {
   // 특정 작업 중지
   static Future<void> stopBackgroundFetchByTaskId(String taskId) async {
     await BackgroundFetch.stop(taskId);
-  }
-
-  static void headlessInit() async {
-    // 헤드리스 작업 등록 (앱 종료 상태에서 실행 가능)
-    BackgroundFetch.registerHeadlessTask(_executeFetchTask);
   }
 }

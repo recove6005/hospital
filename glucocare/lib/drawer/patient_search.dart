@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/drawer/pages/patient_info.dart';
 import 'package:glucocare/models/patient_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:intl/intl.dart';
@@ -40,8 +41,8 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
   bool _isPatienLoading = true;
   List<PatientModel> _allPatientModels = [];
   List<PatientModel> _searchModels = [];
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _birthController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _birthController = TextEditingController();
 
   void _loadAllPatient() async {
     _allPatientModels = await PatientRepository.selectAllPatient();
@@ -102,6 +103,13 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
     }
   }
 
+  void _moveToPatientInfoPage(PatientModel model) async {
+      final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => PatientInfoPage(model: model)));
+      if(result) {
+        _loadAllPatient();
+      }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -109,7 +117,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
   }
   @override
   Widget build(BuildContext context) {
-    if(_isPatienLoading) return Center(child: CircularProgressIndicator(),);
+    if(_isPatienLoading) return const Center(child: CircularProgressIndicator(),);
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [ // 서치 박스
@@ -160,7 +168,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
                   hintStyle: TextStyle(
                     fontSize: 18,
                     color: Colors.grey,
-                  )
+                  ),
               ),
               style: const TextStyle(
                 fontSize: 18,
@@ -177,7 +185,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
           child: Container(
               padding: EdgeInsets.zero,
               width: 350,
-              height: 200,
+              height: MediaQuery.of(context).size.height - 300,
               child: ListView.builder(
                 itemCount: _searchModels.length,
                 itemBuilder: (context, index) {
@@ -194,8 +202,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
                         ],
                       ),
                       onTap: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("${_searchModels[index].name}님의 정보입니다.")));
+                        _moveToPatientInfoPage(_searchModels[index]);
                       },
                     ),
                   );
@@ -207,4 +214,3 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
     );
   }
 }
-

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/drawer/pages/patient_info.dart';
+import 'package:glucocare/drawer/user_info.dart';
 import 'package:glucocare/models/gluco_danger_model.dart';
 import 'package:glucocare/models/purse_danger_model.dart';
 import 'package:glucocare/repositories/gluco_danger_repository.dart';
@@ -230,17 +232,17 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                           ),
                         ),
                         const SizedBox(height: 5,),
-                        Text('측정 수치', style: TextStyle(fontWeight: FontWeight.bold),),
+                        const Text('측정 수치', style: TextStyle(fontWeight: FontWeight.bold),),
                         Row(
                           children: [
-                            Text('${_glucoWornings[index].value}', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
+                            Text('${_glucoWornings[index].value}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
                             Text(' mg/dL'),
                           ],
                         ),
                       ],
                     ),
                     onTap: () {
-
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PatientInfoPage(model: _glucoPatients[index])));
                     },
                   ),
                 );
@@ -311,6 +313,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                         ],
                       ),
                       onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => PatientInfoPage(model: _pursePatients[index])));
                       },
                     ),
                   );

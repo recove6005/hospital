@@ -73,6 +73,25 @@ class GlucoRepository {
     return models;
   }
 
+  static Future<List<GlucoModel>> selectAllGlucoCheckBySpecificUid(String uid) async {
+    List<GlucoModel> models = <GlucoModel>[];
+    List<String> namelist = await GlucoColNameRepository.selectAllGlucoColNameBySpecificUid(uid);
+    for(var name in namelist) {
+      try {
+        var docSnapshot = await _store.collection('gluco_check').doc(uid)
+            .collection(name).get();
+        for(var doc in docSnapshot.docs) {
+          GlucoModel model = GlucoModel.fromJson(doc.data());
+          models.add(model);
+        }
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to load gluco check history (selectAllGlucoCheck) $e');
+      }
+    }
+
+    return models;
+  }
+
   static Future<GlucoModel?>? selectGlucoByColName(String colName) async {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();

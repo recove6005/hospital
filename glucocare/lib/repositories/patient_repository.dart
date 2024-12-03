@@ -11,7 +11,7 @@ class PatientRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       try {
-        PatientModel model = PatientModel(uid: uid!, kakaoId: '', gen: '', birthDate: Timestamp.fromDate(DateTime(1900, 1, 1, 1, 1)), isFilledIn: false, name: '', isAdmined: false);
+        PatientModel model = PatientModel(uid: uid!, kakaoId: '', gen: '', birthDate: Timestamp.fromDate(DateTime(1900, 1, 1, 1, 1)), isFilledIn: false, name: '', isAdmined: false, state: '없음');
         _store.collection('patients').doc(uid).set(model.toJson());
       } catch(e) {
         logger.e('[glucocare_log] Failed to init patient info : $e');
@@ -19,7 +19,7 @@ class PatientRepository {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       try {
-        PatientModel model = PatientModel(uid: '', kakaoId: kakaoId!, gen: '', birthDate: Timestamp(0, 0), isFilledIn: false, name: '', isAdmined: false);
+        PatientModel model = PatientModel(uid: '', kakaoId: kakaoId!, gen: '', birthDate: Timestamp(0, 0), isFilledIn: false, name: '', isAdmined: false, state: '없음');
         _store.collection('patients').doc(kakaoId).set(model.toJson());
       } catch(e) {
         logger.e('[glucocare_log] Failed to init patient info : $e');
@@ -98,13 +98,25 @@ class PatientRepository {
     try {
       if(await AuthService.userLoginedFa()) {
         String? uid = AuthService.getCurUserUid();
-        _store.collection('patients').doc(uid).update(model.toJson());
+        await _store.collection('patients').doc(uid).update(model.toJson());
       } else {
         String? kakaoId = await AuthService.getCurUserId();
-        _store.collection('patients').doc(kakaoId).update(model.toJson());
+        await _store.collection('patients').doc(kakaoId).update(model.toJson());
       }
     } catch(e) {
       logger.e('[glucocare_log] Failed to update patient model (patient_repository.dart/updatePatientInfo) : $e');
+    }
+    logger.d('[glucocare_log] updated');
+  }
+
+  static Future<void> updatePatientInfoBySpecificUid(PatientModel model) async {
+    String uid = '';
+    if(model.uid != '') uid = model.uid;
+    else uid = model.kakaoId;
+    try {
+      await _store.collection('patients').doc(uid).update(model.toJson());
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to update patient model (updatePatientInfoBySpecificUid): $e');
     }
   }
 }

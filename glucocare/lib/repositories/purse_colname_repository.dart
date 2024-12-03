@@ -48,7 +48,19 @@ class PurseColNameRepository {
     return purseColNameList;
   }
 
-  static Future<String> selectPurseColNameNyDay(String docName) async {
+  static Future<List<String>> selectAllPurseColNameBySpecificUid(String uid) async {
+    List<String> purseColNameList = <String>[];
+
+    var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
+    for(var doc in docSnapshot.docs) {
+      PurseColNameModel purseData = PurseColNameModel.fromJson(doc.data());
+      purseColNameList.add(purseData.date);
+    }
+
+    return purseColNameList;
+  }
+
+  static Future<String> selectPurseColNameByDay(String docName) async {
     String purseColName = '';
 
     if(await AuthService.userLoginedFa()) {

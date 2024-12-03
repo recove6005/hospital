@@ -1,5 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/models/notice_board_model.dart';
+import 'package:glucocare/repositories/notice_board_repository.dart';
+import 'package:glucocare/services/auth_service.dart';
 
 class NoticePostingPage extends StatelessWidget {
   const NoticePostingPage({super.key});
@@ -21,7 +25,7 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  void _submitPost() {
+  Future<void> _submitPost() async {
     final title = _titleController.text;
     final content = _contentController.text;
 
@@ -32,13 +36,21 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
       return;
     }
 
-    // 입력 초기화
     _titleController.clear();
     _contentController.clear();
-
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('게시글이 작성되었습니다.')),
+      const SnackBar(content: Text('공지사항 게시글이 작성되었습니다.')),
     );
+
+    String? uid = '';
+    if(await AuthService.userLoginedFa()) uid = AuthService.getCurUserUid();
+    else uid = await AuthService.getCurUserId();
+    if(uid != null) {
+      NoticeBoardModel model = NoticeBoardModel(uid: uid, title: title, content: content, datetime: Timestamp.now());
+      NoticeBoardRepository.insertBoard(model);
+    }
+
+    Navigator.pop(context);
   }
 
   @override

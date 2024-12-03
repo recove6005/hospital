@@ -53,7 +53,7 @@ Future<void> main() async {
   NotificationService.initNotification();
 
   // Background Fetch Headless Init
-  // FetchService.initConfigureBackgroundFetch();
+  FetchService.initConfigureBackgroundFetch();
   FetchService.headlessInit();
 
   runApp(const MyApp());
@@ -234,12 +234,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black
                     ),),
                     onTap: () async {
-                        final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const UserInfoPage()));
-                        if(result) {
-                          setState(() {
-                            _getUserName();
-                          });
-                        }
+                        await Navigator.push(context, MaterialPageRoute(builder: (context) => const UserInfoPage()));
                     }
                 ),
                 if(_isAdmin)
@@ -289,56 +284,48 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                 ),
-                ListTile(
-                    leading: const Icon(Icons.add_task),
-                    title: const Text('메인 테스크 추가', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () async { // logout logic
-                      FetchService.initConfigureBackgroundFetch();
-                    }
-                ),
-                ListTile(
-                    leading: const Icon(Icons.add_task),
-                    title: const Text('테스크 추가', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () async { // logout logic
-                      FetchService.initScheduleBackgroundFetch('single_task');
-                    }
-                ),
-                ListTile(
-                    leading: const Icon(Icons.stop),
-                    title: const Text('테스크 삭제', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () async { // logout logic
-                      FetchService.stopBackgroundFetchByTaskId('single_task');
-                    }
-                ),
-                ListTile(
-                    leading: const Icon(Icons.multiple_stop),
-                    title: const Text('테스크 일괄 삭제', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () async { // logout logic
-                      FetchService.stopBackgroundFetch();
-                    }
-                ),
-                ListTile(
-                    leading: const Icon(Icons.alarm),
-                    title: const Text('로컬 알림 테스트', style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.black
-                    ),),
-                    onTap: () async { // logout logic
-                      NotificationService.showNotification();
-                    }
-                ),
+                // ListTile(
+                //     leading: const Icon(Icons.add_task),
+                //     title: const Text('테스크 추가', style: TextStyle(
+                //         fontSize: 20,
+                //         color: Colors.black
+                //     ),),
+                //     onTap: () async { // logout logic
+                //       FetchService.initScheduleBackgroundFetch('single_task');
+                //     }
+                // ),
+                // ListTile(
+                //     leading: const Icon(Icons.stop),
+                //     title: const Text('테스크 삭제', style: TextStyle(
+                //         fontSize: 20,
+                //         color: Colors.black
+                //     ),),
+                //     onTap: () async { // logout logic
+                //       FetchService.stopBackgroundFetchByTaskId('single_task');
+                //     }
+                // ),
+                // ListTile(
+                //     leading: const Icon(Icons.multiple_stop),
+                //     title: const Text('테스크 일괄 삭제', style: TextStyle(
+                //         fontSize: 20,
+                //         color: Colors.black
+                //     ),),
+                //     onTap: () async { // logout logic
+                //       FetchService.stopBackgroundFetch();
+                //     }
+                // ),
+                // ListTile(
+                //     leading: const Icon(Icons.multiple_stop),
+                //     title: const Text('Background Log', style: TextStyle(
+                //         fontSize: 20,
+                //         color: Colors.black
+                //     ),),
+                //     onTap: () async { // logout logic
+                //       BackgroundFetch.status.then((status) {
+                //         logger.d('[glucocare_log] Status: $status');
+                //       });
+                //     }
+                // ),
               ],
             )
         ),

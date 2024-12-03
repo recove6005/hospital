@@ -50,6 +50,21 @@ class GlucoColNameRepository {
     return glucoColNameList;
   }
 
+  static Future<List<String>> selectAllGlucoColNameBySpecificUid(String uid) async {
+    List<String> glucoColNameList = <String>[];
+    try {
+      var docSnapshot = await _store.collection('gluco_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
+      for(var doc in docSnapshot.docs) {
+        GlucoColNameModel glucoData = GlucoColNameModel.fromJson(doc.data());
+        glucoColNameList.add(glucoData.date);
+      }
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to select all gluco col name by specific uid. $e');
+    }
+
+    return glucoColNameList;
+  }
+
   static Future<List<String>> selectAllGlucoColNameByAllUid() async {
     List<String> glucoColNameList = <String>[];
 

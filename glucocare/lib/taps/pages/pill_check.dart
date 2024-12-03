@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -147,6 +148,9 @@ class _PillCheckFormState extends State<PillCheckForm> {
     }
     PillModel pillModel = PillModel(uid: userId!, saveDate: _saveDate, saveTime: _saveTime, alarmTime: _alarmTime, alarmTimeStr: _alarmTimeStr, state: _state);
     AlarmRepository.insertAlarm(pillModel);
+
+    String taskId = _alarmTimeStr;
+    FetchService.initScheduleBackgroundFetch(taskId);
 
     _setPillModels();
     _initValues();

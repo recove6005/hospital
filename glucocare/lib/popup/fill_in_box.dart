@@ -58,10 +58,10 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
     if(uid != '' || kakaoId != '') {
       if(name.length >= 2 && !regex.hasMatch(name)) {
         if(uid != null && kakaoId != null ) {
-          PatientModel model = PatientModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false);
+          PatientModel model = PatientModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
           PatientRepository.updatePatientInfo(model);
         } else {
-          PatientModel model = PatientModel(uid: '', kakaoId: '', name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false);
+          PatientModel model = PatientModel(uid: '', kakaoId: '', name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
           PatientRepository.updatePatientInfo(model);
         }
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));

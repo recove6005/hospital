@@ -56,7 +56,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       child: Column(
@@ -64,14 +64,14 @@ class _UserInfoFormState extends State<UserInfoForm> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           const SizedBox(height: 50,),
-          Container(
+          SizedBox(
             width: 350,
             height: 80,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('$_name 님', style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
+                Text('$_name 님', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
               ],
             ),
           ),
@@ -88,9 +88,9 @@ class _UserInfoFormState extends State<UserInfoForm> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(width: 30,),
-                Text('성별 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
+                const Text('성별 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
                 const SizedBox(width: 30,),
-                Text(_gen, style: TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
+                Text(_gen, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
               ],
             ),
           ),
@@ -107,16 +107,16 @@ class _UserInfoFormState extends State<UserInfoForm> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(width: 30,),
-                Text('생일 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
+                const Text('생일 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
                 const SizedBox(width: 30,),
-                Text(_birthDate, style: TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
+                Text(_birthDate, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
               ],
             ),
           ),
           const SizedBox(height: 30,),
           Container(
             width: 350,
-            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+            padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
             decoration: BoxDecoration(
               color: const Color(0xFFF9F9F9),
               borderRadius: BorderRadius.circular(20),
@@ -127,7 +127,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
               children: [
                 const Text('특이사항', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
                 const SizedBox(height: 5,),
-                Text(_state, style: TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: Colors.black),),
+                Text(_state, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.normal, color: Colors.black),),
               ],
             ),
           ),

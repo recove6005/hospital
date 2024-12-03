@@ -8,10 +8,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '진료 일정',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: ClinicScheduleScreen(),
     );
   }
@@ -19,18 +15,15 @@ class MyApp extends StatelessWidget {
 
 class ClinicScheduleScreen extends StatelessWidget {
   // 진료 일정 데이터
-  final List<Map<String, String>> schedule = [
-    {"date": "2024-12-01", "time": "09:00 AM - 05:00 PM", "doctor": "Dr. Kim"},
-    {"date": "2024-12-02", "time": "10:00 AM - 04:00 PM", "doctor": "Dr. Lee"},
-    {"date": "2024-12-03", "time": "09:30 AM - 06:00 PM", "doctor": "Dr. Choi"},
-    {"date": "2024-12-04", "time": "08:30 AM - 05:30 PM", "doctor": "Dr. Park"},
-  ];
+  final List<Map<String, String>> schedule = [];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("진료 일정"),
+        title: const Text("진료 일정", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+        backgroundColor: Colors.white,
+        shadowColor: Colors.white,
       ),
       body: ListView.builder(
         itemCount: schedule.length,

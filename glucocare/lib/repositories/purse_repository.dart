@@ -76,7 +76,27 @@ class PurseRepository {
         }
       }
     }
+    return models;
+  }
 
+  static Future<List<PurseModel>> selectAllPurseCheckBySpecificUid(String uid) async {
+    List<PurseModel> models = [];
+    List<String> namelist = await PurseColNameRepository.selectAllPurseColNameBySpecificUid(uid);
+    for(var name in namelist) {
+      try {
+        var docSnapshot = await _store.collection('purse_check')
+            .doc(uid)
+            .collection(name)
+            .get();
+        for (var doc in docSnapshot.docs) {
+          PurseModel model = PurseModel.fromJson(doc.data());
+          models.add(model);
+        }
+      } catch (e) {
+        logger.d(
+            '[glucocare_log] Failed to load purse history (selectAllPurseCheck) : $e');
+      }
+    }
     return models;
   }
 
