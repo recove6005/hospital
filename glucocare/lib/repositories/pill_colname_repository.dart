@@ -59,8 +59,10 @@ class PillColNameRepository {
             .limit(1)
             .get();
 
-        if(docSnapshot.docs.isNotEmpty) lastPillColName =
+        if(docSnapshot.docs.isNotEmpty) {
+          lastPillColName =
             PillColNameModel.fromJson(docSnapshot.docs.first.data()).date;
+        }
 
       } catch(e) {
         logger.e('[glucocare_log] Failed to load pill col name (selectLastPillColName) : $e');
@@ -74,8 +76,10 @@ class PillColNameRepository {
             .limit(1)
             .get();
 
-        if(docSnapshot.docs.isNotEmpty) lastPillColName =
+        if(docSnapshot.docs.isNotEmpty) {
+          lastPillColName =
             PillColNameModel.fromJson(docSnapshot.docs.first.data()).date;
+        }
 
       } catch(e) {
         logger.e('[glucocare_log] Failed to load pill col name (selectLastPillColName) : $e');

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/patient_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
@@ -19,7 +18,7 @@ class UserInfoPage extends StatelessWidget {
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
       ),
-      body: UserInfoForm(),
+      body: const UserInfoForm(),
     );
   }
 }
@@ -35,7 +34,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
    String _name = '';
    String _gen = '';
    String _birthDate = '';
-   String _state = '없음';
+   final String _state = '없음';
 
   Future<void> _getModel() async {
     PatientModel? model = await PatientRepository.selectPatientByUid();

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/patient_model.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
@@ -44,8 +43,11 @@ class _PatientPurseInfoFormState extends State<PatientPurseInfoForm> {
 
   void _setState() async {
     String uid = '';
-    if(model.uid != '') uid = model.uid;
-    else uid = model.kakaoId;
+    if(model.uid != '') {
+      uid = model.uid;
+    } else {
+      uid = model.kakaoId;
+    }
     List<PurseModel> models = await PurseRepository.selectAllPurseCheckBySpecificUid(uid);
     setState(() {
       _purseModels = models;

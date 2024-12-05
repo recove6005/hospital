@@ -132,7 +132,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
-                            color: Color(0xFFF9F9F9),
+                            color: const Color(0xFFF9F9F9),
                           ),
                           child: Text('${index + 1}월'),
                         ),
@@ -149,14 +149,14 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   }
 
   // 차트 설정 함수
-  List<String> _shrinkX = [];
+  final List<String> _shrinkX = [];
   LineChartBarData? _shrinkLine;
-  List<String> _relaxX = [];
+  final List<String> _relaxX = [];
   LineChartBarData? _relaxLine;
-  double _minX = 0;
+  final double _minX = 0;
   double _maxX = 21;
-  double _minY = 0;
-  double _maxY = 200;
+  final double _minY = 0;
+  final double _maxY = 200;
 
   String? _chartSelectedValeu = '1주일';
   double _chartSize = 500;
@@ -179,7 +179,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         isCurved: true,
         color: Colors.green,
         barWidth: 2,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
       );
 
       _isChartLoading = false;
@@ -194,7 +194,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         rightTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
         ),
-        leftTitles: AxisTitles(
+        leftTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
           // sideTitles: SideTitles(
           //     showTitles: true,
@@ -269,7 +269,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
     }
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
@@ -424,7 +424,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 width: 350,
                 height: 280,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFFF9F9F9),
+                  color: const Color(0xffff9f9f9),
                   borderRadius: BorderRadius.circular(20)
                 ),
                 child: Row(
@@ -447,7 +447,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         ),
                         if(_purseModels.isEmpty)
                         Container(
-                          padding: EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 10),
                           width: 280,
                           child: const Text('혈압 측정 내역이 없습니다.',
                             style: TextStyle(
@@ -456,7 +456,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                             ),
                           ),
                         ),
-                        if(!_purseModels.isEmpty)
+                        if(_purseModels.isNotEmpty)
                         SizedBox(
                           width: 300,
                           height: 230,
@@ -498,7 +498,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                                         color: Colors.black,
                                                       ),),
                                                     if(_purseModels[index].state != '')
-                                                      Text('${_purseModels[index].state}',
+                                                      Text(_purseModels[index].state,
                                                         style: const TextStyle(
                                                           fontSize: 18,
                                                           color: Colors.black,
@@ -541,7 +541,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20),
-                  color: const Color(0xFFFF9F9F9),
+                  color: const Color(0xffff9f9f9),
                 ),
                 child: Column(
                   children: [
@@ -604,7 +604,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(5, (index) {
                               final reversedIndex = 4 - index;
-                              return Text('${(_minY + reversedIndex * 50).toInt()}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),);
+                              return Text('${(_minY + reversedIndex * 50).toInt()}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),);
                             }),
                           ),
                         ),

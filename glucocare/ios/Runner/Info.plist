@@ -61,6 +61,17 @@
             <string>glucocare.com</string>
         </dict>
     </array>
+    <key>CFBundleURLTypes</key>
+    <array>
+      <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.YOUR_CLIENT_ID</string>
+        </array>
+      </dict>
+    </array>
     <key>UIBackgroundModes</key>
     <array>
       <string>audio</string>

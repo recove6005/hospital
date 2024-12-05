@@ -65,8 +65,8 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       builder: (context, child) {
         return Theme(
             data: ThemeData.light().copyWith(
-              dialogBackgroundColor: Color(0xFFF9F9F9), // 팝업 배경 색상
-              colorScheme: ColorScheme.light(
+              dialogBackgroundColor: const Color(0xFFF9F9F9), // 팝업 배경 색상
+              colorScheme: const ColorScheme.light(
                 primary: Color(0xFF1FA1AA), // 팝업 선택된 항목 색상
                 onSurface: Colors.black, // 팝업 텍스트 색상
               ),
@@ -152,7 +152,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(8),
-                              color: Color(0xFFF9F9F9),
+                              color: const Color(0xFFF9F9F9),
                             ),
                             child: Text('${index + 1}월'),
                           ),
@@ -169,12 +169,12 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
   }
 
   // 차트 설정
-  List<String> _glucoX = [];
+  final List<String> _glucoX = [];
   LineChartBarData? _glucoLine;
-  double _minX = 0;
+  final double _minX = 0;
   double _maxX = 21;
-  double _minY = 0;
-  double _maxY = 200;
+  final double _minY = 0;
+  final double _maxY = 200;
 
   String? _chartSelectedValeu = '1주일';
   double _chartSize = 500;
@@ -203,7 +203,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       rightTitles: const AxisTitles(
         sideTitles: SideTitles(showTitles: false),
       ),
-      leftTitles: AxisTitles(
+      leftTitles: const AxisTitles(
         sideTitles: SideTitles(showTitles: false),
         // sideTitles: SideTitles(
         //   showTitles: true,
@@ -277,7 +277,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
     }
     return Scaffold(
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
@@ -432,7 +432,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   width: 350,
                   height: 280,
                   decoration: BoxDecoration(
-                      color: const Color(0xFFFF9F9F9),
+                      color: const Color(0xffff9f9f9),
                       borderRadius: BorderRadius.circular(20)
                   ),
                   child: Row(
@@ -464,7 +464,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                               ),
                             ),
                           ),
-                          if(!_glucoModels.isEmpty)
+                          if(_glucoModels.isNotEmpty)
                           SizedBox(
                             width: 300,
                             height: 230,
@@ -553,7 +553,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: const Color(0xFFFF9F9F9),
+                    color: const Color(0xffff9f9f9),
                   ),
                   child: Column(
                     children: [
@@ -616,7 +616,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: List.generate(5, (index) {
                                 final reversedIndex = 4 - index;
-                                return Text('${(_minY + reversedIndex * 50).toInt()}', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),);
+                                return Text('${(_minY + reversedIndex * 50).toInt()}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),);
                               }),
                             ),
                           ),

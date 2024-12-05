@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/gluco_col_name_model.dart';
@@ -90,8 +89,11 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     _setState();
 
     String? uid = '';
-    if(await AuthService.userLoginedFa()) uid = await AuthService.getCurUserUid();
-    else uid = await AuthService.getCurUserId();
+    if(await AuthService.userLoginedFa()) {
+      uid = AuthService.getCurUserUid();
+    } else {
+      uid = await AuthService.getCurUserId();
+    }
 
     if(uid != null) {
       GlucoModel glucoModel = GlucoModel(
@@ -115,7 +117,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     }
 
     if(await AuthService.userLoginedFa()) {
-      String? uid = await AuthService.getCurUserUid();
+      String? uid = AuthService.getCurUserUid();
       logger.d('[glucocare_log] user fa: $uid');
       GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
       GlucoColNameRepository.insertGlucoColName(nameModel);
@@ -308,7 +310,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
               ),
             ),
             const SizedBox(height: 10,),
-            Container(
+            SizedBox(
               width: 350,
               child: TextField(
                 controller: _stateController,

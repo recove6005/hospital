@@ -44,9 +44,9 @@ class _HomeTapForm extends State<HomeTapForm> {
   bool _isLoadingPill = true;
 
   String colName = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-  GlucoModel? _lastGlucoModel = null;
-  PurseModel? _lastPurseModel = null;
-  PillModel? _lastPillModel = null;
+  GlucoModel? _lastGlucoModel;
+  PurseModel? _lastPurseModel;
+  PillModel? _lastPillModel;
   String _alarmTime = '';
 
   String _passedPurseTimer = '';
@@ -257,8 +257,11 @@ class _HomeTapForm extends State<HomeTapForm> {
                         const SizedBox(width: 5,),
                         Text(() {
                           String time = DateFormat('a hh:mm').format(DateTime.now());
-                          if(time.substring(0,2) == 'AM') time = time.replaceRange(0, 2, '오전');
-                          else time = time.replaceRange(0, 2, '오후');
+                          if(time.substring(0,2) == 'AM') {
+                            time = time.replaceRange(0, 2, '오전');
+                          } else {
+                            time = time.replaceRange(0, 2, '오후');
+                          }
                           return '${DateFormat('MM월 dd일 (E)').format(DateTime.now())}  $time';
                         }(),
                           style: const TextStyle(
@@ -666,7 +669,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                       padding: EdgeInsets.zero,
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => NoticeBoardPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const NoticeBoardPage()));
                         },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.zero,

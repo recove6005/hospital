@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/main.dart';
@@ -77,7 +76,7 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -92,10 +91,10 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
             Container(
               width: 280,
               height: 45,
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: Color(0xFFF9F9F9),
+                color: const Color(0xFFF9F9F9),
               ),
               child: TextField(
                 controller: _nameController,
@@ -223,12 +222,12 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
               ),
             ),
             const SizedBox(height: 40,),
-            Container(
+            SizedBox(
               width: 280,
               height: 50,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF28C2CE),
+                  backgroundColor: const Color(0xFF28C2CE),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30)
                   )

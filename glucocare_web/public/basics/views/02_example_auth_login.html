@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth Example</title>
+</head>
+<style>
+    body {
+        padding: 50px;
+        font: 13px Helvetica, Arial, sans-serif;
+    }
+    .error {
+        color: red
+    }
+    .success {
+        color: green
+    }
+</style>
+<body>
+    <h1>Login</h1>
+    Try Accessing <a href="/restricted"></a>, then authenticate with "tj" and "footbar"/
+
+    <form method="post" action="/login">
+        <p>
+            <label for="usernmae">usernmae</label>
+            <input type="text" name="username" id="username">
+        </p>
+        <p>
+            <label for="password">password</label>
+            <input type="password" name="password" id="password">
+        </p>
+        <p>
+            <input type="submit" value="Login">
+        </p>
+    </form>
+</body>
+</html>

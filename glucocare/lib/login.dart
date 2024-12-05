@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/main.dart';
-import 'package:glucocare/popup/fill_in_box.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/kakao_login_service.dart';
 import 'package:logger/logger.dart';
@@ -33,6 +32,8 @@ class _LoginFormState extends State<LoginForm> {
   bool _isKakaoLogind = false;
   bool _isCodeSent = false;
 
+  String _verifyId = '';
+
   void _sendCode() async {
     String phone = _idInputController.text.trim();
     if(phone.contains('leehan9498@gmail.com')) {
@@ -40,19 +41,20 @@ class _LoginFormState extends State<LoginForm> {
       FirebaseAuth.instance.signInWithEmailAndPassword(email: phone, password: '112233');
       if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } else {
+      String temp = await AuthService.authPhoneNumber(phone);
       setState(() {
         _isCodeSent = true;
+        _verifyId = temp;
       });
-      AuthService.authPhoneNumber(phone);
     }
   }
 
   void _authCode() async {
     try {
-      await AuthService.authCodeAndLogin(_codeInputController.text.trim());
+      await AuthService.authCodeAndLogin(_verifyId, _codeInputController.text.trim());
       if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
     } catch(e) {
-      logger.e('[glucocare_log] Failed to phone number auth ::: $e');
+      logger.e('[glucocare_log] Failed to phone number auth $e');
       Fluttertoast.showToast(msg: '올바른 전화번호와 인증번호를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
       setState(() {
         _isCodeSent = false;
@@ -102,7 +104,7 @@ class _LoginFormState extends State<LoginForm> {
         ),
       );
     }
-    return Container(
+    return SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -118,10 +120,10 @@ class _LoginFormState extends State<LoginForm> {
             Container(
               width: 280,
               height: 45,
-              padding: EdgeInsets.symmetric(horizontal: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(30),
-                color: Color(0xFFF9F9F9),
+                color: const Color(0xFFF9F9F9),
               ),
               child: TextField(
                 controller: _idInputController,
@@ -145,10 +147,10 @@ class _LoginFormState extends State<LoginForm> {
               Container(
                 width: 280,
                 height: 45,
-                padding: EdgeInsets.symmetric(horizontal: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(30),
-                  color: Color(0xFFF9F9F9),
+                  color: const Color(0xFFF9F9F9),
                 ),
                 child: TextField(
                   controller: _codeInputController,
@@ -176,7 +178,7 @@ class _LoginFormState extends State<LoginForm> {
               child: ElevatedButton(
                 onPressed: _sendCode,
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF28C2CE),
+                    backgroundColor: const Color(0xFF28C2CE),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30)
                     )
@@ -198,7 +200,7 @@ class _LoginFormState extends State<LoginForm> {
                 child: ElevatedButton(
                   onPressed: _authCode,
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xFF28C2CE),
+                      backgroundColor: const Color(0xFF28C2CE),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30)
                       )

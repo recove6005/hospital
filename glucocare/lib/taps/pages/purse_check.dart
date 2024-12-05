@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
@@ -82,8 +80,11 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     _setStates();
 
     String? uid = '';
-    if(await AuthService.userLoginedFa()) uid = await AuthService.getCurUserUid();
-    else uid = await AuthService.getCurUserId();
+    if(await AuthService.userLoginedFa()) {
+      uid = AuthService.getCurUserUid();
+    } else {
+      uid = await AuthService.getCurUserId();
+    }
 
     if(uid != null) {
       PurseModel purseModel = PurseModel(
@@ -146,7 +147,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
+            SizedBox(
               width: 350,
               height: 60,
               child: Row(
@@ -216,7 +217,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                       ],
                     ),
                     const SizedBox(height: 10,),
-                    Container(
+                    SizedBox(
                       width: 350,
                       child: Center(
                         child: Row(
@@ -256,7 +257,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                       ),
                     ),
                     const SizedBox(height: 10,),
-                    Container(
+                    SizedBox(
                       width: 350,
                       child: Center(
                         child: Row(
@@ -310,7 +311,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
               ),
             ),
             const SizedBox(height: 10,),
-            Container(
+            SizedBox(
               width: 350,
               child: TextField(
                 controller: _stateController,

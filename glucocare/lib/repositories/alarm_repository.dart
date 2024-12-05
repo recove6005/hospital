@@ -42,7 +42,7 @@ class AlarmRepository {
   }
 
   static Future<PillModel?> selectSoonerAlarm() async {
-    PillModel? model = null;
+    PillModel? model;
     String nowTime = DateFormat('HH:mm').format(DateTime.now());
 
     if(await AuthService.userLoginedFa()) {

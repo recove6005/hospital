@@ -85,12 +85,12 @@ class FCMService {
 
   static Future<String?> postMessage(String fcmToken) async {
     try {
-      String? _accessToken = dotenv.env['FIREBASE_MSG_ACCESS_TOKEN'];
+      String? accessToken = dotenv.env['FIREBASE_MSG_ACCESS_TOKEN'];
       http.Response response = http.post(
         Uri.parse("https://fcm.googleapis.com/v1/projects/glucocare-7820b/messages:send"),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $_accessToken',
+          'Authorization': 'Bearer $accessToken',
         },
         body: json.encode({
           "message": {

@@ -79,7 +79,7 @@ class FetchService {
     Duration differTime = alarmdatetime.difference(nowDatetime);
 
     await BackgroundFetch.scheduleTask(TaskConfig(
-      taskId: 'first${taskId}',
+      taskId: 'first$taskId',
       periodic: false,
       delay: differTime.inMilliseconds,
       stopOnTerminate: false,

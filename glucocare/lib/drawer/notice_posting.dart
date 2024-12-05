@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/notice_board_model.dart';
 import 'package:glucocare/repositories/notice_board_repository.dart';
@@ -43,8 +42,11 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
     );
 
     String? uid = '';
-    if(await AuthService.userLoginedFa()) uid = AuthService.getCurUserUid();
-    else uid = await AuthService.getCurUserId();
+    if(await AuthService.userLoginedFa()) {
+      uid = AuthService.getCurUserUid();
+    } else {
+      uid = await AuthService.getCurUserId();
+    }
     if(uid != null) {
       NoticeBoardModel model = NoticeBoardModel(uid: uid, title: title, content: content, datetime: Timestamp.now());
       NoticeBoardRepository.insertBoard(model);

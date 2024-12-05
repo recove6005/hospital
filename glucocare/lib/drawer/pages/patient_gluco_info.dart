@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/models/patient_model.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
@@ -44,8 +43,11 @@ class _PatientGlucoInfoFormState extends State<PatientGlucoInfoForm> {
 
   void _setState() async {
     String uid = '';
-    if(model.uid != '') uid = model.uid;
-    else uid = model.kakaoId;
+    if(model.uid != '') {
+      uid = model.uid;
+    } else {
+      uid = model.kakaoId;
+    }
     List<GlucoModel> models = await GlucoRepository.selectAllGlucoCheckBySpecificUid(uid);
     setState(() {
       _glucoModels = models;

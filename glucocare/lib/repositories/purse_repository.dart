@@ -135,7 +135,7 @@ class PurseRepository {
   }
 
   static Future<PurseModel?>? selectLastPurseCheck() async {
-    PurseModel? model = null;
+    PurseModel? model;
 
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
@@ -150,7 +150,7 @@ class PurseRepository {
               .limit(1)
               .get();
 
-          model = await PurseModel.fromJson(docSnapshot.docs.first.data());
+          model = PurseModel.fromJson(docSnapshot.docs.first.data());
           return model;
         }
       } catch(e) {
@@ -169,7 +169,7 @@ class PurseRepository {
               .limit(1)
               .get();
 
-          model = await PurseModel.fromJson(docSnapshot.docs.first.data());
+          model = PurseModel.fromJson(docSnapshot.docs.first.data());
           return model;
         }
       } catch(e) {

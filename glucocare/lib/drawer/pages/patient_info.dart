@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/drawer/pages/patient_gluco_info.dart';
 import 'package:glucocare/drawer/pages/patient_purse_info.dart';
@@ -49,16 +48,14 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
   String _state = '없음';
 
   Future<void> _getModel() async {
-    if(model != null) {
-      setState(() {
-        _name = model.name;
-        _gen = model.gen;
-        _birthDate = DateFormat('yyyy년 MM월 dd일').format(model.birthDate.toDate());
-        _state = model.state;
-        _stateController.text = model.state;
-      });
+    setState(() {
+      _name = model.name;
+      _gen = model.gen;
+      _birthDate = DateFormat('yyyy년 MM월 dd일').format(model.birthDate.toDate());
+      _state = model.state;
+      _stateController.text = model.state;
+    });
     }
-  }
 
   void _savePatientRepo(PatientModel newModel) async {
     await PatientRepository.updatePatientInfoBySpecificUid(newModel);
@@ -157,6 +154,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
     _getModel();
   }
 
+  @override
   void dispose() {
     _focusNode.dispose(); // 메모리 누수 방지를 위해 해제
     super.dispose();
@@ -169,7 +167,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
           Navigator.pop(context, true);
           return false;
         },
-        child: Container(
+        child: SizedBox(
         width: MediaQuery.of(context).size.width,
         height: MediaQuery.of(context).size.height,
         child: Column(
@@ -177,7 +175,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(height: 50,),
-            Container(
+            SizedBox(
               width: 350,
               height: 80,
               child: Row(

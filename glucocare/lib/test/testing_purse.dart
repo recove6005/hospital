@@ -75,14 +75,14 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   }
 
   // 차트 설정 함수
-  List<String> _shrinkX = [];
+  final List<String> _shrinkX = [];
   LineChartBarData? _shrinkLine;
-  List<String> _relaxX = [];
+  final List<String> _relaxX = [];
   LineChartBarData? _relaxLine;
-  double _minX = 0;
-  double _maxX = 30;
-  double _minY = 50;
-  double _maxY = 150;
+  final double _minX = 0;
+  final double _maxX = 30;
+  final double _minY = 50;
+  final double _maxY = 150;
 
   Future<void> _setLines() async {
     List<FlSpot> shrinkData = await PurseRepository.getShrinkData(_shrinkX);
@@ -94,7 +94,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         isCurved: true,
         color: Colors.red[300],
         barWidth: 2,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
       );
 
       _relaxLine = LineChartBarData(
@@ -102,7 +102,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         isCurved: true,
         color: Colors.green,
         barWidth: 2,
-        dotData: FlDotData(show: true),
+        dotData: const FlDotData(show: true),
       );
 
       _isChartLoading = false;
@@ -191,7 +191,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
     }
     if(_purseModels.isEmpty) {
       return Scaffold(
-        body: Container(
+        body: SizedBox(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           child: Column(
@@ -205,7 +205,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                       _searchYearMonth(context);
                     },
                     child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Row(
                         children: [
                           const SizedBox(width: 30,),
@@ -223,12 +223,12 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   ),
                   // 요일 헤더
                   Padding(
-                    padding: EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: ['월', '화', '수', '목', '금', '토', '일'].map((day) {
                         return Expanded(
                           child: Center(
-                              child: Text(day,style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
+                              child: Text(day,style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
                           ),
                         );
                       }).toList(),
@@ -260,7 +260,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         color: const Color(0xFF6EC6D3),
                         shape: BoxShape.circle,
                         border: Border.all(
-                            color: Color(0xFF1FA1AA),
+                            color: const Color(0xFF1FA1AA),
                             width: 2,
                             style: BorderStyle.solid
                         ),
@@ -326,7 +326,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                       borderRadius: BorderRadius.circular(20),
                       color: Colors.grey[200],
                     ),
-                    padding: EdgeInsets.only(left: 15, right: 20, top: 30, bottom: 20),
+                    padding: const EdgeInsets.only(left: 15, right: 20, top: 30, bottom: 20),
                     width: 350,
                     height: 250,
                     child: LineChart(
@@ -374,7 +374,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
     }
     return Scaffold(
         body: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
             child: Column(
@@ -388,10 +388,10 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         _searchYearMonth(context);
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 16),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
                         child: Row(
                           children: [
-                            SizedBox(width: 30,),
+                            const SizedBox(width: 30,),
                             Text(
                               '${_focusedDate.year}년 ${_focusedDate.month}월',
                               style: const TextStyle(
@@ -399,19 +399,19 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Icon(Icons.arrow_drop_down, color: Colors.black,)
+                            const Icon(Icons.arrow_drop_down, color: Colors.black,)
                           ],
                         ),
                       ),
                     ),
                     // 요일 헤더
                     Padding(
-                      padding: EdgeInsets.only(bottom: 8),
+                      padding: const EdgeInsets.only(bottom: 8),
                       child: Row(
                         children: ['월', '화', '수', '목', '금', '토', '일'].map((day) {
                           return Expanded(
                             child: Center(
-                                child: Text(day,style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
+                                child: Text(day,style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),)
                             ),
                           );
                         }).toList(),
@@ -443,7 +443,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                           color: const Color(0xFF6EC6D3),
                           shape: BoxShape.circle,
                           border: Border.all(
-                              color: Color(0xFF1FA1AA),
+                              color: const Color(0xFF1FA1AA),
                               width: 2,
                               style: BorderStyle.solid
                           ),
@@ -468,10 +468,10 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                         )
                     ),
                     daysOfWeekStyle: DaysOfWeekStyle( //
-                        weekdayStyle: TextStyle(
+                        weekdayStyle: const TextStyle(
                           fontSize: 20,
                         ),
-                        weekendStyle: TextStyle(
+                        weekendStyle: const TextStyle(
                           fontSize: 20,
                         ),
                         decoration: BoxDecoration(
@@ -506,7 +506,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     ),
                     child: Row(
                       children: [
-                        SizedBox(width: 20,),
+                        const SizedBox(width: 20,),
                         Column(
                           children: [
                             const SizedBox(height: 10,),
@@ -561,7 +561,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                                         color: Colors.black,
                                                       ),),
                                                     if(_purseModels[index].state != '')
-                                                      Text('${_purseModels[index].state}',
+                                                      Text(_purseModels[index].state,
                                                         style: const TextStyle(
                                                           fontSize: 18,
                                                           color: Colors.black,
@@ -603,7 +603,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     borderRadius: BorderRadius.circular(20),
                     color: Colors.grey[200],
                   ),
-                  padding: EdgeInsets.only(left: 15, right: 20, top: 30, bottom: 20),
+                  padding: const EdgeInsets.only(left: 15, right: 20, top: 30, bottom: 20),
                   width: 350,
                   height: 250,
                   child: LineChart(

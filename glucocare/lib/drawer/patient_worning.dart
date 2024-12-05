@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/drawer/pages/patient_info.dart';
-import 'package:glucocare/drawer/user_info.dart';
 import 'package:glucocare/models/gluco_danger_model.dart';
 import 'package:glucocare/models/purse_danger_model.dart';
 import 'package:glucocare/repositories/gluco_danger_repository.dart';
@@ -46,12 +44,12 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
   bool _isPurseWornLoading = true;
   bool _isGlucoWornLoading = true;
   List<PurseDangerModel> _purseWornings = [];
-  List<PatientModel> _pursePatients = [];
+  final List<PatientModel> _pursePatients = [];
   List<GlucoDangerModel> _glucoWornings = [];
-  List<PatientModel> _glucoPatients = [];
+  final List<PatientModel> _glucoPatients = [];
 
-  List<PatientModel> _searchModels = [];
-  TextEditingController _nameController = TextEditingController();
+  final List<PatientModel> _searchModels = [];
+  final TextEditingController _nameController = TextEditingController();
 
   bool _page = true; // true: gluco, false: purse
 
@@ -222,8 +220,8 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 5,),
-                        Text('측정 일시', style: TextStyle(fontWeight: FontWeight.bold),),
-                        Text('${DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko_KR').format(_glucoWornings[index].checkTime.toDate())}'),
+                        const Text('측정 일시', style: TextStyle(fontWeight: FontWeight.bold),),
+                        Text(DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko_KR').format(_glucoWornings[index].checkTime.toDate())),
                         const SizedBox(height: 5,),
                         Container(
                           height: 1,
@@ -236,7 +234,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                         Row(
                           children: [
                             Text('${_glucoWornings[index].value}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
-                            Text(' mg/dL'),
+                            const Text(' mg/dL'),
                           ],
                         ),
                       ],
@@ -273,7 +271,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                         children: [
                           const SizedBox(height: 5,),
                           const Text('측정 일시', style: TextStyle(fontWeight: FontWeight.bold),),
-                          Text('${DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko_KR').format(_purseWornings[index].checkTime.toDate())}'),
+                          Text(DateFormat('yyyy년 MM월 dd일 a hh시 mm분', 'ko_KR').format(_purseWornings[index].checkTime.toDate())),
                           const SizedBox(height: 5,),
                           Container(
                             height: 1,

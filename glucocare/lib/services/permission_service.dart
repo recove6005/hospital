@@ -1,7 +1,5 @@
-import 'package:flutter/services.dart';
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class PermissionService {
   static Logger logger = Logger();

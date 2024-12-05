@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
@@ -56,7 +55,7 @@ class RegisterPhoneForm extends StatefulWidget {
 class _RegisterPhoneFormState extends State<RegisterPhoneForm> {
   Logger logger = Logger();
 
-  static TextEditingController _phoneController = TextEditingController();
+  static final TextEditingController _phoneController = TextEditingController();
 
   Future<void> _register() async {
     // 전화번호 인증

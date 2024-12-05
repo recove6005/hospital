@@ -44,7 +44,7 @@ class AuthService {
     }
   }
 
-  static void authPhoneNumber(String phone) async {
+  static Future<String> authPhoneNumber(String phone) async {
       await _auth.verifyPhoneNumber(
           phoneNumber: '+82${phone.substring(1)}',
           verificationCompleted: (fa.PhoneAuthCredential credential) async {
@@ -59,25 +59,27 @@ class AuthService {
           },
           codeSent: (String verificationId, int? resendToken) async {
             _verifyId = verificationId;
-            logger.d('[glucocare_log] id: ${verificationId}, $resendToken, +82${phone.substring(1)}');
+            logger.d('[glucocare_log] id: $verificationId, token: $resendToken, phone: +82${phone.substring(1)}');
           },
           timeout: const Duration(seconds: 60),
           codeAutoRetrievalTimeout: (String veficicationId) {
             // Auto-resolution timed out...
           },
       );
+
+      return _verifyId;
     }
 
-  static Future<void> authCodeAndLogin(String smsCode) async {
+  static Future<void> authCodeAndLogin(String verifyId, String smsCode) async {
   // Create a PhoneAuthCredential with the code
   fa.PhoneAuthCredential credential = fa.PhoneAuthProvider.credential(
-      verificationId: _verifyId,
+      verificationId: verifyId,
       smsCode: smsCode
   );
   // Sign the user in (or link) with the credential
+  logger.d('[glucocare_log] id: $verifyId, smsCode: $smsCode}');
   await _auth.signInWithCredential(credential);
 }
-
 
 static Future<void> signOut() async {
     await _auth.signOut();

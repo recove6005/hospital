@@ -74,7 +74,7 @@ class PillRepository {
   }
 
   static Future<PillModel?>? selectLastPillAlarm() async {
-    PillModel? model = null;
+    PillModel? model;
 
       if(await AuthService.userLoginedFa()) {
         String? uid = AuthService.getCurUserUid();
@@ -88,7 +88,7 @@ class PillRepository {
                 .limit(1)
                 .get();
 
-            model = await PillModel.fromJson(docSnapshot.docs.first.data());
+            model = PillModel.fromJson(docSnapshot.docs.first.data());
             logger.d('glucocare_log ${model.alarmTime}');
             return model;
           }
@@ -107,7 +107,7 @@ class PillRepository {
                 .limit(1)
                 .get();
 
-            model = await PillModel.fromJson(docSnapshot.docs.first.data());
+            model = PillModel.fromJson(docSnapshot.docs.first.data());
             return model;
           }
 
@@ -115,6 +115,7 @@ class PillRepository {
           logger.d('[glucocare_log] Failed to load pill check by colname (selectLastPurseCheck) : $e');
         }
     }
+      return null;
   }
 
   static Future<List<PillModel>> selectTodaysPillAlarms() async {

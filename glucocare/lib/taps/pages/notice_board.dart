@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/repositories/notice_board_repository.dart';
 import 'package:intl/intl.dart';
@@ -51,7 +50,7 @@ class _NoticeBoardFormState extends State<NoticeBoardForm> {
   Widget build(BuildContext context) {
     if(_isLoading) return const Center(child: CircularProgressIndicator(),);
     return SingleChildScrollView(
-      child: Container(
+      child: SizedBox(
         height: MediaQuery.of(context).size.height - 150,
         child: ListView.builder(
           itemCount: notices.length, // 공지사항 개수

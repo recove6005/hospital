@@ -111,8 +111,11 @@ class PatientRepository {
 
   static Future<void> updatePatientInfoBySpecificUid(PatientModel model) async {
     String uid = '';
-    if(model.uid != '') uid = model.uid;
-    else uid = model.kakaoId;
+    if(model.uid != '') {
+      uid = model.uid;
+    } else {
+      uid = model.kakaoId;
+    }
     try {
       await _store.collection('patients').doc(uid).update(model.toJson());
     } catch(e) {
