@@ -1,12 +1,13 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ka;
 import 'package:logger/logger.dart';
 
 class AuthService {
   static Logger logger = Logger();
+  static Completer<String> completer = Completer();
   static final fa.FirebaseAuth _auth = fa.FirebaseAuth.instance;
-
-  static String _verifyId = '';
 
   static Future<bool> userLoginedFa() async {
     if(_auth.currentUser == null) {
@@ -45,29 +46,32 @@ class AuthService {
   }
 
   static Future<String> authPhoneNumber(String phone) async {
+
       await _auth.verifyPhoneNumber(
           phoneNumber: '+82${phone.substring(1)}',
+          codeSent: (String verificationId, int? resendToken) async {
+            logger.d('[glucocare_log] code sented ===> id: $verificationId, token: $resendToken, phone: +82${phone.substring(1)}');
+            completer.complete(verificationId);
+          },
           verificationCompleted: (fa.PhoneAuthCredential credential) async {
             // Android only
             // Sign the user in (or link) with the auto-generated credential
             await _auth.signInWithCredential(credential);
           },
+          timeout: const Duration(minutes: 1),
+          codeAutoRetrievalTimeout: (String verificationId) {
+            // Auto-resolution timed out...
+            completer.complete(verificationId);
+          },
           verificationFailed: (fa.FirebaseAuthException e) {
             if (e.code == 'invalid-phone-number') {
               logger.e('[glucocare_log] The provided phone number is not valid.');
+              completer.completeError(e);
             }
-          },
-          codeSent: (String verificationId, int? resendToken) async {
-            _verifyId = verificationId;
-            logger.d('[glucocare_log] id: $verificationId, token: $resendToken, phone: +82${phone.substring(1)}');
-          },
-          timeout: const Duration(seconds: 60),
-          codeAutoRetrievalTimeout: (String veficicationId) {
-            // Auto-resolution timed out...
           },
       );
 
-      return _verifyId;
+      return completer.future;
     }
 
   static Future<void> authCodeAndLogin(String verifyId, String smsCode) async {

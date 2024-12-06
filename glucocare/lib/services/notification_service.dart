@@ -49,12 +49,11 @@ class NotificationService {
 
     await flutterLocalNotificationsPlugin.show(
       0,
-      'plain title',
-      'plain body',
+      '다올케어',
+      '약 먹을 시간이에요 !',
       notificationDetails,
       payload: 'item x',
     );
-
 
     // try {
     //   await flutterLocalNotificationsPlugin.zonedSchedule(

@@ -7,6 +7,7 @@ import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
+import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:glucocare/taps/pages/clinic_schedule.dart';
 import 'package:glucocare/taps/pages/notice_board.dart';
 import 'package:glucocare/taps/pages/gluco_check.dart';
@@ -204,6 +205,15 @@ class _HomeTapForm extends State<HomeTapForm> {
     _passedGlucoTimer  = _getPastTimer(_lastGlucoModel!.checkDate, _lastGlucoModel!.checkTime);
   }
 
+  List<PillModel> _alarmModels = [];
+  void _getAlarmTasks() async {
+    _alarmModels = await AlarmRepository.selectAllAlarmByUid();
+    for(PillModel model in _alarmModels) {
+      String taskId = model.alarmTimeStr;
+      FetchService.initScheduleBackgroundFetch(taskId);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -212,488 +222,492 @@ class _HomeTapForm extends State<HomeTapForm> {
     _getLastGlucoCheck();
     _getLastPurseCheck();
     _getSoonerPillAlarm();
+
+    _getAlarmTasks();
   }
 
   @override
   Widget build(BuildContext context) {
     if(_isLoadingGluco || _isLoadingPurse || _isLoadingPill) return const Center(child: CircularProgressIndicator(),);
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
-      child: Column(
-        children: [
-          const SizedBox(height: 10,),
-          SizedBox(
-            width: 350,
-            height: 35,
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                shadowColor: Colors.transparent,
-                backgroundColor: Colors.transparent,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(30)
-                ),
-                side: const BorderSide(
-                  width: 1,
-                  color: Colors.redAccent,
-                ),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  SizedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Text('진료예약일',
-                          style: TextStyle(
-                            fontSize: 17,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFFF4E00),
-                          ),
-                        ),
-                        const SizedBox(width: 5,),
-                        Text(() {
-                          String time = DateFormat('a hh:mm').format(DateTime.now());
-                          if(time.substring(0,2) == 'AM') {
-                            time = time.replaceRange(0, 2, '오전');
-                          } else {
-                            time = time.replaceRange(0, 2, '오후');
-                          }
-                          return '${DateFormat('MM월 dd일 (E)').format(DateTime.now())}  $time';
-                        }(),
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: Colors.black,
-                          ),),
-                      ],
-                    ),
+    return SingleChildScrollView(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          children: [
+            const SizedBox(height: 10,),
+            SizedBox(
+              width: 350,
+              height: 35,
+              child: ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(
+                  shadowColor: Colors.transparent,
+                  backgroundColor: Colors.transparent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30)
                   ),
-                  const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: Icon(Icons.keyboard_arrow_right, color: Color(0xFFFF4E00),),
-                  ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 10,),
-          SizedBox(
-            width: 350,
-            height: 160,
-            child: ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const GlucoCheckPage()));
-                if(result == true) {
-                  setState(() {
-                    _getLastGlucoCheck();
-                  });
-                }
-                },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFF8FFFF),
                   side: const BorderSide(
                     width: 1,
-                    color: Color(0xFF22BED3),
+                    color: Colors.redAccent,
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            width: 35,
-                            height: 35,
-                            child: Image.asset('assets/images/icon_bloodsugar.png'),
+                          const Text('진료예약일',
+                            style: TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFFFF4E00),
+                            ),
                           ),
                           const SizedBox(width: 5,),
-                          const SizedBox(
-                            width: 70,
-                            height: 50,
-                            child: Text('혈당',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                              fontSize: 35,
+                          Text(() {
+                            // String time = DateFormat('a hh:mm').format(DateTime.now());
+                            // if(time.substring(0,2) == 'AM') {
+                            //   time = time.replaceRange(0, 2, '오전');
+                            // } else {
+                            //   time = time.replaceRange(0, 2, '오후');
+                            // }
+                            return '${DateFormat('MM월 dd일 (E)').format(DateTime.now())}';
+                          }(),
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Colors.black,
+                            ),),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: Icon(Icons.keyboard_arrow_right, color: Color(0xFFFF4E00),),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 10,),
+            SizedBox(
+              width: 350,
+              height: 160,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const GlucoCheckPage()));
+                  if(result == true) {
+                    setState(() {
+                      _getLastGlucoCheck();
+                    });
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFF8FFFF),
+                    side: const BorderSide(
+                      width: 1,
+                      color: Color(0xFF22BED3),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 35,
+                              height: 35,
+                              child: Image.asset('assets/images/icon_bloodsugar.png'),
+                            ),
+                            const SizedBox(width: 5,),
+                            const SizedBox(
+                              width: 70,
+                              height: 50,
+                              child: Text('혈당',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF22BED3),
+                                ),),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          child: Text(_passedGlucoTimer, style: const TextStyle(
+                            fontSize: 15,
+                            color: Color(0xFF777777),
+                          ),),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10,),
+                    Container(
+                      height: 1,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFD5EFEF),
+                      ),
+                    ),
+                    if(_lastGlucoModel == null)
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            child: Text(' -- ', style: TextStyle(
+                              fontSize: 50,
                               fontWeight: FontWeight.bold,
-                              color: Color(0xFF22BED3),
+                              color: Colors.black,
+                            ),),
+                          ),
+                          SizedBox(
+                            child: Text('mg/dL', style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.black87,
                             ),),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        child: Text(_passedGlucoTimer, style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF777777),
-                        ),),
+                    if(_lastGlucoModel != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            child: Text('${_lastGlucoModel!.value}.0', style: const TextStyle(
+                              fontSize: 45,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),),
+                          ),
+                          const SizedBox(
+                            child: Text('mg/dL', style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.black87,
+                            ),),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 10,),
-                  Container(
-                    height: 1,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFD5EFEF),
-                    ),
-                  ),
-                  if(_lastGlucoModel == null)
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      SizedBox(
-                        child: Text(' -- ', style: TextStyle(
-                          fontSize: 50,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),),
-                      ),
-                      SizedBox(
-                        child: Text('mg/dL', style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.black87,
-                        ),),
-                      ),
-                    ],
-                  ),
-                  if(_lastGlucoModel != null)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          child: Text('${_lastGlucoModel!.value}.0', style: const TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),),
-                        ),
-                        const SizedBox(
-                          child: Text('mg/dL', style: TextStyle(
-                            fontSize: 30,
-                            color: Colors.black87,
-                          ),),
-                        ),
-                      ],
-                    ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(height: 15,),
-          SizedBox(
-            width: 350,
-            height: 160,
-            child: ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PurseCheckPage()));
-                if(result == true) {
-                  setState(() {
-                    _getLastPurseCheck();
-                  });
-                }
+            const SizedBox(height: 15,),
+            SizedBox(
+              width: 350,
+              height: 160,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PurseCheckPage()));
+                  if(result == true) {
+                    setState(() {
+                      _getLastPurseCheck();
+                    });
+                  }
                 },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFFFAFA),
-                  side: const BorderSide(
-                    width: 1,
-                    color: Color(0xFFed4848),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SizedBox(
-                            width: 35,
-                            height: 35,
-                            child: Image.asset('assets/images/icon_bloodpressure.png'),
-                          ),
-                          const SizedBox(width: 5,),
-                          const SizedBox(
-                            width: 70,
-                            height: 50,
-                            child: Text('혈압',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFFed4848),
-                              ),),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        child: Text(_passedPurseTimer, style: const TextStyle(
-                          fontSize: 15,
-                          color: Color(0xFF777777),
-                        ),),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10,),
-                  Container(
-                    height: 1,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFedd6d6),
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFFFAFA),
+                    side: const BorderSide(
+                      width: 1,
+                      color: Color(0xFFed4848),
                     ),
-                  ),
-                  if(_lastPurseModel == null)
-                    const Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        SizedBox(
-                          child: Text(' -- / --', style: TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),),
-                        ),
-                        SizedBox(
-                          child: Text('mmHg', style: TextStyle(
-                            fontSize: 30,
-                            color: Colors.black87,
-                          ),),
-                        ),
-                      ],
-                    ),
-                  if(_lastPurseModel != null)
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10,),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
-                          child: Text('${_lastPurseModel!.shrink}/${_lastPurseModel!.relax}', style: const TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 35,
+                              height: 35,
+                              child: Image.asset('assets/images/icon_bloodpressure.png'),
+                            ),
+                            const SizedBox(width: 5,),
+                            const SizedBox(
+                              width: 70,
+                              height: 50,
+                              child: Text('혈압',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFFed4848),
+                                ),),
+                            ),
+                          ],
                         ),
-                        const SizedBox(
-                          child: Text('mmHg', style: TextStyle(
-                            fontSize: 30,
-                            color: Colors.black87,
+                        SizedBox(
+                          child: Text(_passedPurseTimer, style: const TextStyle(
+                            fontSize: 15,
+                            color: Color(0xFF777777),
                           ),),
                         ),
                       ],
                     ),
-                ],
-              ),
-            ),
-          ),
-          const SizedBox(height: 15,),
-          SizedBox(
-            width: 350,
-            height: 160,
-            child: ElevatedButton(
-              onPressed: () async {
-                final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillCheckPage()));
-                if(result == true) {
-                  setState(() {
-                    _getSoonerPillAlarm();
-                  });
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFFAFFFC),
-                  side: const BorderSide(
-                    width: 1,
-                    color: Color(0xFF168E41),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  )
-              ),
-              child: Column(
-                children: [
-                  const SizedBox(height: 10,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                    const SizedBox(height: 10,),
+                    Container(
+                      height: 1,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFedd6d6),
+                      ),
+                    ),
+                    if(_lastPurseModel == null)
+                      const Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SizedBox(
-                            width: 35,
-                            height: 35,
-                            child: Image.asset('assets/images/icon_medicine.png'),
+                            child: Text(' -- / --', style: TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),),
                           ),
-                          const SizedBox(width: 5,),
-                          const SizedBox(
-                            width: 40,
-                            height: 50,
-                            child: Text('약',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 35,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xFF158D40),
-                              ),),
+                          SizedBox(
+                            child: Text('mmHg', style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.black87,
+                            ),),
                           ),
                         ],
                       ),
-                      SizedBox(
-                        width: 120,
-                        height: 28,
-                        child: Image.asset('assets/images/icon_add_alarm.png'),
+                    if(_lastPurseModel != null)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            child: Text('${_lastPurseModel!.shrink}/${_lastPurseModel!.relax}', style: const TextStyle(
+                              fontSize: 45,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),),
+                          ),
+                          const SizedBox(
+                            child: Text('mmHg', style: TextStyle(
+                              fontSize: 30,
+                              color: Colors.black87,
+                            ),),
+                          ),
+                        ],
                       ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 15,),
+            SizedBox(
+              width: 350,
+              height: 160,
+              child: ElevatedButton(
+                onPressed: () async {
+                  final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillCheckPage()));
+                  if(result == true) {
+                    setState(() {
+                      _getSoonerPillAlarm();
+                    });
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFFAFFFC),
+                    side: const BorderSide(
+                      width: 1,
+                      color: Color(0xFF168E41),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    )
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SizedBox(
+                              width: 35,
+                              height: 35,
+                              child: Image.asset('assets/images/icon_medicine.png'),
+                            ),
+                            const SizedBox(width: 5,),
+                            const SizedBox(
+                              width: 40,
+                              height: 50,
+                              child: Text('약',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 35,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xFF158D40),
+                                ),),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          width: 120,
+                          height: 28,
+                          child: Image.asset('assets/images/icon_add_alarm.png'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10,),
+                    Container(
+                      height: 1,
+                      decoration: const BoxDecoration(
+                        color: Color(0xFFD6EDE1),
+                      ),
+                    ),
+                    if(_lastPillModel == null)
+                      const SizedBox(
+                        width: 300,
+                        child: Text(' -- : -- ',
+                          style: TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          textAlign: TextAlign.end,
+                        ),
+                      ),
+                    if(_lastPillModel != null)
+                      SizedBox(
+                        width: 300,
+                        child: Text(_alarmTime,
+                          style: const TextStyle(
+                            fontSize: 45,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                          textAlign: TextAlign.end,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 30,),
+            SizedBox(
+              width: 300,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        padding: EdgeInsets.zero,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            launchUrl(
+                              Uri.parse('https://booking.naver.com/booking/13/bizes/742389?area=pll'),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            backgroundColor: const Color(0xFFF9F9F9),
+                          ),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('assets/images/icon_schedule.png'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20,),
+                      const Text('진료예약', style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF565656),
+                      ),),
                     ],
                   ),
-                  const SizedBox(height: 10,),
-                  Container(
-                    height: 1,
-                    decoration: const BoxDecoration(
-                      color: Color(0xFFD6EDE1),
-                    ),
+                  const SizedBox(width: 10,),
+                  Column(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        padding: EdgeInsets.zero,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => ClinicScheduleScreen()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            backgroundColor: const Color(0xFFF9F9F9),
+                          ),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('assets/images/icon_reservation.png'),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20,),
+                      const Text('진료일정', style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF565656),
+                      ),),
+                    ],
                   ),
-                  if(_lastPillModel == null)
-                    const SizedBox(
-                      width: 300,
-                      child: Text(' -- : -- ',
-                        style: TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                  const SizedBox(width: 10,),
+                  Column(
+                    children: [
+                      Container(
+                        width: 80,
+                        height: 80,
+                        padding: EdgeInsets.zero,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const NoticeBoardPage()));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            backgroundColor: const Color(0xFFF9F9F9),
+                          ),
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: Image.asset('assets/images/icon_notice.png'),
+                          ),
                         ),
-                        textAlign: TextAlign.end,
                       ),
-                    ),
-                  if(_lastPillModel != null)
-                    SizedBox(
-                      width: 300,
-                      child: Text(_alarmTime,
-                        style: const TextStyle(
-                          fontSize: 45,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                        textAlign: TextAlign.end,
-                      ),
-                    ),
+                      const SizedBox(height: 20,),
+                      const Text('공지사항', style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xFF565656),
+                      ),),
+                    ],
+                  ),
                 ],
               ),
             ),
-          ),
-          const SizedBox(height: 30,),
-          SizedBox(
-            width: 300,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      padding: EdgeInsets.zero,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          launchUrl(
-                            Uri.parse('https://booking.naver.com/booking/13/bizes/742389?area=pll'),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: const Color(0xFFF9F9F9),
-                        ),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.asset('assets/images/icon_schedule.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20,),
-                    const Text('진료예약', style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF565656),
-                    ),),
-                  ],
-                ),
-                const SizedBox(width: 10,),
-                Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      padding: EdgeInsets.zero,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => ClinicScheduleScreen()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: const Color(0xFFF9F9F9),
-                        ),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.asset('assets/images/icon_reservation.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20,),
-                    const Text('진료일정', style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF565656),
-                    ),),
-                  ],
-                ),
-                const SizedBox(width: 10,),
-                Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      padding: EdgeInsets.zero,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(context, MaterialPageRoute(builder: (context) => const NoticeBoardPage()));
-                        },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: const Color(0xFFF9F9F9),
-                        ),
-                        child: SizedBox(
-                          width: 50,
-                          height: 50,
-                          child: Image.asset('assets/images/icon_notice.png'),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20,),
-                    const Text('공지사항', style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF565656),
-                    ),),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

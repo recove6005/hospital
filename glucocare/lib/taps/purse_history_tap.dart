@@ -554,7 +554,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),),
-                          const SizedBox(width: 140,),
+                          const SizedBox(width: 100,),
                           DropdownButton<String>(
                             value: _chartSelectedValeu,
                             items: <String>['3개월', '1개월', '1주일', '1일']

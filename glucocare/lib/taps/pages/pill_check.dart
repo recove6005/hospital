@@ -78,7 +78,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
     // setState() 이전에 먼저 async-await 작업 후
     // setStete() 내에서 해당 데이터를 옮겨 줌
     try {
-      List<PillModel> models = await AlarmRepository.selectAllAlarm();
+      List<PillModel> models = await AlarmRepository.selectAllAlarmByUid();
       setState(() {
         _pillModels = models;
         _childCount = _pillModels.length;
@@ -487,8 +487,9 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                                 const SizedBox(width: 15,),
                                                 ElevatedButton(
                                                   onPressed: () {
-                                                    logger.d('[glucocare_log] clicked.');
                                                     AlarmRepository.deleteAlarm(_pillModels[index].alarmTimeStr);
+                                                    FetchService.stopBackgroundFetchByTaskId('first${_pillModels[index].alarmTimeStr}');
+                                                    FetchService.stopBackgroundFetchByTaskId(_pillModels[index].alarmTimeStr);
                                                     _setPillModels();
                                                     _initValues();
                                                   },
@@ -522,6 +523,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                         ],
                       ),
                     ),
+                  const SizedBox(height: 80,),
                 ],
               ),
             ),

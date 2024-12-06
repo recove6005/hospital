@@ -24,6 +24,8 @@ import 'package:month_year_picker/month_year_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'firebase_options.dart';
 
+bool _isLogined = false;
+
 Future<void> main() async {
   await dotenv.load();
 
@@ -52,8 +54,10 @@ Future<void> main() async {
   NotificationService.initNotification();
 
   // Background Fetch Headless Init
-  FetchService.initConfigureBackgroundFetch();
   FetchService.headlessInit();
+
+  if(await AuthService.userLoginedFa() == false && await AuthService.userLoginedKa() == false) _isLogined = false;
+  else _isLogined = true;
 
   runApp(const MyApp());
 }
@@ -64,7 +68,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'HOME',
+      title: 'DaolCare',
       theme: ThemeData(
           scaffoldBackgroundColor: Colors.white,
           brightness: Brightness.light,
@@ -79,7 +83,7 @@ class MyApp extends StatelessWidget {
         Locale('en', ''),
         Locale('ko', ''),
       ],
-      home: const HomePage(),
+      home: _isLogined ? const HomePage() : const LoginPage(),
     );
   }
 }
@@ -141,8 +145,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _CheckUserAndMoveToLogin();
     _getUserName();
+    FetchService.initConfigureBackgroundFetch();
   }
 
   @override
@@ -276,6 +280,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black
                     ),),
                     onTap: () async { // logout logic
+                      FetchService.stopAllBackgroundFetch();
                       AuthService.signOut();
                       Navigator.pushReplacement(
                           context,

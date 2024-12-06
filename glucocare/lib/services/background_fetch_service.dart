@@ -38,6 +38,7 @@ class FetchService {
         try {
           if(taskId.toString().contains('first')) {
             await NotificationService.showNotification();
+            logger.d('[glucocare_log] TaskId String contains `first`');
 
             String secondTaskId = taskId.toString().substring(5);
 
@@ -50,8 +51,9 @@ class FetchService {
               forceAlarmManager: true,
             ),);
           }
-          else if(taskId.toString().contains(':')) {
+          else {
             await NotificationService.showNotification();
+            logger.d('[glucocare_log] The second fetch task excuted.');
           }
         } catch (e) {
           logger.e("[glucocare_log] BackgroundFetchConfig Error: $e");
@@ -69,28 +71,42 @@ class FetchService {
   static Future<void> initScheduleBackgroundFetch(String taskId) async {
     DateTime nowDatetime = DateTime.now();
     DateTime alarmDateTimeStr = DateFormat("HH:mm").parse(taskId);
-    DateTime alarmdatetime = DateTime(
+    DateTime alarmDateTime = DateTime(
         nowDatetime.year,
         nowDatetime.month,
         nowDatetime.day,
         alarmDateTimeStr.hour,
         alarmDateTimeStr.minute
     );
-    Duration differTime = alarmdatetime.difference(nowDatetime);
 
-    await BackgroundFetch.scheduleTask(TaskConfig(
-      taskId: 'first$taskId',
-      periodic: false,
-      delay: differTime.inMilliseconds,
-      stopOnTerminate: false,
-      enableHeadless: true,
-      forceAlarmManager: true,
-    ),);
-    logger.d('[glucocare_log] Schedule Background Fetch started.');
+    if(alarmDateTime.isAfter(nowDatetime)) {
+      Duration differTime = alarmDateTime.difference(nowDatetime);
+      await BackgroundFetch.scheduleTask(TaskConfig(
+        taskId: 'first$taskId',
+        periodic: false,
+        delay: differTime.inMilliseconds,
+        stopOnTerminate: false,
+        enableHeadless: true,
+        forceAlarmManager: true,
+      ),);
+      logger.d('[glucocare_log] Schedule Background Fetch started. => first alarm will be pushed');
+    } else {
+      Duration differTime = nowDatetime.difference(alarmDateTime);
+
+      await BackgroundFetch.scheduleTask(TaskConfig(
+        taskId: 'first$taskId',
+        periodic: false,
+        delay: differTime.inMilliseconds,
+        stopOnTerminate: false,
+        enableHeadless: true,
+        forceAlarmManager: true,
+      ),);
+      logger.d('[glucocare_log] Schedule Background Fetch started. => first alarm will be passed');
+    }
   }
 
   // 작업 일괄 중지
-  static Future<void> stopBackgroundFetch() async {
+  static Future<void> stopAllBackgroundFetch() async {
     await BackgroundFetch.stop();
   }
 

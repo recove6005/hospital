@@ -167,120 +167,122 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
           Navigator.pop(context, true);
           return false;
         },
-        child: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 50,),
-            SizedBox(
-              width: 350,
-              height: 80,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('$_name 님', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30,),
-            Container(
-              width: 350,
-              height: 80,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 30,),
-                  const Text('성별 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
-                  const SizedBox(width: 30,),
-                  Text(_gen, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30,),
-            Container(
-              width: 350,
-              height: 80,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(width: 30,),
-                  const Text('생일 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
-                  const SizedBox(width: 30,),
-                  Text(_birthDate, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
-                ],
-              ),
-            ),
-            const SizedBox(height: 30,),
-            Container(
-              width: 350,
-              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: _getStateChild(),
-            ),
-            const SizedBox(height: 40,),
-            Container(
-              width: 350,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.orange[200],
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    )
+        child: SingleChildScrollView(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const SizedBox(height: 50,),
+                SizedBox(
+                  width: 350,
+                  height: 80,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text('$_name 님', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold, color: Colors.black),),
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PatientGlucoInfoPage(model: model)));
-                },
-                child: const Text('혈당 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
-              ),
-            ),
-            const SizedBox(height: 10,),
-            Container(
-              width: 350,
-              height: 50,
-              decoration: BoxDecoration(
-                color: Colors.red[200],
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    )
+                const SizedBox(height: 30,),
+                Container(
+                  width: 350,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9F9F9),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 30,),
+                      const Text('성별 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
+                      const SizedBox(width: 30,),
+                      Text(_gen, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
+                    ],
+                  ),
                 ),
-                onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPurseInfoPage(model: model)));
-                },
-                child: const Text('혈압 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
-              ),
+                const SizedBox(height: 30,),
+                Container(
+                  width: 350,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9F9F9),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(width: 30,),
+                      const Text('생일 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
+                      const SizedBox(width: 30,),
+                      Text(_birthDate, style: const TextStyle(fontSize: 23, fontWeight: FontWeight.normal, color: Colors.black),),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30,),
+                Container(
+                  width: 350,
+                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF9F9F9),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: _getStateChild(),
+                ),
+                const SizedBox(height: 40,),
+                Container(
+                  width: 350,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.orange[200],
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        )
+                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PatientGlucoInfoPage(model: model)));
+                    },
+                    child: const Text('혈당 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
+                  ),
+                ),
+                const SizedBox(height: 10,),
+                Container(
+                  width: 350,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.red[200],
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        )
+                    ),
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPurseInfoPage(model: model)));
+                    },
+                    child: const Text('혈압 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
     );
   }
 }

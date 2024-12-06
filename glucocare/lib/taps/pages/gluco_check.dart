@@ -139,209 +139,212 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const SizedBox(height: 20,),
-            SizedBox(
-              width: 350,
-              height: 60,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                    ),),
-                  Text(_getKrTime(),
-                    style: const TextStyle(
-                      fontSize: 22,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 10,),
-            Container(
-              width: 350,
-              height: 150,
-              decoration: BoxDecoration(
-                color: const Color(0xFFF9F9F9),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: 60,
-                    height: 40,
-                    child: Text('혈당', style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
-                    ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  const SizedBox(width: 30,),
-                  SizedBox(
-                    width: 90,
-                    height: 50,
-                    child: TextField(
-                      controller: _valueController,
-                      maxLength: 3,
-                      decoration: const InputDecoration(
-                        counterText: '',
-                      ),
-                      style: const TextStyle(
-                        fontSize: 40,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                    child: Text('mg/dL', style: TextStyle(
-                        fontSize: 25,
-                        color: Colors.black87
-                    ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
-              ),
-            const SizedBox(height: 30,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        child: Center(
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 20,),
+                SizedBox(
+                  width: 350,
+                  height: 60,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
+                        style: const TextStyle(
+                          fontSize: 22,
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                        ),),
+                      Text(_getKrTime(),
+                        style: const TextStyle(
+                          fontSize: 22,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10,),
                 Container(
-                  width: 100,
-                  height: 50,
+                  width: 350,
+                  height: 150,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
                     color: const Color(0xFFF9F9F9),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      backgroundColor: _btnToggle
-                          ? const Color(0xFFDCF9F9)
-                          : const Color(0xFFF9F9F9),
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        width: 60,
+                        height: 40,
+                        child: Text('혈당', style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black
+                        ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                      const SizedBox(width: 30,),
+                      SizedBox(
+                        width: 90,
+                        height: 50,
+                        child: TextField(
+                          controller: _valueController,
+                          maxLength: 3,
+                          decoration: const InputDecoration(
+                            counterText: '',
+                          ),
+                          style: const TextStyle(
+                            fontSize: 35,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 40,
+                        child: Text('mg/dL', style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.black87
+                        ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 30,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 100,
+                      height: 50,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        side: _btnToggle
-                            ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
-                            : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                        color: const Color(0xFFF9F9F9),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          backgroundColor: _btnToggle
+                              ? const Color(0xFFDCF9F9)
+                              : const Color(0xFFF9F9F9),
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            side: _btnToggle
+                                ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
+                                : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _btnToggle = true;
+                          });
+                        },
+                        child: const Text(
+                          '식전',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _btnToggle = true;
-                      });
-                    },
-                    child: const Text(
-                      '식전',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 50,),
-                Container(
-                  width: 100,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: const Color(0xFFF9F9F9),
-                  ),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.zero,
-                      backgroundColor: !_btnToggle
-                          ? const Color(0xFFDCF9F9)
-                          : const Color(0xFFF9F9F9),
-                      shadowColor: Colors.transparent,
-                      shape: RoundedRectangleBorder(
+                    const SizedBox(width: 50,),
+                    Container(
+                      width: 100,
+                      height: 50,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        side: !_btnToggle
-                            ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
-                            : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                        color: const Color(0xFFF9F9F9),
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          backgroundColor: !_btnToggle
+                              ? const Color(0xFFDCF9F9)
+                              : const Color(0xFFF9F9F9),
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            side: !_btnToggle
+                                ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
+                                : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                          ),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _btnToggle = false;
+                          });
+                        },
+                        child: const Text(
+                          '식후',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                       ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        _btnToggle = false;
-                      });
-                    },
-                    child: const Text(
-                      '식후',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
+                  ],
+                ),
+                const SizedBox(height: 50,),
+                const SizedBox(
+                  width: 350,
+                  child: Text('메모',
+                    style: TextStyle(
+                      fontSize: 25,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 50,),
-            const SizedBox(
-              width: 350,
-              child: Text('메모',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10,),
-            SizedBox(
-              width: 350,
-              child: TextField(
-                controller: _stateController,
-                maxLines: null,
-                minLines: 1,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: const BorderSide(color: Colors.transparent),
+                const SizedBox(height: 10,),
+                SizedBox(
+                  width: 350,
+                  child: TextField(
+                    controller: _stateController,
+                    maxLines: null,
+                    minLines: 1,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: const BorderSide(color: Colors.transparent),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: const BorderSide(color: Colors.transparent),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(25),
+                        borderSide: const BorderSide(color: Colors.transparent),
+                      ),
+                      filled: true,
+                      fillColor: const Color(0xFFF9F9F9),
+                      hintText: '메모를 입력하세요',
+                      hintStyle: const TextStyle(fontSize: 20),
+                    ),
+                    textAlign: TextAlign.start,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      color: Colors.black,
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: const BorderSide(color: Colors.transparent),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(25),
-                    borderSide: const BorderSide(color: Colors.transparent),
-                  ),
-                  filled: true,
-                  fillColor: const Color(0xFFF9F9F9),
-                  hintText: '메모를 입력하세요',
-                  hintStyle: const TextStyle(fontSize: 20),
                 ),
-                textAlign: TextAlign.start,
-                style: const TextStyle(
-                  fontSize: 15,
-                  color: Colors.black,
-                ),
-              ),
-            ),
-          ]
+                const SizedBox(height: 100,),
+              ]
+          ),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

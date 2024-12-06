@@ -40,7 +40,7 @@
         </intent>
     </queries>
     <application
-        android:label="glucocare"
+        android:label="다올케어"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
         tools:replace="android:label">

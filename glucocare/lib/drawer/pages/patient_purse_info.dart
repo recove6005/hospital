@@ -65,52 +65,54 @@ class _PatientPurseInfoFormState extends State<PatientPurseInfoForm> {
   @override
   Widget build(BuildContext context) {
     if(_isLoading) return const Center(child: CircularProgressIndicator());
-    return Center(
-      child: Column(
-        children: [
-          const SizedBox(height: 5,),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              padding: EdgeInsets.zero,
-              width: 350,
-              height: MediaQuery.of(context).size.height - 150,
-              child: ListView.builder(
-                itemCount: _purseModels.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: ListTile(
-                      title: Text('${_purseModels[index].checkDate} ${_purseModels[index].checkTime}'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${_purseModels[index].shrink}/${_purseModels[index].relax} mg/dL',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
+    return SingleChildScrollView(
+      child: Center(
+        child: Column(
+          children: [
+            const SizedBox(height: 5,),
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                padding: EdgeInsets.zero,
+                width: 350,
+                height: MediaQuery.of(context).size.height - 150,
+                child: ListView.builder(
+                  itemCount: _purseModels.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                      width: MediaQuery.of(context).size.width - 50,
+                      child: ListTile(
+                        title: Text('${_purseModels[index].checkDate} ${_purseModels[index].checkTime}'),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${_purseModels[index].shrink}/${_purseModels[index].relax} mg/dL',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 5,),
-                          Container(
-                            width: MediaQuery.of(context).size.width - 50,
-                            height: 1,
-                            decoration: const BoxDecoration(
-                              color: Colors.grey,
+                            const SizedBox(height: 5,),
+                            Container(
+                              width: MediaQuery.of(context).size.width - 50,
+                              height: 1,
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

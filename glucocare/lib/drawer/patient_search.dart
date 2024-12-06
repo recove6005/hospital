@@ -117,48 +117,49 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
   @override
   Widget build(BuildContext context) {
     if(_isPatienLoading) return const Center(child: CircularProgressIndicator(),);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [ // 서치 박스
-        const SizedBox(height: 10,),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            padding: EdgeInsets.zero,
-            width: 350,
-            height: 50,
-            child: TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                  prefixIcon: Icon(Icons.person_search),
-                  filled: true,
-                  fillColor: Color(0xfff9f9f9),
-                  border: InputBorder.none,
-                  hintText: '회원 이름',
-                  hintStyle: TextStyle(
-                    fontSize: 18,
-                    color: Colors.grey,
-                  )
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [ // 서치 박스
+          const SizedBox(height: 10,),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: EdgeInsets.zero,
+              width: 350,
+              height: 50,
+              child: TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                    prefixIcon: Icon(Icons.person_search),
+                    filled: true,
+                    fillColor: Color(0xfff9f9f9),
+                    border: InputBorder.none,
+                    hintText: '회원 이름',
+                    hintStyle: TextStyle(
+                      fontSize: 18,
+                      color: Colors.grey,
+                    )
+                ),
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.start,
+                textAlignVertical: TextAlignVertical.center,
+                onChanged: _searchPatientByName,
               ),
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-              textAlign: TextAlign.start,
-              textAlignVertical: TextAlignVertical.center,
-              onChanged: _searchPatientByName,
             ),
           ),
-        ),
-        const SizedBox(height: 10,),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
-            padding: EdgeInsets.zero,
-            width: 350,
-            height: 50,
-            child: TextField(
-              controller: _birthController,
-              decoration: const InputDecoration(
+          const SizedBox(height: 10,),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              padding: EdgeInsets.zero,
+              width: 350,
+              height: 50,
+              child: TextField(
+                controller: _birthController,
+                decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.date_range),
                   filled: true,
                   fillColor: Color(0xfff9f9f9),
@@ -168,20 +169,20 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
                     fontSize: 18,
                     color: Colors.grey,
                   ),
+                ),
+                style: const TextStyle(
+                  fontSize: 18,
+                ),
+                textAlign: TextAlign.start,
+                textAlignVertical: TextAlignVertical.center,
+                onChanged: _searchPatientByBirth,
               ),
-              style: const TextStyle(
-                fontSize: 18,
-              ),
-              textAlign: TextAlign.start,
-              textAlignVertical: TextAlignVertical.center,
-              onChanged: _searchPatientByBirth,
             ),
           ),
-        ),
-        const SizedBox(height: 10,),
-        Align(
-          alignment: Alignment.center,
-          child: Container(
+          const SizedBox(height: 10,),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
               padding: EdgeInsets.zero,
               width: 350,
               height: MediaQuery.of(context).size.height - 300,
@@ -207,9 +208,10 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
                   );
                 },
               ),
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

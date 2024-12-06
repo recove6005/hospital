@@ -18,7 +18,7 @@ class AlarmRepository {
     }
   }
 
-  static Future<List<PillModel>> selectAllAlarm() async {
+  static Future<List<PillModel>> selectAllAlarmByUid() async {
     List<PillModel> models = [];
 
     if (await AuthService.userLoginedFa()) {
