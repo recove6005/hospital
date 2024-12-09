@@ -3,10 +3,10 @@ import 'package:glucocare/drawer/pages/patient_gluco_info.dart';
 import 'package:glucocare/drawer/pages/patient_purse_info.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:intl/intl.dart';
-import '../../models/patient_model.dart';
+import '../../models/user_model.dart';
 
 class PatientInfoPage extends StatelessWidget {
-  final PatientModel model;
+  final UserModel model;
   const PatientInfoPage({super.key, required this.model});
 
   @override
@@ -27,7 +27,7 @@ class PatientInfoPage extends StatelessWidget {
 }
 
 class PatientInfoForm extends StatefulWidget {
-  final PatientModel model;
+  final UserModel model;
   const PatientInfoForm({super.key, required this.model});
 
   @override
@@ -35,7 +35,7 @@ class PatientInfoForm extends StatefulWidget {
 }
 
 class _PatientInfoFormState extends State<PatientInfoForm> {
-  PatientModel model;
+  UserModel model;
   _PatientInfoFormState({required this.model});
 
   final FocusNode _focusNode = FocusNode();
@@ -57,8 +57,8 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
     });
     }
 
-  void _savePatientRepo(PatientModel newModel) async {
-    await PatientRepository.updatePatientInfoBySpecificUid(newModel);
+  void _savePatientRepo(UserModel newModel) async {
+    await UserRepository.updateUserInfoBySpecificUid(newModel);
   }
 
   Widget _getStateChild() {
@@ -123,7 +123,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                   onPressed: () {
                     setState(() {
                       _state = _stateController.text;
-                      PatientModel newModel = PatientModel(
+                      UserModel newModel = UserModel(
                         uid: model.uid,
                         kakaoId: model.kakaoId,
                         name: model.name,

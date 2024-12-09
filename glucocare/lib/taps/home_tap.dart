@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/popup/fill_in_box.dart';
 import 'package:glucocare/repositories/alarm_repository.dart';
@@ -55,20 +55,20 @@ class _HomeTapForm extends State<HomeTapForm> {
 
   void _showFillInBox() async {
     try {
-      PatientModel? model = await PatientRepository.selectPatientByUid();
+      UserModel? model = await UserRepository.selectUserByUid();
       if (model != null) {
         if (model.isFilledIn == false) {
           Navigator.pushReplacement(context, MaterialPageRoute(
               builder: (context) => const FillInPatientInfoPage()));
         }
       } else {
-        await PatientRepository.insertInitPatient();
+        await UserRepository.insertInitUser();
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => const FillInPatientInfoPage()));
       }
     } catch (e) {
       logger.e('[glucocare_log] failed (_showFillInBox) : $e');
-      await PatientRepository.insertInitPatient();
+      await UserRepository.insertInitUser();
       if(mounted) {
         Navigator.pushReplacement(context, MaterialPageRoute(
             builder: (context) => const FillInPatientInfoPage()));
@@ -475,7 +475,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                         children: [
                           SizedBox(
                             child: Text(' -- / --', style: TextStyle(
-                              fontSize: 50,
+                              fontSize: 45,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),),

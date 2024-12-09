@@ -6,7 +6,7 @@ import 'package:glucocare/repositories/gluco_danger_repository.dart';
 import 'package:glucocare/repositories/purse_danger_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-import '../models/patient_model.dart';
+import '../models/user_model.dart';
 import '../repositories/patient_repository.dart';
 
 class PatientWorningPage extends StatelessWidget {
@@ -44,11 +44,11 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
   bool _isPurseWornLoading = true;
   bool _isGlucoWornLoading = true;
   List<PurseDangerModel> _purseWornings = [];
-  final List<PatientModel> _pursePatients = [];
+  final List<UserModel> _pursePatients = [];
   List<GlucoDangerModel> _glucoWornings = [];
-  final List<PatientModel> _glucoPatients = [];
+  final List<UserModel> _glucoPatients = [];
 
-  final List<PatientModel> _searchModels = [];
+  final List<UserModel> _searchModels = [];
   final TextEditingController _nameController = TextEditingController();
 
   bool _page = true; // true: gluco, false: purse
@@ -56,7 +56,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
   void _loadPurseWorningPatient() async {
     List<PurseDangerModel> models = await PurseDangerRepository.selectAllDanger();
     for(PurseDangerModel model in models) {
-      PatientModel? patient = await PatientRepository.selectPatientBySpecificUid(model.uid);
+      UserModel? patient = await UserRepository.selectUserBySpecificUid(model.uid);
       if(patient != null) _pursePatients.add(patient);
     }
     setState(() {
@@ -68,7 +68,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
   void _loadGlucoWorningPatient() async {
     List<GlucoDangerModel> models = await GlucoDangerRepository.selectAllDanger();
     for(GlucoDangerModel model in models) {
-      PatientModel? patient = await PatientRepository.selectPatientBySpecificUid(model.uid);
+      UserModel? patient = await UserRepository.selectUserBySpecificUid(model.uid);
       if(patient != null) _glucoPatients.add(patient);
     }
     setState(() {

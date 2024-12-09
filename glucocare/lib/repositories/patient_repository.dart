@@ -1,17 +1,17 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
 
-class PatientRepository {
+class UserRepository {
   static Logger logger = Logger();
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
-  static Future<void> insertInitPatient() async {
+  static Future<void> insertInitUser() async {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       try {
-        PatientModel model = PatientModel(uid: uid!, kakaoId: '', gen: '', birthDate: Timestamp.fromDate(DateTime(1900, 1, 1, 1, 1)), isFilledIn: false, name: '', isAdmined: false, state: '없음');
+        UserModel model = UserModel(uid: uid!, kakaoId: '', gen: '', birthDate: Timestamp.fromDate(DateTime(1900, 1, 1, 1, 1)), isFilledIn: false, name: '', isAdmined: false, state: '없음');
         _store.collection('patients').doc(uid).set(model.toJson());
       } catch(e) {
         logger.e('[glucocare_log] Failed to init patient info : $e');
@@ -19,7 +19,7 @@ class PatientRepository {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       try {
-        PatientModel model = PatientModel(uid: '', kakaoId: kakaoId!, gen: '', birthDate: Timestamp(0, 0), isFilledIn: false, name: '', isAdmined: false, state: '없음');
+        UserModel model = UserModel(uid: '', kakaoId: kakaoId!, gen: '', birthDate: Timestamp(0, 0), isFilledIn: false, name: '', isAdmined: false, state: '없음');
         _store.collection('patients').doc(kakaoId).set(model.toJson());
       } catch(e) {
         logger.e('[glucocare_log] Failed to init patient info : $e');
@@ -27,8 +27,8 @@ class PatientRepository {
     }
   }
 
-  static Future<List<PatientModel>> selectAllPatient() async {
-    List<PatientModel> models = [];
+  static Future<List<UserModel>> selectAllUser() async {
+    List<UserModel> models = [];
 
     try {
       var docSnapshot = await _store.collection('patients')
@@ -38,7 +38,7 @@ class PatientRepository {
           .orderBy('birth_date')
           .get();
       for(var doc in docSnapshot.docs) {
-        PatientModel model = PatientModel.fromJson(doc.data());
+        UserModel model = UserModel.fromJson(doc.data());
         models.add(model);
       }
     } catch(e) {
@@ -48,8 +48,8 @@ class PatientRepository {
     return models;
   }
   
-  static Future<List<PatientModel>> selectAllPatientByName(String name) async {
-    List<PatientModel> models = [];
+  static Future<List<UserModel>> selectAllUserByName(String name) async {
+    List<UserModel> models = [];
     
     try {
       var docSnapshot = await _store.collection('patients')
@@ -58,7 +58,7 @@ class PatientRepository {
           .orderBy('name').orderBy('gen')
           .orderBy('birth_date').get();
       for(var doc in docSnapshot.docs) {
-        PatientModel model = PatientModel.fromJson(doc.data());
+        UserModel model = UserModel.fromJson(doc.data());
         models.add(model);
       }
     } catch(e) {
@@ -68,33 +68,33 @@ class PatientRepository {
     return models;
   }
 
-  static Future<PatientModel?> selectPatientByUid() async {
-    PatientModel? model;
+  static Future<UserModel?> selectUserByUid() async {
+    UserModel? model;
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       var snapshot = await _store.collection('patients').doc(uid).get();
-      model = PatientModel.fromJson(snapshot.data()!);
+      model = UserModel.fromJson(snapshot.data()!);
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       var snapshot = await _store.collection('patients').doc(kakaoId).get();
-      model = PatientModel.fromJson(snapshot.data()!);
+      model = UserModel.fromJson(snapshot.data()!);
     }
     return model;
   }
 
-  static Future<PatientModel?> selectPatientBySpecificUid(String uid) async {
-    PatientModel? model;
+  static Future<UserModel?> selectUserBySpecificUid(String uid) async {
+    UserModel? model;
 
     try {
       var snapshot = await _store.collection('patients').doc(uid).get();
-      model = PatientModel.fromJson(snapshot.data()!);
+      model = UserModel.fromJson(snapshot.data()!);
     } catch(e) {
       logger.e('[glucocare_log] Failed to load patient info : $e');
     }
     return model;
   }
 
-  static Future<void> updatePatientInfo(PatientModel model) async {
+  static Future<void> updatePatientInfo(UserModel model) async {
     try {
       if(await AuthService.userLoginedFa()) {
         String? uid = AuthService.getCurUserUid();
@@ -109,7 +109,7 @@ class PatientRepository {
     logger.d('[glucocare_log] updated');
   }
 
-  static Future<void> updatePatientInfoBySpecificUid(PatientModel model) async {
+  static Future<void> updateUserInfoBySpecificUid(UserModel model) async {
     String uid = '';
     if(model.uid != '') {
       uid = model.uid;

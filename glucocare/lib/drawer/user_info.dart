@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:intl/intl.dart';
 
@@ -37,7 +37,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
    final String _state = '없음';
 
   Future<void> _getModel() async {
-    PatientModel? model = await PatientRepository.selectPatientByUid();
+    UserModel? model = await UserRepository.selectUserByUid();
     if(model != null) {
       setState(() {
         _name = model.name;

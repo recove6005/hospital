@@ -31,16 +31,22 @@ class _LoginFormState extends State<LoginForm> {
   Logger logger = Logger();
   bool _isKakaoLogind = false;
   bool _isCodeSent = false;
+  bool _isMaster = false;
   bool _needToCodeResent = false;
 
   String _verifyId = '';
+  String _masterId = '';
 
   void _sendCode() async {
     String phone = _idInputController.text.trim();
-    if(phone.contains('leehan9498@gmail.com')) {
+    if(phone.contains('@gmail.com')) {
       // admin
-      FirebaseAuth.instance.signInWithEmailAndPassword(email: phone, password: '112233');
-      if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      setState(() {
+        _isCodeSent = true;
+        _masterId = phone;
+        _isMaster = true;
+      });
+
     } else {
       String temp = await AuthService.authPhoneNumber(phone);
       setState(() {
@@ -49,24 +55,36 @@ class _LoginFormState extends State<LoginForm> {
       });
     }
   }
+
   void _authCode() async {
     String smsCode = _codeInputController.text.trim();
+
+    if(_isMaster) {
+      try {
+        await AuthService.authPasswordAndMasterLogin(_masterId, smsCode);
+        if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } catch (e) {
+        logger.e('[glucocare_log] Master login is faeild. : $e');
+      }
+
+      return;
+    }
 
     if (_verifyId.isEmpty || smsCode.isEmpty) {
       Fluttertoast.showToast(msg: '인증 정보를 입력하세요.', toastLength: Toast.LENGTH_SHORT);
       return;
-    }
-
-    try {
-      logger.d('[glucocare_log] inputed code : $smsCode');
-      await AuthService.authCodeAndLogin(_verifyId, smsCode);
-      if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
-    } catch(e) {
-      logger.e('[glucocare_log] Failed to phone number auth $e');
-      Fluttertoast.showToast(msg: '올바른 전화번호와 인증번호를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
-      setState(() {
-        _needToCodeResent = true;
-      });
+    } else {
+      try {
+        logger.d('[glucocare_log] inputed code : $smsCode');
+        await AuthService.authCodeAndLogin(_verifyId, smsCode);
+        if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to phone number auth $e');
+        Fluttertoast.showToast(msg: '올바른 전화번호와 인증번호를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
+        setState(() {
+          _needToCodeResent = true;
+        });
+      }
     }
   }
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:logger/logger.dart';
 import '../../models/gluco_model.dart';
 
 class PatientGlucoInfoPage extends StatelessWidget {
-  final PatientModel model;
+  final UserModel model;
   const PatientGlucoInfoPage({super.key, required this.model});
 
   @override
@@ -26,7 +26,7 @@ class PatientGlucoInfoPage extends StatelessWidget {
 }
 
 class PatientGlucoInfoForm extends StatefulWidget {
-  final PatientModel model;
+  final UserModel model;
   const PatientGlucoInfoForm({super.key, required this.model});
 
   @override
@@ -34,7 +34,7 @@ class PatientGlucoInfoForm extends StatefulWidget {
 }
 
 class _PatientGlucoInfoFormState extends State<PatientGlucoInfoForm> {
-  final PatientModel model;
+  final UserModel model;
   _PatientGlucoInfoFormState({required this.model});
 
   Logger logger = Logger();
