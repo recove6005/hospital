@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/main.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
@@ -57,11 +57,11 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
     if(uid != '' || kakaoId != '') {
       if(name.length >= 2 && !regex.hasMatch(name)) {
         if(uid != null && kakaoId != null ) {
-          PatientModel model = PatientModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
-          PatientRepository.updatePatientInfo(model);
+          UserModel model = UserModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
+          UserRepository.updatePatientInfo(model);
         } else {
-          PatientModel model = PatientModel(uid: '', kakaoId: '', name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
-          PatientRepository.updatePatientInfo(model);
+          UserModel model = UserModel(uid: '', kakaoId: '', name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
+          UserRepository.updatePatientInfo(model);
         }
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {

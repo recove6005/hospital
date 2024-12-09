@@ -1,30 +1,28 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:glucocare/models/notice_board_model.dart';
-import 'package:glucocare/repositories/notice_board_repository.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/services/auth_service.dart';
 
-class NoticePostingPage extends StatelessWidget {
-  const NoticePostingPage({super.key});
+class AdminRequestPage extends StatelessWidget {
+  const AdminRequestPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const NoticePostingForm();
+    return const AdminRequestForm();
   }
 }
 
-class NoticePostingForm extends StatefulWidget {
-  const NoticePostingForm({super.key});
+class AdminRequestForm extends StatefulWidget {
+  const AdminRequestForm({super.key});
 
   @override
-  State<NoticePostingForm> createState() => _NoticePostingFormState();
+  State<AdminRequestForm> createState() => _AdminRequestFormState();
 }
 
-class _NoticePostingFormState extends State<NoticePostingForm> {
+class _AdminRequestFormState extends State<AdminRequestForm> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  Future<void> _submitPost() async {
+  Future<void> _submitRequest() async {
     final title = _titleController.text;
     final content = _contentController.text;
 
@@ -37,9 +35,6 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
 
     _titleController.clear();
     _contentController.clear();
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('공지사항 게시글이 작성되었습니다.')),
-    );
 
     String? uid = '';
     if(await AuthService.userLoginedFa()) {
@@ -47,11 +42,12 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
     } else {
       uid = await AuthService.getCurUserId();
     }
+
     if(uid != null) {
-      NoticeBoardModel model = NoticeBoardModel(uid: uid, title: title, content: content, datetime: Timestamp.now());
-      NoticeBoardRepository.insertBoard(model);
+
     }
 
+    Fluttertoast.showToast(msg: '관라자 계정 신청이 완료되었습니다.', toastLength: Toast.LENGTH_SHORT);
     Navigator.pop(context);
   }
 
@@ -60,7 +56,7 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          '공지사항 작성',
+          '관리자 계정 신청',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
@@ -97,7 +93,6 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
                   border: OutlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.grey,
-
                     ),
                   ),
                 ),
@@ -107,7 +102,7 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
               const SizedBox(height: 16),
               Center(
                 child: ElevatedButton(
-                  onPressed: _submitPost,
+                  onPressed: _submitRequest,
                   child: const Text('작성하기'),
                 ),
               ),

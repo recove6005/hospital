@@ -1,6 +1,6 @@
 # dummy_project
 
-A dummy project for test and practicing with flutter
+A dummy project for testing and praticing
 
 ## Getting Started
 

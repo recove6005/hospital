@@ -8,7 +8,7 @@ import 'package:glucocare/drawer/patient_search.dart';
 import 'package:glucocare/drawer/patient_worning.dart';
 import 'package:glucocare/login.dart';
 import 'package:glucocare/drawer/user_info.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:glucocare/services/auth_service.dart';
@@ -22,6 +22,7 @@ import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:logger/logger.dart';
 import 'package:month_year_picker/month_year_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'drawer/admin_request_info.dart';
 import 'firebase_options.dart';
 
 bool _isLogined = false;
@@ -132,7 +133,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _getUserName() async {
     try{
-      PatientModel? model = await PatientRepository.selectPatientByUid();
+      UserModel? model = await UserRepository.selectUserByUid();
       setState(() {
         _userName = model!.name;
         _isAdmin = model.isAdmined;
@@ -142,10 +143,24 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  bool _isMaster = false;
+  void _checkIsMaster() async {
+    if(await AuthService.isMasterUser()) {
+      setState(() {
+        _isMaster = true;
+      });
+    }
+  }
+
+  void _setAdminUser() async {
+
+  }
+
   @override
   void initState() {
     super.initState();
     _getUserName();
+    _checkIsMaster();
     FetchService.initConfigureBackgroundFetch();
   }
 
@@ -273,6 +288,28 @@ class _HomePageState extends State<HomePage> {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => const NoticePostingPage()));
                     }
                 ),
+                if(!_isAdmin)
+                ListTile(
+                    leading: const Icon(Icons.supervisor_account_outlined),
+                    title: const Text('관라자 계정 신청', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async {
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => const AdminRequestInfoPage()));
+                    }
+                ),
+                if(_isMaster)
+                    ListTile(
+                        leading: const Icon(Icons.grid_goldenratio),
+                        title: const Text('어드민 등록', style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.black
+                        ),),
+                        onTap: () async {
+
+                        }
+                    ),
                 ListTile(
                     leading: const Icon(Icons.logout),
                     title: const Text('로그아웃', style: TextStyle(

@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:glucocare/models/master_user_model.dart';
+import 'package:glucocare/repositories/masteracc_repository.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ka;
 import 'package:logger/logger.dart';
 
@@ -74,19 +76,29 @@ class AuthService {
       return completer.future;
     }
 
-  static Future<void> authCodeAndLogin(String verifyId, String smsCode) async {
-  // Create a PhoneAuthCredential with the code
-  fa.PhoneAuthCredential credential = fa.PhoneAuthProvider.credential(
-      verificationId: verifyId,
-      smsCode: smsCode
-  );
-  // Sign the user in (or link) with the credential
-  logger.d('[glucocare_log] id: $verifyId, smsCode: $smsCode}');
-  await _auth.signInWithCredential(credential);
-}
+    static Future<void> authPasswordAndMasterLogin(String email, String password) async {
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+    }
 
-static Future<void> signOut() async {
-    await _auth.signOut();
-    await ka.UserApi.instance.logout();
+  static Future<void> authCodeAndLogin(String verifyId, String smsCode) async {
+    // Create a PhoneAuthCredential with the code
+    fa.PhoneAuthCredential credential = fa.PhoneAuthProvider.credential(
+        verificationId: verifyId,
+        smsCode: smsCode
+    );
+    // Sign the user in (or link) with the credential
+    logger.d('[glucocare_log] id: $verifyId, smsCode: $smsCode}');
+    await _auth.signInWithCredential(credential);
   }
+
+  static Future<bool> isMasterUser() async {
+     MasterUserModel? model = await MasteraccRepository.getCurMasterUserModel();
+     if(model != null) return true;
+      else return false;
+  }
+
+  static Future<void> signOut() async {
+      await _auth.signOut();
+      await ka.UserApi.instance.logout();
+    }
 }

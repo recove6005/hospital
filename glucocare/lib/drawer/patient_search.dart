@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:glucocare/drawer/pages/patient_info.dart';
-import 'package:glucocare/models/patient_model.dart';
+import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -38,13 +38,13 @@ class PatientSearchForm extends StatefulWidget {
 class _PatientSearchFormState extends State<PatientSearchForm> {
   Logger logger = Logger();
   bool _isPatienLoading = true;
-  List<PatientModel> _allPatientModels = [];
-  List<PatientModel> _searchModels = [];
+  List<UserModel> _allPatientModels = [];
+  List<UserModel> _searchModels = [];
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _birthController = TextEditingController();
 
   void _loadAllPatient() async {
-    _allPatientModels = await PatientRepository.selectAllPatient();
+    _allPatientModels = await UserRepository.selectAllUser();
     setState(() {
       _searchModels = _allPatientModels;
       _isPatienLoading = false;
@@ -53,16 +53,16 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
 
   // 회원 서치 로직
   void _searchPatientByName(String? keyword) {
-    List<PatientModel> nameSearchedModels = [];
+    List<UserModel> nameSearchedModels = [];
     if(keyword != null && keyword != '' && _searchModels.isNotEmpty) {
-      for(PatientModel model in _searchModels) {
+      for(UserModel model in _searchModels) {
         if (model.name.contains(keyword)) nameSearchedModels.add(model);
       }
       setState(() {
         _searchModels = List.from(nameSearchedModels);
       });
     } else if(keyword != null && keyword != '' && _searchModels.isEmpty) {
-      for(PatientModel model in _allPatientModels) {
+      for(UserModel model in _allPatientModels) {
         if (model.name.contains(keyword)) nameSearchedModels.add(model);
       }
       setState(() {
@@ -77,9 +77,9 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
   }
 
   void _searchPatientByBirth(String? keyword) {
-    List<PatientModel> birthSearchedModels = [];
+    List<UserModel> birthSearchedModels = [];
     if(keyword != null && keyword != '' && _searchModels.isNotEmpty) {
-      for(PatientModel model in _searchModels) {
+      for(UserModel model in _searchModels) {
         String formattedBirth = DateFormat('yyMMdd').format(model.birthDate.toDate());
         if(formattedBirth.contains(keyword)) birthSearchedModels.add(model);
       }
@@ -87,7 +87,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
         _searchModels = List.from(birthSearchedModels);
       });
     } else if(keyword != null && keyword != '' && _searchModels.isEmpty) {
-      for(PatientModel model in _allPatientModels) {
+      for(UserModel model in _allPatientModels) {
         String formattedBirth = DateFormat('yyMMdd').format(model.birthDate.toDate());
         if (formattedBirth.contains(keyword)) birthSearchedModels.add(model);
       }
@@ -102,7 +102,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
     }
   }
 
-  void _moveToPatientInfoPage(PatientModel model) async {
+  void _moveToPatientInfoPage(UserModel model) async {
       final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => PatientInfoPage(model: model)));
       if(result) {
         _loadAllPatient();
