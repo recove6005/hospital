@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:glucocare/login.dart';
 import 'package:glucocare/main.dart';
 import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
@@ -58,10 +59,14 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
       if(name.length >= 2 && !regex.hasMatch(name)) {
         if(uid != null && kakaoId != null ) {
           UserModel model = UserModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
-          UserRepository.updatePatientInfo(model);
+          UserRepository.updateUserInfo(model);
         } else {
-          UserModel model = UserModel(uid: '', kakaoId: '', name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
-          UserRepository.updatePatientInfo(model);
+          Fluttertoast.showToast(msg: '다시 로그인 해주세요.', toastLength: Toast.LENGTH_SHORT);
+          Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => const LoginPage()),
+              (Route<dynamic> route) => false
+          );
         }
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } else {

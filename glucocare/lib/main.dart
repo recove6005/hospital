@@ -3,7 +3,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:glucocare/drawer/master_admin_check.dart';
 import 'package:glucocare/drawer/notice_posting.dart';
+import 'package:glucocare/drawer/pages/admin_request.dart';
 import 'package:glucocare/drawer/patient_search.dart';
 import 'package:glucocare/drawer/patient_worning.dart';
 import 'package:glucocare/login.dart';
@@ -247,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 ListTile(
                     leading: const Icon(Icons.person),
-                    title: const Text('회원 정보', style: TextStyle(
+                    title: const Text('내 정보', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
@@ -258,7 +260,7 @@ class _HomePageState extends State<HomePage> {
                 if(_isAdmin)
                 ListTile(
                     leading: const Icon(Icons.search),
-                    title: const Text('회원 검색', style: TextStyle(
+                    title: const Text('환자 관리', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
@@ -269,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                 if(_isAdmin)
                 ListTile(
                     leading: const Icon(Icons.local_hospital),
-                    title: const Text('위험 회원 관리', style: TextStyle(
+                    title: const Text('위험 환자 관리', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
@@ -301,13 +303,13 @@ class _HomePageState extends State<HomePage> {
                 ),
                 if(_isMaster)
                     ListTile(
-                        leading: const Icon(Icons.grid_goldenratio),
+                        leading: const Icon(Icons.switch_access_shortcut),
                         title: const Text('어드민 등록', style: TextStyle(
                             fontSize: 20,
                             color: Colors.black
                         ),),
                         onTap: () async {
-
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const MasterAdminCheckPage()));
                         }
                     ),
                 ListTile(

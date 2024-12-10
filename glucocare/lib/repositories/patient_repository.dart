@@ -94,14 +94,18 @@ class UserRepository {
     return model;
   }
 
-  static Future<void> updatePatientInfo(UserModel model) async {
+  static Future<void> updateUserInfo(UserModel model) async {
     try {
       if(await AuthService.userLoginedFa()) {
         String? uid = AuthService.getCurUserUid();
-        await _store.collection('patients').doc(uid).update(model.toJson());
+        if(uid != null) {
+          await _store.collection('patients').doc(uid).update(model.toJson());
+        }
       } else {
         String? kakaoId = await AuthService.getCurUserId();
-        await _store.collection('patients').doc(kakaoId).update(model.toJson());
+        if(kakaoId != null) {
+          await _store.collection('patients').doc(kakaoId).update(model.toJson());
+        }
       }
     } catch(e) {
       logger.e('[glucocare_log] Failed to update patient model (patient_repository.dart/updatePatientInfo) : $e');
