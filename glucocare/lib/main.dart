@@ -5,11 +5,10 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:glucocare/drawer/master_admin_check.dart';
 import 'package:glucocare/drawer/notice_posting.dart';
-import 'package:glucocare/drawer/pages/admin_request.dart';
 import 'package:glucocare/drawer/patient_search.dart';
 import 'package:glucocare/drawer/patient_worning.dart';
 import 'package:glucocare/login.dart';
-import 'package:glucocare/drawer/user_info.dart';
+import 'package:glucocare/drawer/my_info.dart';
 import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/background_fetch_service.dart';
@@ -27,6 +26,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'drawer/admin_request_info.dart';
 import 'firebase_options.dart';
 
+Logger logger = Logger();
 bool _isLogined = false;
 
 Future<void> main() async {
@@ -99,7 +99,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  Logger logger = Logger();
   static final String? _user = AuthService.getCurUserUid();
 
   String _userName = '';
@@ -125,13 +124,13 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _CheckUserAndMoveToLogin() async {
-    if(await AuthService.userLoginedFa() == false && await AuthService.userLoginedKa() == false) {
-      WidgetsBinding.instance.addPostFrameCallback((_) { // 위젯 트리가 빌드된 후 실행
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
-      });
-    }
-  }
+  // void _CheckUserAndMoveToLogin() async {
+  //   if(await AuthService.userLoginedFa() == false && await AuthService.userLoginedKa() == false) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) { // 위젯 트리가 빌드된 후 실행
+  //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+  //     });
+  //   }
+  // }
 
   Future<void> _getUserName() async {
     try{
@@ -152,10 +151,6 @@ class _HomePageState extends State<HomePage> {
         _isMaster = true;
       });
     }
-  }
-
-  void _setAdminUser() async {
-
   }
 
   @override
@@ -254,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.black
                     ),),
                     onTap: () async {
-                        await Navigator.push(context, MaterialPageRoute(builder: (context) => const UserInfoPage()));
+                        await Navigator.push(context, MaterialPageRoute(builder: (context) => const MyInfoPage()));
                     }
                 ),
                 if(_isAdmin)
@@ -327,48 +322,6 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                 ),
-                // ListTile(
-                //     leading: const Icon(Icons.add_task),
-                //     title: const Text('테스크 추가', style: TextStyle(
-                //         fontSize: 20,
-                //         color: Colors.black
-                //     ),),
-                //     onTap: () async { // logout logic
-                //       FetchService.initScheduleBackgroundFetch('single_task');
-                //     }
-                // ),
-                // ListTile(
-                //     leading: const Icon(Icons.stop),
-                //     title: const Text('테스크 삭제', style: TextStyle(
-                //         fontSize: 20,
-                //         color: Colors.black
-                //     ),),
-                //     onTap: () async { // logout logic
-                //       FetchService.stopBackgroundFetchByTaskId('single_task');
-                //     }
-                // ),
-                // ListTile(
-                //     leading: const Icon(Icons.multiple_stop),
-                //     title: const Text('테스크 일괄 삭제', style: TextStyle(
-                //         fontSize: 20,
-                //         color: Colors.black
-                //     ),),
-                //     onTap: () async { // logout logic
-                //       FetchService.stopBackgroundFetch();
-                //     }
-                // ),
-                // ListTile(
-                //     leading: const Icon(Icons.multiple_stop),
-                //     title: const Text('Background Log', style: TextStyle(
-                //         fontSize: 20,
-                //         color: Colors.black
-                //     ),),
-                //     onTap: () async { // logout logic
-                //       BackgroundFetch.status.then((status) {
-                //         logger.d('[glucocare_log] Status: $status');
-                //       });
-                //     }
-                // ),
               ],
             )
         ),

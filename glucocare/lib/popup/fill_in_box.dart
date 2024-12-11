@@ -34,6 +34,7 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
   Logger logger = Logger();
 
   static final TextEditingController _nameController = TextEditingController();
+  static final TextEditingController _phoneController = TextEditingController();
   static String _birthYear = '2024';
   static String _birthMonth = '1';
   static String _birthDay = '1';
@@ -53,12 +54,13 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
     );
     String gen = _dropdownValue;
     bool isFilledIn = true;
+    String phone = _phoneController.text.trim();
 
     final regex = RegExp(r'[0-9!@#\$%^&*(),.?":{}|<>]');
     if(uid != '' || kakaoId != '') {
       if(name.length >= 2 && !regex.hasMatch(name)) {
         if(uid != null && kakaoId != null ) {
-          UserModel model = UserModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음');
+          UserModel model = UserModel(uid: uid, kakaoId: kakaoId, name: name, gen: gen, birthDate: birthDate, isFilledIn: isFilledIn, isAdmined: false, state: '없음', phone: phone);
           UserRepository.updateUserInfo(model);
         } else {
           Fluttertoast.showToast(msg: '다시 로그인 해주세요.', toastLength: Toast.LENGTH_SHORT);
@@ -118,6 +120,34 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
                   style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.center,
+                ),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                width: 280,
+                height: 45,
+                padding: const EdgeInsets.symmetric(horizontal: 15),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  color: const Color(0xFFF9F9F9),
+                ),
+                child: TextField(
+                  controller: _phoneController,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                    enabledBorder: InputBorder.none,
+                    focusedBorder: InputBorder.none,
+                    hintText: '연락처',
+                    hintStyle: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFFB4B4B4),
+                    ),
+                  ),
+                  style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center,
+                  textAlignVertical: TextAlignVertical.center,
+                  keyboardType: TextInputType.phone,
                 ),
               ),
               const SizedBox(height: 10,),

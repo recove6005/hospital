@@ -29,17 +29,15 @@ class FetchService {
   static Future<void> initConfigureBackgroundFetch() async {
     await BackgroundFetch.configure(
       BackgroundFetchConfig(
-        minimumFetchInterval: 86400000,
+        minimumFetchInterval: 15,
         stopOnTerminate: false,
         enableHeadless: true,
         forceAlarmManager: true,
       ),
           (taskId) async {
         try {
-          if(taskId.toString().contains('first')) {
+          if(taskId.toString().contains('first') && taskId.toString().contains(':')) {
             await NotificationService.showNotification();
-            logger.d('[glucocare_log] TaskId String contains `first`');
-
             String secondTaskId = taskId.toString().substring(5);
 
             await BackgroundFetch.scheduleTask(TaskConfig(
@@ -51,9 +49,11 @@ class FetchService {
               forceAlarmManager: true,
             ),);
           }
-          else {
+          else if(taskId.toString().contains(':')){
             await NotificationService.showNotification();
             logger.d('[glucocare_log] The second fetch task excuted.');
+          } else {
+            logger.d('[glucocare_log] Main fetch excuted.');
           }
         } catch (e) {
           logger.e("[glucocare_log] BackgroundFetchConfig Error: $e");

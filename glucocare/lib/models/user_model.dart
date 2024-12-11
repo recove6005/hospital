@@ -9,6 +9,7 @@ class UserModel {
   final bool isFilledIn;
   final bool isAdmined;
   final String state;
+  final String phone;
 
   UserModel({
     required this.uid,
@@ -19,6 +20,7 @@ class UserModel {
     required this.isFilledIn,
     required this.isAdmined,
     required this.state,
+    required this.phone,
   });
 
   Map<String, dynamic> toJson() {
@@ -31,6 +33,7 @@ class UserModel {
       'is_filled_in': isFilledIn,
       'is_admined': isAdmined,
       'state': state,
+      'phone': phone,
     };
   }
 
@@ -44,6 +47,7 @@ class UserModel {
         isFilledIn: json['is_filled_in'],
         isAdmined: json['is_admined'],
         state: json['state'],
+        phone: json['phone'],
     );
   }
 }

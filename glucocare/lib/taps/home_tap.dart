@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/consent_personal_info.dart';
 import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/popup/fill_in_box.dart';
@@ -18,6 +19,7 @@ import 'package:logger/logger.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/gluco_model.dart';
 import '../models/purse_model.dart';
+import '../repositories/consent_repository.dart';
 
 class HomeTap extends StatelessWidget {
   const HomeTap({super.key});
@@ -214,9 +216,20 @@ class _HomeTapForm extends State<HomeTapForm> {
     }
   }
 
+  void _checkRevoke() async {
+    if(!await ConsentRepository.checkCurUserConsent()) {
+      // 미동의
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const ConsentPersonalInfoPage()));
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    // 개인정보수집이용동의 확인
+    _checkRevoke();
+
+    // 개인정보 작성 확인
     _showFillInBox();
 
     _getLastGlucoCheck();

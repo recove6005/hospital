@@ -11,7 +11,7 @@ class UserRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       try {
-        UserModel model = UserModel(uid: uid!, kakaoId: '', gen: '', birthDate: Timestamp.fromDate(DateTime(1900, 1, 1, 1, 1)), isFilledIn: false, name: '', isAdmined: false, state: '없음');
+        UserModel model = UserModel(uid: uid!, kakaoId: '', gen: '', birthDate: Timestamp.fromDate(DateTime(1900, 1, 1, 1, 1)), isFilledIn: false, name: '', isAdmined: false, state: '없음', phone: '');
         _store.collection('patients').doc(uid).set(model.toJson());
       } catch(e) {
         logger.e('[glucocare_log] Failed to init patient info : $e');
@@ -19,7 +19,7 @@ class UserRepository {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       try {
-        UserModel model = UserModel(uid: '', kakaoId: kakaoId!, gen: '', birthDate: Timestamp(0, 0), isFilledIn: false, name: '', isAdmined: false, state: '없음');
+        UserModel model = UserModel(uid: '', kakaoId: kakaoId!, gen: '', birthDate: Timestamp(0, 0), isFilledIn: false, name: '', isAdmined: false, state: '없음', phone: '');
         _store.collection('patients').doc(kakaoId).set(model.toJson());
       } catch(e) {
         logger.e('[glucocare_log] Failed to init patient info : $e');

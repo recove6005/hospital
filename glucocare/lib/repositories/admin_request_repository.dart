@@ -91,6 +91,7 @@ class AdminRequestRepository {
         isFilledIn: userModel.isFilledIn,
         isAdmined: true,
         state: userModel.state,
+        phone: userModel.phone,
       );
       UserRepository.updateUserInfoBySpecificUid(updateModel);
     }
@@ -118,6 +119,7 @@ class AdminRequestRepository {
         isFilledIn: userModel.isFilledIn,
         isAdmined: false,
         state: userModel.state,
+        phone: userModel.phone,
       );
       UserRepository.updateUserInfoBySpecificUid(updateModel);
     }

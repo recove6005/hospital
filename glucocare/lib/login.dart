@@ -66,7 +66,6 @@ class _LoginFormState extends State<LoginForm> {
       } catch (e) {
         logger.e('[glucocare_log] Master login is faeild. : $e');
       }
-
       return;
     }
 

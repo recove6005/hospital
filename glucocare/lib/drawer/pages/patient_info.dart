@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:glucocare/drawer/pages/doctor_reservation.dart';
 import 'package:glucocare/drawer/pages/patient_gluco_info.dart';
 import 'package:glucocare/drawer/pages/patient_purse_info.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:intl/intl.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/user_model.dart';
 
 class PatientInfoPage extends StatelessWidget {
@@ -46,6 +48,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
   String _gen = '';
   String _birthDate = '';
   String _state = '없음';
+  String _phone = '';
 
   Future<void> _getModel() async {
     setState(() {
@@ -54,6 +57,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
       _birthDate = DateFormat('yyyy년 MM월 dd일').format(model.birthDate.toDate());
       _state = model.state;
       _stateController.text = model.state;
+      _phone = model.phone;
     });
     }
 
@@ -137,6 +141,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                           isFilledIn: model.isFilledIn,
                           isAdmined: model.isAdmined,
                           state: _state,
+                          phone: model.phone,
                         );
                         _savePatientRepo(newModel);
                         model = newModel;
@@ -151,6 +156,16 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
           ],
         ),
       );
+    }
+  }
+
+  Future<void> _makePhoneCall(String phoneNumber) async {
+    final Uri launchUri = Uri(
+      scheme: 'tel',
+      path: phoneNumber,
+    );
+    if (await canLaunchUrl(launchUri)) {
+      await launchUrl(launchUri);
     }
   }
 
@@ -233,6 +248,48 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
               const SizedBox(height: 30,),
               Container(
                 width: 350,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF9F9F9),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(width: 30,),
+                    const Text('연락처 ', style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black,),),
+                    const SizedBox(width: 30,),
+                    TextButton(
+                      onPressed: () {
+                        String phoneNum = '+82${_phone.substring(1)}';
+                        _makePhoneCall(phoneNum);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        backgroundColor: Colors.transparent,
+                        shadowColor: Colors.transparent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.zero,
+                        ),
+                      ),
+                      child: Text(
+                        _phone,
+                        style: const TextStyle(
+                            fontSize: 23,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.blue,
+                            decoration: TextDecoration.underline,
+                            fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30,),
+              Container(
+                width: 350,
                 padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF9F9F9),
@@ -245,8 +302,9 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                 width: 350,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Colors.orange[200],
+                  color: const Color(0xfff9f9f9),
                   borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Color(0xff565656)),
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -259,7 +317,7 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PatientGlucoInfoPage(model: model)));
                   },
-                  child: const Text('혈당 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
+                  child: const Text('혈당 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff565656)),),
                 ),
               ),
               const SizedBox(height: 10,),
@@ -267,8 +325,9 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                 width: 350,
                 height: 50,
                 decoration: BoxDecoration(
-                  color: Colors.red[200],
+                  color: Color(0xfff9f9f9),
                   borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: Color(0xff565656)),
                 ),
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
@@ -281,9 +340,33 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                   onPressed: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPurseInfoPage(model: model)));
                   },
-                  child: const Text('혈압 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
+                  child: const Text('혈압 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff565656)),),
                 ),
               ),
+              const SizedBox(height: 10,),
+              Container(
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: const Color(0xfff9f9f9),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: const Color(0xff565656)),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      )
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => DoctorReservationPage(model: model)));
+                  },
+                  child: const Text('진료 예약', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff565656)),),
+                ),
+              ),
+              const SizedBox(height: 50,),
             ],
           ),
         ),
