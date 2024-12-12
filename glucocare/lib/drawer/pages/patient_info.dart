@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:glucocare/drawer/pages/doctor_reservation.dart';
 import 'package:glucocare/drawer/pages/patient_gluco_info.dart';
 import 'package:glucocare/drawer/pages/patient_purse_info.dart';
+import 'package:glucocare/drawer/pages/schedule_management.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -341,6 +342,29 @@ class _PatientInfoFormState extends State<PatientInfoForm> {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPurseInfoPage(model: model)));
                   },
                   child: const Text('혈압 내역', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff565656)),),
+                ),
+              ),
+              const SizedBox(height: 10,),
+              Container(
+                width: 350,
+                height: 50,
+                decoration: BoxDecoration(
+                  color: const Color(0xfff9f9f9),
+                  borderRadius: BorderRadius.circular(15),
+                  border: Border.all(color: const Color(0xff565656)),
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.transparent,
+                      shadowColor: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      )
+                  ),
+                  onPressed: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleManagementPage(model: model)));
+                  },
+                  child: const Text('환자 예약 관리', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Color(0xff565656)),),
                 ),
               ),
               const SizedBox(height: 10,),

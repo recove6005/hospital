@@ -29,14 +29,14 @@ class FetchService {
   static Future<void> initConfigureBackgroundFetch() async {
     await BackgroundFetch.configure(
       BackgroundFetchConfig(
-        minimumFetchInterval: 15,
+        minimumFetchInterval: 86400000,
         stopOnTerminate: false,
         enableHeadless: true,
         forceAlarmManager: true,
       ),
           (taskId) async {
         try {
-          if(taskId.toString().contains('first') && taskId.toString().contains(':')) {
+          if(taskId.toString().contains('first')) {
             await NotificationService.showNotification();
             String secondTaskId = taskId.toString().substring(5);
 
@@ -49,11 +49,9 @@ class FetchService {
               forceAlarmManager: true,
             ),);
           }
-          else if(taskId.toString().contains(':')){
+          else {
             await NotificationService.showNotification();
             logger.d('[glucocare_log] The second fetch task excuted.');
-          } else {
-            logger.d('[glucocare_log] Main fetch excuted.');
           }
         } catch (e) {
           logger.e("[glucocare_log] BackgroundFetchConfig Error: $e");
@@ -89,9 +87,9 @@ class FetchService {
         enableHeadless: true,
         forceAlarmManager: true,
       ),);
-      logger.d('[glucocare_log] Schedule Background Fetch started. => first alarm will be pushed');
     } else {
-      Duration differTime = nowDatetime.difference(alarmDateTime);
+      DateTime tomorrow24 = alarmDateTime.add(const Duration(hours: 24));
+      Duration differTime = tomorrow24.difference(nowDatetime);
 
       await BackgroundFetch.scheduleTask(TaskConfig(
         taskId: 'first$taskId',
@@ -101,7 +99,6 @@ class FetchService {
         enableHeadless: true,
         forceAlarmManager: true,
       ),);
-      logger.d('[glucocare_log] Schedule Background Fetch started. => first alarm will be passed');
     }
   }
 

@@ -41,28 +41,26 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
   Logger logger = Logger();
   bool _isLoading = true;
 
+  List<String> _subjects = [
+    '통증센터',
+    '뇌신경센터',
+    '내과센터',
+    '초음파센터',
+    '도수치료센터',
+    '예방접종센터',
+  ];
+  int _subjectIndex = 0;
+  final TextEditingController _detailsController = TextEditingController();
+
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
+  Timestamp _reservationDate = Timestamp.now();
   int _reservationHour = 0;
   int _reservationMinute = 0;
-  Timestamp _reservationDate = Timestamp.now();
   String _buttonClicked = '00:00';
 
   List<DateTime> _reservedDatetimes = [];
-
-
-  Future<void> _getReservedDates() async {
-    List<ReservationModel> tempList = await ReservationRepository.selectAllReservations();
-    List<DateTime> tempDatetimes = [];
-    for(ReservationModel model in tempList) {
-      DateTime tdt = model.reservationDate.toDate();
-      tempDatetimes.add(tdt);
-    }
-    setState(() {
-      _reservedDatetimes = tempDatetimes;
-      _isLoading = false;
-    });
-  }
+  List<String> _reservedTimes = [];
 
   bool _isDayEnabled(DateTime day) {
     return !day.isBefore(DateTime.utc(
@@ -70,6 +68,46 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
       DateTime.now().month,
       DateTime.now().day,
     ));
+  }
+
+  Future<void> _getReservedDates() async {
+    List<ReservationModel> tempList = await ReservationRepository.selectAllReservations();
+    List<DateTime> tempDatetimes = [];
+
+    List<String> tempDaytimes = [];
+
+    for(ReservationModel model in tempList) {
+      DateTime tdt = model.reservationDate.toDate();
+      tempDatetimes.add(tdt);
+
+      String daytime = '${DateFormat('HH:mm').format(tdt)}${DateFormat('yyyyMMdd').format(tdt)}';
+      tempDaytimes.add(daytime);
+    }
+    setState(() {
+      _reservedDatetimes = tempDatetimes;
+      _reservedTimes = tempDaytimes;
+      _isLoading = false;
+    });
+  }
+
+  bool _checkReservedDateTime(String time) {
+    for(DateTime date in _reservedDatetimes) {
+      List<String> tempTimeList = [];
+      // date check
+      if(
+        _focusedDay.year == date.year &&
+        _focusedDay.month == date.month &&
+        _focusedDay.day == date.day
+      ) {
+        String dateStr = DateFormat('yyyyMMdd').format(date);
+        for(String timeStr in _reservedTimes) {
+          if(timeStr.contains(dateStr)) tempTimeList.add(timeStr.substring(0,5));
+        }
+
+        if(tempTimeList.contains(time)) return true;
+      }
+    }
+    return false;
   }
 
   DateTime _getReservationDateTime() {
@@ -90,8 +128,17 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
     String uid = model.uid;
     if(uid == '') uid = model.kakaoId;
 
-    ReservationModel reservationModel = ReservationModel(uid: uid, reservationDate: _reservationDate);
+    ReservationModel reservationModel = ReservationModel(
+        uid: uid,
+        reservationDate: _reservationDate,
+        subject: _subjects[_subjectIndex],
+        details: _detailsController.text,
+    );
     await ReservationRepository.insertReservationBySpecificUid(reservationModel);
+    setState(() {
+      _getReservedDates();
+      _getReservationDateTime();
+    });
     Fluttertoast.showToast(msg: '예약이 완료되었습니다.', toastLength: Toast.LENGTH_SHORT);
   }
 
@@ -114,6 +161,46 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
             focusedDay: _focusedDay,
             firstDay: DateTime.utc(2024, 12, 1),
             lastDay: DateTime.utc(2030, 1, 1),
+            headerStyle: const HeaderStyle(
+              formatButtonVisible: false,
+              titleCentered: true,
+              titleTextStyle: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            calendarStyle: CalendarStyle(
+              todayDecoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              todayTextStyle: const TextStyle(color: Colors.lightBlueAccent, fontWeight: FontWeight.bold),
+            ),
+            calendarBuilders: CalendarBuilders(
+              defaultBuilder: (context, day, focusedDay) {
+                return Center(
+                  child: Container(
+                    width: 80,
+                    height: 60,
+                    child: Center(
+                        child: Text('${day.day}', style: const TextStyle(color: Colors.black),)
+                    ),
+                  ),
+                );
+              },
+              selectedBuilder: (context, day, focusedDay) {
+                return Container(
+                  padding: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlueAccent,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                      child: Text('${day.day}', style: const TextStyle(color: Colors.white),)
+                  ),
+                );
+              }
+            ),
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },
@@ -127,9 +214,6 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
               _focusedDay = focusedDay;
             },
             enabledDayPredicate: _isDayEnabled,
-            calendarStyle: const CalendarStyle(
-              disabledTextStyle: TextStyle(color: Colors.black12),
-            ),
           ),
           const SizedBox(height: 20,),
           Center(
@@ -154,7 +238,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('08:00') ? null : () {
                             setState(() {
                               _buttonClicked = '08:00';
                               _reservationHour = 8;
@@ -177,7 +261,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('08:30') ? null : () {
                             setState(() {
                               _buttonClicked = '08:30';
                               _reservationHour = 8;
@@ -200,7 +284,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('09:00') ? null : () {
                             setState(() {
                               _buttonClicked = '09:00';
                               _reservationHour = 9;
@@ -223,7 +307,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('09:30') ? null : () {
                             setState(() {
                               _buttonClicked = '09:30';
                               _reservationHour = 9;
@@ -251,7 +335,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('10:00') ? null : () {
                             setState(() {
                               _buttonClicked = '10:00';
                               _reservationHour = 10;
@@ -274,7 +358,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('10:30') ? null : () {
                             setState(() {
                               _buttonClicked = '10:30';
                               _reservationHour = 10;
@@ -297,7 +381,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed:_checkReservedDateTime('11:00') ? null : () {
                             setState(() {
                               _buttonClicked = '11:00';
                               _reservationHour = 11;
@@ -320,7 +404,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('11:30') ? null : () {
                             setState(() {
                               _buttonClicked = '11:30';
                               _reservationHour = 11;
@@ -350,7 +434,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('12:00') ? null : () {
                             setState(() {
                               _buttonClicked = '12:00';
                               _reservationHour = 12;
@@ -373,7 +457,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('12:30') ? null : () {
                             setState(() {
                               _buttonClicked = '12:30';
                               _reservationHour = 12;
@@ -396,7 +480,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('13:00') ? null : () {
                             setState(() {
                               _buttonClicked = '13:00';
                               _reservationHour = 13;
@@ -419,7 +503,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('13:30') ? null : () {
                             setState(() {
                               _buttonClicked = '13:30';
                               _reservationHour = 13;
@@ -447,7 +531,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('14:00') ? null : () {
                             setState(() {
                               _buttonClicked = '14:00';
                               _reservationHour = 14;
@@ -470,7 +554,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('14:30') ? null : () {
                             setState(() {
                               _buttonClicked = '14:30';
                               _reservationHour = 14;
@@ -493,7 +577,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('15:00') ? null : () {
                             setState(() {
                               _buttonClicked = '15:00';
                               _reservationHour = 15;
@@ -516,7 +600,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('15:30') ? null : () {
                             setState(() {
                               _buttonClicked = '15:30';
                               _reservationHour = 15;
@@ -544,7 +628,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('16:00') ? null : () {
                             setState(() {
                               _buttonClicked = '16:00';
                               _reservationHour = 16;
@@ -567,7 +651,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('16:30') ? null : () {
                             setState(() {
                               _buttonClicked = '16:30';
                               _reservationHour = 16;
@@ -590,7 +674,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('17:00') ? null : () {
                             setState(() {
                               _buttonClicked = '17:00';
                               _reservationHour = 17;
@@ -613,7 +697,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: () {
+                          onPressed: _checkReservedDateTime('17:30') ? null : () {
                             setState(() {
                               _buttonClicked = '17:30';
                               _reservationHour = 17;
@@ -625,7 +709,161 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 50,),
+                Column(
+                  children: [
+                    const Text('진료과목 선택', style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold, color: Colors.black),),
+                    const SizedBox(height: 15,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 110,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: _subjectIndex == 0 ? Colors.grey : const Color(0xfff9f9f9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: const BorderSide(color: Colors.grey, width: 1),
+                                  )
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _subjectIndex = 0;
+                                });
+                              },
+                              child: const Text('통증센터', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,),)
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                        SizedBox(
+                          width: 110,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: _subjectIndex == 1 ? Colors.grey : const Color(0xfff9f9f9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: const BorderSide(color: Colors.grey, width: 1),
+                                  )
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _subjectIndex = 1;
+                                });
+                              },
+                              child: const Text('뇌신경센터', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,),)
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                        SizedBox(
+                          width: 110,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: _subjectIndex == 2 ? Colors.grey : const Color(0xfff9f9f9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: const BorderSide(color: Colors.grey, width: 1),
+                                  )
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _subjectIndex = 2;
+                                });
+                              },
+                              child: const Text('내과센터', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,),)
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 110,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: _subjectIndex == 3 ? Colors.grey : const Color(0xfff9f9f9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: const BorderSide(color: Colors.grey, width: 1),
+                                  )
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _subjectIndex = 3;
+                                });
+                              },
+                              child: const Text('초음파센터', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,),)
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                        SizedBox(
+                          width: 110,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: _subjectIndex == 4 ? Colors.grey : const Color(0xfff9f9f9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: const BorderSide(color: Colors.grey, width: 1),
+                                  )
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _subjectIndex = 4;
+                                });
+                              },
+                              child: const Text('도수치료센터', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,),)
+                          ),
+                        ),
+                        const SizedBox(width: 10,),
+                        SizedBox(
+                          width: 110,
+                          height: 40,
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  backgroundColor: _subjectIndex == 5 ? Colors.grey : const Color(0xfff9f9f9),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                    side: const BorderSide(color: Colors.grey, width: 1),
+                                  )
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _subjectIndex = 5;
+                                });
+                              },
+                              child: const Text('예방접종센터', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black,),)
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
                 const SizedBox(height: 30,),
+                Container(
+                  width: 300,
+                  child: TextField(
+                    controller: _detailsController,
+                    maxLines: null,
+                    decoration: InputDecoration(
+                      hintText: '진료 내용..',
+                      hintStyle: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 50,),
                 Container(
                   width: MediaQuery.of(context).size.width - 50,
                   padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -649,7 +887,7 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 30,),
+                const SizedBox(height: 40,),
                 SizedBox(
                   width: 100,
                   height: 50,
@@ -657,10 +895,10 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       onPressed: _reservation,
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
-                        backgroundColor: Color(0xfff9f9f9),
+                        backgroundColor: const Color(0xfff9f9f9),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(color: Colors.grey, width: 1),
+                          side: const BorderSide(color: Colors.grey, width: 1),
                         ),
                       ),
                       child: const Text('예약하기', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),)

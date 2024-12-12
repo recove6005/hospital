@@ -665,7 +665,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                         padding: EdgeInsets.zero,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => ClinicScheduleScreen()));
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => const ClinicSchedulePage()));
                           },
                           style: ElevatedButton.styleFrom(
                             padding: EdgeInsets.zero,
