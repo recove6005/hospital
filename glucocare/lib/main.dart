@@ -315,6 +315,21 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                 ),
+                ListTile(
+                    leading: const Icon(Icons.logout),
+                    title: const Text('회원탈퇴', style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.black
+                    ),),
+                    onTap: () async { // logout logic
+                      FetchService.stopAllBackgroundFetch();
+                      AuthService.signOut();
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => const LoginPage())
+                      );
+                    }
+                ),
               ],
             )
         ),
