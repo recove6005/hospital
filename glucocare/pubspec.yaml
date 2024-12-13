@@ -62,6 +62,7 @@ dependencies:
   image_picker: ^1.1.2
   cloud_functions: ^5.2.0 # firebase function
   device_info_plus: ^11.1.1 # device_info
+  flutter_launcher_icons: ^0.14.2
 
 dev_dependencies:
   flutter_test:
@@ -121,3 +122,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/ic_dummy.png"

@@ -205,28 +205,6 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       ),
       leftTitles: const AxisTitles(
         sideTitles: SideTitles(showTitles: false),
-        // sideTitles: SideTitles(
-        //   showTitles: true,
-        //   interval: 50,
-        //   reservedSize: 40,
-        //   getTitlesWidget: (double value, TitleMeta meta) {
-        //     return SideTitleWidget(
-        //       axisSide: meta.axisSide,
-        //       space: 20,
-        //       child: Text(
-        //         value.toInt().toString(),
-        //         style: const TextStyle(
-        //           fontSize: 14,
-        //           fontWeight: FontWeight.bold,
-        //           color: Colors.grey,
-        //         ),
-        //         softWrap: false,
-        //         overflow: TextOverflow.visible,
-        //         textAlign: TextAlign.left,
-        //       ),
-        //     );
-        //   }
-        // ),
       ),
       bottomTitles: AxisTitles(
         sideTitles: SideTitles(

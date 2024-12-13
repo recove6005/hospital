@@ -5,12 +5,14 @@ class ReservationModel {
   final Timestamp reservationDate;
   final String subject;
   final String details;
+  final String admin;
 
   ReservationModel({
     required this.uid,
     required this.reservationDate,
     required this.subject,
     required this.details,
+    required this.admin,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class ReservationModel {
       'reservation_date': reservationDate,
       'subject': subject,
       'details': details,
+      'admin': admin,
     };
   }
 
@@ -28,6 +31,7 @@ class ReservationModel {
       reservationDate: json['reservation_date'],
       subject: json['subject'],
       details: json['details'],
+      admin: json['admin'],
     );
   }
 }

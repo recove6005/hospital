@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:glucocare/consent_personal_info.dart';
+import 'package:glucocare/models/reservation_model.dart';
 import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/models/pill_model.dart';
 import 'package:glucocare/popup/fill_in_box.dart';
@@ -8,6 +9,7 @@ import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
+import 'package:glucocare/repositories/reservation_repository.dart';
 import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:glucocare/taps/pages/clinic_schedule.dart';
 import 'package:glucocare/taps/pages/notice_board.dart';
@@ -76,6 +78,20 @@ class _HomeTapForm extends State<HomeTapForm> {
             builder: (context) => const FillInPatientInfoPage()));
       }
     }
+  }
+
+  String _nextSchedule = '다음 진료 일정이 없습니다';
+  Future<void> _getNextSchedule() async {
+    String nextSchedule = '다음 진료 일정이 없습니다';
+    try {
+      ReservationModel? model = await ReservationRepository.selectLastReservationByUid();
+      if(model != null) {
+        nextSchedule = DateFormat('MM월 dd일 (E) a hh:mm', 'ko_KR').format(model.reservationDate.toDate());
+      }
+    } catch(e) {
+      logger.e('[glucocare_log] Failed get next schedule. $e');
+    }
+    _nextSchedule = nextSchedule;
   }
 
   Future<void> _getLastPurseCheck() async {
@@ -232,6 +248,7 @@ class _HomeTapForm extends State<HomeTapForm> {
     // 개인정보 작성 확인
     _showFillInBox();
 
+    _getNextSchedule();
     _getLastGlucoCheck();
     _getLastPurseCheck();
     _getSoonerPillAlarm();
@@ -257,6 +274,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                 style: ElevatedButton.styleFrom(
                   shadowColor: Colors.transparent,
                   backgroundColor: Colors.transparent,
+                  padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 5),
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)
                   ),
@@ -265,44 +283,23 @@ class _HomeTapForm extends State<HomeTapForm> {
                     color: Colors.redAccent,
                   ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          const Text('진료예약일',
-                            style: TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFFFF4E00),
-                            ),
-                          ),
-                          const SizedBox(width: 5,),
-                          Text(() {
-                            // String time = DateFormat('a hh:mm').format(DateTime.now());
-                            // if(time.substring(0,2) == 'AM') {
-                            //   time = time.replaceRange(0, 2, '오전');
-                            // } else {
-                            //   time = time.replaceRange(0, 2, '오후');
-                            // }
-                            return '${DateFormat('MM월 dd일 (E)').format(DateTime.now())}';
-                          }(),
-                            style: const TextStyle(
-                              fontSize: 16,
-                              color: Colors.black,
-                            ),),
-                        ],
+                child: SizedBox(
+                  width: 300,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      const Text('진료예약일',
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFFFF4E00),
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: Icon(Icons.keyboard_arrow_right, color: Color(0xFFFF4E00),),
-                    ),
-                  ],
+                      const SizedBox(width: 5,),
+                      Text( _nextSchedule, style: const TextStyle(fontSize: 15, color: Colors.black,),),
+                      // const Icon(Icons.keyboard_arrow_right, color: Color(0xFFFF4E00), size: 25,),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/models/reservation_model.dart';
 import 'package:glucocare/models/user_model.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/reservation_repository.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -128,11 +130,15 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
     String uid = model.uid;
     if(uid == '') uid = model.kakaoId;
 
+    String? admin = await AuthService.getCurUserUid();
+    if(admin == '') admin = await AuthService.getCurUserId();
+
     ReservationModel reservationModel = ReservationModel(
         uid: uid,
         reservationDate: _reservationDate,
         subject: _subjects[_subjectIndex],
         details: _detailsController.text,
+        admin: admin!,
     );
     await ReservationRepository.insertReservationBySpecificUid(reservationModel);
     setState(() {
@@ -140,6 +146,14 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
       _getReservationDateTime();
     });
     Fluttertoast.showToast(msg: '예약이 완료되었습니다.', toastLength: Toast.LENGTH_SHORT);
+
+    _selectedDay = DateTime.now();
+    _focusedDay = DateTime.now();
+    _reservationDate = Timestamp.now();
+    _reservationHour = 0;
+    _reservationMinute = 0;
+    _buttonClicked = '00:00';
+    _subjectIndex = 0;
   }
 
   @override

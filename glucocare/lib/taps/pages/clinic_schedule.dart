@@ -56,7 +56,7 @@ class _ClinicScheduleFormState extends State<ClinicScheduleForm> {
     List<String> tempDetails = [];
     List<String> tempSubjects = [];
     for(ReservationModel model in templist) {
-      String dateStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}';
+      String dateStr = DateFormat('yyyyMMdd').format(model.reservationDate.toDate());
       String timeStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}${DateFormat('a hh:mm').format(model.reservationDate.toDate())}';
       String detailsStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}${model.details}';
       String subjectsStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}${model.subject}';
@@ -278,16 +278,12 @@ class _ClinicScheduleFormState extends State<ClinicScheduleForm> {
             padding: const EdgeInsets.only(left: 30),
             child: Center(
               child:_focusedDayReservationTimes.isEmpty
-                  ? Text('예약된 진료 일정이 없습니다.')
+                  ? const Text('예약된 진료 일정이 없습니다.', style: TextStyle(fontSize: 18),)
                   : ListView.builder(
                 itemCount: _focusedDayReservationTimes.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        bottom: BorderSide(width: 1, color: Colors.grey),
-                      ),
-                    ),
+                  return Card(
+                    color: const Color(0xfff9f9f9),
                     child: ListTile(
                       title: Align(
                         child: Row(

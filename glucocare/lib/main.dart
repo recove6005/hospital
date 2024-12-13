@@ -124,14 +124,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // void _CheckUserAndMoveToLogin() async {
-  //   if(await AuthService.userLoginedFa() == false && await AuthService.userLoginedKa() == false) {
-  //     WidgetsBinding.instance.addPostFrameCallback((_) { // 위젯 트리가 빌드된 후 실행
-  //       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
-  //     });
-  //   }
-  // }
-
   Future<void> _getUserName() async {
     try{
       UserModel? model = await UserRepository.selectUserByUid();
@@ -167,8 +159,9 @@ class _HomePageState extends State<HomePage> {
         appBar: (_user == null && AuthService.getCurUserId() == null)
         ? null
         : AppBar(
-            backgroundColor: const Color(0xFFFFFFFF),
-            shadowColor: Colors.transparent,
+            backgroundColor: Colors.white,
+            shadowColor: Colors.white,
+            elevation: 0,
             toolbarHeight: 60,
             leadingWidth: MediaQuery.of(context).size.width,
             leading: Column(

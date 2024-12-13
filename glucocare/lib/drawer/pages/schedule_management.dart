@@ -1,10 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:glucocare/drawer/pages/schedul_update.dart';
 import 'package:glucocare/models/user_model.dart';
+import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'package:table_calendar/table_calendar.dart';
-
 import '../../models/reservation_model.dart';
 import '../../repositories/reservation_repository.dart';
 
@@ -57,13 +59,15 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
   List<String> _details = [];
   List<String> _subjects = [];
   Future<void> _getCurReservations() async {
-    List<ReservationModel> templist = await ReservationRepository.selectAllReservationsBySpecificUid(model.uid);
+    List<ReservationModel> templist = [];
+    if(model.uid != '')  templist = await ReservationRepository.selectAllReservationsBySpecificUid(model.uid);
+    else templist = await ReservationRepository.selectAllReservationsBySpecificUid(model.kakaoId);
     List<String> tempStrs = [];
     List<String> tempTimeStrs = [];
     List<String> tempDetails = [];
     List<String> tempSubjects = [];
     for(ReservationModel model in templist) {
-      String dateStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}';
+      String dateStr = DateFormat('yyyyMMdd').format(model.reservationDate.toDate());
       String timeStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}${DateFormat('a hh:mm').format(model.reservationDate.toDate())}';
       String detailsStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}${model.details}';
       String subjectsStr = '${DateFormat('yyyyMMdd').format(model.reservationDate.toDate())}${model.subject}';
@@ -94,7 +98,6 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
   List<String> _focusedDayDetails = [];
   List<String> _focusedDaySubjects = [];
   void _getFocusedDaysReservationTimes() {
-    logger.d('glucocare_log _focusedReservation');
     List<String> templist = [];
     String dateStr = DateFormat('yyyyMMdd').format(_focusedDay);
     for(String time in _timeStrs) {
@@ -123,6 +126,54 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
       _focusedDayDetails = tempdetails;
       _focusedDaySubjects = tempSubjects;
     });
+  }
+
+  Future<void> _deleteReservation(Timestamp reservationTimestamp) async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('진료 일정 삭제'),
+            content: const Text('설정한 일정을 삭제하시겠습니까?'),
+            backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+              side: BorderSide(color: Colors.grey, width: 1),
+            ),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('취소', style: TextStyle(fontSize: 18, color: Colors.black),),
+              ),
+              TextButton(
+                onPressed: () async {
+                  String uid = model.uid;
+                  await ReservationRepository.deleteReservationByUid(uid, reservationTimestamp);
+                  setState(() {
+                    _getCurReservations();
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('확인', style: TextStyle(fontSize: 18, color: Colors.black),),
+              ),
+            ],
+          );
+        },
+    );
+  }
+
+  Future<void> _updateReservation(Timestamp postTimestamp) async {
+    ReservationModel? reservationModel = null;
+    if(model.uid != '') reservationModel = await ReservationRepository.selectReservationsBySpecificUid(model.uid, postTimestamp);
+    else reservationModel = await ReservationRepository.selectReservationsBySpecificUid(model.kakaoId, postTimestamp);
+    if(reservationModel != null) {
+      Navigator.push(context, MaterialPageRoute(builder: (context) => ReservationEditPage(
+        model: reservationModel!,
+        postTimestamp: postTimestamp,
+      )));
+    }
   }
 
   @override
@@ -285,7 +336,7 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
             padding: const EdgeInsets.only(left: 30),
             child: Center(
               child:_focusedDayReservationTimes.isEmpty
-                  ? Text('예약된 진료 일정이 없습니다.')
+                  ? const Text('예약된 진료 일정이 없습니다.')
                   : ListView.builder(
                 itemCount: _focusedDayReservationTimes.length,
                 itemBuilder: (context, index) {
@@ -298,18 +349,49 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
                     child: Card(
                       color: const Color(0xfff9f9f9),
                       child: GestureDetector(
-                        onTap: () {
-                          // 예약 삭제 - uid, timestamp로 비교
-                          String uid = model.uid;
+                        onLongPress: () {
+                          int hour = 0;
+                          int minute = 0;
+                          if(_focusedDayReservationTimes[index].substring(0,2) == '오전') {
+                            hour = int.parse(_focusedDayReservationTimes[index].substring(3,5));
+                            if(hour == 12) hour = 0;
+                          } else {
+                            hour = int.parse(_focusedDayReservationTimes[index].substring(3,5))+12;
+                          }
+                          minute = int.parse(_focusedDayReservationTimes[index].substring(6));
+
                           DateTime reservation = DateTime(
                             _focusedDay.year,
                             _focusedDay.month,
                             _focusedDay.day,
+                            hour,
+                            minute,
+                            0,
                           );
+                          Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
+                          _deleteReservation(reservationTimestamp);
+                        },
+                        onTap: () {
+                          int hour = 0;
+                          int minute = 0;
+                          if(_focusedDayReservationTimes[index].substring(0,2) == '오전') {
+                            hour = int.parse(_focusedDayReservationTimes[index].substring(3,5));
+                            if(hour == 12) hour = 0;
+                          } else {
+                            hour = int.parse(_focusedDayReservationTimes[index].substring(3,5))+12;
+                          }
+                          minute = int.parse(_focusedDayReservationTimes[index].substring(6));
 
-                          setState(() {
-                            _getFocusedDaysReservationTimes();
-                          });
+                          DateTime reservation = DateTime(
+                            _focusedDay.year,
+                            _focusedDay.month,
+                            _focusedDay.day,
+                            hour,
+                            minute,
+                            0,
+                          );
+                          Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
+                          _updateReservation(reservationTimestamp);
                         },
                         child:  ListTile(
                           title: Align(
@@ -335,11 +417,11 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
                             children: [
                               Text(
                                 _focusedDayReservationTimes[index],
-                                style: TextStyle(fontSize: 20),
+                                style: const TextStyle(fontSize: 20),
                               ),
                               Text(
                                 _focusedDayDetails[index],
-                                style: TextStyle(fontSize: 18),
+                                style: const TextStyle(fontSize: 18),
                               ),
                             ],
                           ),

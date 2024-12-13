@@ -30,6 +30,42 @@ class ReservationRepository {
     return list;
   }
 
+  static Future<ReservationModel?> selectReservationsBySpecificUid(String uid, Timestamp reservationDate) async {
+    try {
+      var docSnapshot = await _store.collection('reservation').doc('$uid $reservationDate').get();
+      if(docSnapshot.exists) {
+        ReservationModel model = ReservationModel.fromJson(docSnapshot.data()!);
+        return model;
+      }
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to load specific user\'s reservations. : $e');
+    }
+
+    return null;
+  }
+
+  static Future<ReservationModel?> selectLastReservationByUid() async {
+    ReservationModel? model = null;
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      try {
+        var docSnapshot = await _store.collection('reservation').where('uid', isEqualTo: uid).orderBy('reservation_date', descending: true).get();
+        if(docSnapshot.docs.first.exists ) model = ReservationModel.fromJson(docSnapshot.docs.first.data());
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to load last reservation : $e');
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      try {
+        var docSnapshot = await _store.collection('reservation').where('uid', isEqualTo: kakaoId).orderBy('reservation_date', descending: true).get();
+        if(docSnapshot.docs.first.exists ) model = ReservationModel.fromJson(docSnapshot.docs.first.data());
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to load last reservation : $e');
+      }
+    }
+    return model;
+  }
+
   static Future<List<ReservationModel>> selectAllReservationsBySpecificUid(String uid) async {
     List<ReservationModel> list = [];
 
@@ -75,11 +111,19 @@ class ReservationRepository {
     return list;
   }
 
+  static Future<void> updateReservationByUid(ReservationModel model, Timestamp postReservationTimestamp) async {
+    try {
+      await _store.collection('reservation').doc('${model.uid} ${postReservationTimestamp}').set(model.toJson());
+    } catch(e) {
+      logger.e('[glucocare_log] Failed to update reservation. : $e');
+    }
+  }
+
   static Future<void> deleteReservationByUid(String uid, Timestamp reservationDate) async {
     try {
       await _store.collection('reservation').doc('${uid} ${reservationDate}').delete();
     } catch(e) {
-      logger.e('[gluccoare_log] Failed to delete reservation. : $e');
+      logger.e('[glucocare_log] Failed to delete reservation. : $e');
     }
   }
 }
