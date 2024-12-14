@@ -106,10 +106,21 @@ class _NoticePostingFormState extends State<NoticePostingForm> {
               ),
               const SizedBox(height: 16),
               Center(
+                child: SizedBox(
+                width: 200,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: _submitPost,
-                  child: const Text('작성하기'),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff28c2ce),
+                  ),
+                  child: const Text('게시하기', style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
+                  ),),
                 ),
+              ),
               ),
             ],
           ),

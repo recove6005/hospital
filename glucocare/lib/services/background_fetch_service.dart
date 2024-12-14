@@ -38,8 +38,6 @@ class FetchService {
         try {
           if(taskId.toString().contains('first')) {
             await NotificationService.showNotification();
-            logger.d('[glucocare_log] TaskId String contains `first`');
-
             String secondTaskId = taskId.toString().substring(5);
 
             await BackgroundFetch.scheduleTask(TaskConfig(
@@ -89,9 +87,9 @@ class FetchService {
         enableHeadless: true,
         forceAlarmManager: true,
       ),);
-      logger.d('[glucocare_log] Schedule Background Fetch started. => first alarm will be pushed');
     } else {
-      Duration differTime = nowDatetime.difference(alarmDateTime);
+      DateTime tomorrow24 = alarmDateTime.add(const Duration(hours: 24));
+      Duration differTime = tomorrow24.difference(nowDatetime);
 
       await BackgroundFetch.scheduleTask(TaskConfig(
         taskId: 'first$taskId',
@@ -101,7 +99,6 @@ class FetchService {
         enableHeadless: true,
         forceAlarmManager: true,
       ),);
-      logger.d('[glucocare_log] Schedule Background Fetch started. => first alarm will be passed');
     }
   }
 

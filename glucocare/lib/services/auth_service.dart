@@ -100,5 +100,19 @@ class AuthService {
   static Future<void> signOut() async {
       await _auth.signOut();
       await ka.UserApi.instance.logout();
+  }
+
+  static Future<void> deleteAuth() async {
+    String? uid;
+    if(await userLoginedFa()) {
+      // 파이어베이스 계정 회원탈퇴
+      uid = getCurUserUid();
+      _auth.currentUser!.delete();
+
+
+    } else {
+      // 카카오계정 회원탈퇴
+
     }
+  }
 }

@@ -1,6 +1,6 @@
 # dummy_project
 
-A dummy project for testing and praticing
+A dummy project for testing.
 
 ## Getting Started
 
