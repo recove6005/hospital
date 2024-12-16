@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
 import '../models/gluco_danger_model.dart';
 
@@ -26,5 +27,36 @@ class GlucoDangerRepository {
       logger.e('[glucocare_log] Failed to load gluco dangers (selectAllDanger): $e');
     }
     return models;
+  }
+
+  static Future<List<GlucoDangerModel>> selectGlucoDangerByUid() async {
+    List<GlucoDangerModel> models = [];
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      var docSnapshot = await _store.collection('gluco_danger').where('uid', isEqualTo: uid).get();
+      for(var doc in docSnapshot.docs) {
+        GlucoDangerModel model = GlucoDangerModel.fromJson(doc.data());
+        models.add(model);
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      var docSnapshot = await _store.collection('gluco_danger').where('uid', isEqualTo: kakaoId).get();
+      for(var doc in docSnapshot.docs) {
+        GlucoDangerModel model = GlucoDangerModel.fromJson(doc.data());
+        models.add(model);
+      }
+    }
+
+    return models;
+  }
+
+  static Future<void> deleteGlucoDanger() async {
+    List<GlucoDangerModel> models = await selectGlucoDangerByUid();
+    for(GlucoDangerModel model in models) {
+      var snapshot = await _store.collection('gluco_danger').where('uid', isEqualTo: model.uid).get();
+      for(var doc in snapshot.docs) {
+        await _store.collection('gluco_danger').doc(doc.id).delete();
+      }
+    }
   }
 }

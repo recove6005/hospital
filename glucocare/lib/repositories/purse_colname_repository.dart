@@ -48,6 +48,29 @@ class PurseColNameRepository {
     return purseColNameList;
   }
 
+  static Future<List<PurseColNameModel>> selectAllPurseColNameModel() async {
+    List<PurseColNameModel> list = [];
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+
+      var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
+      for(var doc in docSnapshot.docs) {
+        PurseColNameModel purseData = PurseColNameModel.fromJson(doc.data());
+        list.add(purseData);
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      var docSnapshot = await _store.collection('purse_name').where('uid', isEqualTo: kakaoId).orderBy('date', descending: true).get();
+      for(var doc in docSnapshot.docs) {
+        PurseColNameModel purseData = PurseColNameModel.fromJson(doc.data());
+        list.add(purseData);
+      }
+    }
+
+    return list;
+  }
+
   static Future<List<String>> selectAllPurseColNameBySpecificUid(String uid) async {
     List<String> purseColNameList = <String>[];
 
@@ -115,5 +138,12 @@ class PurseColNameRepository {
       }
     }
     return lastPurseColName;
+  }
+
+  static Future<void> deletePurseColName() async {
+    List<PurseColNameModel> list = await selectAllPurseColNameModel();
+    for(PurseColNameModel item in list) {
+      _store.collection('purse_name').doc('${item.date} ${item.uid}').delete();
+    }
   }
 }

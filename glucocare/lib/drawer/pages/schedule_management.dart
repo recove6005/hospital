@@ -152,7 +152,7 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
               TextButton(
                 onPressed: () async {
                   String uid = model.uid;
-                  await ReservationRepository.deleteReservationByUid(uid, reservationTimestamp);
+                  await ReservationRepository.deleteReservationBySpecificUid(uid, reservationTimestamp);
                   setState(() {
                     _getCurReservations();
                   });

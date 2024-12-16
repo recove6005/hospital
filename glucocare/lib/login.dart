@@ -107,6 +107,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void initState() {
     super.initState();
+    logger.d('[glucocare_log] login init state.');
   }
 
   @override

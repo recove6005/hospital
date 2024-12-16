@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:glucocare/models/pill_alarm_model.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
@@ -68,13 +69,20 @@ class AlarmRepository {
     return model;
   }
 
-  static Future<void> deleteAlarm(String alarmTimeStr) async {
+  static Future<void> deleteAlarmSchedule(String alarmTimeStr) async {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
-      _store.collection('alarm').doc('$uid $alarmTimeStr').delete();
+      await _store.collection('alarm').doc('$uid $alarmTimeStr').delete();
     } else {
       String? kakaoId = await AuthService.getCurUserId();
-      _store.collection('alarm').doc('$kakaoId $alarmTimeStr').delete();
+      await _store.collection('alarm').doc('$kakaoId $alarmTimeStr').delete();
+    }
+  }
+
+  static Future<void> deleteAlarm() async {
+    List<PillModel> list = await selectAllAlarmByUid();
+    for(PillModel model in list) {
+      _store.collection('alarm').doc('${model.uid} ${model.alarmTimeStr}').delete();
     }
   }
 }

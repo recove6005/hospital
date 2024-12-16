@@ -265,4 +265,14 @@ class GlucoRepository {
 
     return null;
   }
+
+  static Future<void> deleteGlucoCheck() async {
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      if(uid != null )await _store.collection('gluco_check').doc(uid).delete();
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      if(kakaoId != null) await _store.collection('gluco_check').doc(kakaoId).delete();
+    }
+  }
 }
