@@ -1,8 +1,21 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as fa;
+import 'package:glucocare/models/gluco_col_name_model.dart';
+import 'package:glucocare/models/gluco_danger_model.dart';
 import 'package:glucocare/models/master_user_model.dart';
+import 'package:glucocare/models/pill_alarm_model.dart';
+import 'package:glucocare/models/purse_danger_model.dart';
+import 'package:glucocare/repositories/alarm_repository.dart';
+import 'package:glucocare/repositories/gluco_colname_repository.dart';
+import 'package:glucocare/repositories/gluco_danger_repository.dart';
+import 'package:glucocare/repositories/gluco_repository.dart';
 import 'package:glucocare/repositories/masteracc_repository.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
+import 'package:glucocare/repositories/purse_colname_repository.dart';
+import 'package:glucocare/repositories/purse_danger_repository.dart';
+import 'package:glucocare/repositories/purse_repository.dart';
+import 'package:glucocare/repositories/reservation_repository.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as ka;
 import 'package:logger/logger.dart';
 
@@ -103,16 +116,34 @@ class AuthService {
   }
 
   static Future<void> deleteAuth() async {
-    String? uid;
+    // 개인 데이터 정보 삭제
+    // patients
+    await UserRepository.deletePatient();
+    // gluco_danger
+    await GlucoDangerRepository.deleteGlucoDanger();
+    // purse_danger
+    await PurseDangerRepository.deleteGlucoDanger();
+    // gluco_check
+    await GlucoRepository.deleteGlucoCheck();
+    // purse_check
+    await PurseRepository.deletePurseCheck();
+    // alarm
+    await AlarmRepository.deleteAlarm();
+    // gluco name
+    await GlucoColNameRepository.deleteGlucoColName();
+    // purse name
+    await PurseColNameRepository.deletePurseColName();
+    // reservation
+    await ReservationRepository.deleteReservationByUid();
+
     if(await userLoginedFa()) {
       // 파이어베이스 계정 회원탈퇴
-      uid = getCurUserUid();
+      String? uid = getCurUserUid();
       _auth.currentUser!.delete();
-
-
     } else {
       // 카카오계정 회원탈퇴
-
+      ka.User user = await ka.UserApi.instance.me();
+      await ka.UserApi.instance.unlink();
     }
   }
 }

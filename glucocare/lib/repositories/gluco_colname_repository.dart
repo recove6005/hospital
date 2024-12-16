@@ -50,6 +50,29 @@ class GlucoColNameRepository {
     return glucoColNameList;
   }
 
+  static Future<List<GlucoColNameModel>> selectAllGlucoNameModel() async {
+    List<GlucoColNameModel> list = [];
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      var docSnapshot = await _store.collection('gluco_name').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
+      for(var doc in docSnapshot.docs) {
+        GlucoColNameModel glucoData = GlucoColNameModel.fromJson(doc.data());
+        list.add(glucoData);
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      var docSnapshot = await _store.collection('gluco_name').where('uid', isEqualTo: kakaoId).orderBy('date', descending: true).get();
+      for(var doc in docSnapshot.docs) {
+        GlucoColNameModel glucoData = GlucoColNameModel.fromJson(doc.data());
+        list.add(glucoData);
+      }
+    }
+
+    return list;
+  }
+
+
   static Future<List<String>> selectAllGlucoColNameBySpecificUid(String uid) async {
     List<String> glucoColNameList = <String>[];
     try {
@@ -113,5 +136,12 @@ class GlucoColNameRepository {
     }
 
     return lastGlucoColName;
+  }
+
+  static Future<void> deleteGlucoColName() async {
+    List<GlucoColNameModel> list = await selectAllGlucoNameModel();
+    for(GlucoColNameModel item in list) {
+      _store.collection('gluco_name').doc('${item.date} ${item.uid}').delete();
+    }
   }
 }

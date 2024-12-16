@@ -323,7 +323,7 @@ class _HomePageState extends State<HomePage> {
                     ),),
                     onTap: () async { // logout logic
                       FetchService.stopAllBackgroundFetch();
-                      AuthService.signOut();
+                      AuthService.deleteAuth();
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(builder: (context) => const LoginPage())

@@ -487,7 +487,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
                                                 const SizedBox(width: 15,),
                                                 ElevatedButton(
                                                   onPressed: () {
-                                                    AlarmRepository.deleteAlarm(_pillModels[index].alarmTimeStr);
+                                                    AlarmRepository.deleteAlarmSchedule(_pillModels[index].alarmTimeStr);
                                                     FetchService.stopBackgroundFetchByTaskId('first${_pillModels[index].alarmTimeStr}');
                                                     FetchService.stopBackgroundFetchByTaskId(_pillModels[index].alarmTimeStr);
                                                     _setPillModels();

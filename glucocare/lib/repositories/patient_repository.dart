@@ -126,4 +126,11 @@ class UserRepository {
       logger.e('[glucocare_log] Failed to update patient model (updatePatientInfoBySpecificUid): $e');
     }
   }
+
+  static Future<void> deletePatient() async {
+    UserModel? model = await selectUserByUid();
+    if(model != null) {
+      _store.collection('patients').doc(model.uid).delete();
+    }
+  }
 }

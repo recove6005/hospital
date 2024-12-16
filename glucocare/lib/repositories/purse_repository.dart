@@ -287,4 +287,14 @@ class PurseRepository {
 
     return chartDatas;
   }
+
+  static Future<void> deletePurseCheck() async {
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      if(uid != null )await _store.collection('purse_check').doc(uid).delete();
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      if(kakaoId != null) await _store.collection('purse_check').doc(kakaoId).delete();
+    }
+  }
 }
