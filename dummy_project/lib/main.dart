@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,21 +34,42 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   FirebaseFunctions _functions = FirebaseFunctions.instance;
+  FirebaseFirestore _store = FirebaseFirestore.instance;
 
-  String _resText = 'Response will appear here.';
+  TextEditingController _userId = TextEditingController();
 
-  Future<void> callHellowWorldFunction() async {
-    try {
-      HttpsCallable callable = _functions.httpsCallable("hellowWorld");
-      final result = await callable();
-      setState(() {
-        _resText = result.data.toString();
-      });
-    } catch(e) {
-      setState(() {
-        _resText = 'Error: $e';
-      });
+
+  Future<void> requestNotificationPermission() async {
+    if (await Permission.notification.isDenied) {
+      await Permission.notification.request();
     }
+  }
+
+  // 현재 기기 사용자 FCM토큰 저장
+  void _saveTokenToFirestore() async {
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    String userId = _userId.text;
+    String? token = await messaging.getToken();
+    if(token != null) {
+      await FirebaseFirestore.instance.collection('users').doc(userId).update({'fcmToken': token});
+    }
+  }
+
+  void _addData() async {
+    String userId = _userId.text;
+    _store.collection('data').doc(userId).set(
+      {
+        'addedBy': userId,
+        'content': 'human0 exemaple',
+        'targetUserId': 'human1',
+      }
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    requestNotificationPermission();
   }
 
   @override
@@ -58,15 +82,14 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(_resText),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: callHellowWorldFunction,
-              child: Text('Call Cloud Function'),
-            ),
+           TextField(
+             controller: _userId,
+           ),
+            ElevatedButton(onPressed: _saveTokenToFirestore, child: Text('add user fcm token')),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(onPressed: _addData),
     );
   }
 }

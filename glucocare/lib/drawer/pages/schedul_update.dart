@@ -154,11 +154,9 @@ class _ReservationEditFormState extends State<ReservationEditForm> {
       admin: admin!,
     );
     await ReservationRepository.updateReservationByUid(reservationModel, postTimestamp);
-    setState(() {
-      _getReservedDates();
-      _getReservationDateTime();
-    });
+
     Fluttertoast.showToast(msg: '예약이 변경되었습니다.', toastLength: Toast.LENGTH_SHORT);
+    Navigator.pop(context, true);
   }
 
   @override
