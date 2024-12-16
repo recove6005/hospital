@@ -132,37 +132,37 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
 
   Future<void> _deleteReservation(Timestamp reservationTimestamp) async {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('진료 일정 삭제'),
-            content: const Text('설정한 일정을 삭제하시겠습니까?'),
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-              side: BorderSide(color: Colors.grey, width: 1),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('진료 일정 삭제'),
+          content: const Text('설정한 일정을 삭제하시겠습니까?'),
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+            side: BorderSide(color: Colors.grey, width: 1),
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('취소', style: TextStyle(fontSize: 18, color: Colors.black),),
             ),
-            actions: <Widget>[
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('취소', style: TextStyle(fontSize: 18, color: Colors.black),),
-              ),
-              TextButton(
-                onPressed: () async {
-                  String uid = model.uid;
-                  await ReservationRepository.deleteReservationBySpecificUid(uid, reservationTimestamp);
-                  setState(() {
-                    _getCurReservations();
-                  });
-                  Navigator.pop(context);
-                },
-                child: const Text('확인', style: TextStyle(fontSize: 18, color: Colors.black),),
-              ),
-            ],
-          );
-        },
+            TextButton(
+              onPressed: () async {
+                String uid = model.uid;
+                await ReservationRepository.deleteReservationByUid(uid, reservationTimestamp);
+                setState(() {
+                  _getCurReservations();
+                });
+                Navigator.pop(context);
+              },
+              child: const Text('확인', style: TextStyle(fontSize: 18, color: Colors.black),),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -378,30 +378,6 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
                           Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
                           _deleteReservation(reservationTimestamp);
                         },
-                        // 예약 수정
-                        // onTap: () async {
-                        //   int hour = 0;
-                        //   int minute = 0;
-                        //   if(_focusedDayReservationTimes[index].substring(0,2) == '오전') {
-                        //     hour = int.parse(_focusedDayReservationTimes[index].substring(3,5));
-                        //     if(hour == 12) hour = 0;
-                        //   } else {
-                        //     hour = int.parse(_focusedDayReservationTimes[index].substring(3,5))+12;
-                        //   }
-                        //   minute = int.parse(_focusedDayReservationTimes[index].substring(6));
-                        //
-                        //   DateTime reservation = DateTime(
-                        //     _focusedDay.year,
-                        //     _focusedDay.month,
-                        //     _focusedDay.day,
-                        //     hour,
-                        //     minute,
-                        //     0,
-                        //   );
-                        //
-                        //   Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
-                        //   await _updateReservation(reservationTimestamp);
-                        // },
                         child:  ListTile(
                           title: Align(
                             child: Row(

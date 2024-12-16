@@ -1,11 +1,7 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as fa;
-import 'package:glucocare/models/gluco_col_name_model.dart';
-import 'package:glucocare/models/gluco_danger_model.dart';
 import 'package:glucocare/models/master_user_model.dart';
-import 'package:glucocare/models/pill_alarm_model.dart';
-import 'package:glucocare/models/purse_danger_model.dart';
 import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/gluco_colname_repository.dart';
 import 'package:glucocare/repositories/gluco_danger_repository.dart';
@@ -134,7 +130,7 @@ class AuthService {
     // purse name
     await PurseColNameRepository.deletePurseColName();
     // reservation
-    await ReservationRepository.deleteReservationByUid();
+    await ReservationRepository.deleteReservationsByUid();
 
     if(await userLoginedFa()) {
       // 파이어베이스 계정 회원탈퇴

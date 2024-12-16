@@ -114,21 +114,11 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
 
   bool _checkReservaedTime(String time) {
     DateTime now = DateTime(
-      DateTime
-          .now()
-          .year,
-      DateTime
-          .now()
-          .month,
-      DateTime
-          .now()
-          .day,
-      DateTime
-          .now()
-          .hour,
-      DateTime
-          .now()
-          .minute,
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      DateTime.now().hour,
+      DateTime.now().minute,
     );
     DateTime reservation = DateTime(
       _focusedDay.year,
@@ -298,13 +288,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '08:30' || _checkReservaedTime('08:30')  ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '08:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('08:30') ? null : () {
+                          onPressed: _checkReservedDate('08:30') || _checkReservaedTime('08:30') ? null : () {
                             setState(() {
                               _buttonClicked = '08:30';
                               _reservationHour = 8;
@@ -321,13 +311,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '09:00' || _checkReservaedTime('09:00')  ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '09:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('09:00') ? null : () {
+                          onPressed: _checkReservedDate('09:00') || _checkReservaedTime('09:00') ? null : () {
                             setState(() {
                               _buttonClicked = '09:00';
                               _reservationHour = 9;
@@ -344,13 +334,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '09:30' || _checkReservaedTime('09:30')  ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '09:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('09:30') ? null : () {
+                          onPressed: _checkReservedDate('09:30') || _checkReservaedTime('09:30') ? null : () {
                             setState(() {
                               _buttonClicked = '09:30';
                               _reservationHour = 9;
@@ -372,13 +362,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '10:00' || _checkReservaedTime('10:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '10:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('10:00') ? null : () {
+                          onPressed: _checkReservedDate('10:00') || _checkReservaedTime('10:00') ? null : () {
                             setState(() {
                               _buttonClicked = '10:00';
                               _reservationHour = 10;
@@ -395,13 +385,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '10:30' || _checkReservaedTime('10:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '10:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('10:30') ? null : () {
+                          onPressed: _checkReservedDate('10:30') || _checkReservaedTime('10:30') ? null : () {
                             setState(() {
                               _buttonClicked = '10:30';
                               _reservationHour = 10;
@@ -418,13 +408,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '11:00' || _checkReservaedTime('11:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '11:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed:_checkReservedDate('11:00') ? null : () {
+                          onPressed:_checkReservedDate('11:00') || _checkReservaedTime('11:00') ? null : () {
                             setState(() {
                               _buttonClicked = '11:00';
                               _reservationHour = 11;
@@ -471,13 +461,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '12:00' || _checkReservaedTime('12:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '12:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('12:00') ? null : () {
+                          onPressed: _checkReservedDate('12:00') || _checkReservaedTime('12:00') ? null : () {
                             setState(() {
                               _buttonClicked = '12:00';
                               _reservationHour = 12;
@@ -494,13 +484,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '12:30' || _checkReservaedTime('12:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '12:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('12:30') ? null : () {
+                          onPressed: _checkReservedDate('12:30') || _checkReservaedTime('12:30') ? null : () {
                             setState(() {
                               _buttonClicked = '12:30';
                               _reservationHour = 12;
@@ -517,13 +507,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '13:00' || _checkReservaedTime('13:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '13:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('13:00') ? null : () {
+                          onPressed: _checkReservedDate('13:00') || _checkReservaedTime('13:00') ? null : () {
                             setState(() {
                               _buttonClicked = '13:00';
                               _reservationHour = 13;
@@ -540,13 +530,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '13:30' || _checkReservaedTime('13:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '13:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('13:30') ? null : () {
+                          onPressed: _checkReservedDate('13:30') || _checkReservaedTime('13:30') ? null : () {
                             setState(() {
                               _buttonClicked = '13:30';
                               _reservationHour = 13;
@@ -568,13 +558,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '14:00' || _checkReservaedTime('14:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '14:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('14:00') ? null : () {
+                          onPressed: _checkReservedDate('14:00') || _checkReservaedTime('14:00') ? null : () {
                             setState(() {
                               _buttonClicked = '14:00';
                               _reservationHour = 14;
@@ -591,13 +581,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '14:30' || _checkReservaedTime('14:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '14:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('14:30') ? null : () {
+                          onPressed: _checkReservedDate('14:30') || _checkReservaedTime('14:30') ? null : () {
                             setState(() {
                               _buttonClicked = '14:30';
                               _reservationHour = 14;
@@ -614,13 +604,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '15:00' || _checkReservaedTime('15:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '15:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('15:00') ? null : () {
+                          onPressed: _checkReservedDate('15:00') || _checkReservaedTime('15:00') ? null : () {
                             setState(() {
                               _buttonClicked = '15:00';
                               _reservationHour = 15;
@@ -637,13 +627,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '15:30' || _checkReservaedTime('15:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '15:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('15:30') ? null : () {
+                          onPressed: _checkReservedDate('15:30') || _checkReservaedTime('15:30') ? null : () {
                             setState(() {
                               _buttonClicked = '15:30';
                               _reservationHour = 15;
@@ -665,13 +655,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '16:00' || _checkReservaedTime('16:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '16:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('16:00') ? null : () {
+                          onPressed: _checkReservedDate('16:00') || _checkReservaedTime('16:00') ? null : () {
                             setState(() {
                               _buttonClicked = '16:00';
                               _reservationHour = 16;
@@ -688,13 +678,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '16:30' || _checkReservaedTime('16:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '16:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('16:30') ? null : () {
+                          onPressed: _checkReservedDate('16:30') || _checkReservaedTime('16:30') ? null : () {
                             setState(() {
                               _buttonClicked = '16:30';
                               _reservationHour = 16;
@@ -711,13 +701,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '17:00' || _checkReservaedTime('17:00') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '17:00' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('17:00') ? null : () {
+                          onPressed: _checkReservedDate('17:00') || _checkReservaedTime('17:00') ? null : () {
                             setState(() {
                               _buttonClicked = '17:00';
                               _reservationHour = 17;
@@ -734,13 +724,13 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               padding: EdgeInsets.zero,
-                              backgroundColor: _buttonClicked == '17:30' || _checkReservaedTime('17:30') ? Colors.grey : const Color(0xfff9f9f9),
+                              backgroundColor: _buttonClicked == '17:30' ? Colors.grey : const Color(0xfff9f9f9),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(5),
                                 side: const BorderSide(color: Colors.grey, width: 1),
                               )
                           ),
-                          onPressed: _checkReservedDate('17:30') ? null : () {
+                          onPressed: _checkReservedDate('17:30') || _checkReservaedTime('17:30') ? null : () {
                             setState(() {
                               _buttonClicked = '17:30';
                               _reservationHour = 17;
