@@ -119,11 +119,22 @@ class ReservationRepository {
     }
   }
 
-  static Future<void> deleteReservationByUid(String uid, Timestamp reservationDate) async {
+  static Future<void> deleteReservationBySpecificUid(String uid, Timestamp reservationDate) async {
     try {
       await _store.collection('reservation').doc('${uid} ${reservationDate}').delete();
     } catch(e) {
-      logger.e('[glucocare_log] Failed to delete reservation. : $e');
+      logger.e('[gluco_care] Failed to dupdate reservation: $e');
+    }
+  }
+
+  static Future<void> deleteReservationByUid() async {
+    List<ReservationModel> list = await selectAllReservationsByCurUid();
+    for(ReservationModel model in list) {
+      try {
+        await _store.collection('reservation').doc('${model.uid} ${model.reservationDate}').delete();
+      } catch(e) {
+        logger.e('[glucocare_log] Failed to delete reservation. : $e');
+      }
     }
   }
 }

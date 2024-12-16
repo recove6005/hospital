@@ -316,7 +316,7 @@ class _HomePageState extends State<HomePage> {
                     }
                 ),
                 ListTile(
-                    leading: const Icon(Icons.logout),
+                    leading: const Icon(Icons.delete_forever),
                     title: const Text('회원탈퇴', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black

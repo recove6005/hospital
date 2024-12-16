@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -150,7 +152,7 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
               TextButton(
                 onPressed: () async {
                   String uid = model.uid;
-                  await ReservationRepository.deleteReservationByUid(uid, reservationTimestamp);
+                  await ReservationRepository.deleteReservationBySpecificUid(uid, reservationTimestamp);
                   setState(() {
                     _getCurReservations();
                   });
@@ -168,11 +170,16 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
     ReservationModel? reservationModel = null;
     if(model.uid != '') reservationModel = await ReservationRepository.selectReservationsBySpecificUid(model.uid, postTimestamp);
     else reservationModel = await ReservationRepository.selectReservationsBySpecificUid(model.kakaoId, postTimestamp);
+
     if(reservationModel != null) {
-      Navigator.push(context, MaterialPageRoute(builder: (context) => ReservationEditPage(
+      final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => ReservationEditPage(
         model: reservationModel!,
         postTimestamp: postTimestamp,
       )));
+
+      if(result) {
+        _getCurReservations();
+      }
     }
   }
 
@@ -349,7 +356,7 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
                     child: Card(
                       color: const Color(0xfff9f9f9),
                       child: GestureDetector(
-                        onLongPress: () {
+                        onTap : () {
                           int hour = 0;
                           int minute = 0;
                           if(_focusedDayReservationTimes[index].substring(0,2) == '오전') {
@@ -371,28 +378,30 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
                           Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
                           _deleteReservation(reservationTimestamp);
                         },
-                        onTap: () {
-                          int hour = 0;
-                          int minute = 0;
-                          if(_focusedDayReservationTimes[index].substring(0,2) == '오전') {
-                            hour = int.parse(_focusedDayReservationTimes[index].substring(3,5));
-                            if(hour == 12) hour = 0;
-                          } else {
-                            hour = int.parse(_focusedDayReservationTimes[index].substring(3,5))+12;
-                          }
-                          minute = int.parse(_focusedDayReservationTimes[index].substring(6));
-
-                          DateTime reservation = DateTime(
-                            _focusedDay.year,
-                            _focusedDay.month,
-                            _focusedDay.day,
-                            hour,
-                            minute,
-                            0,
-                          );
-                          Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
-                          _updateReservation(reservationTimestamp);
-                        },
+                        // 예약 수정
+                        // onTap: () async {
+                        //   int hour = 0;
+                        //   int minute = 0;
+                        //   if(_focusedDayReservationTimes[index].substring(0,2) == '오전') {
+                        //     hour = int.parse(_focusedDayReservationTimes[index].substring(3,5));
+                        //     if(hour == 12) hour = 0;
+                        //   } else {
+                        //     hour = int.parse(_focusedDayReservationTimes[index].substring(3,5))+12;
+                        //   }
+                        //   minute = int.parse(_focusedDayReservationTimes[index].substring(6));
+                        //
+                        //   DateTime reservation = DateTime(
+                        //     _focusedDay.year,
+                        //     _focusedDay.month,
+                        //     _focusedDay.day,
+                        //     hour,
+                        //     minute,
+                        //     0,
+                        //   );
+                        //
+                        //   Timestamp reservationTimestamp = Timestamp.fromDate(reservation);
+                        //   await _updateReservation(reservationTimestamp);
+                        // },
                         child:  ListTile(
                           title: Align(
                             child: Row(
