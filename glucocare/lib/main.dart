@@ -28,6 +28,7 @@ import 'firebase_options.dart';
 
 Logger logger = Logger();
 bool _isLogined = false;
+Logger rlogger = Logger();
 
 Future<void> main() async {
   await dotenv.load();
@@ -40,6 +41,8 @@ Future<void> main() async {
   // locale init - 기본 지역 설정
   await initializeDateFormatting('ko_KR', null);
   Intl.defaultLocale = 'ko_KR';
+  rlogger.d('[glucocare_log] locale init');
+
 
   // kakotalk api init
   KakaoSdk.init(
@@ -47,21 +50,27 @@ Future<void> main() async {
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY'],
     loggingEnabled: true,
   );
+  rlogger.d('[glucocare_log] kakao init');
+
 
   // firebase init
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  rlogger.d('[glucocare_log] firebase init');
+
 
   // notification service init
   NotificationService.initNotification();
+  rlogger.d('[glucocare_log] notification init');
 
   // Background Fetch Headless Init
   FetchService.headlessInit();
+  rlogger.d('[glucocare_log] headlessInit');
 
   if(await AuthService.userLoginedFa() == false && await AuthService.userLoginedKa() == false) _isLogined = false;
   else _isLogined = true;
-
+  rlogger.d('[glucocare_log] login check init');
   runApp(const MyApp());
 }
 
@@ -151,6 +160,7 @@ class _HomePageState extends State<HomePage> {
     _getUserName();
     _checkIsMaster();
     FetchService.initConfigureBackgroundFetch();
+    logger.d('[glucocare_log] main init state.');
   }
 
   @override
