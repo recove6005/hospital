@@ -154,6 +154,34 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> _widthrawal() async {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('회원 탈퇴'),
+            content: const Text('계정을 삭제하시겠습니까? 삭제한 계정은 복원할 수 없습니다.'),
+            actions:<Widget> [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text('취소', style: TextStyle(color: Colors.black),),
+              ),
+              TextButton(
+                  onPressed: () {
+                    FetchService.stopAllBackgroundFetch();
+                    AuthService.deleteAuth();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('확인', style: TextStyle(color: Colors.black),),
+              ),
+            ],
+          );
+        },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -179,7 +207,7 @@ class _HomePageState extends State<HomePage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 350,
+                  width: MediaQuery.of(context).size.width-50,
                   child: Row(
                     children: [
                       SizedBox(
@@ -198,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: SizedBox(
-                          width: 250,
+                          width: MediaQuery.of(context).size.width-120,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -326,19 +354,15 @@ class _HomePageState extends State<HomePage> {
                     }
                 ),
                 ListTile(
-                    leading: const Icon(Icons.logout),
+                    leading: const Icon(Icons.delete_forever),
                     title: const Text('회원탈퇴', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
-                    onTap: () async { // logout logic
-                      FetchService.stopAllBackgroundFetch();
-                      AuthService.deleteAuth();
-                      Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const LoginPage())
-                      );
-                    }
+                    onTap: () async {
+                      await _widthrawal();
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                    },
                 ),
               ],
             )

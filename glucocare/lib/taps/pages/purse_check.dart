@@ -149,7 +149,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
-                  width: 350,
+                  width:  MediaQuery.of(context).size.width-80,
                   height: 60,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -171,7 +171,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                   ),
                 ),
                 Container(
-                  width: 350,
+                  width:  MediaQuery.of(context).size.width-50,
                   decoration: BoxDecoration(
                     color: const Color(0xFFF9F9F9),
                     borderRadius: BorderRadius.circular(20),
@@ -181,44 +181,49 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        children: [
-                          const SizedBox(
-                            width: 90,
-                            height: 40,
-                            child: Text(
-                              '수축기',
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: 300,
+                        child: Center(
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 90,
+                                height: 40,
+                                child: Text(
+                                  '수축기',
+                                  style: TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
-                              textAlign: TextAlign.start,
-                            ),
+                              SizedBox(
+                                width: 70,
+                                height: 40,
+                                child: TextField(
+                                  controller: _shrinkController,
+                                  keyboardType: TextInputType.number,
+                                  maxLength: 3,
+                                  decoration: const InputDecoration(
+                                      counterText: '',
+                                      hintStyle: TextStyle(color: Colors.black38)
+                                  ),
+                                  style: const TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 25,
+                                  ),
+                                ),
+                              ),
+                              const Text('mmHg', style: TextStyle(fontSize: 18),),
+                            ],
                           ),
-                          SizedBox(
-                            width: 70,
-                            height: 40,
-                            child: TextField(
-                              controller: _shrinkController,
-                              keyboardType: TextInputType.number,
-                              maxLength: 3,
-                              decoration: const InputDecoration(
-                                  counterText: '',
-                                  hintStyle: TextStyle(color: Colors.black38)
-                              ),
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontSize: 25,
-                              ),
-                            ),
-                          ),
-                          const Text('mmHg', style: TextStyle(fontSize: 18),),
-                        ],
+                        ),
                       ),
                       const SizedBox(height: 15,),
                       SizedBox(
-                        width: 350,
+                        width: 300,
                         child: Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -257,7 +262,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                       ),
                       const SizedBox(height: 15,),
                       SizedBox(
-                        width: 350,
+                        width: 300,
                         child: Center(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -298,9 +303,9 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                   ),
                 ),
                 const SizedBox(height: 30,),
-                const SizedBox(
-                  width: 350,
-                  child: Text('메모',
+                SizedBox(
+                  width: MediaQuery.of(context).size.width-80,
+                  child: const Text('메모',
                     style: TextStyle(
                       fontSize: 25,
                       fontWeight: FontWeight.bold,
@@ -310,7 +315,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                 ),
                 const SizedBox(height: 10,),
                 SizedBox(
-                  width: 350,
+                  width: MediaQuery.of(context).size.width-50,
                   child: TextField(
                     controller: _stateController,
                     maxLines: null,

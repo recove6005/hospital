@@ -267,12 +267,22 @@ class GlucoRepository {
   }
 
   static Future<void> deleteGlucoCheck() async {
+    List<GlucoModel> list = await selectAllGlucoCheck();
+
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
-      if(uid != null )await _store.collection('gluco_check').doc(uid).delete();
+      if(uid != null) {
+        for(GlucoModel item in list) {
+          _store.collection('gluco_check').doc(uid).collection(item.checkDate).doc(item.checkTime).delete();
+        }
+      }
     } else {
       String? kakaoId = await AuthService.getCurUserId();
-      if(kakaoId != null) await _store.collection('gluco_check').doc(kakaoId).delete();
+      if(kakaoId != null) {
+        for(GlucoModel item in list) {
+          _store.collection('gluco_check').doc(kakaoId).collection(item.checkDate).doc(item.checkTime).delete();
+        }
+      }
     }
   }
 }

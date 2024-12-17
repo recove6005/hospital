@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart' as fa;
 import 'package:glucocare/models/master_user_model.dart';
+import 'package:glucocare/repositories/admin_request_image_storage.dart';
+import 'package:glucocare/repositories/admin_request_repository.dart';
 import 'package:glucocare/repositories/alarm_repository.dart';
 import 'package:glucocare/repositories/gluco_colname_repository.dart';
 import 'package:glucocare/repositories/gluco_danger_repository.dart';
@@ -131,14 +133,16 @@ class AuthService {
     await PurseColNameRepository.deletePurseColName();
     // reservation
     await ReservationRepository.deleteReservationsByUid();
+    // admin_request
+    await AdminRequestRepository.deleteAdminRequest();
+    // admin_request_image
+    await AdminRequestImageStorage.deleteFile();
 
     if(await userLoginedFa()) {
       // 파이어베이스 계정 회원탈퇴
-      String? uid = getCurUserUid();
       _auth.currentUser!.delete();
     } else {
       // 카카오계정 회원탈퇴
-      ka.User user = await ka.UserApi.instance.me();
       await ka.UserApi.instance.unlink();
     }
   }

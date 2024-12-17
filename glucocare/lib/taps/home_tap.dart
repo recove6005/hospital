@@ -267,7 +267,7 @@ class _HomeTapForm extends State<HomeTapForm> {
           children: [
             const SizedBox(height: 10,),
             SizedBox(
-              width: 350,
+              width: MediaQuery.of(context).size.width-50,
               height: 35,
               child: ElevatedButton(
                 onPressed: () {},
@@ -305,7 +305,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             ),
             const SizedBox(height: 10,),
             SizedBox(
-              width: 350,
+              width: MediaQuery.of(context).size.width-50,
               height: 160,
               child: ElevatedButton(
                 onPressed: () async {
@@ -412,9 +412,9 @@ class _HomeTapForm extends State<HomeTapForm> {
                 ),
               ),
             ),
-            const SizedBox(height: 15,),
+            const SizedBox(height: 20,),
             SizedBox(
-              width: 350,
+              width: MediaQuery.of(context).size.width-50,
               height: 160,
               child: ElevatedButton(
                 onPressed: () async {
@@ -521,9 +521,9 @@ class _HomeTapForm extends State<HomeTapForm> {
                 ),
               ),
             ),
-            const SizedBox(height: 15,),
+            const SizedBox(height: 20,),
             SizedBox(
-              width: 350,
+              width: MediaQuery.of(context).size.width-50,
               height: 160,
               child: ElevatedButton(
                 onPressed: () async {
@@ -617,7 +617,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             ),
             const SizedBox(height: 30,),
             SizedBox(
-              width: 300,
+              width: MediaQuery.of(context).size.width/5*4,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,

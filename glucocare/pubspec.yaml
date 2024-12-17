@@ -85,6 +85,7 @@ flutter:
     - assets/images/
     - assets/images/login/
     - assets/data/
+    - assets/icon/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -126,4 +127,6 @@ flutter:
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/images/ic_dummy.png"
+  image_path: "assets/icon/ic_daolcare.png"
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/icon/ic_daolcare.png"

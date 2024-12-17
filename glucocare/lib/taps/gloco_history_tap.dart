@@ -263,10 +263,10 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
               Column(
                 children: [
                   const SizedBox(height: 10,),
-                  const SizedBox(
-                    width: 350,
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width-50,
                     height: 30,
-                    child: Text(
+                    child: const Text(
                       '내 혈당 관리',
                       style: TextStyle(
                         fontSize: 24,
@@ -283,7 +283,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                       _selectMonthYear();
                     },
                     child: SizedBox(
-                      width: 350,
+                      width: MediaQuery.of(context).size.width-50,
                       child: Row(
                         children: [
                           Text(
@@ -302,7 +302,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   const SizedBox(height: 10,),
                   // 요일 헤더
                   SizedBox(
-                    width: 350,
+                    width: MediaQuery.of(context).size.width-50,
                     child: Row(
                       children: ['월', '화', '수', '목', '금', '토', '일'].map((day) {
                         return Expanded(
@@ -316,7 +316,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                 ],
               ),
               SizedBox(
-                width: 350,
+                width: MediaQuery.of(context).size.width-50,
                 height: 60,
                 child: TableCalendar(
                   headerVisible: false, // 헤더 숨김
@@ -407,7 +407,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
               ),
               const SizedBox(height: 10,),
               Container(
-                  width: 350,
+                  width: MediaQuery.of(context).size.width-50,
                   height: 280,
                   decoration: BoxDecoration(
                       color: const Color(0xffff9f9f9),
@@ -444,7 +444,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                           ),
                           if(_glucoModels.isNotEmpty)
                           SizedBox(
-                            width: 300,
+                            width: MediaQuery.of(context).size.width-100,
                             height: 230,
                             child: CustomScrollView(
                               slivers: [
@@ -496,7 +496,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                                       ),
                                                     const SizedBox(height: 10,),
                                                     Container(
-                                                      width: 350,
+                                                      width: MediaQuery.of(context).size.width-100,
                                                       height: 10,
                                                       decoration: const BoxDecoration(
                                                         border: Border(
@@ -527,7 +527,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                 ),
                 const SizedBox(height: 15,),
                 Container( // 차트 위젯
-                  width: 350,
+                  width: MediaQuery.of(context).size.width-50,
                   padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
@@ -536,7 +536,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   child: Column(
                     children: [
                       SizedBox(
-                        width: 350,
+                        width: MediaQuery.of(context).size.width-50,
                         height: 30,
                         child: Row(
                           children: [
@@ -584,6 +584,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                       ),
                       const SizedBox(height: 10,),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
@@ -599,7 +600,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                             ),
                           ),
                           SizedBox(
-                            width: 270,
+                            width: MediaQuery.of(context).size.width-120,
                             height: 200,
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,

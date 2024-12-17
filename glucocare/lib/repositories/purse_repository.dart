@@ -289,12 +289,22 @@ class PurseRepository {
   }
 
   static Future<void> deletePurseCheck() async {
+    List<PurseModel> list = await selectAllPurseCheck();
+
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
-      if(uid != null )await _store.collection('purse_check').doc(uid).delete();
+      if(uid != null) {
+        for(PurseModel item in list) {
+          _store.collection('purse_check').doc(uid).collection(item.checkDate).doc(item.checkTime).delete();
+        }
+      }
     } else {
       String? kakaoId = await AuthService.getCurUserId();
-      if(kakaoId != null) await _store.collection('purse_check').doc(kakaoId).delete();
+      if(kakaoId != null) {
+        for(PurseModel item in list) {
+          _store.collection('purse_check').doc(kakaoId).collection(item.checkDate).doc(item.checkTime).delete();
+        }
+      }
     }
   }
 }
