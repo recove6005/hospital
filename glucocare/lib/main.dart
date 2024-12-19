@@ -59,7 +59,6 @@ Future<void> main() async {
   );
   rlogger.d('[glucocare_log] firebase init');
 
-
   // notification service init
   NotificationService.initNotification();
   rlogger.d('[glucocare_log] notification init');
