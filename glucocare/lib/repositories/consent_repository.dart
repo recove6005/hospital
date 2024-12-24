@@ -112,4 +112,14 @@ class ConsentRepository {
       }
     }
   }
+
+  static Future<void> deleteConsent() async {
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      await _store.collection('patients').doc(uid).delete();
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      await _store.collection('patients').doc(kakaoId).delete();
+    }
+  }
 }

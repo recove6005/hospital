@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/drawer/master_admin_check.dart';
 import 'package:glucocare/drawer/notice_posting.dart';
 import 'package:glucocare/drawer/patient_search.dart';
@@ -31,7 +32,6 @@ bool _isLogined = false;
 Logger rlogger = Logger();
 
 Future<void> main() async {
-  await dotenv.load();
 
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -45,6 +45,7 @@ Future<void> main() async {
 
 
   // kakotalk api init
+  await dotenv.load();
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_NATIVE_APP_KEY'],
     javaScriptAppKey: dotenv.env['KAKAO_JAVASCRIPT_APP_KEY'],
@@ -153,32 +154,46 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  Future<void> _widthrawal() async {
+  bool _isDeleting = false;
+  Future<void> _showDialog() async {
     showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('회원 탈퇴'),
-            content: const Text('계정을 삭제하시겠습니까? 삭제한 계정은 복원할 수 없습니다.'),
-            actions:<Widget> [
-              TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text('취소', style: TextStyle(color: Colors.black),),
-              ),
-              TextButton(
-                  onPressed: () {
-                    FetchService.stopAllBackgroundFetch();
-                    AuthService.deleteAuth();
-                    Navigator.pop(context);
-                  },
-                  child: const Text('확인', style: TextStyle(color: Colors.black),),
-              ),
-            ],
-          );
-        },
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: const Text('회원 탈퇴'),
+          content: const Text('계정을 삭제하시겠습니까? 삭제한 계정은 복원할 수 없습니다.'),
+          actions:<Widget> [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(dialogContext);
+              },
+              child: const Text('취소', style: TextStyle(color: Colors.black),),
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.pop(dialogContext);
+                setState(() {
+                  _isDeleting = true;
+                });
+                logger.d('[glucocare_log] iswithdrawal true');
+                await FetchService.stopAllBackgroundFetch();
+                logger.d('[glucocare_log] fetchservice stoped.');
+                await AuthService.deleteAuth();
+                logger.d('[glucocare_log] auth deleted.');
+                setState(() {
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                });
+              },
+              child: const Text('확인', style: TextStyle(color: Colors.black),),
+            ),
+          ],
+        );
+      },
     );
+  }
+
+  Future<void> _widthrawal() async {
+    await _showDialog();
   }
 
   @override
@@ -192,6 +207,19 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+      if(_isDeleting) return const Scaffold(
+        appBar: null,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text('회원 정보 삭제 중..', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+              CircularProgressIndicator(),
+            ],
+          ),
+        ),
+      );
       return Scaffold(
         appBar: (_user == null && AuthService.getCurUserId() == null)
         ? null
@@ -358,9 +386,9 @@ class _HomePageState extends State<HomePage> {
                         fontSize: 20,
                         color: Colors.black
                     ),),
-                    onTap: () async {
-                      await _widthrawal();
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                    onTap: () {
+                      _widthrawal();
+
                     },
                 ),
               ],

@@ -128,9 +128,12 @@ class UserRepository {
   }
 
   static Future<void> deletePatient() async {
-    UserModel? model = await selectUserByUid();
-    if(model != null) {
-      _store.collection('patients').doc(model.uid).delete();
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      _store.collection('patients').doc(uid).delete();
+    } else {
+      String? uid = await AuthService.getCurUserId();
+      _store.collection('patients').doc(uid).delete();
     }
   }
 }

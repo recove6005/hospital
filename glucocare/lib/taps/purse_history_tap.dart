@@ -196,28 +196,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         ),
         leftTitles: const AxisTitles(
           sideTitles: SideTitles(showTitles: false),
-          // sideTitles: SideTitles(
-          //     showTitles: true,
-          //     interval: 50, // 간격 설정
-          //     reservedSize: 40, // 그래프와의 마진 거리 조정 (기본 40)
-          //   getTitlesWidget: (double value, TitleMeta meta) {
-          //     return SideTitleWidget(
-          //       axisSide: meta.axisSide,
-          //       space: 20,
-          //       child: Text(
-          //         value.toInt().toString(),
-          //         style: const TextStyle(
-          //             fontSize: 14,
-          //             fontWeight: FontWeight.bold,
-          //             color: Colors.grey,
-          //         ),
-          //         softWrap: false, // 줄바꿈X
-          //         overflow: TextOverflow.visible,
-          //         textAlign: TextAlign.left,
-          //       ),
-          //     );
-          //   }
-          // ),
         ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
@@ -571,11 +549,11 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                 switch(_chartSelectedValeu) {
                                   case '3개월' :
                                     _maxX = 270;
-                                    _chartSize = 2500;
+                                    _chartSize = 3500;
                                     break;
                                   case '1개월' :
                                     _maxX = 90;
-                                    _chartSize = 900;
+                                    _chartSize = 1500;
                                     break;
                                   case '1주일' :
                                     _maxX = 21;

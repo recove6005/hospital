@@ -67,3 +67,8 @@
 
 # Reflection 관련 경고 무시
 -dontwarn java.lang.reflect.AnnotatedType
+
+# Kakao sdk 예외 설정
+-keep class com.kakao.** { *; }
+-keepattributes *Annotation*
+-dontwarn com.kakao.**

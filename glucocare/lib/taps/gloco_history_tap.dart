@@ -561,11 +561,11 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                   switch(_chartSelectedValeu) {
                                     case '3개월' :
                                       _maxX = 270;
-                                      _chartSize = 2500;
+                                      _chartSize = 3500;
                                       break;
                                     case '1개월' :
                                       _maxX = 90;
-                                      _chartSize = 900;
+                                      _chartSize = 1500;
                                       break;
                                     case '1주일' :
                                       _maxX = 21;
