@@ -28,5 +28,5 @@ document.getElementById('add-form').addEventListener('submit', async (e) => {
 
 
 document.getElementById("to-signin").addEventListener('click', () => {
-    window.location.href = "signin-email.html";
+    window.location.href = "/html/login-email.html";
 });

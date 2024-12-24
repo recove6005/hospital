@@ -3,7 +3,9 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import { db, auth } from "./firebase-config.js";
 import { collection, addDoc, getDocs } from "firebase/firestore";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+
+import homeRouter from './routes/home-routers.js'
+import loginRouter from './routes/login-routers.js'
 
 const app = express();
 const PORT = 3000;
@@ -12,7 +14,13 @@ const PORT = 3000;
 app.use(express.json());
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static("public"));
+
+// 정적 파일 제공
+app.use(express.static('public'));
+
+// 라우터 등록
+app.use('/', homeRouter);
+app.use('/login', loginRouter);
 
 // route : add data
 app.post("/add", async (req, res) => {
@@ -24,7 +32,6 @@ app.post("/add", async (req, res) => {
         res.status(500).send({error: e.message});
     }
 });
-
 // route : read data
 app.get("/read", async (req, res) => {
     try {
@@ -36,26 +43,7 @@ app.get("/read", async (req, res) => {
     }
 });
 
-// sign in & sign up with eamil/password
-app.post("/signinsignup", async (req, res) => {
-    const { email, password } = req.body;
-    console.log(`${email} and ${password} is arrived to server.`);
-    
-    await createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-            const user = userCredential.user;
-            res.status(200).send({
-                message: "User account successfully created.",
-                uid: user.uid,
-            });
-    })
-    .catch((e) => {
-        res.status(400).send({error: e.code});
-    });
-});
-
 // server excute
 app.listen(PORT, () => {
     console.log(`server is running on http://localhost:${PORT}`);
 });
-
