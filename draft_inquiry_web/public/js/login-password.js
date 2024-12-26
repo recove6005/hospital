@@ -8,18 +8,39 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
     const password = document.getElementById('password').value;
     
     try {
-        const response = await fetch('/login/login', {
+        const loginResponse = await fetch('/login/login', {
             method: 'POST',
             headers: {'Content-Type':'application/json'},
             body: JSON.stringify({email, password}),
         });
 
-        const result = await response.json();
-        if(response.ok) {
-            console.log("Login successfully.");
-            alert(`Welcome, ${email} (${result.uid})`);
+        const loginResult = await loginResponse.json();
+        if(loginResponse.ok) {
+            console.log(`${loginResult.message}`);
+            alert(`어서오세요, ${loginResult.email}`);
 
             window.location.href = "/html/index.html";
+        } 
+        else if(loginResult.code === 'auth/invalid-credential') {
+            // 사용자가 없음 >> 회원가입 절차
+            const response = await fetch('/login/register', {
+                method: 'POST',
+                headers: { 'Content-Type' : 'application/json'},
+                body: JSON.stringify({ email, password }),
+            });
+
+            if(response.ok) {
+                alert(`어서오세요, ${email}님`);
+                window.location.href = "/html/index.html";
+            }
+        }
+        else if(loginResult.code === 'auth/wrong-password') {
+            alert('비밀번호가 옳지 않습니다.');
+        }
+        else if(loginResult.code === 'auth/too-many-requests') {
+            alert('잠시 후에 다시 시도해주세요.');
+        } else {
+            alert(`error: ${loginResult.code}`);
         }
     } catch(e) {
         console.error("Error:", e);

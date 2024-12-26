@@ -1,16 +1,15 @@
-import express from 'express';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import express from "express";
+import { addUser, getHomePage, readUsers } from "../contollers/home-contoller.js";
 
 const router = express.Router();
 
-// __dirname 설정
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 // HOME 라우트
-router.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../public/html/index.html'));
-});
+router.get('/', getHomePage);
+
+// route : add data
+router.post("/add", addUser);
+
+// route : read data
+router.get("/read", readUsers);
 
 export default router;
