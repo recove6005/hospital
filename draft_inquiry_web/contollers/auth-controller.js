@@ -1,11 +1,13 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { auth } from "../public/firebase-config.js";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword } from "firebase/auth";
+import { db, auth } from "../public/firebase-config.js";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 이메일 인증 체크
 export const checkUserVerify = async (req, res) => {
     if(req.session.user) {
         const user = auth.currentUser;
@@ -37,7 +39,45 @@ export const checkUserVerify = async (req, res) => {
         } else {
             // 이메일 인증이 이미 완료된 경우
             if (!res.headersSent) {
-                return res.status(200).send({ msg: "verify1" });
+                // verify가 false이면 true로 업데이트
+                const usersDocRef = doc(db, "users", user.email);
+                const usersDocSnap = await getDoc(usersDocRef);
+
+                if(usersDocSnap.exists()) {
+                    const verifyData = usersDocSnap.data().verify;
+                    if(verifyData == false) {
+                        console.log(`verify update : ${verifyData}`);
+                        await updateDoc(doc(db, "users", user.email), {
+                            email: user.email,
+                            uid: user.uid,
+                            verify: true,
+                            subscribe: '0',
+                        });
+                    }
+                } else {
+                    console.log("No Firebase user session.");
+                    return res.status(401).send({ error: "No Firebase session found." });
+                }
+
+                // 계정 구독권 데이터 셋 생성
+                const subscribeDocRef = doc(db, "subscribes", user.email);
+                const subscribeDocSnap = await getDoc(subscribeDocRef);
+                if(!subscribeDocSnap.exists()) {
+                    console.log("subscribe create.");
+                    await setDoc(doc(db, "subscribes", user.email), {
+                        email: user.email,
+                        uid: user.uid,
+                        type: '0',
+                        logo: 0,
+                        draft: 0,
+                        signage: 0,
+                        blog: 0,
+                        homepage: 0,
+                        discount: 0,
+                    });
+                }
+
+                return res.status(200).send({ msg: `${user.email}` });
             }
         } 
     } else {
@@ -57,6 +97,7 @@ export const moveToLoginPassword = (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/login-password.html'));
 };
 
+// 로그인
 export const login = async (req, res) => {
     const { email, password } = req.body;
 
@@ -66,7 +107,7 @@ export const login = async (req, res) => {
 
         req.session.user = { email } // 세션 저장
 
-        req.session.save((err) => {
+        req.session.save(async (err) => {
             if (err) {
                 console.error("Failed to save session:", err);
                 return res.status(500).send({ error: "Failed to save session" });
@@ -97,23 +138,21 @@ export const login = async (req, res) => {
     }
 };
 
-
-let tempData = {};
-export const saveToRegister = (req, res) => {
-    tempData = req.body;
-}
-
-export const getToRegister = (req, res) => {
-    res.status(200).send(tempData);
-    tempData = {};
-}
-
+// 회원가입
 export const register = async (req, res) => {
     const { email, password } = req.body;
 
     await createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
+    .then(async (userCredential) => {
         const user = userCredential.user;
+        
+        // 계정 데이터셋 생성
+        await setDoc(doc(db, "users", email), {
+            email: email,
+            uid: user.uid,
+            verify: false,
+            subscribe: '0',
+        });
 
         req.session.user = { email } // 세션 저장
 
@@ -134,6 +173,7 @@ export const register = async (req, res) => {
     });
 }
 
+// 현재 유저 로그인 세션 정보 가져오기
 export const getCurrentUser = async (req, res) => {
     if(req.session.user) {
         res.status(200).send(req.session.user);
@@ -141,3 +181,43 @@ export const getCurrentUser = async (req, res) => {
         res.status(401).send({ error: "No user is logged in."});
     }
 };
+
+// 로그아웃 
+export const logout = async (req, res) => {
+    console.log(`server logout.`);
+    if(!req.session.user) {
+        return res.status(401).send({ msg: "No session exist."});
+    }
+
+    try {
+        req.session.destroy((e) => {
+            if(e) {
+                console.error("Session destroy error: ", err);
+                return res.status(500)({ error: "Failed to destroy session."});
+            }
+        })
+
+        res.clearCookie("connect.sid"); // 쿠키 삭제
+        console.log("Session destroyed and cookie cleared.");
+
+        const user = auth.currentUser;
+        if(user) {
+            signOut(auth)
+            .then(() => {
+                console.log("Firebase user signed out.");
+                return res.status(200).send({ msg: "User logout successful." });
+            })
+            .catch((e) => {
+                console.error("Firebase logout error:", e.message);
+                return res.status(500).send({ error: e.message });
+            });
+        } else {
+            console.log("No Firebase user session.");
+            return res.status(200).send({ msg: "No Firebase session found, but logged out." });
+        }
+    } catch(e) {
+        console.error("Logout error:", e.message);
+        return res.status(500).send({ error: e.message });
+    }
+}
+

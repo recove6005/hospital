@@ -85,23 +85,25 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     }
 });
 
-// commission pages
-document.getElementById("commission-log").addEventListener('click', () => {
-    window.location.href = "../html/commission-logo.html";
-});
 
-document.getElementById("commission-draft").addEventListener('click', () => {
-    window.location.href = "../html/commission-draft.html";
-});
-
-document.getElementById("commission-signage").addEventListener('click', () => {
-    window.location.href = "../html/commission-signage.html";
-});
-
-document.getElementById("commission-blog").addEventListener('click', () => {
-    window.location.href = "../html/commission-blog.html";
-});
-
-document.getElementById("commission-homepage").addEventListener('click', () => {
-    window.location.href = "../html/commission-homepage.html";
+const radios = document.querySelectorAll('input[name="size"]');
+radios.forEach((radio) => {
+    radio.addEventListener('click', function() {
+        var value = this.value;
+        const priceElement = document.getElementById('price');
+        const titleElement = document.getElementById('project-name');
+        if (value === '1건') {
+            priceElement.textContent = '100,000 원';
+            titleElement.textContent = '블로그 (1건)';
+        } else if (value === '11건') {
+            priceElement.textContent = '1,000,000 원';
+            titleElement.textContent = '블로그 (11건)';
+        } else if( value === '25건') {
+            priceElement.textContent = '2,000,000 원';
+            titleElement.textContent = '블로그 (25건)';
+        } else {
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '블로그 (40건)';
+        }
+    });
 });

@@ -1,6 +1,9 @@
 document.getElementById("login-button").addEventListener("click", async (e) => {
     e.preventDefault();
 
+    const loadingScreen = document.getElementById("loading-screen");
+    loadingScreen.style.display = "flex"; // 로딩 화면 표시
+    
     const param = new URLSearchParams(window.location.search);
     const email = param.get('email');
     document.getElementById('email').value = email;
@@ -16,10 +19,9 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
 
         const loginResult = await loginResponse.json();
         if(loginResponse.ok) {
-            console.log(`${loginResult.message}`);
             alert(`어서오세요, ${loginResult.email}`);
 
-            window.location.href = "/html/index.html";
+            window.location.href = "/html/home.html";
         } 
         else if(loginResult.code === 'auth/invalid-credential') {
             // 사용자가 없음 >> 회원가입 절차
@@ -31,7 +33,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
 
             if(response.ok) {
                 alert(`어서오세요, ${email}님`);
-                window.location.href = "/html/index.html";
+                window.location.href = "/html/home.html";
             }
         }
         else if(loginResult.code === 'auth/wrong-password') {
@@ -45,5 +47,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
     } catch(e) {
         console.error("Error:", e);
         alert("An error occurred: " + e.message);
+    } finally {
+        loadingScreen.style.display = "none"; // 로딩 화면 숨김
     };
 });

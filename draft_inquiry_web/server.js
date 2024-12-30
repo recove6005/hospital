@@ -4,8 +4,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
 
-import homeRouter from './routes/home-routers.js'
-import loginRouter from './routes/login-routers.js'
+import homeRouter from './routes/home-router.js';
+import loginRouter from './routes/auth-router.js';
+import userRouter from './routes/user-router.js';
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use(express.static('public'));
 // 라우터 등록
 app.use('/', homeRouter);
 app.use('/login', loginRouter);
+app.use('/user', userRouter);
 
 // server excute
 app.listen(PORT, () => {

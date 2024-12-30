@@ -3,13 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/login-email.css">
     <script src="../js/login-email.js" defer></script>
-    <title>Login</title>
+    <title>LOGIN</title>
 </head>
 <body>
-    <form action="/login/password" method="GET">
-        <label for="email"><input type="email" name="email" placeholder="email" required></label>
-        <button type="submit">다음</button>
-    </form>
+    <main id="login-container">
+        <div id="logo"><img src="../images/sample.jpg"></div>
+        <h1>로그인 또는 회원가입할 이메일을 입력하세요.</h1>
+        <form action="/login/password" method="GET">
+            <input type="email" name="email" id="email" placeholder="Email" required>
+            <button type="submit">다음</button>
+        </form>
+    </main>
 </body>
 </html>

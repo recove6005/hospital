@@ -3,10 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../js/home.js" defer></script>
-    <title>home</title>
+    <link rel="stylesheet" href="../css/home.css"/>
+    <script src="../js/home.js" type="module" defer></script>
+    <title>HOME</title>
 </head>
 <body>
+    <!-- topbar -->
+    <header id="topbar">
+        <div id="logo-container">
+            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+        </div>
+        <div id="user-container">
+            <div id="profile-photo" style="display:none;">
+                <a id="profile-link" href="#">
+                    <img src="../images/sample.jpg" alt="photo">
+                    <span><p id="user-email">example@gmail.com</p></span>
+                </a>
+                <div id="dropdown-menu" style="display: none;">
+                    <ul>
+                        <li><a id="dropdown-mypage" href="../html/mypage.html">마이페이지</a></li>
+                        <li><a id="dropdown-logout">로그아웃</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="to-signin" style="display: block;">
+                <a href="../html/login-email.html">로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- nav -->
+    <nav id="nav">
+        <ul class="nav-container">
+            <li><a href="#about">ABOUT</a></li>
+            <li><a href="#portfolio">PORTFOLIO</a></li>
+            <li><a href="#contact">CONTACT</a></li>
+        </ul>
+    </nav>
+
+    <!-- home -->
+    <main>
+        <!-- About Section -->
+        <section id="about">
+            <div id="about-container">
+                <div id="main-photo">
+                    <img src="../images/sample.jpg">
+                </div>
+                <div id="about-description">
+                    <p>
+                        orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. 
+                    </p>
+                </div>
+            </div>
+        </section>
     
+        <!-- Portfolio Section -->
+        <section id="portfolio">
+            <h1>Portfolio</h1>
+            <div class="portfolio-container">
+                <!-- Portfolio Item 1: logo -->
+                <div class="portfolio-box">
+                    <a id="commission-log" href="#" class="portfolio-img">
+                        <img src="../images/sample.jpg" alt="로고 제작">
+                    </a>
+                    <div class="portfolio-description">
+                        <p class="portfolio-description-title">로고 제작</p>
+                        <p class="portfolio-description-content">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </div>
+                <!-- Portfolio Item 2: draft -->
+                <div class="portfolio-box">
+                    <a id="commission-draft" href="#" class="portfolio-img">
+                        <img src="../images/sample.jpg" alt="원내 시안">
+                    </a>
+                    <div class="portfolio-description">
+                        <p class="portfolio-description-title">원내 시안</p>
+                        <p class="portfolio-description-content">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </div>
+                <!-- Portfolio Item 3: signage -->
+                <div class="portfolio-box">
+                    <a id="commission-signage" href="#" class="portfolio-img">
+                        <img src="../images/sample.jpg" alt="사이니지">
+                    </a>
+                    <div class="portfolio-description">
+                        <p class="portfolio-description-title">사이니지</p>
+                        <p class="portfolio-description-content">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </div>
+                <!-- Portfolio Item 4: blog -->
+                <div class="portfolio-box">
+                    <a id="commission-blog" href="#" class="portfolio-img">
+                        <img src="../images/sample.jpg" alt="블로그 제작">
+                    </a>
+                    <div class="portfolio-description">
+                        <p class="portfolio-description-title">블로그 제작</p>
+                        <p class="portfolio-description-content">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </div>
+                <!-- Portfolio Item 5: homepage -->
+                <div class="portfolio-box">
+                    <a id="commission-homepage" href="#" class="portfolio-img">
+                        <img src="../images/sample.jpg" alt="홈페이지 제작">
+                    </a>
+                    <div class="portfolio-description">
+                        <p class="portfolio-description-title">홈페이지 제작</p>
+                        <p class="portfolio-description-content">
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact">
+            <h1>Contact</h1>
+            <div class="contact-links">
+                <a href="https://example.com" target="_blank">
+                    <img src="../images/homepage-icon.png" alt="Homepage">
+                </a>
+                <a href="https://blog.example.com" target="_blank">
+                    <img src="../images/blog-icon.png" alt="Blog">
+                </a>
+                <a href="https://pf.kakao.com/_example" target="_blank">
+                    <img src="../images/kakao-icon.png" alt="KakaoTalk Channel">
+                </a>
+                <a href="https://instagram.com/example" target="_blank">
+                    <img src="../images/instagram-icon.png" alt="Instagram">
+                </a>
+                <a href="https://youtube.com/example" target="_blank">
+                    <img src="../images/youtube-icon.png" alt="YouTube">
+                </a>
+            </div>
+        </section>
+    </main>
 </body>
 </html>

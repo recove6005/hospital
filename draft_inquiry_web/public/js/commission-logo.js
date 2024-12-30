@@ -85,23 +85,22 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     }
 });
 
-// commission pages
-document.getElementById("commission-log").addEventListener('click', () => {
-    window.location.href = "../html/commission-logo.html";
-});
-
-document.getElementById("commission-draft").addEventListener('click', () => {
-    window.location.href = "../html/commission-draft.html";
-});
-
-document.getElementById("commission-signage").addEventListener('click', () => {
-    window.location.href = "../html/commission-signage.html";
-});
-
-document.getElementById("commission-blog").addEventListener('click', () => {
-    window.location.href = "../html/commission-blog.html";
-});
-
-document.getElementById("commission-homepage").addEventListener('click', () => {
-    window.location.href = "../html/commission-homepage.html";
+// 프로젝트 사이즈 - 라디오 버튼 설정
+const radios = document.querySelectorAll('input[name="size"]');
+radios.forEach((radio) => {
+    radio.addEventListener('click', function() {
+        var value = this.value;
+        const priceElement = document.getElementById('price');
+        const titleElement = document.getElementById('project-name');
+        if (value === '상') {
+            priceElement.textContent = '500,000 원';
+            titleElement.textContent = '로고 디자인 (상)'
+        } else if (value === '중') {
+            priceElement.textContent = '300,000 원';
+            titleElement.textContent = '로고 디자인 (중)'
+        } else {
+            priceElement.textContent = '150,000 원';
+            titleElement.textContent = '로고 디자인 (하)'
+        }
+    });
 });

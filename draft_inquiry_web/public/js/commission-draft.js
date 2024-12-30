@@ -84,24 +84,3 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
         alert("An unexpected error occurred. Please try again.");
     }
 });
-
-// commission pages
-document.getElementById("commission-log").addEventListener('click', () => {
-    window.location.href = "../html/commission-logo.html";
-});
-
-document.getElementById("commission-draft").addEventListener('click', () => {
-    window.location.href = "../html/commission-draft.html";
-});
-
-document.getElementById("commission-signage").addEventListener('click', () => {
-    window.location.href = "../html/commission-signage.html";
-});
-
-document.getElementById("commission-blog").addEventListener('click', () => {
-    window.location.href = "../html/commission-blog.html";
-});
-
-document.getElementById("commission-homepage").addEventListener('click', () => {
-    window.location.href = "../html/commission-homepage.html";
-});

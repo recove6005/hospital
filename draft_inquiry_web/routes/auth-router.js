@@ -1,5 +1,5 @@
 import express from 'express';
-import { moveToLoginEmail, moveToLoginPassword, login, getCurrentUser, register, saveToRegister, getToRegister, checkUserVerify } from "../contollers/login-controller.js";
+import { moveToLoginEmail, moveToLoginPassword, login, getCurrentUser, register, checkUserVerify, logout } from "../contollers/auth-controller.js";
 
 const router = express.Router();
 
@@ -13,10 +13,8 @@ router.post('/verify', checkUserVerify);
 
 router.post('/current-user', getCurrentUser);
 
-router.post('/save-to-register', saveToRegister);
-
-router.post('/get-to-register', getToRegister);
-
 router.post('/register', register);
+
+router.post('/logout', logout);
 
 export default router;
