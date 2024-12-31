@@ -290,8 +290,17 @@ a {
     font-weight: bold;
 }
 
-#price {
+#discount-price {
     margin-top: 30px;
+    font-size: 30px;
+    text-align: center;
+    color: crimson;
+    font-weight: bold;
+    display: block;
+}
+
+#price {
+    margin-top: 20px;
     margin-bottom:80px;
     font-size: 30px;
     text-align: center;

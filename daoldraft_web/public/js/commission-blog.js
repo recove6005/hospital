@@ -24,6 +24,140 @@ async function checkUserVerify() {
 }
 checkUserVerify();
 
+// 구독권에 따른 가격 표시
+function getPrice(membersheType, sizeValue) {
+    const priceElement = document.getElementById('price');
+    const titleElement = document.getElementById('project-name');
+    const discountPriceElement = document.getElementById('discount-price');
+
+    if(membersheType === '1') {
+        // 월간 3만원 구독권 사용자
+        if (sizeValue === '1건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '95,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '100,000 원';
+            titleElement.textContent = '블로그 (1건)'
+        } else if (sizeValue === '11건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '950,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '1,000,000 원';
+            titleElement.textContent = '블로그 (11건)'
+        } else if (sizeValue === '25건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '1,900,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '2,000,000 원';
+            titleElement.textContent = '블로그 (25건)'
+        } else {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = ' 2,850,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '블로그 (40건)'
+        }
+    }
+    else if(membersheType === '2') {
+        // 월간 5만원 구독권 사용자
+        if (sizeValue === '1건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '90,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '100,000 원';
+            titleElement.textContent = '블로그 (1건)'
+        } else if (sizeValue === '11건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '900,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '1,000,000 원';
+            titleElement.textContent = '블로그 (11건)'
+        } else if (sizeValue === '25건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '1,800,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '2,000,000 원';
+            titleElement.textContent = '블로그 (25건)'
+        } else {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = ' 2,700,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '블로그 (40건)'
+        }
+    } 
+    else if(membersheType === '3') {
+        // 연간 50만원 구독권 사용자
+        if (sizeValue === '1건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '70,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '100,000 원';
+            titleElement.textContent = '블로그 (1건)'
+        } else if (sizeValue === '11건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '700,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '1,000,000 원';
+            titleElement.textContent = '블로그 (11건)'
+        } else if (sizeValue === '25건') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '1,400,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '2,000,000 원';
+            titleElement.textContent = '블로그 (25건)'
+        } else {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = ' 2,100,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '블로그 (40건)'
+        }
+    }
+    else if(membersheType === '0') {
+        // 구독권이 없는 사용자
+        if (sizeValue === '1건') {
+            discountPriceElement.style.display = 'none';
+            priceElement.textContent = '100,000 원';
+            titleElement.textContent = '블로그 (1건)'
+        } else if (sizeValue === '11건') {
+            discountPriceElement.style.display = 'none';
+            priceElement.textContent = '1,000,000 원';
+            titleElement.textContent = '블로그 (11건)'
+        } else if (sizeValue === '25건') {
+            discountPriceElement.style.display = 'none';
+            priceElement.textContent = '2,000,000 원';
+            titleElement.textContent = '블로그 (25건)'
+        } else {
+            discountPriceElement.style.display = 'none';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '블로그 (40건)'
+        }
+    }
+}
+
+// 사용자 구독권 정보 가져오기
+async function getSubscribeType() {
+    var membersheType = '0';
+    const response = await fetch('/user/get-subscribe-type', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    const result = await response.json();
+    if(response.ok) {
+        membersheType = result.subscribe;
+    } else {
+        console.log(`error: ${result.error}`);
+    } 
+    
+    return membersheType;
+}
+
+// 구독권 가격 초기 가격
+getPrice(await getSubscribeType(), '1건');
+
+
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
     e.preventDefault(); // 기본 앵커 동작 방지
@@ -88,22 +222,9 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
 const radios = document.querySelectorAll('input[name="size"]');
 radios.forEach((radio) => {
-    radio.addEventListener('click', function() {
-        var value = this.value;
-        const priceElement = document.getElementById('price');
-        const titleElement = document.getElementById('project-name');
-        if (value === '1건') {
-            priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 (1건)';
-        } else if (value === '11건') {
-            priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 (11건)';
-        } else if( value === '25건') {
-            priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 (25건)';
-        } else {
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 (40건)';
-        }
+    radio.addEventListener('click', async function() {
+        const sizeValue = this.value;
+        const membersheType = await getSubscribeType();
+        getPrice(membersheType, sizeValue);
     });
 });

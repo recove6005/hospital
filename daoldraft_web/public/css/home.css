@@ -372,3 +372,29 @@ section h1 {
         height: 50px;
     }
 }
+
+/* floating button */
+#floatingButton {
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    width: 180px;
+    height: 65px;
+    border: 3px solid #555;
+    border-radius: 30px;
+    background-color: #f4f4f4;
+    color: black;
+    font-size: 22px;
+    font-family: sans-serif;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition-duration: 0.3s;
+}
+
+#floatingButton:hover {
+    background-color: #ccc;
+}

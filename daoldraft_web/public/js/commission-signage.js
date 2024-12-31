@@ -24,6 +24,53 @@ async function checkUserVerify() {
 }
 checkUserVerify();
 
+// 가격 정보
+function getPrice(membersheType) {
+    const priceElement = document.getElementById('price');
+    const discountPriceElement = document.getElementById('discount-price');
+
+    if(membersheType === '1') {
+        discountPriceElement.style.display = 'block';
+        discountPriceElement.textContent = '47,500';
+        priceElement.style.textDecoration = 'line-throught';
+    }
+    else if(membersheType === '2') {
+        discountPriceElement.style.display = 'block';
+        discountPriceElement.textContent = '45,000';
+        priceElement.style.textDecoration = 'line-throught';
+    }
+    else if(membersheType === '3') {
+        discountPriceElement.style.display = 'block';
+        discountPriceElement.textContent = '35,000';
+        priceElement.style.textDecoration = 'line-throught';
+    }
+    else {
+        discountPriceElement.style.display = 'none';
+        priceElement.style.textDecoration = 'none';
+    }
+}
+
+// 사용자 구독권 정보 가져오기
+async function getSubscribeType() {
+    var membersheType = '0';
+    const response = await fetch('/user/get-subscribe-type', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    const result = response.json();
+    if(response.ok) {
+        membersheType = result.subscribe;
+    } else {
+        console.log(`error: ${result.error}`);
+    }
+
+    return membersheType;
+}
+
+getPrice(await getSubscribeType());
+
+
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
     e.preventDefault(); // 기본 앵커 동작 방지

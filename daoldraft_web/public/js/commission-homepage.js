@@ -24,6 +24,124 @@ async function checkUserVerify() {
 }
 checkUserVerify();
 
+// 구독권에 따른 가격 표시
+function getPrice(membersheType, sizeValue) {
+    const priceElement = document.getElementById('price');
+    const titleElement = document.getElementById('project-name');
+    const discountPriceElement = document.getElementById('discount-price');
+
+    if(membersheType === '1') {
+        // 월간 3만원 구독권 사용자
+        if (sizeValue === '하') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '1,425,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '1,500,000 원';
+            titleElement.textContent = '홈페이지 디자인 (하)';
+        } else if (sizeValue === '중') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '2,850,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (중)';
+        } 
+        else {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = ' 4,750,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '5,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (상)';
+        }
+    }
+    else if(membersheType === '2') {
+        // 월간 5만원 구독권 사용자
+        if (sizeValue === '하') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '1,350,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '1,500,000 원';
+            titleElement.textContent = '홈페이지 디자인 (하)';
+        } else if (sizeValue === '중') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '2,700,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (중)';
+        } 
+        else {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = ' 4,500,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '5,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (상)';
+        }
+    } 
+    else if(membersheType === '3') {
+        // 연간 50만원 구독권 사용자
+        if (sizeValue === '하') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '1,050,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '1,500,000 원';
+            titleElement.textContent = '홈페이지 디자인 (하)';
+        } else if (sizeValue === '중') {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '2,100,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (중)';
+        } 
+        else {
+            discountPriceElement.style.display = 'block';
+            discountPriceElement.textContent = '3,500,000 원';
+            priceElement.style.textDecoration = 'line-through';
+            priceElement.textContent = '5,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (상)';
+        }
+    }
+    else if(membersheType === '0') {
+        // 구독권이 없는 사용자
+        if (sizeValue === '하') {
+            discountPriceElement.style.display = 'none';
+            priceElement.style.textDecoration = 'none';
+            priceElement.textContent = '1,500,000 원';
+            titleElement.textContent = '홈페이지 디자인 (하)';
+        } else if (sizeValue === '중') {
+            discountPriceElement.style.display = 'none';
+            priceElement.style.textDecoration = 'none';
+            priceElement.textContent = '3,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (중)';
+        } 
+        else {
+            discountPriceElement.style.display = 'none';
+            priceElement.style.textDecoration = 'none';
+            priceElement.textContent = '5,000,000 원';
+            titleElement.textContent = '홈페이지 디자인 (상)';
+        }
+    }
+}
+
+// 사용자 구독권 정보 가져오기
+async function getSubscribeType() {
+    var membersheType = '0';
+    const response = await fetch('/user/get-subscribe-type', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    const result = await response.json();
+    if(response.ok) {
+        membersheType = result.subscribe;
+    } else {
+        console.log(`error: ${result.error}`);
+    } 
+    return membersheType;
+}
+
+// 구독권 가격 초기 가격
+getPrice(await getSubscribeType(), '하');
+
+
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
     e.preventDefault(); // 기본 앵커 동작 방지
@@ -88,19 +206,10 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
 const radios = document.querySelectorAll('input[name="size"]');
 radios.forEach((radio) => {
-    radio.addEventListener('click', function() {
-        var value = this.value;
-        const priceElement = document.getElementById('price');
-        const titleElement = document.getElementById('project-name');
-        if (value === '상') {
-            priceElement.textContent = '5,000,000 원';
-            titleElement.textContent = '홈페이지 디자인 (상)'
-        } else if (value === '중') {
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '홈페이지 디자인 (중)'
-        } else {
-            priceElement.textContent = '1,500,000 원';
-            titleElement.textContent = '홈페이지 디자인 (하)'
-        }
+    radio.addEventListener('click', async function() {
+        const sizeValue = this.value;
+        const membersheType = await getSubscribeType();
+        
+        getPrice(membersheType, sizeValue);
     });
 });
