@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/main.dart';
+import 'package:glucocare/models/login_admin_model.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/kakao_login_service.dart';
 import 'package:logger/logger.dart';
@@ -26,22 +29,41 @@ class LoginForm extends StatefulWidget {
 
 class _LoginFormState extends State<LoginForm> {
   final TextEditingController _idInputController = TextEditingController();
+  final TextEditingController _pwInputController = TextEditingController();
 
   Logger logger = Logger();
-  String _masterId = '';
   bool _isKakaoLogind = false;
   bool _isMasterLogin = false;
 
-  void _authCode() async {
-    _masterId = _idInputController.text.trim();
-    if(_masterId == '**daol4558**') {
+  void _loginAdminLogin() async {
+    setState(() {
+      _isKakaoLogind = true;
+    });
+    String inputId = _idInputController.text.trim();
+    String inputPw = _pwInputController.text.trim();
+
+    String adminId = '';
+    String adminPw = '';
+
+    LoginAdminModel? model = await UserRepository.getLoginAdminAcc();
+    if(model != null) {
+      adminId = model.id;
+      adminPw = model.pw;
+    }
+
+    if(inputId == adminId && inputPw == adminPw) {
       try {
         await AuthService.authPasswordAndMasterLogin();
         if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } catch (e) {
-        logger.e('[glucocare_log] Master login is faeild. : $e');
+        logger.e('[glucocare_log] Master login is faeilㅁd. : $e');
       }
       return;
+    } else {
+      setState(() {
+        _isKakaoLogind = false;
+      });
+      Fluttertoast.showToast(msg: '아이디와 비밀번호를 확인해 주세요.');
     }
     // if (_verifyId.isEmpty || smsCode.isEmpty) {
     //   Fluttertoast.showToast(msg: '인증 정보를 입력하세요.', toastLength: Toast.LENGTH_SHORT);
@@ -126,13 +148,12 @@ class _LoginFormState extends State<LoginForm> {
                 ),
                 child: ElevatedButton(
                   onPressed: () async {
-                    setState(() {
-                      _isKakaoLogind = true;
-                    });
+                    setState(() {_isKakaoLogind = true;});
                     bool loginResult = await KakaoLogin.login();
                     if(loginResult) {
-                      _isKakaoLogind = false;
-                      _autoLogin();
+                      setState(() {
+                        _autoLogin();
+                      });
                     } else {
                       setState(() {
                         _isKakaoLogind = false;
@@ -171,7 +192,36 @@ class _LoginFormState extends State<LoginForm> {
                       border: InputBorder.none,
                       enabledBorder: InputBorder.none,
                       focusedBorder: InputBorder.none,
-                      hintText: '마스터 계정 ID',
+                      hintText: 'ADMIN ID',
+                      hintStyle: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFFB4B4B4),
+                      ),
+                    ),
+                    style: const TextStyle(fontSize: 15),
+                    textAlign: TextAlign.center,
+                    textAlignVertical: TextAlignVertical.center,
+                  ),
+                ),
+              const SizedBox(height: 10,),
+              if(_isMasterLogin)
+                Container(
+                  width: 200,
+                  height: 35,
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: const Color(0xFFF9F9F9),
+                  ),
+                  child: TextField(
+                    controller: _pwInputController,
+                    obscureText: true,
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      hintText: 'ADMIN PW',
                       hintStyle: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.bold,
@@ -190,7 +240,7 @@ class _LoginFormState extends State<LoginForm> {
                   width: 200,
                   height: 35,
                   child: ElevatedButton(
-                    onPressed: _authCode,
+                    onPressed: _loginAdminLogin,
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF28C2CE),
                         shape: RoundedRectangleBorder(
@@ -198,7 +248,7 @@ class _LoginFormState extends State<LoginForm> {
                         )
                     ),
                     child: const Text(
-                      '마스터 계정 로그인',
+                      'ADMIN LOGIN',
                       style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,

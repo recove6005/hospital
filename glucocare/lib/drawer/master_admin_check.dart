@@ -150,8 +150,6 @@ class _MasterAdminCheckFormState extends State<MasterAdminCheckForm> {
     _overlayEntry = null;
   }
 
-
-
   @override
   void initState() {
     super.initState();

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:glucocare/models/login_admin_model.dart';
 import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:logger/logger.dart';
@@ -135,5 +136,12 @@ class UserRepository {
       String? uid = await AuthService.getCurUserId();
       _store.collection('patients').doc(uid).delete();
     }
+  }
+
+  static Future<LoginAdminModel?> getLoginAdminAcc() async {
+    LoginAdminModel? model;
+    var docSnapshot = await _store.collection('test').doc('acc').get();
+    if(docSnapshot.exists) model = LoginAdminModel.fromJson(docSnapshot.data()!);
+    return model;
   }
 }

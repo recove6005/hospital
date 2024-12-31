@@ -43,6 +43,11 @@ Future<void> main() async {
   Intl.defaultLocale = 'ko_KR';
   rlogger.d('[glucocare_log] locale init');
 
+  // firebase init
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  rlogger.d('[glucocare_log] firebase init');
 
   // kakotalk api init
   await dotenv.load();
@@ -52,13 +57,6 @@ Future<void> main() async {
     loggingEnabled: true,
   );
   rlogger.d('[glucocare_log] kakao init');
-
-
-  // firebase init
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  rlogger.d('[glucocare_log] firebase init');
 
   // notification service init
   NotificationService.initNotification();

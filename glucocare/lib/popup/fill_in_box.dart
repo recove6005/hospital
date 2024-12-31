@@ -147,7 +147,7 @@ class _FillInPatientInfoFormState extends State<FillInPatientInfoForm> {
                   style: const TextStyle(fontSize: 20, color: Colors.black, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                   textAlignVertical: TextAlignVertical.center,
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.number,
                 ),
               ),
               const SizedBox(height: 10,),

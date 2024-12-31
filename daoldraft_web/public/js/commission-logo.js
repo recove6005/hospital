@@ -24,6 +24,24 @@ async function checkUserVerify() {
 }
 checkUserVerify();
 
+let membersheType = '0';
+// 사용자 구독권 정보
+async function getSubscribeType() {
+    const response = await fetch('/user/get-subscribe-type', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    const result = response.json();
+    if(response.ok) {
+        membersheType = result.subscribe;
+    } else {
+        console.log(`error: ${result.error}`);
+    }
+}
+getSubscribeType();
+
+
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
     e.preventDefault(); // 기본 앵커 동작 방지

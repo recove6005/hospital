@@ -22,7 +22,7 @@ class AdminRequestImageStorage {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       try {
-        String path = 'admin_request/$kakaoId/${DateTime.now().toIso8601String()}';
+        String path = 'admin_request/$kakaoId/${kakaoId}_admin_request.jpg';
         final ref = _storage.ref().child(path);
         await ref.putFile(file);
       } catch(e) {
