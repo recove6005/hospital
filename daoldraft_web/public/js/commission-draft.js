@@ -28,25 +28,30 @@ checkUserVerify();
 function getPrice(membersheType) {
     const priceElement = document.getElementById('price');
     const discountPriceElement = document.getElementById('discount-price');
+    const allprice = document.getElementById('allprice');
 
     if(membersheType === '1') {
         discountPriceElement.style.display = 'block';
-        discountPriceElement.textContent = '28,500';
-        priceElement.style.textDecoration = 'line-throught';
+        discountPriceElement.textContent = '28,500 원';
+        priceElement.style.textDecoration = 'line-through';
+        allprice.value = '28500';
     }
     else if(membersheType === '2') {
         discountPriceElement.style.display = 'block';
-        discountPriceElement.textContent = '27,000';
-        priceElement.style.textDecoration = 'line-throught';
+        discountPriceElement.textContent = '27,000 원';
+        priceElement.style.textDecoration = 'line-through';
+        allprice.value = '27000';
     }
     else if(membersheType === '3') {
         discountPriceElement.style.display = 'block';
-        discountPriceElement.textContent = '21,000';
-        priceElement.style.textDecoration = 'line-throught';
+        discountPriceElement.textContent = '21,000 원';
+        priceElement.style.textDecoration = 'line-through';
+        allprice.value = '21000';
     }
     else {
         discountPriceElement.style.display = 'none';
         priceElement.style.textDecoration = 'none';
+        allprice.value = '30000';
     }
 }
 
@@ -58,7 +63,7 @@ async function getSubscribeType() {
         credentials: "include",
     });
 
-    const result = response.json();
+    const result = await response.json();
     if(response.ok) {
         membersheType = result.subscribe;
     } else {
@@ -128,5 +133,41 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");
+    }
+});
+
+// 프로젝트 문의 등록
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const formValues = Object.fromEntries(formData.entries());
+
+    const loginCheckRes = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(loginCheckRes.ok) {
+        try {
+            const response = await fetch('/user/commission-project-draft', {
+                method: 'POST',
+                credentials: "include",
+                headers: { "Content-Type" : "application/json" },
+                body: JSON.stringify(formValues),
+            });
+
+            const result = await response.json();
+            if(response.ok) {
+                alert('프로젝트가 접수되었습니다. 마이페이지에서 확인해 주세요.');
+                window.location.href = '../html/home.html';
+            } else {
+                console.log(result.error);
+            }
+        } catch(e) {
+            console.error("error: ", e);
+        } 
+    } else {
+        window.location.href = '../html/login-email.html';
     }
 });

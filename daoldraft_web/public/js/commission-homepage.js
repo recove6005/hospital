@@ -29,6 +29,7 @@ function getPrice(membersheType, sizeValue) {
     const priceElement = document.getElementById('price');
     const titleElement = document.getElementById('project-name');
     const discountPriceElement = document.getElementById('discount-price');
+    const allprice = document.getElementById('allprice');
 
     if(membersheType === '1') {
         // 월간 3만원 구독권 사용자
@@ -38,12 +39,14 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '1,500,000 원';
             titleElement.textContent = '홈페이지 디자인 (하)';
+            allprice.value = '1425000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '2,850,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '3,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (중)';
+            allprice.value = '2850000';
         } 
         else {
             discountPriceElement.style.display = 'block';
@@ -51,6 +54,7 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '5,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (상)';
+            allprice.value = '4750000';
         }
     }
     else if(membersheType === '2') {
@@ -61,12 +65,14 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '1,500,000 원';
             titleElement.textContent = '홈페이지 디자인 (하)';
+            allprice.value = '1350000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '2,700,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '3,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (중)';
+            allprice.value = '2700000';
         } 
         else {
             discountPriceElement.style.display = 'block';
@@ -74,6 +80,7 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '5,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (상)';
+            allprice.value = '4500000';
         }
     } 
     else if(membersheType === '3') {
@@ -84,12 +91,14 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '1,500,000 원';
             titleElement.textContent = '홈페이지 디자인 (하)';
+            allprice.value = '1050000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '2,100,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '3,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (중)';
+            allprice.value = '2100000';
         } 
         else {
             discountPriceElement.style.display = 'block';
@@ -97,6 +106,7 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '5,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (상)';
+            allprice.value = '3500000';
         }
     }
     else if(membersheType === '0') {
@@ -106,17 +116,20 @@ function getPrice(membersheType, sizeValue) {
             priceElement.style.textDecoration = 'none';
             priceElement.textContent = '1,500,000 원';
             titleElement.textContent = '홈페이지 디자인 (하)';
+            allprice.value = '1500000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'none';
             priceElement.style.textDecoration = 'none';
             priceElement.textContent = '3,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (중)';
+            allprice.value = '3000000';
         } 
         else {
             discountPriceElement.style.display = 'none';
             priceElement.style.textDecoration = 'none';
             priceElement.textContent = '5,000,000 원';
             titleElement.textContent = '홈페이지 디자인 (상)';
+            allprice.value = '5000000';
         }
     }
 }
@@ -213,3 +226,41 @@ radios.forEach((radio) => {
         getPrice(membersheType, sizeValue);
     });
 });
+
+// 프로젝트 문의 로직
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const formValues = Object.fromEntries(formData.entries());
+
+    const loginCheckRes = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(loginCheckRes.ok) {
+        try {
+            const response = await fetch('/user/commission-project-homepage', {
+                method: 'POST',
+                credentials: "include",
+                headers: { "Content-Type" : "application/json "},
+                body: JSON.stringify(formValues),
+            });
+    
+            const result = await response.json();
+            if(response.ok) {
+                alert('프로젝트가 접수됐습니다. 마이페이지에서 확인해 주세요.');
+                window.location.href = '../html/home.html';
+            } else {
+                console.log(result.error);
+            }
+    
+        } catch(e) {
+            console.error("error: ", e);
+        }
+    } else {
+        window.location.href = '../html/login-email.html';
+    }
+});
+

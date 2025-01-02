@@ -3,7 +3,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/drawer/master_admin_check.dart';
 import 'package:glucocare/drawer/notice_posting.dart';
 import 'package:glucocare/drawer/patient_search.dart';

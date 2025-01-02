@@ -56,7 +56,7 @@ class _LoginFormState extends State<LoginForm> {
         await AuthService.authPasswordAndMasterLogin();
         if(await AuthService.userLoginedFa()) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
       } catch (e) {
-        logger.e('[glucocare_log] Master login is faeilㅁd. : $e');
+        logger.e('[glucocare_log] Master login is faeild. : $e');
       }
       return;
     } else {

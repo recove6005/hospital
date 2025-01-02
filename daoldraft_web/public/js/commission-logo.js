@@ -29,6 +29,7 @@ function getPrice(membersheType, sizeValue) {
     const priceElement = document.getElementById('price');
     const titleElement = document.getElementById('project-name');
     const discountPriceElement = document.getElementById('discount-price');
+    const allprice = document.getElementById('allprice');
 
     if(membersheType === '1') {
         // 월간 3만원 구독권 사용자
@@ -37,63 +38,72 @@ function getPrice(membersheType, sizeValue) {
             discountPriceElement.textContent = '475,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '500,000 원';
-            titleElement.textContent = '로고 디자인 (상)'
+            titleElement.textContent = '로고 디자인 (상)';
+            allprice.value = '457000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '285,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '300,000 원';
-            titleElement.textContent = '로고 디자인 (중)'
+            titleElement.textContent = '로고 디자인 (중)';
+            allprice.value = '285000';
         } else {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '142,500 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '150,000 원';
-            titleElement.textContent = '로고 디자인 (하)'
+            titleElement.textContent = '로고 디자인 (하)';
+            allprice.value = '142500';
         }
     }
     else if(membersheType === '2') {
         // 월간 5만원 구독권 사용자
         if (sizeValue === '상') {
             discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '475,000 원';
+            discountPriceElement.textContent = '450,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '500,000 원';
-            titleElement.textContent = '로고 디자인 (상)'
+            titleElement.textContent = '로고 디자인 (상)';
+            allprice.value = '450000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '285,000 원';
+            discountPriceElement.textContent = '270,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '300,000 원';
-            titleElement.textContent = '로고 디자인 (중)'
+            titleElement.textContent = '로고 디자인 (중)';
+            allprice.value = '270000';
         } else {
             discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '142,500 원';
+            discountPriceElement.textContent = '135,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '150,000 원';
-            titleElement.textContent = '로고 디자인 (하)'
+            titleElement.textContent = '로고 디자인 (하)';
+            allprice.value = '135000';
         }
     } 
     else if(membersheType === '3') {
         // 연간 50만원 구독권 사용자
         if (sizeValue === '상') {
             discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '475,000 원';
+            discountPriceElement.textContent = '350,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '500,000 원';
-            titleElement.textContent = '로고 디자인 (상)'
+            titleElement.textContent = '로고 디자인 (상)';
+            allprice.value = '350000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '285,000 원';
+            discountPriceElement.textContent = '210,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '300,000 원';
-            titleElement.textContent = '로고 디자인 (중)'
+            titleElement.textContent = '로고 디자인 (중)';
+            allprice.value = '210000';
         } else {
             discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '142,500 원';
+            discountPriceElement.textContent = '105,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '150,000 원';
             titleElement.textContent = '로고 디자인 (하)'
+            allprice.value = '105000';
         }
     }
     else if(membersheType === '0') {
@@ -101,15 +111,18 @@ function getPrice(membersheType, sizeValue) {
         if (sizeValue === '상') {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '500,000 원';
-            titleElement.textContent = '로고 디자인 (상)'
+            titleElement.textContent = '로고 디자인 (상)';
+            allprice.value = '500000';
         } else if (sizeValue === '중') {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '300,000 원';
-            titleElement.textContent = '로고 디자인 (중)'
+            titleElement.textContent = '로고 디자인 (중)';
+            allprice.value = '300000';
         } else {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '150,000 원';
-            titleElement.textContent = '로고 디자인 (하)'
+            titleElement.textContent = '로고 디자인 (하)';
+            allprice.value = '150000';
         }
     }
 }
@@ -206,3 +219,41 @@ radios.forEach((radio) => {
         getPrice(membersheType, sizeValue);
     });
 });
+
+// 프로젝트 문의 로직
+document.getElementById('contact-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+    const formValues = Object.fromEntries(formData.entries());
+
+    const loginCheckRes = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(loginCheckRes.ok) {
+        try {
+            const response = await fetch('/user/commission-project-logo', {
+                method: 'POST',
+                credentials: "include",
+                headers: { "Content-Type" : "application/json "},
+                body: JSON.stringify(formValues),
+            });
+    
+            const result = await response.json();
+            if(response.ok) {
+                alert('프로젝트가 접수됐습니다. 마이페이지에서 확인해 주세요.');
+                window.location.href = '../html/home.html';
+            } else {
+                console.log(result.error);
+            }
+    
+        } catch(e) {
+            console.error("error: ", e);
+        }
+    } else {
+        window.location.href = '../html/login-email.html';
+    }
+});
+

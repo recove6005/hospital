@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/commission-signage.css">
-    <script src="../js/commission-signage.js" type="module" defer></script>
     <title>LOGO COMMISSION</title>
 </head>
 <body>
@@ -94,7 +93,9 @@
     <div class="commission-form">
         <h1 id="form-title">Contact us</h1>
         <div class="commission-details">
-            <form>
+            <form id="contact-form">
+                <input name="title" type="hidden" value="사이니지">
+                <input name="size" type="hidden" value="">
                 <div class="form-group">
                     <label for="organization" class="form-label" id="label-organization">Organization*</label>
                     <input type="text" class="form-input" id="input-organization" name="organization" placeholder="기관명*" required>
@@ -120,13 +121,15 @@
                     <textarea maxlength="1000" wrap="hard" rows="10" type="details" id="textarea-details" name="details" placeholder="문의하실 내용을 상세하게 기입해 주시기 바랍니다*" required></textarea>
                 </div>
                 <p id="project-name">사이니지</p>
-                <p id="discount-price" style="display: none;">285,000 원</p>
+                <p id="discount-price"></p>
+                <input id="allprice" name="allprice" type="hidden" value="50000">
                 <p id="price">50,000 원</p>
                 <button id="contact-button">문의하기</button> 
             </form>
         </div>
     </div>
-
-
 </body>
+
+<script src="../js/commission-signage.js" type="module" defer></script>
+
 </html>

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/commission-logo.css">
-    <script src="../js/commission-logo.js" type="module" defer></script>
     <title>LOGO COMMISSION</title>
 </head>
 <body>
@@ -94,7 +93,8 @@
     <div class="commission-form">
         <h1 id="form-title">Contact us</h1>
         <div class="commission-details">
-            <form>
+            <form id="contact-form">
+                <input name="title" type="hidden" value="로고 디자인">
                 <div class="size-group" >
                     <label for="" class="form-label" id="label-size">Size*</label>
                     <div>
@@ -129,12 +129,12 @@
                 </div>
                 <p id="project-name">로고 디자인 (하)</p>
                 <p id="discount-price" style="display: none;">285,000 원</p>
+                <input id="allprice" name="allprice" type="hidden" value="150000">
                 <p id="price">150,000 원</p>
                 <button id="contact-button">문의하기</button> 
             </form>
         </div>
     </div>
-
-
 </body>
+<script src="../js/commission-logo.js" type="module" defer></script>
 </html>
