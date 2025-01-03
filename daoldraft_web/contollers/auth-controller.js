@@ -52,6 +52,7 @@ export const checkUserVerify = async (req, res) => {
                             uid: user.uid,
                             verify: true,
                             subscribe: '0',
+                            admin: false,
                         });
                     }
                 } else {
@@ -152,6 +153,7 @@ export const register = async (req, res) => {
             uid: user.uid,
             verify: false,
             subscribe: '0',
+            admin: false,
         });
 
         req.session.user = { email } // 세션 저장
@@ -221,3 +223,21 @@ export const logout = async (req, res) => {
     }
 }
 
+// admin check
+export const checkAdmin = async (req, res) => {
+    const user = auth.currentUser;
+    if(user) {
+        const docRef = doc(db, 'users', user.email);
+        const docSnap = await getDoc(docRef);
+
+        if(docSnap.exists()) {
+            const admin = docSnap.data().admin;
+            return res.status(200).send({ admin: admin });
+        } else {
+            return res.status(401).send({ error: "No admin data found. "});
+        }
+    } else {
+        return res.status(400).send({ error: "No firebase user found. "});
+    }
+    
+}

@@ -1,0 +1,357 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0; 
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #333;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* Topbar */
+#topbar {
+    display: flex;
+    position: fixed; 
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    z-index: 1000; 
+    background-color: #222; 
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#logo-container {
+    display: flex;
+    align-items: center;
+    margin: 10px 20px;
+}
+
+#logo {
+    width: 50px;
+    height: 50px;
+}
+
+#user-container {
+    margin: 10px 20px;
+    display: flex;
+    align-items: center;
+}
+
+#user-container #login a {
+    background-color: white;
+    color: black;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#profile-photo {
+    position: relative;
+    cursor: pointer;
+}
+
+/* Dropdown menu */
+#dropdown-menu {
+    position: absolute;
+    top: 100%; /* 프로필 아래에 위치 */
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+    z-index: 1000;
+    width: 150px;
+    display: none; /* 기본적으로 숨김 */
+}
+
+/* Dropdown menu list */
+#dropdown-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#dropdown-menu ul li {
+    border-bottom: 1px solid #eee;
+}
+
+#dropdown-menu ul li:last-child {
+    border-bottom: none;
+}
+
+#dropdown-menu ul li a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background-color 0.2s;
+}
+
+#dropdown-menu ul li a:hover {
+    background-color: #f4f4f4;
+}
+
+#profile-photo a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+#profile-photo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ccc;
+}
+
+/* 네비게이션 바 */
+nav {
+    width: 60%;
+    min-width: 500px;
+    margin-top: 120px;
+    margin-bottom: -20px;
+    background-color: #444; /* 네비게이션 배경 */
+    padding: 10px 20px;
+    border-radius: 8px;
+    padding-top: 40px;
+    display: flex;
+    justify-content: space-around;
+}
+
+/* 리스트 스타일 제거 */
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px; /* 버튼 간격 */
+}
+
+/* 각 리스트 아이템 */
+nav ul li {
+    margin: 0 5px;
+}
+
+/* 링크 스타일 */
+nav ul li a {
+    width: 100px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background-color: #555; /* 버튼 배경 */
+    border: 1px solid #666; /* 테두리 */
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+/* hover 상태 */
+nav ul li a:hover {
+    background-color: #666; /* 밝은 배경 */
+    border-color: #777;
+    color: #fff;
+    
+}
+
+/* active 상태 */
+nav ul li a:active {
+    background-color: #222; /* 눌렸을 때 더 어두운 색 */
+    border-color: #444;
+    transform: scale(0.95); /* 살짝 작아지는 효과 */
+}
+
+
+
+/* 메인 컨테이너 */
+main {
+    width: 60%;
+    min-width: 500px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #444; /* 컨텐츠 배경 */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+/* 리스트 스타일 */
+ul#project-list {
+    list-style: none;
+    padding: 20px;
+    margin: 0;
+}
+
+ul#project-list li {
+    margin: 30px auto;
+}
+
+/* 링크 스타일 */
+.project-item {
+    display: block;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    background-color: #555; /* 아이템 배경 */
+    transition: box-shadow 0.3s ease;
+    padding: 20px;
+}
+
+.project-item:hover {
+    box-shadow: 0 10px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* 상단 정보 스타일 */
+#item-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#proejct-title {
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+}
+
+#proejct-date {
+    font-size: 18px;
+    color: white; /* 날짜 강조 */
+}
+
+/* 중간 정보 스타일 */
+#item-middle {
+    height: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+#project-organization,
+#proejct-phone {
+    font-size: 20px;
+    color: #f4f4f4;
+    margin-right: 20px;
+}
+
+#item-progress {
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #777;
+    border-radius: 10px;
+    color: rgb(92, 222, 255);
+    font-size: 20px;
+}
+
+/* 디테일 상자 스타일 */
+.item-details {
+    display: none;
+    transition: opacity 1s ease, transform 1s ease;
+    opacity: 1;
+    transform-origin: top;
+}
+
+.item-details.hidden {
+    opacity: 0;
+    height: 0;
+}
+
+.item-details div {
+    margin: 20px auto;
+    padding: 10px;
+    background-color: #777;
+    border-radius: 10px;
+    color: white;
+}
+
+#item-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+}
+
+#item-buttons form {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+}
+
+.item-button {
+    width: 80px;
+    height: 35px;
+    margin: 5px;
+    color: black;
+    background-color: #f4f4f4;
+    border: 3px solid #666;
+    border-radius: 10px;
+    transition-duration: 0.3s;
+    font-size: 17px;
+    display: flex; /* Flexbox 사용 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    align-items: center; /* 수직 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+
+
+.item-button:hover {
+    background-color: #ccc;
+}
+
+.item-input {
+    padding: 5px;
+    height: 30px;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+
+/* 반응형 스타일 */
+@media (max-width: 1200px) {
+    nav ul {
+        width: 100%;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    nav ul li {
+        width: 90%;
+    }
+
+    nav ul li a {
+        width: 100%;
+    }
+}

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/project-management.css">
+    <title>PROJECT MENAGEMENT</title>
+</head>
+<body>
+    <!-- topbar -->
+    <header id="topbar">
+        <div id="logo-container">
+            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+        </div>
+        <div id="user-container">
+            <div id="profile-photo" style="display:none;">
+                <a id="profile-link" href="#">
+                    <img src="../images/sample.jpg" alt="photo">
+                    <span><p id="user-email">example@gmail.com</p></span>
+                </a>
+                <div id="dropdown-menu" style="display: none;">
+                    <ul>
+                        <li><a id="dropdown-mypage" href="../html/mypage.html">마이페이지</a></li>
+                        <li><a id="dropdown-logout">로그아웃</a></li>
+                        <li><a id="dropdown-management" href="../html/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="to-signin" style="display: block;">
+                <a href="../html/login-email.html">로그인</a>
+            </div>
+        </div>
+    </header>
+    <!-- nav -->
+    <nav>
+        <ul>
+            <li>
+                <a id="project-all" href="#"><p>전체</p></a>
+            </li>
+            <li>
+                <a id="project-0" href="#"><p>접수 문의</p></a>
+            </li>
+            <li>
+                <a id="project-1" href="#"><p>작업 중</p></a>
+            </li>
+            <li>
+                <a id="project-2" href="#"><p>작업 완료</p></a>
+            </li>
+            <li>
+                <a id="project-3" href="#"><p>결제 완료</p></a>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- main -->
+    <main>
+        <ul id="project-list">
+            <li>
+                <a class="project-item" href="#">
+                    <input type="hidden" id="project-id" value="">
+                    <div id="item-top">
+                        <p id="proejct-title">더미 프로젝트<span id="size"></span></p>
+                        <p id="proejct-date">0000-00-00</p>
+                    </div>
+                    <div id="item-middle">
+                        <p id="project-organization">(주)똥바닥</p>
+                        <p id="proejct-phone">010-0000-0000</p>
+                    </div>
+                    <div id="item-progress">
+                        <p id="project-progress">문의 접수</p>
+                    </div>
+                    <div class="item-details" id="item-details">
+                        <div id="item-agent">
+                            <p class="details" id="name">담당자 : </p>
+                            <p class="details" id="rank">직책 : </p>
+                            <p class="details" id="email">이메일 : </p>
+                        </div>
+                        <div id="item-content">
+                            <p id="detail-title">문의내용 : </p>
+                            <p class="details" id="details">이렇게 만들어주세요!</p>
+                        </div>
+                        <div id="item-price">
+                            <p class="details" id="price"> 가격 300,000원</p>
+                        </div>
+                    </div>
+                </a>
+                <div id="item-buttons">
+                    <a class="item-button" id="accept-btn">수락</a>
+                    <a class="item-button" id="dismiss-btn">거부</a>
+                    <form>
+                        <input class="item-input" id="input-price" name="price" placeholder="결제 요청 가격" required> 
+                        <a type="submit" class="item-button" id="payment-btn">결제요청</a>
+                    </form>
+                </div>
+                
+            </li>
+        </ul>
+    </main>
+    <h1>천국의 계단 ... </h1>
+</body>
+<script src="../js/project-management.js" type="module" defer></script>
+</html>

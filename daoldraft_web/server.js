@@ -7,6 +7,7 @@ import session from "express-session";
 import homeRouter from './routes/home-router.js';
 import loginRouter from './routes/auth-router.js';
 import userRouter from './routes/user-router.js';
+import projectRouter from './routes/project-router.js';
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use(express.static('public'));
 app.use('/', homeRouter);
 app.use('/login', loginRouter);
 app.use('/user', userRouter);
+app.use('/project', projectRouter);
 
 // server excute
 app.listen(PORT, () => {

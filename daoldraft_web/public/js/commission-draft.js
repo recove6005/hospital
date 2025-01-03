@@ -24,6 +24,24 @@ async function checkUserVerify() {
 }
 checkUserVerify();
 
+// 드롭다운 관리자 계정 전용 링크 설정
+async function checkUserAdminAndDisplay() {
+    const response = await fetch('/login/check-admin', {
+        method: 'POST',
+        credentials: "include",  
+    });
+
+    const result = await response.json();
+
+    if(response.ok) {
+        if(result.admin) document.getElementById('dropdown-management').style.display = 'block';  
+        else document.getElementById('dropdown-management').style.display = 'none';  
+    } else {
+        console.log(`error: ${result.error}`);
+    }
+}
+checkUserAdminAndDisplay();
+
 // 가격 정보
 function getPrice(membersheType) {
     const priceElement = document.getElementById('price');
