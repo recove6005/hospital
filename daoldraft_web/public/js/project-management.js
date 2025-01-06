@@ -109,6 +109,7 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 async function getProjects(progress) {
     var response;
 
+    // 리스트 가져오기
     if(progress === '0') {
         response = await fetch('/project/get-project-0', {
             method: 'POST',
@@ -134,6 +135,10 @@ async function getProjects(progress) {
     }
     const allPjtResult = await response.json();
     
+    if(allPjtResult.length === 0) {
+        return;
+    }
+
     allPjtResult.forEach((pjt) => {
         const listElement = document.getElementById('project-list');
         const item = document.createElement('li');
@@ -182,6 +187,7 @@ async function getProjects(progress) {
                     <a class="item-button" id="accept-btn-${pjt.docId}">수락</a>
                     <a class="item-button" id="dismiss-btn-${pjt.docId}">거부</a>
                     <form id="payment-form-${pjt.docId}">
+                        <input type="file" id="input-file-${pjt.docId}" multiple>
                         <input class="item-input" id="input-price-${pjt.docId}" name="price" placeholder="결제 요청 가격" required> 
                         <button class="item-button" id="payment-btn-${pjt.docId}">결제요청</button>
                     </form>
@@ -210,6 +216,7 @@ async function getProjects(progress) {
         const dismissBtn = item.querySelector(`#dismiss-btn-${pjt.docId}`);
         const priceInput = item.querySelector(`#input-price-${pjt.docId}`);
         const paymentBtn = item.querySelector(`#payment-btn-${pjt.docId}`);
+        const fileInput = item.querySelector(`#input-file-${pjt.docId}`);
 
         // 결제 input 문자열 제한
         priceInput.addEventListener("input", (e) => {
@@ -224,6 +231,7 @@ async function getProjects(progress) {
             dismissBtn.style.display = 'flex';
             priceInput.style.display = 'none';
             paymentBtn.style.display = 'none';
+            fileInput.style.display = 'none';
         }   
         else if(pjt.progress === '1') {
             // 작업 중
@@ -231,6 +239,7 @@ async function getProjects(progress) {
             dismissBtn.style.display = 'none';
             priceInput.style.display = 'flex';
             paymentBtn.style.display = 'flex';
+            fileInput.style.display = 'flex';
         }
         else {
             // 작업완료, 결제 요청
@@ -239,6 +248,7 @@ async function getProjects(progress) {
             dismissBtn.style.display = 'none';
             priceInput.style.display = 'none';
             paymentBtn.style.display = 'none';
+            fileInput.style.display = 'none';
         }
 
         // 작업 수락 버튼 이벤트
@@ -280,6 +290,12 @@ async function getProjects(progress) {
         paymentForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const price = priceInput.value;
+            const files = fileInput.files;
+
+            const filesFormData = new FormData();
+            for(let i = 0; i < files.length; i++) {
+                filesFormData.append('files[]', files[i]);
+            }
 
             // project progress update 1 -> 2
             // 결제 요청 처리
@@ -289,6 +305,7 @@ async function getProjects(progress) {
                 body: JSON.stringify({
                     docId: pjt.docId,
                     price: price,
+                    files: filesFormData,
                 }),
             });
 
@@ -308,8 +325,27 @@ getProjects('all');
 
 
 // 프로젝트 분류 버튼 로직
-document.getElementById('project-all').addEventListener('click', (e) => { getProjects('all')});
-document.getElementById('project-1').addEventListener('click', (e) => { getProjects('0')});
-document.getElementById('project-1').addEventListener('click', (e) => { getProjects('1')});
-document.getElementById('project-2').addEventListener('click', (e) => { getProjects('2')});
-document.getElementById('project-3').addEventListener('click', (e) => { getProjects('3')});
+document.getElementById('project-all').addEventListener('click', (e) => { 
+    document.getElementById('project-list').innerHTML = ''; 
+    getProjects('all');
+});
+
+document.getElementById('project-0').addEventListener('click', (e) => { 
+    document.getElementById('project-list').innerHTML = ''; 
+    getProjects('0');
+});
+
+document.getElementById('project-1').addEventListener('click', (e) => { 
+    document.getElementById('project-list').innerHTML = ''; 
+    getProjects('1');
+});
+
+document.getElementById('project-2').addEventListener('click', (e) => { 
+    document.getElementById('project-list').innerHTML = ''; 
+    getProjects('2');
+});
+
+document.getElementById('project-3').addEventListener('click', (e) => { 
+    document.getElementById('project-list').innerHTML = ''; 
+    getProjects('3');
+});

@@ -1,12 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="../js/mypage.js" type="module" defer></script>
+    <link rel="stylesheet" href="../css/mypage.css">
     <title>MYPAGE</title>
 </head>
 <body>
-    <h1>My page</h1>
+    <!-- topbar -->
+    <header id="topbar">
+        <div id="logo-container">
+            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+        </div>
+        <div id="user-container">
+            <div id="profile-photo" style="display:none;">
+                <a id="profile-link" href="#">
+                    <img src="../images/sample.jpg" alt="photo">
+                    <span><p id="user-email">example@gmail.com</p></span>
+                </a>
+                <div id="dropdown-menu" style="display: none;">
+                    <ul>
+                        <li><a id="dropdown-mypage" href="../html/mypage.html">마이페이지</a></li>
+                        <li><a id="dropdown-logout">로그아웃</a></li>
+                        <li><a id="dropdown-management" href="../html/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="to-signin" style="display: block;">
+                <a href="../html/login-email.html">로그인</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div id="main_title">
+            <h1>마이페이지</h1>
+            <a id="see_membership">구독 정보</a>
+        </div>
+        <div id="main_project_selector">
+            <a id="prev-btn"><img src="../images/ic_prev_btn.png"></a>
+            <div id="swipe-wrapper">
+                <!-- <div class="item"><p class="project-name">Project Name A</p></div> -->
+            </div>
+            <a id="next-btn"><img src="../images/ic_next_btn.png"></a>
+        </div>
+
+        <div id="main-project-info">
+            <!-- <div class="description">
+                <p class="description-title">기관명</p>
+                <p class="description-content" id="organization">organization</p>
+            </div>
+            <div class="description">
+                <p class="description-title">성함</p>
+                <p class="description-content" id="name">name</p>
+            </div>
+            <div class="description">
+                <p class="description-title">직위</p>
+                <p class="description-content" id="rank">rank</p>
+            </div>
+            <div class="description">
+                <p class="description-title">연락처</p>
+                <p class="description-content" id="phone">phone</p>
+            </div>
+            <div class="description">
+                <p class="description-title">문의내용</p>
+                <p class="description-content" id="details">details</p>
+            </div>
+            <div class="description">
+                <p class="description-title">가격</p>
+                <p class="description-content" id="price">price</p> -->
+            </div>
+        </div>
+
+        <div id="main-progress">
+            <div id="progress-tracker">
+                <div class="step" id="progress-step-0"></div>
+                <div class="line" id="progress-line-1"></div>
+                <div class="step" id="progress-step-1"></div>
+                <div class="line" id="progress-line-2"></div>
+                <div class="step" id="progress-step-2"></div>
+                <div class="line" id="progress-line-3"></div>
+                <div class="step" id="progress-step-3"></div>
+            </div>
+            <div id="progress-tracker">
+                <div class="sub">문의 접수</div>
+                <div class="sub">작업 중</div>
+                <div class="sub">작업 완료</div>
+                <div class="sub">결제 완료</div>
+            </div>
+        </div>
+
+        <a id="request-payment" href="#">결제하기</a>
+    </main>
 </body>
+<script src="../js/mypage.js" type="module" defer></script>
 </html>

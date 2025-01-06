@@ -1,7 +1,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { db, auth } from "../public/firebase-config.js";
+import { db, auth, storage } from "../public/firebase-config.js";
 import { collection, doc, getDocs, orderBy, setDoc, getDoc, query, deleteDoc, where } from "firebase/firestore";
+import { ref, uploadBytes } from "firebase/storage";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,10 +40,6 @@ export const getProjectsBy0 = async (req, res) => {
             projectList.push( { docId: doc.id, ...doc.data() });
         });
 
-        if (projectList.length === 0) {
-            return res.status(200).json([]);
-        } 
-
         return res.status(200).json(projectList);
     } catch(e) {
         console.error("Error fetching projects:", e.message, e.stack);
@@ -60,10 +57,6 @@ export const getProjectsBy1 = async (req, res) => {
         snapshot.forEach((doc) => {
             projectList.push( { docId: doc.id, ...doc.data() });
         });
-
-        if (projectList.length === 0) {
-            return res.status(200).json([]);
-        } 
 
         return res.status(200).json(projectList);
     } catch(e) {
@@ -83,10 +76,6 @@ export const getProjectsBy2 = async (req, res) => {
             projectList.push( { docId: doc.id, ...doc.data() });
         });
 
-        if (projectList.length === 0) {
-            return res.status(200).json([]);
-        } 
-
         return res.status(200).json(projectList);
     } catch(e) {
         console.error("Error fetching projects:", e.message, e.stack);
@@ -104,10 +93,6 @@ export const getProjectsBy3 = async (req, res) => {
         snapshot.forEach((doc) => {
             projectList.push( { docId: doc.id, ...doc.data() });
         });
-
-        if (projectList.length === 0) {
-            return res.status(200).json([]);
-        } 
 
         return res.status(200).json(projectList);
     } catch(e) {
@@ -174,13 +159,14 @@ export const acceptProject = async (req, res) => {
 // 프로젝트 progress 업데이트 : 결제 요청
 // 작업 중 (1) -> 작업완료, 결재중(2)
 export const requestPayment = async (req, res) => {
-    const { docId, price } = req.body;
+    const { docId, price, files } = req.body;
 
     if (!docId) {
         return res.status(400).json({ error: 'docId is required' });
     }
 
     try {
+        // 상태 업데이트
         const docRef = doc(db, 'projects', docId);
         const docSnap = await getDoc(docRef);
         if(docSnap.exists()) {
@@ -200,7 +186,39 @@ export const requestPayment = async (req, res) => {
                 userEmail: docSnap.data().userEmail,
             });
         }
-       
+
+        // 파일 업로드
+        if(files.length != 0) {
+            let index = 0;
+            try {
+                files.forEach((file) => {
+                    // const fileName = `${docSnap.data().uid}_${docId}_${index}`;
+                    // index += 1;
+
+                    // const blob = bucket.file(fileName);
+                    // const blobStream = blob.createWriteStream({
+                    //     metadata: {
+                    //         contentType: file.mimetype,
+                    //     },
+                    // });
+
+                    // blobStream.on("error", (err) => {
+                    //     console.error("Upload error:", err);
+                    //     res.status(500).send({ error: "Failed to upload file." });
+                    // });
+
+                    // blobStream.on("finish", async () => {
+                    //     // 파일의 공개 URL 생성
+                    //     const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+                    // });
+            
+                    // blobStream.end(file.buffer);
+                });
+            } catch(e) {
+                res.status(500).send({ error: e.message });
+            }
+        } 
+        
         return res.status(200).send({msg: "A payment request was sented."});
     } catch(e) {
         return res.status(500).send({ error: e.message });
@@ -209,3 +227,33 @@ export const requestPayment = async (req, res) => {
 
 // 프로젝트 progress 업데이트 : 결제 완료 
 // 작업완료, 결제중(2) -> 결제완료(3)
+
+
+
+// 프로젝트 가져오기 - 회원
+export const getProjectsByUid = async (req, res) => {
+    const uid = auth.currentUser.uid;
+
+    if(uid) {
+        var userProjects = [];
+
+        try {
+            const userQuery = query(collection(db, "projects"), where("uid", "==", uid), orderBy('date', 'desc'));
+            const snapshot = await getDocs(userQuery);       
+        
+            snapshot.forEach((doc) => {
+                userProjects.push({ docId: doc.id, ...doc.data() });
+            });
+    
+            res.status(200).json(userProjects);
+            
+        } catch(e) {
+            console.error("Error fetching projects:", e.message, e.stack);
+            res.status(500).send({ error: e.message });
+        }
+    } else {
+        console.log('no user found.');
+        res.status(404).send({ error: e.message });
+    }
+};
+
