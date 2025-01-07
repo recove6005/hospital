@@ -191,6 +191,7 @@ async function getProjects(progress) {
                         <input class="item-input" id="input-price-${pjt.docId}" name="price" placeholder="결제 요청 가격" required> 
                         <button class="item-button" id="payment-btn-${pjt.docId}">결제요청</button>
                     </form>
+                    <a class="item-button" id="check-payment-${pjt.docId}">결제확인</a>
                 </div>
         `;
 
@@ -217,6 +218,7 @@ async function getProjects(progress) {
         const priceInput = item.querySelector(`#input-price-${pjt.docId}`);
         const paymentBtn = item.querySelector(`#payment-btn-${pjt.docId}`);
         const fileInput = item.querySelector(`#input-file-${pjt.docId}`);
+        const checkPaymentBtn = item.querySelector(`#check-payment-${pjt.docId}`);
 
         // 결제 input 문자열 제한
         priceInput.addEventListener("input", (e) => {
@@ -232,6 +234,7 @@ async function getProjects(progress) {
             priceInput.style.display = 'none';
             paymentBtn.style.display = 'none';
             fileInput.style.display = 'none';
+            checkPaymentBtn.style.display = 'none';
         }   
         else if(pjt.progress === '1') {
             // 작업 중
@@ -240,16 +243,36 @@ async function getProjects(progress) {
             priceInput.style.display = 'flex';
             paymentBtn.style.display = 'flex';
             fileInput.style.display = 'flex';
+            checkPaymentBtn.style.display = 'none';
         }
+        else if(pjt.progress === '2') {
+            // 작업완료, 결제 진행 중
+            acceptBtn.style.display = 'none';
+            dismissBtn.style.display = 'none';
+            priceInput.style.display = 'none';
+            paymentBtn.style.display = 'none';
+            fileInput.style.display = 'none';
+            checkPaymentBtn.style.display = 'none';
+        }
+        else if(pjt.progress === '11') {
+            // 작업완료, 무통장 입금 진행 중
+            acceptBtn.style.display = 'none';
+            dismissBtn.style.display = 'none';
+            priceInput.style.display = 'none';
+            paymentBtn.style.display = 'none';
+            fileInput.style.display = 'none';
+            checkPaymentBtn.style.display = 'flex';
+        } 
         else {
-            // 작업완료, 결제 요청
             // 결제 완료
             acceptBtn.style.display = 'none';
             dismissBtn.style.display = 'none';
             priceInput.style.display = 'none';
             paymentBtn.style.display = 'none';
             fileInput.style.display = 'none';
+            checkPaymentBtn.style.display = 'none';
         }
+
 
         // 작업 수락 버튼 이벤트
         acceptBtn.addEventListener('click', async (e) => {
@@ -292,21 +315,19 @@ async function getProjects(progress) {
             const price = priceInput.value;
             const files = fileInput.files;
 
-            const filesFormData = new FormData();
-            for(let i = 0; i < files.length; i++) {
-                filesFormData.append('files[]', files[i]);
+            const formData = new FormData();
+            formData.append("docId", pjt.docId);
+            formData.append("price", price);
+
+            for(let index = 0; index < files.length; index++) {
+                formData.append(`files`, files[index]);
             }
 
             // project progress update 1 -> 2
-            // 결제 요청 처리
+            // 파일 업로드 및 결제 요청 처리
             const response = await fetch('/project/request-payment', {
                 method: 'POST',
-                headers: { "Content-Type" : "application/json" },
-                body: JSON.stringify({
-                    docId: pjt.docId,
-                    price: price,
-                    files: filesFormData,
-                }),
+                body: formData,
             });
 
             const paymentResult = await response.json();
@@ -314,7 +335,23 @@ async function getProjects(progress) {
                 alert(`${pjt.organization}에서 문의한 ${pjt.title} ${pjt.size}프로젝트의 ${price}원 결제 요청이 완료되었습니다.`);
                 window.location.reload(); 
             } else {
-                console.log(`${paymentResult.error}`);
+                console.log(`payment error : ${paymentResult.error}`);
+            }
+        });
+
+        // 결제확인 버튼 이벤트
+        checkPaymentBtn.addEventListener('click', async (e) => {
+            const response = await fetch('/project/check-deposit', {
+                method: 'POST',
+                headers: { "Content-Type" : "application/json "},
+                body: JSON.stringify({ docId: pjt.docId }),
+            });
+
+            const result = await response.json();
+            if(response.ok) {
+                window.location.reload();
+            } else {
+                console.log(`error: ${result.error}`);
             }
         });
         

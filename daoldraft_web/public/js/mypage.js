@@ -103,7 +103,6 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
         }
 
         const result = await response.json();
-        console.log(result.msg);
 
         // 드롭다운 메뉴 숨기기
         const dropdownMenu = document.getElementById('dropdown-menu');
@@ -187,6 +186,8 @@ function getProgressUI(index) {
         document.getElementById('progress-line-3').classList.remove('active');
 
         document.getElementById('request-payment').style.display = 'none';
+        document.getElementById('download-file').style.display = 'none';
+        document.getElementById('checking-payment').style.display = 'none';
     } 
     else if(userProjects[index].progress == '1') {
         document.getElementById('progress-step-0').classList.add('active');
@@ -199,6 +200,8 @@ function getProgressUI(index) {
         document.getElementById('progress-line-3').classList.remove('active');
 
         document.getElementById('request-payment').style.display = 'none';
+        document.getElementById('download-file').style.display = 'none';
+        document.getElementById('checking-payment').style.display = 'none';
     }
     else if(userProjects[index].progress == '2') {
         document.getElementById('progress-step-0').classList.add('active');
@@ -211,6 +214,8 @@ function getProgressUI(index) {
         document.getElementById('progress-line-3').classList.remove('active');
 
         document.getElementById('request-payment').style.display = 'flex';
+        document.getElementById('download-file').style.display = 'none';
+        document.getElementById('checking-payment').style.display = 'none';
     }
     else if(userProjects[index].progress == '3') {
         document.getElementById('progress-step-0').classList.add('active');
@@ -220,7 +225,24 @@ function getProgressUI(index) {
         document.getElementById('progress-line-2').classList.add('active');
         document.getElementById('progress-step-3').classList.add('active');
         document.getElementById('progress-line-3').classList.add('active');
+
         document.getElementById('request-payment').style.display = 'none';
+        document.getElementById('download-file').style.display = 'flex';
+        document.getElementById('checking-payment').style.display = 'none';
+    }
+    else if(userProjects[index].progress == '11') {
+        document.getElementById('progress-step-0').classList.add('active');
+        document.getElementById('progress-step-1').classList.add('active');
+        document.getElementById('progress-line-1').classList.add('active');
+        document.getElementById('progress-step-2').classList.add('active');
+        document.getElementById('progress-line-2').classList.add('active');
+
+        document.getElementById('progress-step-3').classList.remove('active');
+        document.getElementById('progress-line-3').classList.remove('active');
+        
+        document.getElementById('request-payment').style.display = 'none';
+        document.getElementById('download-file').style.display = 'none';
+        document.getElementById('checking-payment').style.display = 'flex';
     }
 }
 
@@ -254,13 +276,12 @@ const nextBtn = document.getElementById("next-btn");
 // 초기 상태
 let index = 0;
 
-// 이전 버튼 클릭
+// swipe prev button logic
 prevBtn.addEventListener("click", () => {
     const items = document.querySelectorAll('.item');
     
-    if(index > 0)index -= 1;
+    if(index > 0) index -= 1;
     let x = 400*index;
-    console.log(`x: ${x}, index: ${index}`);
 
     items.forEach((item) => {
         item.style.transform = `translate(-${x}px, 0px)`;
@@ -270,7 +291,7 @@ prevBtn.addEventListener("click", () => {
     getProgressUI(index); 
 });
 
-// 다음 버튼 클릭
+// swipe next button logic
 nextBtn.addEventListener("click", () => {
     const items = document.querySelectorAll('.item');
 
@@ -278,7 +299,6 @@ nextBtn.addEventListener("click", () => {
         index += 1;
     }
     let x = 400*index;
-    console.log(`x: ${x}, index: ${index}`);
 
     items.forEach((item) => {
         item.style.transform = `translate(-${x}px, 0px)`;
@@ -288,3 +308,100 @@ nextBtn.addEventListener("click", () => {
     getProgressUI(index);
 });
 
+// 결제 모달창
+document.getElementById("request-payment").addEventListener('click', () => {
+    const modal = document.getElementById("modal");
+    console.log(`clicke ${modal.style.display}`);
+    if(modal.style.display === 'none') modal.style.display = 'flex';
+    else modal.style.display = 'none';
+});
+
+document.getElementById("modal-close").addEventListener('click', () => {
+    document.getElementById("modal").style.display = 'none';
+});
+
+let paytype = 'deposit';
+document.querySelectorAll('input[name="paytype"]').forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+        if(e.target.value === 'deposit') {
+            paytype = 'deposit';
+            document.getElementById('deposit-box').style.display = 'flex';
+            document.getElementById('kakaopay-box').style.display = 'none';
+        } else {
+            paytype = 'kakaopay';
+            document.getElementById('deposit-box').style.display = 'none';
+            document.getElementById('kakaopay-box').style.display = 'flex';
+        }
+    });
+});
+
+// 결제하기
+async function getPay() {
+    if(paytype === 'deposit') {
+        // 무통장 입금
+        const currentProject = userProjects[index];
+        const response = await fetch('/project/getpay-deposit', {
+            method: 'POST',
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+                docId: currentProject.docId,
+            }),
+        });
+
+        const result = await response.json();
+        if(!response.ok) {
+            console.log(`error: ${result.error}`);
+        }
+    }
+    else if(paytype === 'kakaopay') {
+        // 카카오페이 간편 결제
+        const currentProject = userProjects[index];
+        const response = await fetch('/project/getpay-kakaopay', {
+            method: 'POST',
+        });        
+    }
+}
+
+// 무통장입금 결제 요청
+document.getElementById('deposit-box').addEventListener('submit', async (e) => {
+    await getPay();
+    window.location.reload();
+});
+
+// 카카오페이 결제 진행
+document.getElementById('kakaopay-box').addEventListener('submit', async (e) => {
+    e.preventDefault();
+});
+
+
+// 파일 다운로드
+async function getFileDownload() {
+    const pjt = userProjects[index];
+    const response = await fetch('/project/get-download', {
+        method: 'POST',
+        headers: { "Content-Type":"application/json" },
+        body: JSON.stringify({ docId: pjt.docId }),
+    });
+
+    if(!response.ok) {
+        const result = await response.text();
+        console.log(`error: ${result.error}`);
+        return;
+    }
+
+    const blob = await response.blob(); // 응답 데이터를 Blob으로 변환
+    const fileUrl = URL.createObjectURL(blob); // Blob URL 생성
+
+    const link = document.createElement('a');
+    link.href = fileUrl;
+    link.download = `draft.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(fileUrl);
+}
+
+document.getElementById('download-file').addEventListener('click', async (e) => {
+    e.preventDefault();
+    await getFileDownload(); 
+});

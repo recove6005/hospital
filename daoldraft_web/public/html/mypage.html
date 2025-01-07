@@ -90,8 +90,32 @@
             </div>
         </div>
 
-        <a id="request-payment" href="#">결제하기</a>
+        <a class="payment-button" id="request-payment">결제하기</a>
+        <a class="payment-button" id="download-file" style="display: none;">파일 다운로드</a>
+        <h1 id="checking-payment" style="display: none;">결제 확인 중..</h1>
     </main>
+
+    <div id="modal" style="display: none;">
+        <div>
+            <div class="modal-top">
+                <h1>결제</h1>
+                <a id="modal-close">X</a>
+            </div>
+            <div class="divider"></div>
+            <div class="modal-inner-box">
+                <p>결제 방법</p>
+                <label><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>무통장입금</label>
+                <label><input type="radio" name="paytype" value="kakaopay" id="payment-kakaopay">카카오페이</label>
+            </div>
+            <form class="pay-form" id="deposit-box">
+                <label><input name="deposit-name" placeholder="예금주" required></label>
+                <button>결제요청</button>
+            </form>
+            <form class="pay-form hidden" id="kakaopay-box">
+                <button>결제요청</button>
+            </form>
+        </div>
+    </div>
 </body>
 <script src="../js/mypage.js" type="module" defer></script>
 </html>

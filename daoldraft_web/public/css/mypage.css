@@ -315,10 +315,9 @@ main {
 }
 
 /* 결제 완료 요청 */
-
-#request-payment {
+.payment-button {
     width: 150px;
-    height: 80px;
+    height: 60px;
     font-size: 20px;
     font-weight: bold;
     background-color: #ddd;
@@ -329,6 +328,149 @@ main {
     transition-duration: 0.3s;
 }
 
-#request-payment:hover {
+.payment-button:hover {
+    background-color: #aaa;
+}
+
+
+/* 팝업창 */
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#modal > div {
+    width: 600px;
+    height: 400px;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    flex-shrink: 0;
+}
+
+/* 모달 컨텐츠 스타일 */
+.modal-content {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 400px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.modal-top {
+    width: 80%;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.divider {
+    width: 83%;
+    background-color: black;
+    height: 1px;
+    margin-bottom: 20px;
+}
+
+.modal-top > a {
+    width: 30px;
+    height: 30px;
+    padding: 5px;
+    font-size: 18px;
+    font-weight: bolder;
+    border-radius: 5px;
+    background-color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.modal-top a:hover {
+    background-color: #aaa;
+}
+
+.modal-inner-box {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.modal-inner-box p {
+    margin-right: 30px;
+}
+
+.modal-inner-box input {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#deposit-box{
+    display: flex;
+    flex-shrink: 0;
+}
+
+#kakaopay-box {
+    display: none;
+    flex-shrink: 0;
+}
+
+.pay-form {
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.pay-form input {
+    width: 200px;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 5px;
+    padding: 5px;
+    border: 3px solid #333;
+}
+
+.pay-form label, button {
+    margin: 20px;
+    flex-shrink: 0;
+}
+
+.pay-form button {
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #ddd;
+    border-radius: 5px;
+    transition-duration: 0.3s;
+    border: none;
+    padding: 10px;
+}
+
+.pay-form button:hover {
     background-color: #aaa;
 }

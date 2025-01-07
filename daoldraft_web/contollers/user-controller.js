@@ -15,7 +15,6 @@ export const getSubscribeType = async (req, res) => {
 
         if(docSnap.exists()) {
             const subscribeType = docSnap.data().subscribe;
-            console.log(`${user.email}'s subscribe: ${subscribeType}`);
             return res.status(200).send({ subscribe: subscribeType });
         } else {
             return res.status(401).send({ error: "No data found."});

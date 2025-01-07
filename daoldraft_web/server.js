@@ -30,6 +30,9 @@ app.use(
         },
     })
 );
+// 서버 요청 크기 늘리기
+app.use(express.json( { limit: '50mb'}));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // 정적 파일 제공
 app.use(express.static('public'));
