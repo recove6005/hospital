@@ -250,6 +250,15 @@ function getProgressUI(index) {
 async function initProjectInfo() {
     // 스와이퍼
     await getProjects();
+
+    if(userProjects.length === 0) {
+        document.getElementById('projects-wrapper').style.display = 'none';
+        document.getElementById('projects-wrapper-none').style.display = 'flex';
+        return;
+    } 
+
+    document.getElementById('projects-wrapper').style.display = 'flex';
+
     const wrapper = document.getElementById('swipe-wrapper');
     userProjects.forEach((pjt) => {
         const div = document.createElement('div');
@@ -335,12 +344,13 @@ document.querySelectorAll('input[name="paytype"]').forEach((radio) => {
     });
 });
 
+
 // 결제하기
 async function getPay() {
     if(paytype === 'deposit') {
         // 무통장 입금
         const currentProject = userProjects[index];
-        const response = await fetch('/project/getpay-deposit', {
+        const responseGetpay = await fetch('/project/getpay-deposit', {
             method: 'POST',
             headers: { "Content-Type" : "application/json" },
             body: JSON.stringify({
@@ -348,22 +358,54 @@ async function getPay() {
             }),
         });
 
-        const result = await response.json();
-        if(!response.ok) {
+        const result = await responseGetpay.json();
+        if(!responseGetpay.ok) {
             console.log(`error: ${result.error}`);
+        }
+
+        // 예금주 정보
+        const depositName = document.getElementById('deposit-name');
+        const responseDepositOwnner = await fetch('/project/upload-deposit-owner', {
+            method: 'POST',
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+                owner: depositName.value,
+                docId: currentProject.docId,
+            }),
+        });
+
+        const depositResult = await responseDepositOwnner.json();
+        if(!responseDepositOwnner.ok) {
+            console.log(`error: ${depositResult.error}`);
         }
     }
     else if(paytype === 'kakaopay') {
         // 카카오페이 간편 결제
         const currentProject = userProjects[index];
-        const response = await fetch('/project/getpay-kakaopay', {
+        const allprice = currentProject.allprice.replace(',',"");
+        const responseGetpay = await fetch('/project/getpay-kakaopay', {
             method: 'POST',
-        });        
+            headers: { "Content-Type" : "application/json" },
+            body: JSON.stringify({
+                docId: currentProject.docId,
+                userEmail: currentProject.userEmail,
+                title: currentProject.title,
+                allprice : allprice,
+            }),
+        });
+
+        const result = await responseGetpay.json();
+        if(responseGetpay.ok) {
+            window.location.href = result.redirectURL;
+        } else {
+            console.log(`error: ${result.error}`);
+        }
     }
 }
 
 // 무통장입금 결제 요청
 document.getElementById('deposit-box').addEventListener('submit', async (e) => {
+    e.preventDefault();
     await getPay();
     window.location.reload();
 });
@@ -371,6 +413,7 @@ document.getElementById('deposit-box').addEventListener('submit', async (e) => {
 // 카카오페이 결제 진행
 document.getElementById('kakaopay-box').addEventListener('submit', async (e) => {
     e.preventDefault();
+    await getPay();
 });
 
 
@@ -384,8 +427,7 @@ async function getFileDownload() {
     });
 
     if(!response.ok) {
-        const result = await response.text();
-        console.log(`error: ${result.error}`);
+        alert('업로드된 파일이 없습니다.');
         return;
     }
 

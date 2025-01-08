@@ -108,7 +108,7 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 // 전체 프로젝트 보기
 async function getProjects(progress) {
     var response;
-
+    
     // 리스트 가져오기
     if(progress === '0') {
         response = await fetch('/project/get-project-0', {
@@ -139,7 +139,7 @@ async function getProjects(progress) {
         return;
     }
 
-    allPjtResult.forEach((pjt) => {
+    allPjtResult.forEach(async (pjt) => {
         const listElement = document.getElementById('project-list');
         const item = document.createElement('li');
 
@@ -191,6 +191,7 @@ async function getProjects(progress) {
                         <input class="item-input" id="input-price-${pjt.docId}" name="price" placeholder="결제 요청 가격" required> 
                         <button class="item-button" id="payment-btn-${pjt.docId}">결제요청</button>
                     </form>
+                    <p class="item-deposit" id="item-deposit-owner-${pjt.docId}">예금주: ownner</p>
                     <a class="item-button" id="check-payment-${pjt.docId}">결제확인</a>
                 </div>
         `;
@@ -219,13 +220,14 @@ async function getProjects(progress) {
         const paymentBtn = item.querySelector(`#payment-btn-${pjt.docId}`);
         const fileInput = item.querySelector(`#input-file-${pjt.docId}`);
         const checkPaymentBtn = item.querySelector(`#check-payment-${pjt.docId}`);
+        const depositOwnner = item.querySelector(`#item-deposit-owner-${pjt.docId}`);
 
         // 결제 input 문자열 제한
         priceInput.addEventListener("input", (e) => {
             const rawValue = e.target.value.replace(/[^\d]/g, "");
             const formattedValue = new Intl.NumberFormat("ko-KR").format(rawValue);
             e.target.value = formattedValue ? `${formattedValue}` : "";
-        })
+        });
 
         if(pjt.progress === '0') {
             // 문의 접수
@@ -235,6 +237,7 @@ async function getProjects(progress) {
             paymentBtn.style.display = 'none';
             fileInput.style.display = 'none';
             checkPaymentBtn.style.display = 'none';
+            depositOwnner.style.display = 'none';
         }   
         else if(pjt.progress === '1') {
             // 작업 중
@@ -244,6 +247,7 @@ async function getProjects(progress) {
             paymentBtn.style.display = 'flex';
             fileInput.style.display = 'flex';
             checkPaymentBtn.style.display = 'none';
+            depositOwnner.style.display = 'none';
         }
         else if(pjt.progress === '2') {
             // 작업완료, 결제 진행 중
@@ -253,8 +257,9 @@ async function getProjects(progress) {
             paymentBtn.style.display = 'none';
             fileInput.style.display = 'none';
             checkPaymentBtn.style.display = 'none';
+            depositOwnner.style.display = 'none';
         }
-        else if(pjt.progress === '11') {
+        else if(pjt.progress === '11')  {
             // 작업완료, 무통장 입금 진행 중
             acceptBtn.style.display = 'none';
             dismissBtn.style.display = 'none';
@@ -262,6 +267,26 @@ async function getProjects(progress) {
             paymentBtn.style.display = 'none';
             fileInput.style.display = 'none';
             checkPaymentBtn.style.display = 'flex';
+            depositOwnner.style.display = 'inline-block';
+
+            // 예금주 이름
+            const response = await fetch('/project/download-deposit-owner', {
+                method: 'POST',
+                headers: { "Content-Type" : "application/json" },
+                body: JSON.stringify({
+                    docId: pjt.docId,
+                }),
+            });
+
+            const result = await response.json();
+            let owner = '';
+            if(response.ok) {
+                owner = result.owner;
+            } else {
+                console.log(`error: ${result.error}`);
+            }
+
+            depositOwnner.innerText = `(무통장 입금) 예금주: ${owner}`;
         } 
         else {
             // 결제 완료
@@ -271,6 +296,26 @@ async function getProjects(progress) {
             paymentBtn.style.display = 'none';
             fileInput.style.display = 'none';
             checkPaymentBtn.style.display = 'none';
+            depositOwnner.style.display = 'inline-block';
+
+            // 예금주 이름
+            const response = await fetch('/project/download-deposit-owner', {
+                method: 'POST',
+                headers: { "Content-Type" : "application/json" },
+                body: JSON.stringify({
+                    docId: pjt.docId,
+                }),
+            });
+
+            const result = await response.json();
+            let owner = '';
+            if(response.ok) {
+                owner = result.owner;
+            } else {
+                console.log(`error: ${result.error}`);
+            }
+
+            depositOwnner.innerText = `(무통장 입금) 예금주: ${owner}`;
         }
 
 
@@ -386,3 +431,4 @@ document.getElementById('project-3').addEventListener('click', (e) => {
     document.getElementById('project-list').innerHTML = ''; 
     getProjects('3');
 });
+

@@ -139,6 +139,13 @@ main {
     margin-bottom: 200px;
 }
 
+#projects-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 /* 타이틀 영역 */
 #main_title {
     width: 60%;
