@@ -2,8 +2,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { db, auth, storage } from "../public/firebase-config.js";
 import { collection, doc, getDocs, orderBy, setDoc, getDoc, addDoc, query, deleteDoc, where, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL, getMetadata } from "firebase/storage";
 import axios from 'axios';
+import archiver from 'archiver';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -362,45 +363,43 @@ export const getDownload = async (req, res) => {
     }
 
     if(uid) {
+        const archive = archiver("zip", { zlib: {level:9}});
         let index = 0;
-        let files = [];
+
+        res.setHeader('Content-Type', 'application/zip');
+        res.setHeader('Content-Disposition', `attachment; filename="draft_files.zip"`);
+    
+        archive.pipe(res);
+
         while(true) {
             const fileName = `${uid}_${docId}_${index}.png`;
             const fileRef = ref(storage, fileName);
 
             try {
                 // 파일의 메타데이터 가져오기 (존재 여부 확인)
-                await getMetadata(fileRef);    
+                await getMetadata(fileRef);
 
-                // 파일 URL 가져오기
-                const downloadURL = await getDownloadURL(fileRef);
-                files.push({ fileName, downloadURL });
+                // 다운로드 URL 가져오기
+                const downloadUrl = await getDownloadURL(fileRef);
+
+                 // 파일 다운로드 및 압축 추가
+                const response = await fetch(downloadUrl);
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch file: ${downloadUrl}`);
+                }
+
+                const arrayBuffer = await response.arrayBuffer();
+                const fileBuffer = Buffer.from(arrayBuffer);
+                archive.append(fileBuffer, { name: fileName });
 
                 index++;
-
-                // const response = await axios({
-                //     url: downloadURL,
-                //     method: 'GET',
-                //     responseType: 'stream', // 스트리밍 방식
-                // });
-    
-                // if(response.data) {
-                //     const contentType = response.headers['content-type'];
-                //     res.setHeader('Content-Type', contentType);
-                //     response.data.pipe(res);
-                // } else {
-                //     throw new Error("Response data is undefined or null.");
-                // }
-    
             } catch(e) {
-                console.log(`File not found: ${fileName}`);
+                console.log(`File not found: ${fileName}, e: ${e.message}`);
                 break;
             }
         }
 
-        // 파일 다운로드 URLs 전송
-        return res.status(200).json(files);
-
+        archive.finalize();
     } else {
         res.status(404).send({ error: e.message });
     }

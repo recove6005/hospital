@@ -1,3 +1,16 @@
+// 로그인 체크
+async function checkLogin() {
+    const response = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(!response.ok) {
+        document.getElementById("to-signin").style.display = 'block';
+    }
+}
+checkLogin();
+
 async function checkUserVerify() {
     const response = await fetch('/login/verify', {
         method: 'POST',
@@ -23,6 +36,28 @@ async function checkUserVerify() {
     }
 }
 checkUserVerify();
+
+// 연락처 input 문자열
+document.getElementById('input-phone').addEventListener("input", function (e) {
+    let input = e.target.value;
+
+    // 숫자만 남기기
+    input = input.replace(/[^0-9]/g, "");
+
+    // 3-3-4 형식으로 포맷팅
+    if (input.length <= 3) {
+        e.target.value = input; // 3자리 이하일 경우 그대로 출력
+    } else if (input.length <= 7) {
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
+    }
+    else if(input.length <= 10) { // 10자리 3-3-4 형식
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
+    }
+    else if(input.length > 10) { // 11자리 3-4-4 형식
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
+    }
+
+});
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -56,28 +91,28 @@ function getPrice(membersheType, sizeValue) {
             discountPriceElement.textContent = '95,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 (1건)';
+            titleElement.textContent = '블로그 포스팅 (1건)';
             allprice.value = '95000';
         } else if (sizeValue === '11건') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '950,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 (11건)';
+            titleElement.textContent = '블로그 포스팅 (11건)';
             allprice.value = '950000';
         } else if (sizeValue === '25건') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '1,900,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 (25건)';
+            titleElement.textContent = '블로그 포스팅 (25건)';
             allprice.value = '1900000';
         } else {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = ' 2,850,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 (40건)';
+            titleElement.textContent = '블로그 포스팅 (40건)';
             allprice.value = '2850000';
         }
     }
@@ -88,28 +123,28 @@ function getPrice(membersheType, sizeValue) {
             discountPriceElement.textContent = '90,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 (1건)';
+            titleElement.textContent = '블로그 포스팅 (1건)';
             allprice.value = '90000';
         } else if (sizeValue === '11건') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '900,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 (11건)';
+            titleElement.textContent = '블로그 포스팅 (11건)';
             allprice.value = '900000';
         } else if (sizeValue === '25건') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '1,800,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 (25건)';
+            titleElement.textContent = '블로그 포스팅 (25건)';
             allprice.value = '1800000';
         } else {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = ' 2,700,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 (40건)';
+            titleElement.textContent = '블로그 포스팅 (40건)';
             allprice.value = '2700000';
         }
     } 
@@ -120,28 +155,28 @@ function getPrice(membersheType, sizeValue) {
             discountPriceElement.textContent = '70,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 (1건)';
+            titleElement.textContent = '블로그 포스팅 (1건)';
             allprice.value = '70000';
         } else if (sizeValue === '11건') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '700,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 (11건)';
+            titleElement.textContent = '블로그 포스팅 (11건)';
             allprice.value = '700000';
         } else if (sizeValue === '25건') {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = '1,400,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 (25건)';
+            titleElement.textContent = '블로그 포스팅 (25건)';
             allprice.value = '1400000';
         } else {
             discountPriceElement.style.display = 'block';
             discountPriceElement.textContent = ' 2,100,000 원';
             priceElement.style.textDecoration = 'line-through';
             priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 (40건)';
+            titleElement.textContent = '블로그 포스팅 (40건)';
             allprice.value = '3000000';
         }
     }
@@ -150,22 +185,22 @@ function getPrice(membersheType, sizeValue) {
         if (sizeValue === '1건') {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 (1건)';
+            titleElement.textContent = '블로그 포스팅 (1건)';
             allprice.value = '100000';
         } else if (sizeValue === '11건') {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 (11건)';
+            titleElement.textContent = '블로그 포스팅 (11건)';
             allprice.value = '1000000';
         } else if (sizeValue === '25건') {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 (25건)';
+            titleElement.textContent = '블로그 포스팅 (25건)';
             allprice.value = '2000000';
         } else {
             discountPriceElement.style.display = 'none';
             priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 (40건)';
+            titleElement.textContent = '블로그 포스팅 (40건)';
             allprice.value = '3000000';
         }
     }
@@ -247,12 +282,13 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
+
+        window.location.href="../html/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");
     }
 });
-
 
 const radios = document.querySelectorAll('input[name="size"]');
 radios.forEach((radio) => {
@@ -291,7 +327,6 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
             } else {
                 console.log(result.error);
             }
-    
         } catch(e) {
             console.error("error: ", e);
         }

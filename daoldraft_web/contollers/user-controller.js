@@ -37,6 +37,23 @@ async function updateSubscribe(type) {
 
 // 구독권 정보 가져오기
 export const getSubscribeInfo = async (req, res) => {
+    const userEmail = auth.currentUser.email;
+
+    if(userEmail) {
+        const docRef = doc(db, 'subscribes', userEmail);
+        const docSnap = await getDoc(docRef);
+
+        if(docSnap.exists()) {
+            const subscribeInfo = docSnap.data();
+            return res.status(200).json({ 
+                subscribeInfo: subscribeInfo 
+            });
+        } else {
+            return res.status(401).json({ error: 'No data found.'});
+        }
+    } else {
+        return res.status(401).json({ error: 'No Firebase session found.'});
+    }
     
 }
 

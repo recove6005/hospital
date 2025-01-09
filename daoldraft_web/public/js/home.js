@@ -1,3 +1,16 @@
+// 로그인 체크
+async function checkLogin() {
+    const response = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(!response.ok) {
+        document.getElementById("to-signin").style.display = 'block';
+    }
+}
+checkLogin();
+
 async function checkUserVerify() {
     const response = await fetch('/login/verify', {
         method: 'POST',
@@ -9,6 +22,7 @@ async function checkUserVerify() {
         if(result.msg.includes("verify0")) {
             window.location.reload();
             alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
+            document.getElementById("to-signin").style.display = 'block';
         } 
         else {
             document.getElementById("profile-photo").style.visibility = 'visible';
@@ -97,6 +111,8 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
+
+        window.location.href="../html/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");

@@ -1,11 +1,9 @@
 import express from 'express';
-import { moveToLoginEmail, moveToLoginPassword, login, getCurrentUser, register, checkUserVerify, logout, checkAdmin } from "../contollers/auth-controller.js";
+import { moveToLoginEmail, login, getCurrentUser, register, checkUserVerify, logout, checkAdmin } from "../contollers/auth-controller.js";
 
 const router = express.Router();
 
 router.get('/email', moveToLoginEmail);
-
-router.get('/password', moveToLoginPassword);
 
 router.post('/login', login);
 

@@ -10,12 +10,15 @@
      <!-- topbar -->
      <header id="topbar">
         <div id="logo-container">
-            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+            <a href="./home.html">
+                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
+                TEMP LOGO
+            </a>
         </div>
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
                 <a id="profile-link" href="#">
-                    <img src="../images/sample.jpg" alt="photo">
+                    <img src="../images/ic_profile_default.png" alt="photo">
                     <span><p id="user-email">example@gmail.com</p></span>
                 </a>
                 <div id="dropdown-menu" style="display: none;">
@@ -26,7 +29,7 @@
                     </ul>
                 </div>
             </div>
-            <div id="to-signin" style="display: block;">
+            <div id="to-signin" style="display: none;">
                 <a href="../html/login-email.html">로그인</a>
             </div>
         </div>
@@ -117,8 +120,8 @@
                     <input type="text" class="form-input" id="input-rank" name="rank" placeholder="직책">
                 </div>
                 <div class="form-group">
-                    <label for="phone" class="form-label" id="label-phone">Phone*</label>
-                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" required>
+                    <label for="phone" class="form-label" id="label-phone">Call*</label>
+                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" maxlength="13" required>
                 </div>
                 <div class="form-group">
                     <label for="email" class="form-label" id="label-email">@Email</label>

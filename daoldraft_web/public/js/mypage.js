@@ -14,7 +14,65 @@ async function getUserInitData() {
         console.log(`error : ${result.error}`);
     }
 }
-getUserInitData();
+
+// 구독 정보 적용
+async function getSubscribeInfos() {
+    await getUserInitData();
+
+    if(subscribeType === '0') {
+        const subscribeInfosBox = document.getElementById('subscribe-infos');
+        subscribeInfosBox.innerHTML = `
+                <p>구매하신 구독권이 없습니다.</p>
+                <div id="subscribe-infos-top"><a id="info-close-btn">닫기</a></div>
+        `;
+
+        document.body.appendChild(subscribeInfosBox);
+
+        // 구독정보 닫기
+        document.getElementById('info-close-btn').addEventListener('click', (e) => {
+            const infoBox = document.getElementById('subscribe-infos');
+            infoBox.style.display = 'none';
+        });
+        
+    } else {
+        const response = await fetch('/user/get-subscribe-info', {
+            method: 'POST',
+        });
+    
+        const result = await response.json();
+        if(response.ok) {
+            const subscribeInfosBox = document.getElementById('subscribe-infos');
+            subscribeInfosBox.innerHTML = `
+                    <p>로고 디자인 <span>${result.subscribeInfo.logo}회</span> 무료 사용 가능</p>
+                    <p>원내시안 및 단순디자인 <span>${result.subscribeInfo.draft}회</span> 무료 사용 가능</p>
+                    <p>디지털 사이니지 디자인 <span>${result.subscribeInfo.signage}회</span> 무료 사용 가능</p>
+                    <p>블로그 포스팅 <span>${result.subscribeInfo.blog}회</span> 무료 사용 가능</p>
+                    <p>웹페이지 디자인 <span>${result.subscribeInfo.homepage}회</span> 무료 사용 가능</p>    
+                    <p>모든 서비스 <span>${result.subscribeInfo.discount}%</span> 할인 적용</p>
+                    <div><a id="info-close-btn">닫기</a></div>
+            `;
+
+            document.body.appendChild(subscribeInfosBox);
+        
+            // 구독정보 닫기
+            document.getElementById('info-close-btn').addEventListener('click', (e) => {
+                const infoBox = document.getElementById('subscribe-infos');
+                infoBox.style.display = 'none';
+            });
+
+        } else {
+            console.log(`error: ${result.error}`);
+        }
+    }
+}
+getSubscribeInfos();
+
+// 구독정보 버튼
+document.getElementById('see_membership').addEventListener('click', (e) => {
+    const infoBox = document.getElementById('subscribe-infos');
+    infoBox.style.display = 'flex';
+});
+
 
 async function checkUserVerify() {
     const response = await fetch('/login/verify', {
@@ -114,6 +172,8 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
+
+        window.location.href="../html/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");
@@ -419,6 +479,11 @@ document.getElementById('kakaopay-box').addEventListener('submit', async (e) => 
 
 // 파일 다운로드
 async function getFileDownload() {
+    // 로딩화면 띄우기
+    const loadingScreen = document.getElementById('loading-screen');
+    loadingScreen.style.display = "flex";
+
+
     const pjt = userProjects[index];
     const response = await fetch('/project/get-download', {
         method: 'POST',
@@ -431,16 +496,20 @@ async function getFileDownload() {
         return;
     }
 
-    const blob = await response.blob(); // 응답 데이터를 Blob으로 변환
-    const fileUrl = URL.createObjectURL(blob); // Blob URL 생성
+    const blob = await response.blob();
+    const fileUrl = URL.createObjectURL(blob);
 
     const link = document.createElement('a');
     link.href = fileUrl;
-    link.download = `draft.jpg`;
+    link.download = `draft_files.zip`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+
     URL.revokeObjectURL(fileUrl);
+
+    // 로딩화면 숨기기
+    loadingScreen.style.display = 'none';
 }
 
 document.getElementById('download-file').addEventListener('click', async (e) => {

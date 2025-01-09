@@ -94,11 +94,6 @@ export const moveToLoginEmail = (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/login-email.html'));
 };
 
-export const moveToLoginPassword = (req, res) => {
-    const email = req.query.email;
-    res.sendFile(path.join(__dirname, '../public/html/login-password.html'));
-};
-
 // 로그인
 export const login = async (req, res) => {
     const { email, password } = req.body;

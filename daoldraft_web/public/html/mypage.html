@@ -10,12 +10,15 @@
     <!-- topbar -->
     <header id="topbar">
         <div id="logo-container">
-            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+            <a href="./home.html">
+                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
+                TEMP LOGO
+            </a>
         </div>
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
                 <a id="profile-link" href="#">
-                    <img src="../images/sample.jpg" alt="photo">
+                    <img src="../images/ic_profile_default.png" alt="photo">
                     <span><p id="user-email">example@gmail.com</p></span>
                 </a>
                 <div id="dropdown-menu" style="display: none;">
@@ -34,8 +37,12 @@
 
     <main>
         <div id="main_title">
-            <h1>마이페이지</h1>
+            <div>
+                <h1>마이페이지</h1>
+                <a id="update-password">비밀번호 변경</a>
+            </div>
             <a id="see_membership">구독 정보</a>
+            <div id="subscribe-infos" style="display: none;"></div>
         </div>
         <div id="projects-wrapper" style="display: none;">
             <div id="main_project_selector">
@@ -122,6 +129,12 @@
             <h1>문의하신 프로젝트가 없습니다.</h1>
         </div>
     </main>
+
+    <div id="loading-screen" style="display: none;">
+        <div class="spinner">
+            
+        </div>
+    </div>
 </body>
 <script src="../js/mypage.js" type="module" defer></script>
 </html>

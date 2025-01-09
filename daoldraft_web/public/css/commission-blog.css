@@ -33,16 +33,18 @@ a {
     width: 100%; 
     z-index: 1000; 
     background-color: #222; 
-    color: white;
+    color: wheat;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 #logo-container {
+    height: 50px;
     display: flex;
     align-items: center;
     margin: 10px 20px;
+    font-size: 40px;
 }
 
 #logo {

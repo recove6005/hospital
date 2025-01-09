@@ -1,9 +1,10 @@
 import express from 'express';
-import { commissionProjectBlog, commissionProjectDraft, commissionProjectHomepage, commissionProjectLogo, commissionProjectSignage, getSid, getSubscribeType, subscribeBasic, subscribePeriodic } from '../contollers/user-controller.js';
+import { commissionProjectBlog, commissionProjectDraft, commissionProjectHomepage, commissionProjectLogo, commissionProjectSignage, getSid, getSubscribeInfo, getSubscribeType, subscribeBasic, subscribePeriodic } from '../contollers/user-controller.js';
 
 const router = express.Router();
 
 router.post('/get-subscribe-type', getSubscribeType);
+router.post('/get-subscribe-info', getSubscribeInfo);
 
 router.post('/commission-project-logo', commissionProjectLogo);
 

@@ -1,3 +1,16 @@
+// 로그인 체크
+async function checkLogin() {
+    const response = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(!response.ok) {
+        document.getElementById("to-signin").style.display = 'block';
+    }
+}
+checkLogin();
+
 async function checkUserVerify() {
     const response = await fetch('/login/verify', {
         method: 'POST',
@@ -23,6 +36,28 @@ async function checkUserVerify() {
     }
 }
 checkUserVerify();
+
+// 연락처 input 문자열
+document.getElementById('input-phone').addEventListener("input", function (e) {
+    let input = e.target.value;
+
+    // 숫자만 남기기
+    input = input.replace(/[^0-9]/g, "");
+
+    // 3-3-4 형식으로 포맷팅
+    if (input.length <= 3) {
+        e.target.value = input; // 3자리 이하일 경우 그대로 출력
+    } else if (input.length <= 7) {
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
+    }
+    else if(input.length <= 10) { // 10자리 3-3-4 형식
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
+    }
+    else if(input.length > 10) { // 11자리 3-4-4 형식
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
+    }
+
+});
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -221,6 +256,8 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
+
+        window.location.href="../html/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");

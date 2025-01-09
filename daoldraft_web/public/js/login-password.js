@@ -9,45 +9,58 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
     document.getElementById('email').value = email;
 
     const password = document.getElementById('password').value;
-    
-    try {
-        const loginResponse = await fetch('/login/login', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({email, password}),
-        });
+    const consent = document.getElementById('consent-input').checked;
 
-        const loginResult = await loginResponse.json();
-        if(loginResponse.ok) {
-            alert(`어서오세요, ${loginResult.email}`);
+    const passwordRegex = /^(?=.*[a-zA-Z])(?=.*[\W])(?=.{8,}).*$/;
 
-            window.location.href = "/html/home.html";
-        } 
-        else if(loginResult.code === 'auth/invalid-credential') {
-            // 사용자가 없음 >> 회원가입 절차
-            const response = await fetch('/login/register', {
-                method: 'POST',
-                headers: { 'Content-Type' : 'application/json'},
-                body: JSON.stringify({ email, password }),
-            });
-
-            if(response.ok) {
-                alert(`어서오세요, ${email}님`);
-                window.location.href = "/html/home.html";
-            }
-        }
-        else if(loginResult.code === 'auth/wrong-password') {
-            alert('비밀번호가 옳지 않습니다.');
-        }
-        else if(loginResult.code === 'auth/too-many-requests') {
-            alert('잠시 후에 다시 시도해주세요.');
+    if(consent) {
+        if(passwordRegex.test(password)) {
+            try {
+                const loginResponse = await fetch('/login/login', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify({email, password}),
+                });
+        
+                const loginResult = await loginResponse.json();
+                if(loginResponse.ok) {
+                    alert(`어서오세요, ${loginResult.email}`);
+        
+                    window.location.href = "/html/home.html";
+                } 
+                else if(loginResult.code === 'auth/invalid-credential') {
+                    // 사용자가 없음 >> 회원가입 절차
+                    const response = await fetch('/login/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type' : 'application/json'},
+                        body: JSON.stringify({ email, password }),
+                    });
+        
+                    if(response.ok) {
+                        alert(`어서오세요, ${email}님`);
+                        window.location.href = "/html/home.html";
+                    }
+                }
+                else if(loginResult.code === 'auth/wrong-password') {
+                    alert('비밀번호가 옳지 않습니다.');
+                }
+                else if(loginResult.code === 'auth/too-many-requests') {
+                    alert('잠시 후에 다시 시도해주세요.');
+                } else {
+                    alert(`이메일과 비밀번호를 확인해주세요.`);
+                }
+            } catch(e) {
+                console.error("Error:", e);
+                alert("An error occurred: " + e.message);
+            } finally {
+                loadingScreen.style.display = "none"; // 로딩 화면 숨김
+            };
         } else {
-            alert(`error: ${loginResult.code}`);
+            alert('비밀번호는 특수문자와 영문자를 포함하는 8자리 이상의 문자여야 합니다.');
+            loadingScreen.style.display = "none"; // 로딩 화면 숨김
         }
-    } catch(e) {
-        console.error("Error:", e);
-        alert("An error occurred: " + e.message);
-    } finally {
+    } else {
+        alert('개인정보처리방침 및 이용약관에 동의해 주세요.');
         loadingScreen.style.display = "none"; // 로딩 화면 숨김
-    };
+    }
 });

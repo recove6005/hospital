@@ -11,7 +11,10 @@
      <!-- topbar -->
      <header id="topbar">
         <div id="logo-container">
-            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+            <a href="./home.html">
+                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
+                TEMP LOGO
+            </a>
         </div>
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
@@ -27,7 +30,7 @@
                     </ul>
                 </div>
             </div>
-            <div id="to-signin" style="display: block;">
+            <div id="to-signin" style="display: none;">
                 <a href="../html/login-email.html">로그인</a>
             </div>
         </div>
@@ -96,7 +99,7 @@
         <h1 id="form-title">Contact us</h1>
         <div class="commission-details">
             <form id="contact-form">
-                <input name="title" type="hidden" value="홈페이지 제작">
+                <input name="title" type="hidden" value="웹페이지 디자인">
                 <div class="size-group" >
                     <label for="" class="form-label" id="label-size">Size*</label>
                     <div>
@@ -118,8 +121,8 @@
                     <input type="text" class="form-input" id="input-rank" name="rank" placeholder="직책">
                 </div>
                 <div class="form-group">
-                    <label for="phone" class="form-label" id="label-phone">Phone*</label>
-                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" required>
+                    <label for="phone" class="form-label" id="label-phone">Call*</label>
+                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" maxlength="13" required>
                 </div>
                 <div class="form-group">
                     <label for="email" class="form-label" id="label-email">@Email</label>
@@ -129,7 +132,7 @@
                     <label for="details" class="form-label" id="label-details">Details*</label>
                     <textarea maxlength="1000" wrap="hard" rows="10" type="details" id="textarea-details" name="details" placeholder="문의하실 내용을 상세하게 기입해 주시기 바랍니다*" required></textarea>
                 </div>
-                <p id="project-name">홈페이지 제작 (하)</p>
+                <p id="project-name">웹페이지 디자인 (하)</p>
                 <p id="discount-price" style="display: none;"></p>
                 <input id="allprice" name="allprice" type="hidden" value="1500000">
                 <p id="price">1,500,000 원</p>

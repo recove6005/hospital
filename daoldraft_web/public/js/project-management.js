@@ -98,6 +98,8 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
+
+        window.location.href="../html/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");

@@ -1,3 +1,5 @@
+// 구독권 구매 시 subscribes 구독 정보 업데이트
+
 async function getSubscribeType() {
     const response = await fetch('/user/get-subscribe-type', {
         method: 'POST',

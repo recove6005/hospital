@@ -11,12 +11,15 @@
      <!-- topbar -->
      <header id="topbar">
         <div id="logo-container">
-            <a href="./home.html"><img id="logo" src="../images/sample.jpg" alt="Company Logo"></a>
+            <a href="./home.html">
+                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
+                TEMP LOGO
+            </a>
         </div>
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
                 <a id="profile-link" href="#">
-                    <img src="../images/sample.jpg" alt="photo">
+                    <img src="../images/ic_profile_default.png" alt="photo">
                     <span><p id="user-email">example@gmail.com</p></span>
                 </a>
                 <div id="dropdown-menu" style="display: none;">
@@ -27,7 +30,7 @@
                     </ul>
                 </div>
             </div>
-            <div id="to-signin" style="display: block;">
+            <div id="to-signin" style="display: none;">
                 <a href="../html/login-email.html">로그인</a>
             </div>
         </div>
@@ -96,7 +99,7 @@
         <h1 id="form-title">Contact us</h1>
         <div class="commission-details">
             <form id="contact-form">
-                <input type="hidden" name="title" value="원내시안">
+                <input type="hidden" name="title" value="원내시안 및 단순디자인">
                 <input type="hidden" name="size" value="">
                 <div class="form-group">
                     <label for="organization" class="form-label" id="label-organization">Organization*</label>
@@ -111,8 +114,8 @@
                     <input type="text" class="form-input" id="input-rank" name="rank" placeholder="직책">
                 </div>
                 <div class="form-group">
-                    <label for="phone" class="form-label" id="label-phone">Phone*</label>
-                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" required>
+                    <label for="phone" class="form-label" id="label-phone">Call*</label>
+                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" maxlength="13" required>
                 </div>
                 <div class="form-group">
                     <label for="email" class="form-label" id="label-email">@Email</label>
@@ -122,7 +125,7 @@
                     <label for="details" class="form-label" id="label-details">Details*</label>
                     <textarea maxlength="1000" wrap="hard" rows="10" type="details" id="textarea-details" name="details" placeholder="문의하실 내용을 상세하게 기입해 주시기 바랍니다*" required></textarea>
                 </div>
-                <p id="project-name">원내시안</p>
+                <p id="project-name">원내시안 및 단순디자인</p>
                 <p id="discount-price" style="display: none;">285,000 원</p>
                 <input type="hidden" id="allprice" name="allprice" value="30000">
                 <p id="price">30,000 원</p>
