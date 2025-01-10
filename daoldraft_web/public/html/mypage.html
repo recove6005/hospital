@@ -29,7 +29,7 @@
                     </ul>
                 </div>
             </div>
-            <div id="to-signin" style="display: block;">
+            <div id="to-signin" style="display: none;">
                 <a href="../html/login-email.html">로그인</a>
             </div>
         </div>
@@ -42,15 +42,24 @@
                 <a id="update-password">비밀번호 변경</a>
             </div>
             <a id="see_membership">구독 정보</a>
-            <div id="subscribe-infos" style="display: none;"></div>
+            <div id="subscribe-infos" style="opacity: 0;"></div>
         </div>
+
+        <div id="list-container">
+            <div id="project-list">
+                <!-- <a class="list-item">
+                    <p class="item-title">원내시안 및 단순 디자인</p>
+                    <p class="item-date">문의날짜 0000-00-00</p>
+                    <div class="list-divider"></div>
+                </a> -->
+            </div>
+        </div>
+        
         <div id="projects-wrapper" style="display: none;">
             <div id="main_project_selector">
-                <a id="prev-btn"><img src="../images/ic_prev_btn.png"></a>
                 <div id="swipe-wrapper">
-                    <!-- <div class="item"><p class="project-name">Project Name A</p></div> -->
+                    <div class="item"><p class="project-name">Project Name A</p></div>
                 </div>
-                <a id="next-btn"><img src="../images/ic_next_btn.png"></a>
             </div>
     
             <div id="main-project-info">
@@ -100,7 +109,10 @@
     
             <a class="payment-button" id="request-payment">결제하기</a>
             <a class="payment-button" id="download-file" style="display: none;">파일 다운로드</a>
-            <h1 id="checking-payment" style="display: none;">결제 확인 중..</h1>
+            <div id="checking-payment" style="display: none;">
+                <h1 style="display: block;">결제 확인 중..</h1> 
+                <p style="display: block;">- 입금처: OO은행 00-000-00000-00 (TAMP LOGO)</p>
+            </div>
 
             <div id="modal" style="display: none;">
                 <div>
@@ -136,5 +148,6 @@
         </div>
     </div>
 </body>
+<script src="/node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
 <script src="../js/mypage.js" type="module" defer></script>
 </html>

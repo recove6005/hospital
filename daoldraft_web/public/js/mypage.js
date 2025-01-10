@@ -1,4 +1,5 @@
 var subscribeType = '';
+var pjtIndex = 0;
 
 async function getUserInitData() {
     // 구독권 타입
@@ -31,7 +32,7 @@ async function getSubscribeInfos() {
         // 구독정보 닫기
         document.getElementById('info-close-btn').addEventListener('click', (e) => {
             const infoBox = document.getElementById('subscribe-infos');
-            infoBox.style.display = 'none';
+            infoBox.style.opacity = '0';
         });
         
     } else {
@@ -49,17 +50,9 @@ async function getSubscribeInfos() {
                     <p>블로그 포스팅 <span>${result.subscribeInfo.blog}회</span> 무료 사용 가능</p>
                     <p>웹페이지 디자인 <span>${result.subscribeInfo.homepage}회</span> 무료 사용 가능</p>    
                     <p>모든 서비스 <span>${result.subscribeInfo.discount}%</span> 할인 적용</p>
-                    <div><a id="info-close-btn">닫기</a></div>
             `;
 
             document.body.appendChild(subscribeInfosBox);
-        
-            // 구독정보 닫기
-            document.getElementById('info-close-btn').addEventListener('click', (e) => {
-                const infoBox = document.getElementById('subscribe-infos');
-                infoBox.style.display = 'none';
-            });
-
         } else {
             console.log(`error: ${result.error}`);
         }
@@ -68,10 +61,16 @@ async function getSubscribeInfos() {
 getSubscribeInfos();
 
 // 구독정보 버튼
-document.getElementById('see_membership').addEventListener('click', (e) => {
+document.getElementById('see_membership').addEventListener('mouseover', (e) => {
     const infoBox = document.getElementById('subscribe-infos');
-    infoBox.style.display = 'flex';
+    infoBox.style.opacity = '100';
 });
+
+document.getElementById('see_membership').addEventListener('mouseout', (e) => {
+    const infoBox = document.getElementById('subscribe-infos');
+    infoBox.style.opacity = '0';
+});
+
 
 
 async function checkUserVerify() {
@@ -180,6 +179,42 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     }
 });
 
+// 비밀번호 변경
+document.getElementById('update-password').addEventListener('click', async (e) =>  {
+    // const userConfirmed = confirm('비밀번호를 변경하시겠습니까?');
+    // if(userConfirmed) {
+    //     alert('비밀번호 변경 링크가 전송되었습니다. 이메일을 확인해 주세요.');
+    // }
+
+    Swal.fire({
+        title: '비밀번호 재설정',
+        text: '비밀번호를 변경하시겠습니까?',
+        showCancelButton: true,
+        confirmButtonText: '확인',
+        cancelButtonText: '취소',
+    }).then(async (result) => {
+        if(result.isConfirmed) {
+            try {
+                const updateResponse = await fetch('/login/update-password', {
+                    method: 'POST',
+                    credentials: "include",
+                });
+                
+                if(updateResponse.ok) {
+                    Swal.fire('성공', '비밀번호 변경 링크가 전송되었습니다. 이메일을 확인해 주세요.', 'success');
+                } else {
+                    const errorData = await response.json();
+                    console.log(`Error: ${errorData.error}`);
+                    Swal.fire('오류', '비밀번호 변경 요청 중 문제가 발생했습니다.', 'error');
+                }
+            } catch (error) {
+                console.error('Request failed:', error);
+                Swal.fire('오류', '서버와 통신 중 문제가 발생했습니다.', 'error');
+            }
+        }
+    }); 
+});
+
 
 // Project 데이터 리스트 (예시 데이터)
 const userProjects = [];
@@ -198,6 +233,18 @@ async function getProjects() {
         });
     } else {
         console.log(`error: ${result.error}`);
+    }
+}
+
+// main-project-title
+function getMainProjectTitle(index) {
+    const pjt = userProjects[index];
+    const projectTitle = document.querySelector('.project-name');
+
+    if(pjt.size == "") {
+        projectTitle.innerText = pjt.title;
+    } else {
+        projectTitle.innerText = `${pjt.title} (${pjt.size})`;
     }
 }
 
@@ -308,9 +355,9 @@ function getProgressUI(index) {
 
 // 초기 UI 업데이트 함수
 async function initProjectInfo() {
-    // 스와이퍼
     await getProjects();
 
+    // 프로젝트 표시
     if(userProjects.length === 0) {
         document.getElementById('projects-wrapper').style.display = 'none';
         document.getElementById('projects-wrapper-none').style.display = 'flex';
@@ -318,64 +365,49 @@ async function initProjectInfo() {
     } 
 
     document.getElementById('projects-wrapper').style.display = 'flex';
+    const projectList = document.getElementById('project-list');
 
-    const wrapper = document.getElementById('swipe-wrapper');
+    let index = 0;
     userProjects.forEach((pjt) => {
-        const div = document.createElement('div');
-        div.classList.add('item');
-        
-        if(pjt.size == "") div.innerHTML = `<p class="project-name">${pjt.title}</p>`;
-        else div.innerHTML = `<p class="project-name">${pjt.title} (${pjt.size})</p>`;
-        wrapper.appendChild(div);
+        // 프로젝트 리스트
+        const itemA = document.createElement('a');
+        itemA.classList.add('list-item');
+        itemA.href = '#';
+
+        const date = new Date(pjt.date);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+
+        itemA.innerHTML = `
+            <p class="item-title" id="item-title-${pjt.docId}">${pjt.title}</p>
+            <p class="item-date" id="item-date-${pjt.docId}">문의일자 ${formattedDate}</p>
+            <input class="item-index" type="hidden" value="${index}">
+        `;
+
+        itemA.addEventListener("click", () => {
+            const projectIndex = itemA.querySelector('.item-index').value;
+            pjtIndex = projectIndex;
+            getMainProjectTitle(projectIndex);
+            getMainProjectInfo(projectIndex);
+            getProgressUI(projectIndex);
+        });
+
+        const divider = document.createElement('div');
+        divider.classList.add('list-divider');
+        projectList.appendChild(itemA);
+        projectList.appendChild(divider);
+
+        index++;
     });
 
     // main project info
+    getMainProjectTitle(0);
     getMainProjectInfo(0);
-
-    // progress
     getProgressUI(0);
 }
 initProjectInfo();
-
-// 스와이프 셀렉터
-const swipeWrapper = document.getElementById("swipe-wrapper");
-const prevBtn = document.getElementById("prev-btn");
-const nextBtn = document.getElementById("next-btn");
-
-// 초기 상태
-let index = 0;
-
-// swipe prev button logic
-prevBtn.addEventListener("click", () => {
-    const items = document.querySelectorAll('.item');
-    
-    if(index > 0) index -= 1;
-    let x = 400*index;
-
-    items.forEach((item) => {
-        item.style.transform = `translate(-${x}px, 0px)`;
-    });
-
-    getMainProjectInfo(index);
-    getProgressUI(index); 
-});
-
-// swipe next button logic
-nextBtn.addEventListener("click", () => {
-    const items = document.querySelectorAll('.item');
-
-    if(index < userProjects.length-1) {
-        index += 1;
-    }
-    let x = 400*index;
-
-    items.forEach((item) => {
-        item.style.transform = `translate(-${x}px, 0px)`;
-    });
-
-    getMainProjectInfo(index); 
-    getProgressUI(index);
-});
 
 // 결제 모달창
 document.getElementById("request-payment").addEventListener('click', () => {
@@ -466,8 +498,19 @@ async function getPay() {
 // 무통장입금 결제 요청
 document.getElementById('deposit-box').addEventListener('submit', async (e) => {
     e.preventDefault();
-    await getPay();
-    window.location.reload();
+
+    Swal.fire({
+        title: '결제',
+        text: '무통장 입금으로 결제하시겠습니까?',
+        showCancelButton: true,
+        confirmButtonText: "확인",
+        cancelButtonText: "취소",
+    }).then( async (result) => {
+        if(result.isConfirmed) {
+            await getPay();
+            window.location.reload();
+        }
+    });
 });
 
 // 카카오페이 결제 진행
@@ -484,7 +527,7 @@ async function getFileDownload() {
     loadingScreen.style.display = "flex";
 
 
-    const pjt = userProjects[index];
+    const pjt = userProjects[pjtIndex];
     const response = await fetch('/project/get-download', {
         method: 'POST',
         headers: { "Content-Type":"application/json" },

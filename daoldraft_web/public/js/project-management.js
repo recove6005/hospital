@@ -150,7 +150,7 @@ async function getProjects(progress) {
         
         var progress = '문의 접수';
         if(pjt.progress === '1') progress = '작업 중';
-        else if(pjt.progress === '2') progress = '작업 완료, 결제 진행 중';
+        else if(pjt.progress === '2' || pjt.progress === '11') progress = '작업 완료, 결제 진행 중';
         else if(pjt.progress === '3') progress = '결제 완료';
 
         var email = pjt.email;
@@ -370,36 +370,62 @@ async function getProjects(progress) {
                 formData.append(`files`, files[index]);
             }
 
-            // project progress update 1 -> 2
-            // 파일 업로드 및 결제 요청 처리
-            const response = await fetch('/project/request-payment', {
-                method: 'POST',
-                body: formData,
+            Swal.fire({
+                title: '결제 요청',
+                text: `${price}원으로 결제 요청을 하시겠습니까?`,
+                showCancelButton: true,
+                confirmButtonText: "확인",
+                cancelButtonText: "취소",
+            }).then(async (result) => {
+                if(result.isConfirmed) {
+                    // project progress update 1 -> 2
+                    // 파일 업로드 및 결제 요청 처리
+                    const response = await fetch('/project/request-payment', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    const paymentResult = await response.json();
+                    if(response.ok) {
+                        Swal.fire('', `${pjt.organization}에서 문의한 ${pjt.title} ${pjt.size}프로젝트의 ${price}원 결제 요청이 완료되었습니다.`, 'success')
+                        .then(() => {
+                            window.location.reload();                             
+                        });
+                    } else {
+                        console.log(`payment error : ${paymentResult.error}`);
+                    }
+                }
             });
 
-            const paymentResult = await response.json();
-            if(response.ok) {
-                alert(`${pjt.organization}에서 문의한 ${pjt.title} ${pjt.size}프로젝트의 ${price}원 결제 요청이 완료되었습니다.`);
-                window.location.reload(); 
-            } else {
-                console.log(`payment error : ${paymentResult.error}`);
-            }
+            
         });
 
         // 결제확인 버튼 이벤트
         checkPaymentBtn.addEventListener('click', async (e) => {
-            const response = await fetch('/project/check-deposit', {
-                method: 'POST',
-                headers: { "Content-Type" : "application/json "},
-                body: JSON.stringify({ docId: pjt.docId }),
-            });
+            Swal.fire({
+                title: '결제 확인 처리',
+                text: '무통장 입금 결제를 확인 처리하시겠습니까? 요청자가 파일을 다운로드 할 수 있습니다.',
+                showCancelButton: true,
+                confirmButtonText: '확인',
+                cancelButtonText: '취소',
+            }).then( async (result) => {
+                if(result.isConfirmed) {
+                    const response = await fetch('/project/check-deposit', {
+                        method: 'POST',
+                        headers: { "Content-Type" : "application/json "},
+                        body: JSON.stringify({ docId: pjt.docId }),
+                    });
+        
+                    const result = await response.json();
+                    if(response.ok) {
+                        window.location.reload();
+                    } else {
+                        console.log(`error: ${result.error}`);
+                    }
 
-            const result = await response.json();
-            if(response.ok) {
-                window.location.reload();
-            } else {
-                console.log(`error: ${result.error}`);
-            }
+                    Swal.fire('', '무통장 입금이 확인되었습니다.', 'success');
+                }
+            });
         });
         
         listElement.appendChild(item);

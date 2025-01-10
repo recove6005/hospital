@@ -2,8 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { db, auth } from "../public/firebase-config.js";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import axios from 'axios';
+import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -236,4 +235,28 @@ export const checkAdmin = async (req, res) => {
         return res.status(400).send({ error: "No firebase user found. "});
     }
     
+}
+
+// password 재설정
+export const updatePassword = async (req, res) => {
+    if(req.session.user) {
+        const user = auth.currentUser;
+        if(user) {      
+            const email = user.email;
+
+            try {
+                await sendPasswordResetEmail(auth, email)
+                .then(() => {
+                    return res.status(200).end();
+                })
+                .catch((error) => {
+                    return res.status(500).json({ error: error.message });
+                });
+            } catch(e) {
+                res.status(500).json({ error: e.message });
+            }
+        } else {
+            return res.status(500).json({ error: 'No auth found.'});
+        }
+    }
 }

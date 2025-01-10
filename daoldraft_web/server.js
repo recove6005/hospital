@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
+import path from "path";
+import { fileURLToPath } from "url";
 
 import homeRouter from './routes/home-router.js';
 import loginRouter from './routes/auth-router.js';
@@ -13,6 +15,10 @@ dotenv.config();
 
 const app = express();
 const PORT = 3000;
+
+// __dirname을 정의(ES 모듈 환경)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // middleware
 app.use(express.json());
@@ -36,7 +42,10 @@ app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 // 정적 파일 제공
 app.use(express.static('public'));
-
+app.use(
+    "/node_modules",
+    express.static(path.join(__dirname, "node_modules"))
+);
 
 // 라우터 등록
 app.use('/', homeRouter);
