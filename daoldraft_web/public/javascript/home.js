@@ -120,22 +120,27 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 });
 
 // commission pages
-document.getElementById("commission-log").addEventListener('click', () => {
+document.getElementById("commission-log").addEventListener('click', (e) => {
+    e.preventDefault();
     window.location.href = "../html/commission-logo.html";
 });
 
-document.getElementById("commission-draft").addEventListener('click', () => {
+document.getElementById("commission-draft").addEventListener('click', (e) => {
+    e.preventDefault();
     window.location.href = "../html/commission-draft.html";
 });
 
-document.getElementById("commission-signage").addEventListener('click', () => {
+document.getElementById("commission-signage").addEventListener('click', (e) => {
+    e.preventDefault();
     window.location.href = "../html/commission-signage.html";
 });
 
-document.getElementById("commission-blog").addEventListener('click', () => {
+document.getElementById("commission-blog").addEventListener('click', (e) => {
+    e.preventDefault();
     window.location.href = "../html/commission-blog.html";
 });
 
-document.getElementById("commission-homepage").addEventListener('click', () => {
+document.getElementById("commission-homepage").addEventListener('click', (e) => {
+    e.preventDefault();
     window.location.href = "../html/commission-homepage.html";
 });

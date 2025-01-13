@@ -2,5 +2,52 @@
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
-  }
+  },
+  "hosting": {
+    "site": "daoldraft",
+    "public": "public",
+    "rewrites": [
+      {
+        "source": "/project/**",
+        "function": "app"
+      },
+      {
+        "source": "/login/**",
+        "function": "app"
+      },
+      {
+        "source": "/user/**",
+        "function": "app"
+      },
+      {
+        "source": "/home/**",
+        "function": "app"
+      },
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ]
+    }
+  ]
 }

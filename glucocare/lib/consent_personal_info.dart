@@ -96,134 +96,137 @@ class _ConsentPersonalInfoFormState extends State<ConsentPersonalInfoForm> {
   @override
   Widget build(BuildContext context) {
     if(_isLoading) return const Center(child: CircularProgressIndicator(),);
-    return Column(
-      children: [
-        // 정보처리방침 내용
-        Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                _title,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          // 정보처리방침 내용
+          Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                  _title,
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 10,),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                  _description
+              const SizedBox(height: 10,),
+              Align(
+                alignment: Alignment.center,
+                child: Text(
+                    _description
+                ),
               ),
-            ),
-            const SizedBox(height: 10,),
-            ..._sections.map((section) {
-              _index = 0;
-              String heading = section['heading'];
-              List<dynamic> items = section['items'] ?? [];
+              const SizedBox(height: 10,),
+              ..._sections.map((section) {
+                _index = 0;
+                String heading = section['heading'];
+                List<dynamic> items = section['items'] ?? [];
 
-              return Container(
-                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: Column(
-                  children: [
-                    Align(
-                      alignment: Alignment.topLeft,
-                      child: Text(
-                        heading,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          color: Colors.black,
+                return Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                  child: Column(
+                    children: [
+                      Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          heading,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
-                    ),
-                    ...items.map((item) {
-                      _index++;
-                      String label = item['label'] ?? '';
-                      var value = item['value'] ?? '';
+                      ...items.map((item) {
+                        _index++;
+                        String label = item['label'] ?? '';
+                        var value = item['value'] ?? '';
 
-                      String displayValue;
-                      if(value is List) {
-                        displayValue = value.join(', ');
-                      } else {
-                        displayValue = value.toString();
-                      }
-                      return Column(
-                        children: [
-                          const SizedBox(height: 15,),
-                          Row(
-                            children: [
-                              Text('${_index.toString()}) ', style: const TextStyle(fontWeight: FontWeight.bold),),
-                              Text(label, style: const TextStyle(fontWeight: FontWeight.bold),),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              const Text('   -   ',),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width-80,
-                                child: Text('$displayValue'),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 5,),
-                        ],
-                      );
-                    }),
-                  ],
-                ),
-              );
-            }),
-          ],
-        ),
-        // 동의 버튼
-        Row(
-          children: [
-            Checkbox(
+                        String displayValue;
+                        if(value is List) {
+                          displayValue = value.join(', ');
+                        } else {
+                          displayValue = value.toString();
+                        }
+                        return Column(
+                          children: [
+                            const SizedBox(height: 15,),
+                            Row(
+                              children: [
+                                Text('${_index.toString()}) ', style: const TextStyle(fontWeight: FontWeight.bold),),
+                                Text(label, style: const TextStyle(fontWeight: FontWeight.bold),),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                const Text('   -   ',),
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width-80,
+                                  child: Text('$displayValue'),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 5,),
+                          ],
+                        );
+                      }),
+                    ],
+                  ),
+                );
+              }),
+            ],
+          ),
+          // 동의 버튼
+          Row(
+            children: [
+              Checkbox(
                 value: _revokeOk,
                 onChanged: _revokeOkChange,
-            ),
-            const Text(
-                '개인정보 수집 및 이용에 동의합니다'
-            ),
-          ],
-        ),
-        // 미동의 버튼
-        Row(
-          children: [
-            Checkbox(
-              value: _revokeNo,
-              onChanged: _revokeNoChange,
-            ),
-            const Text(
-                '개인정보 수집 및 이용에 동의하지 않습니다'
-            ),
-          ],
-        ),
-        const SizedBox(height: 20,),
-        if(_revokeOk)
-        SizedBox(
-          width: 100,
-          height: 50,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color(0xfff9f9f9),
-              side: BorderSide(width: 1, color: Colors.grey),
-            ),
-            onPressed: () async {
-              if(_revokeOk) {
-                await ConsentRepository.permitCurUserConsent();
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
-              }
-            },
-            child: const Text('다음', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+              ),
+              const Text(
+                  '개인정보 수집 및 이용에 동의합니다'
+              ),
+            ],
           ),
-        ),
-      ],
+          // 미동의 버튼
+          Row(
+            children: [
+              Checkbox(
+                value: _revokeNo,
+                onChanged: _revokeNoChange,
+              ),
+              const Text(
+                  '개인정보 수집 및 이용에 동의하지 않습니다'
+              ),
+            ],
+          ),
+          const SizedBox(height: 20,),
+          if(_revokeOk)
+            SizedBox(
+              width: 100,
+              height: 50,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xfff9f9f9),
+                  side: BorderSide(width: 1, color: Colors.grey),
+                ),
+                onPressed: () async {
+                  if(_revokeOk) {
+                    await ConsentRepository.permitCurUserConsent();
+                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomePage()));
+                  }
+                },
+                child: const Text('다음', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+              ),
+            ),
+          const SizedBox(height: 50,),
+        ],
+      ),
     );
   }
 }

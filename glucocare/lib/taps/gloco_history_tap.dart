@@ -257,7 +257,6 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
               Column(

@@ -35,8 +35,8 @@ class NotificationService {
   static Future<void> showNotification() async {
     const AndroidNotificationDetails androidNotificationDetails =
         AndroidNotificationDetails(
-          'eradfdfdf',
-          '12120iasdnz,mxcnvklahdklaef',
+          'alarm_1004_name',
+          'alarm_1004_channel',
           channelDescription: 'channel_description',
           importance: Importance.max,
           priority: Priority.high,

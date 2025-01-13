@@ -441,7 +441,7 @@ document.querySelectorAll('input[name="paytype"]').forEach((radio) => {
 async function getPay() {
     if(paytype === 'deposit') {
         // 무통장 입금
-        const currentProject = userProjects[index];
+        const currentProject = userProjects[pjtIndex];
         const responseGetpay = await fetch('/project/getpay-deposit', {
             method: 'POST',
             headers: { "Content-Type" : "application/json" },
@@ -473,7 +473,7 @@ async function getPay() {
     }
     else if(paytype === 'kakaopay') {
         // 카카오페이 간편 결제
-        const currentProject = userProjects[index];
+        const currentProject = userProjects[pjtIndex];
         const allprice = currentProject.allprice.replace(',',"");
         const responseGetpay = await fetch('/project/getpay-kakaopay', {
             method: 'POST',

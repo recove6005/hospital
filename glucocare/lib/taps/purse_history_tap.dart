@@ -249,7 +249,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
       body: SingleChildScrollView(
         child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
           child: Column(
             children: [
               Column(

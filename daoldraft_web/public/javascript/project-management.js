@@ -137,6 +137,10 @@ async function getProjects(progress) {
     }
     const allPjtResult = await response.json();
     
+    if(!response.ok) {
+        console.log(allPjtResult.error);
+    }
+
     if(allPjtResult.length === 0) {
         return;
     }

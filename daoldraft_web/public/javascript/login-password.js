@@ -19,16 +19,12 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                 const loginResponse = await fetch('/login/login', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify({email, password}),
+                    body: JSON.stringify({ email, password }),
                 });
         
                 const loginResult = await loginResponse.json();
-                if(loginResponse.ok) {
-                    alert(`어서오세요, ${loginResult.email}`);
-        
-                    window.location.href = "/html/home.html";
-                } 
-                else if(loginResult.code === 'auth/invalid-credential') {
+                
+                if(loginResult.code == 'auth/invalid-credential') {
                     // 사용자가 없음 >> 회원가입 절차
                     const response = await fetch('/login/register', {
                         method: 'POST',
@@ -41,13 +37,20 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                         window.location.href = "/html/home.html";
                     }
                 }
-                else if(loginResult.code === 'auth/wrong-password') {
-                    alert('비밀번호가 옳지 않습니다.');
+                if(loginResult.code == 'auth/wrong-password') {
+                    alert(`비밀번호가 옳지 않습니다. ${loginResult.code}`);
                 }
-                else if(loginResult.code === 'auth/too-many-requests') {
-                    alert('잠시 후에 다시 시도해주세요.');
-                } else {
-                    alert(`이메일과 비밀번호를 확인해주세요.`);
+                if(loginResult.code == 'auth/too-many-requests') {
+                    alert(`잠시 후에 다시 시도해주세요. ${loginResult.code}`);
+                }
+                
+                if(loginResponse.ok) {
+                    alert(`어서오세요, ${loginResult.email}`);
+        
+                    window.location.href = "../html/home.html";
+                } 
+                else {
+                    alert(`이메일과 비밀번호를 확인해주세요. ${loginResult.code}`);
                 }
             } catch(e) {
                 console.error("Error:", e);

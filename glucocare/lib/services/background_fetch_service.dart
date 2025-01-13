@@ -12,7 +12,24 @@ class FetchService {
     String taskId = task.taskId;
     logger.d('[glucocare_log] task startd. taskId: $taskId');
     try {
-      await NotificationService.showNotification();
+      if(taskId.toString().contains('first')) {
+        await NotificationService.showNotification();
+
+        String secondTaskId = taskId.toString().substring(5);
+
+        await BackgroundFetch.scheduleTask(TaskConfig(
+          taskId: secondTaskId,
+          periodic: true,
+          delay: 1000,
+          // delay: 86400000,
+          stopOnTerminate: false,
+          enableHeadless: true,
+          forceAlarmManager: true,
+        ),);
+      } else {
+        await NotificationService.showNotification();
+      }
+
     } catch (e) {
       logger.d("[glucocare_log] Error: $e");
     } finally {
@@ -29,7 +46,7 @@ class FetchService {
   static Future<void> initConfigureBackgroundFetch() async {
     await BackgroundFetch.configure(
       BackgroundFetchConfig(
-        minimumFetchInterval: 86400000,
+        minimumFetchInterval: 15,
         stopOnTerminate: false,
         enableHeadless: true,
         forceAlarmManager: true,
@@ -38,6 +55,7 @@ class FetchService {
         try {
           if(taskId.toString().contains('first')) {
             await NotificationService.showNotification();
+
             String secondTaskId = taskId.toString().substring(5);
 
             await BackgroundFetch.scheduleTask(TaskConfig(
