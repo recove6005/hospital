@@ -1,8 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { db, auth } from "../public/firebase-config.js";
+import { db, auth } from "../firebase-config.js";
 import { collection, doc, addDoc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { error } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

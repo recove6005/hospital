@@ -8,24 +8,8 @@
     "public": "public",
     "rewrites": [
       {
-        "source": "/project/**",
-        "function": "app"
-      },
-      {
-        "source": "/login/**",
-        "function": "app"
-      },
-      {
-        "source": "/user/**",
-        "function": "app"
-      },
-      {
-        "source": "/home/**",
-        "function": "app"
-      },
-      {
         "source": "**",
-        "destination": "/index.html"
+        "function": "appFunctions"
       }
     ],
     "ignore": [
@@ -49,5 +33,10 @@
         "*.local"
       ]
     }
-  ]
+  ],
+  "emulators": {
+    "functions": {
+      "port": 5001
+    }
+  }
 }
