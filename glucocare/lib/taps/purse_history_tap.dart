@@ -257,7 +257,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width-50,
                     height: 30,
-                    child: Text(
+                    child: const Text(
                       '내 혈압 관리',
                       style: TextStyle(
                         fontSize: 24,
@@ -390,7 +390,6 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                     setState(() {
                       _selectedDate = selectedDay;
                       _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(_selectedDate);
-
                       _setPurseModels();
                     });
                   },
@@ -637,6 +636,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                   ],
                 ),
               ),
+              const SizedBox(height: 50,),
             ],
           ),
         ),

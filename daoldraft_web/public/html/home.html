@@ -8,63 +8,47 @@
 </head>
 <body>
     <!-- topbar -->
-    <header id="topbar">
+    <header>
         <div id="logo-container">
             <a href="./home.html">
-                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
-                TEMP LOGO
+                <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
             </a>
         </div>
+
+        <nav>
+            <ul class="nav-container">
+                <li><a href="#about">about</a></li>
+                <li><a href="#portfolio">service</a></li>
+                <li><a href="#contact">contact</a></li>
+            </ul>
+        </nav>
+
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
                 <a id="profile-link" href="#">
-                    <img src="../images/ic_profile_default.png" alt="photo">
-                    <span><p id="user-email">example@gmail.com</p></span>
+                    <!-- <img src="../images/ic_profile_default.png" alt="photo"> -->
+                    User
                 </a>
                 <div id="dropdown-menu" style="display: none;">
                     <ul>
                         <li><a id="dropdown-mypage" href="../html/mypage.html">마이페이지</a></li>
-                        <li><a id="dropdown-logout">로그아웃</a></li>
+                        <li><a id="dropdown-logout" href="#">로그아웃</a></li>
                         <li><a id="dropdown-management" href="../html/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
                     </ul>
                 </div>
             </div>
             <div id="to-signin" style="display: none;">
-                <a href="../html/login-email.html">로그인</a>
+                <div><a href="../html/login-email.html">Login</a></div>
             </div>
         </div>
-    </header>
-
-    <!-- nav -->
-    <nav id="nav">
-        <ul class="nav-container">
-            <li><a href="#about">ABOUT</a></li>
-            <li><a href="#portfolio">SERVICES</a></li>
-            <li><a href="#contact">CONTACT</a></li>
-        </ul>
-    </nav>
+    </header>    
 
     <!-- home -->
     <main>
         <!-- About Section -->
         <section id="about">
             <div id="about-container">
-                <div id="about-main">
-                    <p>"Where Ideas Come to Life."</p>
-                </div>
-                <div id="about-description">
-                    <p>
-                        "We don’t just design; we innovate. 
-                        Every project is an opportunity to push boundaries and redefine excellence. 
-                        Our diverse team of designers and developers works tirelessly to ensure your ideas take center stage, 
-                        blending aesthetics with functionality. Whether it’s a website that captivates or a branding strategy that leaves a mark, 
-                        our mission is to elevate your brand and exceed expectations."
-                    </p>
-                </div>
-                <div id="about-subdescription">
-                    "Our mission is simple: to craft unique, user-friendly designs that align with your goals. 
-                    From concept to completion, we’re here to bring your vision to life."
-                </div>
+                
             </div>
         </section>
     
@@ -72,75 +56,59 @@
         <section id="portfolio">
             <h1>Our Services</h1>
             <div class="portfolio-container">
-                <!-- Portfolio Item 1: logo -->
-                <div class="portfolio-box">
-                    <a id="commission-log" href="#" class="portfolio-img">
-                        <img src="../images/sample.jpg" alt="로고 디자인">
-                        <div class="portfolio-description">
-                            <p class="portfolio-description-title">로고 디자인</p>
-                            <p class="portfolio-description-content">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            </p>
-                        </div>
+                <div class="service_box">
+                    <a href="../html/buy-subscribe.html">
+                        <img src="../images/aligo_services1.png" alt="service1">
                     </a>
+                    <p>마케팅 정기구독</p>
                 </div>
-                <div class="divider"></div>
-                <!-- Portfolio Item 2: draft -->
-                <div class="portfolio-box">
-                    <a id="commission-draft" href="#" class="portfolio-img">
-                        <img src="../images/sample.jpg" alt="원내시안 및 단순디자인">
-                        <div class="portfolio-description">
-                            <p class="portfolio-description-title">원내시안 및 단순디자인</p>
-                            <p class="portfolio-description-content">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            </p>
-                        </div>
+                <div class="service_box">
+                    <a href="../html/commission-homepage.html">
+                        <img src="../images/aligo_services2.png" alt="service2">
                     </a>
+                    <p>홈페이지 제작</p>
                 </div>
-                <div class="divider"></div>
-                <!-- Portfolio Item 3: signage -->
-                <div class="portfolio-box">
-                    <a id="commission-signage" href="#" class="portfolio-img">
-                        <img src="../images/sample.jpg" alt="디지털 사이니지 디자인">
-                        <div class="portfolio-description">
-                            <p class="portfolio-description-title">디지털 사이니지 디자인</p>
-                            <p class="portfolio-description-content">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            </p>
-                        </div>
+                <div class="service_box">
+                    <a href="../html/commission-logo.html">
+                        <img src="../images/aligo_services3.png" alt="service3">
                     </a>
+                    <p>로고디자인</p>
                 </div>
-                <div class="divider"></div>
-                <!-- Portfolio Item 4: blog -->
-                <div class="portfolio-box">
-                    <a id="commission-blog" href="#" class="portfolio-img">
-                        <img src="../images/sample.jpg" alt="블로그 포스팅">
-                        <div class="portfolio-description">
-                            <p class="portfolio-description-title">블로그 포스팅</p>
-                            <p class="portfolio-description-content">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            </p>
-                        </div>
+                <div class="service_box">
+                    <a href="../html/commission-blog.html">
+                        <img src="../images/aligo_services4.png" alt="service4">
                     </a>
+                    <p>네이버 블로그</p>
                 </div>
-                <div class="divider"></div>
-                <!-- Portfolio Item 5: homepage -->
-                <div class="portfolio-box">
-                    <a id="commission-homepage" href="#" class="portfolio-img">
-                        <img src="../images/sample.jpg" alt="웹페이지 디자인">                   
-                        <div class="portfolio-description">
-                            <p class="portfolio-description-title">웹페이지 디자인</p>
-                            <p class="portfolio-description-content">
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                                Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            </p>
-                        </div>
+                <div class="service_box">
+                    <a href="#">
+                        <img src="../images/aligo_services5.png" alt="service5">
                     </a>
+                    <p>인스타그램</p>
+                </div>
+                <div class="service_box">
+                    <a href="#">
+                        <img src="../images/aligo_services6.png" alt="service6">
+                    </a>
+                    <p>네이버 플레이스</p>
+                </div>
+                <div class="service_box">
+                    <a href="../html/commission-draft.html">
+                        <img src="../images/aligo_services7.png" alt="service7">
+                    </a>
+                    <p>원내시안</p>
+                </div>
+                <div class="service_box">
+                    <a href="../html/commission-signage.html">
+                        <img src="../images/aligo_services8.png" alt="service8">
+                    </a>
+                    <p>디지털 사이니지</p>
+                </div>
+                <div class="service_box">
+                    <a href="#">
+                        <img src="../images/aligo_services9.png" alt="service9">
+                    </a>
+                    <p>웹 배너</p>
                 </div>
             </div>
         </section>
@@ -148,27 +116,26 @@
         <!-- Contact Section -->
         <section id="contact">
             <h1>Contact</h1>
-            <div class="contact-links">
-                <a href="https://www.daolunion.com" target="_blank">
-                    <img src="../images/ic_homepage.png" alt="Homepage">
-                </a>
-                <a href="https://blog.naver.com/daolunion1" target="_blank">
-                    <img src="../images/ic_blog.png" alt="Blog">
-                </a>
-                <a href="https://pf.kakao.com/_example" target="_blank">
-                    <img src="../images/ic_kakaotalk.png" alt="KakaoTalk Channel">
-                </a>
-                <a href="https://www.instagram.com/daolunion/" target="_blank">
-                    <img src="../images/ic_insta.png" alt="Instagram">
-                </a>
-                <a href="https://www.youtube.com/@daolunion2558" target="_blank">
-                    <img src="../images/ic_youtube.png" alt="YouTube">
-                </a>
+            <div id="">
+
+            </div>
+            <div id="contact-wrapper">
+
             </div>
         </section>
     </main>
+
+    <div class="divider"></div>
+    <footer>
+        <img src="../images/aligo_logo.png" alt="#">
+        <p><span>회사명: </span>알리고</p>
+        <p><span>주소: </span>대구 수성구 범안로 56(대구은행 범물지점 4층)</p>
+        <p><span>이메일: </span>mesco_mshop@naver.com</p>
+        <p><span>전화: </span>053-784-6901</p>
+        <p><span>사업자등록번호: </span>740-11-02631</p>
+        <p id="copyright">COPYRIGHT (c) ALIGO ALL RIGHTS RESERVED</p>
+    </footer>
     
-    <a id="floatingButton" href="../html/buy-subscribe.html">구독권 구매</a>
 </body>
 <script src="../javascript/home.js" type="module" defer></script>
 </html>

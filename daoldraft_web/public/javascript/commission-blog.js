@@ -37,27 +37,27 @@ async function checkUserVerify() {
 }
 checkUserVerify();
 
-// 연락처 input 문자열
-document.getElementById('input-phone').addEventListener("input", function (e) {
-    let input = e.target.value;
+// // 연락처 input 문자열
+// document.getElementById('input-phone').addEventListener("input", function (e) {
+//     let input = e.target.value;
 
-    // 숫자만 남기기
-    input = input.replace(/[^0-9]/g, "");
+//     // 숫자만 남기기
+//     input = input.replace(/[^0-9]/g, "");
 
-    // 3-3-4 형식으로 포맷팅
-    if (input.length <= 3) {
-        e.target.value = input; // 3자리 이하일 경우 그대로 출력
-    } else if (input.length <= 7) {
-        e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
-    }
-    else if(input.length <= 10) { // 10자리 3-3-4 형식
-        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
-    }
-    else if(input.length > 10) { // 11자리 3-4-4 형식
-        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
-    }
+//     // 3-3-4 형식으로 포맷팅
+//     if (input.length <= 3) {
+//         e.target.value = input; // 3자리 이하일 경우 그대로 출력
+//     } else if (input.length <= 7) {
+//         e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
+//     }
+//     else if(input.length <= 10) { // 10자리 3-3-4 형식
+//         e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
+//     }
+//     else if(input.length > 10) { // 11자리 3-4-4 형식
+//         e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
+//     }
 
-});
+// });
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -77,134 +77,6 @@ async function checkUserAdminAndDisplay() {
 }
 checkUserAdminAndDisplay();
 
-// 구독권에 따른 가격 표시
-function getPrice(membersheType, sizeValue) {
-    const priceElement = document.getElementById('price');
-    const titleElement = document.getElementById('project-name');
-    const discountPriceElement = document.getElementById('discount-price');
-    const allprice = document.getElementById('allprice');
-
-    if(membersheType === '1') {
-        // 월간 3만원 구독권 사용자
-        if (sizeValue === '1건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '95,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 포스팅 (1건)';
-            allprice.value = '95000';
-        } else if (sizeValue === '11건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '950,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (11건)';
-            allprice.value = '950000';
-        } else if (sizeValue === '25건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '1,900,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (25건)';
-            allprice.value = '1900000';
-        } else {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = ' 2,850,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (40건)';
-            allprice.value = '2850000';
-        }
-    }
-    else if(membersheType === '2') {
-        // 월간 5만원 구독권 사용자
-        if (sizeValue === '1건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '90,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 포스팅 (1건)';
-            allprice.value = '90000';
-        } else if (sizeValue === '11건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '900,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (11건)';
-            allprice.value = '900000';
-        } else if (sizeValue === '25건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '1,800,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (25건)';
-            allprice.value = '1800000';
-        } else {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = ' 2,700,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (40건)';
-            allprice.value = '2700000';
-        }
-    } 
-    else if(membersheType === '3') {
-        // 연간 50만원 구독권 사용자
-        if (sizeValue === '1건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '70,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 포스팅 (1건)';
-            allprice.value = '70000';
-        } else if (sizeValue === '11건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '700,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (11건)';
-            allprice.value = '700000';
-        } else if (sizeValue === '25건') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '1,400,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (25건)';
-            allprice.value = '1400000';
-        } else {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = ' 2,100,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (40건)';
-            allprice.value = '3000000';
-        }
-    }
-    else if(membersheType === '0') {
-        // 구독권이 없는 사용자
-        if (sizeValue === '1건') {
-            discountPriceElement.style.display = 'none';
-            priceElement.textContent = '100,000 원';
-            titleElement.textContent = '블로그 포스팅 (1건)';
-            allprice.value = '100000';
-        } else if (sizeValue === '11건') {
-            discountPriceElement.style.display = 'none';
-            priceElement.textContent = '1,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (11건)';
-            allprice.value = '1000000';
-        } else if (sizeValue === '25건') {
-            discountPriceElement.style.display = 'none';
-            priceElement.textContent = '2,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (25건)';
-            allprice.value = '2000000';
-        } else {
-            discountPriceElement.style.display = 'none';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '블로그 포스팅 (40건)';
-            allprice.value = '3000000';
-        }
-    }
-}
 
 // 사용자 구독권 정보 가져오기
 async function getSubscribeType() {
@@ -224,8 +96,6 @@ async function getSubscribeType() {
     return membersheType;
 }
 
-// 구독권 가격 초기 가격
-getPrice(await getSubscribeType(), '1건');
 
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
@@ -300,38 +170,38 @@ radios.forEach((radio) => {
 });
 
 // 프로젝트 문의 등록
-document.getElementById('contact-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
+// document.getElementById('contact-form').addEventListener('submit', async (e) => {
+//     e.preventDefault();
 
-    const formData = new FormData(e.target);
-    const formValues = Object.fromEntries(formData.entries());
+//     const formData = new FormData(e.target);
+//     const formValues = Object.fromEntries(formData.entries());
 
-    const loginCheckRes = await fetch('/login/current-user', {
-        method: 'POST',
-        credentials: "include",
-    });
+//     const loginCheckRes = await fetch('/login/current-user', {
+//         method: 'POST',
+//         credentials: "include",
+//     });
 
-    if(loginCheckRes.ok) {
-        try {
-            const response = await fetch('/user/commission-project-blog', {
-                method: 'POST',
-                credentials: "include",
-                headers: { "Content-Type" : "application/json " },
-                body: JSON.stringify(formValues),
-            });
+//     if(loginCheckRes.ok) {
+//         try {
+//             const response = await fetch('/user/commission-project-blog', {
+//                 method: 'POST',
+//                 credentials: "include",
+//                 headers: { "Content-Type" : "application/json " },
+//                 body: JSON.stringify(formValues),
+//             });
     
-            const result = await response.json();
-            if(response.ok) {
-                alert('프로젝트가 접수되었습니다. 마이페이지에서 확인해 주세요.');
-                window.location.href = '../html/home.html';
-            } else {
-                console.log(result.error);
-            }
-        } catch(e) {
-            console.error("error: ", e);
-        }
-    } else {
-        window.location.href = '../html/login-email.html';
-    }
-});
+//             const result = await response.json();
+//             if(response.ok) {
+//                 alert('프로젝트가 접수되었습니다. 마이페이지에서 확인해 주세요.');
+//                 window.location.href = '../html/home.html';
+//             } else {
+//                 console.log(result.error);
+//             }
+//         } catch(e) {
+//             console.error("error: ", e);
+//         }
+//     } else {
+//         window.location.href = '../html/login-email.html';
+//     }
+// });
 

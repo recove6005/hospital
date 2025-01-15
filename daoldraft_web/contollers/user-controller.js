@@ -60,7 +60,7 @@ export const getSubscribeInfo = async (req, res) => {
 // 프로젝트 문의 등록 - logo
 export const commissionProjectLogo = async (req, res) => {
     const formData = req.body;
-    const { title, size, rank, phone, organization, name, email, details, allprice } = formData;
+    const { title, phone, organization, name, email, details } = formData;
     const user = auth.currentUser;
     
     if(user) {
@@ -75,14 +75,11 @@ export const commissionProjectLogo = async (req, res) => {
                 userEmail: userEmail,
                 date: date,
                 title: title,
-                size: size,
-                rank: rank,
                 phone: phone,
                 organization: organization,
                 name: name,
                 email: email,
                 details: details,
-                allprice: allprice,
                 progress: '0',
             });
         
@@ -212,7 +209,7 @@ export const commissionProjectBlog = async (req, res) => {
 // 프로젝트 문의 등록 - hompage
 export const commissionProjectHomepage = async (req, res) => {
     const formData = req.body;
-    const { title, size, rank, phone, organization, name, email, details, allprice } = formData;
+    const { title, phone, organization, name, email, details } = formData;
     const user = auth.currentUser;
 
     if(user) {
@@ -225,14 +222,11 @@ export const commissionProjectHomepage = async (req, res) => {
                 userEmail: userEmail,
                 date: date,
                 title: title,
-                size: size,
-                rank: rank,
                 phone: phone,
                 organization: organization,
                 name: name,
                 email: email,
                 details: details,
-                allprice: allprice,
                 progress: '0',
             });
 

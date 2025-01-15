@@ -28,36 +28,12 @@ async function checkUserVerify() {
             document.getElementById("profile-photo").style.display = 'flex';
             document.getElementById("profile-photo").style.flexDirection = 'raw';
             document.getElementById("profile-photo").style.alignItems = 'center';
-
-            document.getElementById("user-email").innerText = result.msg;
             
             document.getElementById("to-signin").style.display = 'none';
         }
     }
 }
 checkUserVerify();
-
-// 연락처 input 문자열
-document.getElementById('input-phone').addEventListener("input", function (e) {
-    let input = e.target.value;
-
-    // 숫자만 남기기
-    input = input.replace(/[^0-9]/g, "");
-
-    // 3-3-4 형식으로 포맷팅
-    if (input.length <= 3) {
-        e.target.value = input; // 3자리 이하일 경우 그대로 출력
-    } else if (input.length <= 7) {
-        e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
-    }
-    else if(input.length <= 10) { // 10자리 3-3-4 형식
-        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
-    }
-    else if(input.length > 10) { // 11자리 3-4-4 형식
-        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
-    }
-
-});
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -76,137 +52,6 @@ async function checkUserAdminAndDisplay() {
     }
 }
 checkUserAdminAndDisplay();
-
-// 구독권에 따른 가격 표시
-function getPrice(membersheType, sizeValue) {
-    const priceElement = document.getElementById('price');
-    const titleElement = document.getElementById('project-name');
-    const discountPriceElement = document.getElementById('discount-price');
-    const allprice = document.getElementById('allprice');
-
-    if(membersheType === '1') {
-        // 월간 3만원 구독권 사용자
-        if (sizeValue === '하') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '1,425,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '1,500,000 원';
-            titleElement.textContent = '웹페이지 디자인 (하)';
-            allprice.value = '1425000';
-        } else if (sizeValue === '중') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '2,850,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (중)';
-            allprice.value = '2850000';
-        } 
-        else {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = ' 4,750,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '5,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (상)';
-            allprice.value = '4750000';
-        }
-    }
-    else if(membersheType === '2') {
-        // 월간 5만원 구독권 사용자
-        if (sizeValue === '하') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '1,350,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '1,500,000 원';
-            titleElement.textContent = '웹페이지 디자인 (하)';
-            allprice.value = '1350000';
-        } else if (sizeValue === '중') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '2,700,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (중)';
-            allprice.value = '2700000';
-        } 
-        else {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = ' 4,500,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '5,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (상)';
-            allprice.value = '4500000';
-        }
-    } 
-    else if(membersheType === '3') {
-        // 연간 50만원 구독권 사용자
-        if (sizeValue === '하') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '1,050,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '1,500,000 원';
-            titleElement.textContent = '웹페이지 디자인 (하)';
-            allprice.value = '1050000';
-        } else if (sizeValue === '중') {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '2,100,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (중)';
-            allprice.value = '2100000';
-        } 
-        else {
-            discountPriceElement.style.display = 'block';
-            discountPriceElement.textContent = '3,500,000 원';
-            priceElement.style.textDecoration = 'line-through';
-            priceElement.textContent = '5,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (상)';
-            allprice.value = '3500000';
-        }
-    }
-    else if(membersheType === '0') {
-        // 구독권이 없는 사용자
-        if (sizeValue === '하') {
-            discountPriceElement.style.display = 'none';
-            priceElement.style.textDecoration = 'none';
-            priceElement.textContent = '1,500,000 원';
-            titleElement.textContent = '웹페이지 디자인 (하)';
-            allprice.value = '1500000';
-        } else if (sizeValue === '중') {
-            discountPriceElement.style.display = 'none';
-            priceElement.style.textDecoration = 'none';
-            priceElement.textContent = '3,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (중)';
-            allprice.value = '3000000';
-        } 
-        else {
-            discountPriceElement.style.display = 'none';
-            priceElement.style.textDecoration = 'none';
-            priceElement.textContent = '5,000,000 원';
-            titleElement.textContent = '웹페이지 디자인 (상)';
-            allprice.value = '5000000';
-        }
-    }
-}
-
-// 사용자 구독권 정보 가져오기
-async function getSubscribeType() {
-    var membersheType = '0';
-    const response = await fetch('/user/get-subscribe-type', {
-        method: 'POST',
-        credentials: "include",
-    });
-
-    const result = await response.json();
-    if(response.ok) {
-        membersheType = result.subscribe;
-    } else {
-        console.log(`error: ${result.error}`);
-    } 
-    return membersheType;
-}
-
-// 구독권 가격 초기 가격
-getPrice(await getSubscribeType(), '하');
-
 
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
@@ -271,15 +116,54 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     }
 });
 
-
-const radios = document.querySelectorAll('input[name="size"]');
-radios.forEach((radio) => {
-    radio.addEventListener('click', async function() {
-        const sizeValue = this.value;
-        const membersheType = await getSubscribeType();
-        
-        getPrice(membersheType, sizeValue);
+// 상품 메뉴 스와이프
+document.getElementById('swipe-next-btn').addEventListener('click', (e) => {
+    const navlist = document.querySelectorAll('#project-nav ul li');
+    navlist.forEach(li => {
+        li.style.transform = `translateX(-220px)`;
     });
+
+    e.target.style.display = 'none';
+
+    const prevBtn = document.getElementById('swipe-prev-btn');
+    prevBtn.style.display = 'block';
+});
+
+document.getElementById('swipe-prev-btn').addEventListener('click', (e) => {
+    const navlist = document.querySelectorAll('#project-nav ul li');
+    navlist.forEach(li => {
+        li.style.transform = `translateX(0px)`;
+    });
+
+    e.target.style.display = 'none';
+    
+    const nextBtn = document.getElementById('swipe-next-btn');
+    nextBtn.style.display = 'block';
+});
+
+// 연락처 input 문자열
+document.getElementById('phone').addEventListener("input", (e) => {
+    let input = e.target.value;
+
+    // 숫자만 남기기
+    input = input.replace(/[^0-9]/g, "");
+
+    if(input.length > 11) {
+        input = input.slice(0,11);
+    }
+
+    // 3-3-4 형식으로 포맷팅
+    if (input.length <= 3) {
+        e.target.value = input; // 3자리 이하일 경우 그대로 출력
+    } else if (input.length <= 7) {
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
+    }
+    else if(input.length <= 10) { // 10자리 3-3-4 형식
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
+    }
+    else if(input.length > 10) { // 11자리 3-4-4 형식
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
+    }
 });
 
 // 프로젝트 문의 로직

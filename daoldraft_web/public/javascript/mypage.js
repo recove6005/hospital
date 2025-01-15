@@ -24,13 +24,13 @@ async function getSubscribeInfos() {
         const subscribeInfosBox = document.getElementById('subscribe-infos');
         subscribeInfosBox.innerHTML = `
                 <p>구매하신 구독권이 없습니다.</p>
-                <div id="subscribe-infos-top"><a id="info-close-btn">닫기</a></div>
+                <a id="subscribe-close">닫기</a>
         `;
 
         document.body.appendChild(subscribeInfosBox);
 
         // 구독정보 닫기
-        document.getElementById('info-close-btn').addEventListener('click', (e) => {
+        document.getElementById('subscribe-close').addEventListener('click', (e) => {
             const infoBox = document.getElementById('subscribe-infos');
             infoBox.style.opacity = '0';
         });
@@ -50,8 +50,15 @@ async function getSubscribeInfos() {
                     <p>블로그 포스팅 <span>${result.subscribeInfo.blog}회</span> 무료 사용 가능</p>
                     <p>웹페이지 디자인 <span>${result.subscribeInfo.homepage}회</span> 무료 사용 가능</p>    
                     <p>모든 서비스 <span>${result.subscribeInfo.discount}%</span> 할인 적용</p>
+                    <a id="subscribe-close">닫기</a>
             `;
 
+            // 구독정보 닫기
+            document.getElementById('subscribe-close').addEventListener('click', (e) => {
+                const infoBox = document.getElementById('subscribe-infos');
+                infoBox.style.opacity = '0';
+            });
+        
             document.body.appendChild(subscribeInfosBox);
         } else {
             console.log(`error: ${result.error}`);
@@ -61,16 +68,11 @@ async function getSubscribeInfos() {
 getSubscribeInfos();
 
 // 구독정보 버튼
-document.getElementById('see_membership').addEventListener('mouseover', (e) => {
+document.getElementById('drowdown-subscribe').addEventListener('click', (e) => {
+    e.preventDefault();
     const infoBox = document.getElementById('subscribe-infos');
     infoBox.style.opacity = '100';
 });
-
-document.getElementById('see_membership').addEventListener('mouseout', (e) => {
-    const infoBox = document.getElementById('subscribe-infos');
-    infoBox.style.opacity = '0';
-});
-
 
 
 async function checkUserVerify() {
@@ -181,11 +183,6 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
 
 // 비밀번호 변경
 document.getElementById('update-password').addEventListener('click', async (e) =>  {
-    // const userConfirmed = confirm('비밀번호를 변경하시겠습니까?');
-    // if(userConfirmed) {
-    //     alert('비밀번호 변경 링크가 전송되었습니다. 이메일을 확인해 주세요.');
-    // }
-
     Swal.fire({
         title: '비밀번호 재설정',
         text: '비밀번호를 변경하시겠습니까?',
@@ -244,7 +241,7 @@ function getMainProjectTitle(index) {
     if(pjt.size == "") {
         projectTitle.innerText = pjt.title;
     } else {
-        projectTitle.innerText = `${pjt.title} (${pjt.size})`;
+        projectTitle.innerText = `${pjt.title}`;
     }
 }
 
@@ -262,20 +259,12 @@ function getMainProjectInfo(index) {
                 <p class="description-content" id="name">${pjt.name}</p>
             </div>
             <div class="description">
-                <p class="description-title">직위</p>
-                <p class="description-content" id="rank">${pjt.rank}</p>
-            </div>
-            <div class="description">
                 <p class="description-title">연락처</p>
                 <p class="description-content" id="phone">${pjt.phone}</p>
             </div>
             <div class="description">
                 <p class="description-title">문의내용</p>
                 <p class="description-content" id="details">${pjt.details}</p>
-            </div>
-            <div class="description">
-                <p class="description-title">가격</p>
-                <p class="description-content" id="allprice">${pjt.allprice}원</p>
             </div>
         `;
 }
@@ -412,9 +401,7 @@ initProjectInfo();
 // 결제 모달창
 document.getElementById("request-payment").addEventListener('click', () => {
     const modal = document.getElementById("modal");
-    console.log(`clicke ${modal.style.display}`);
     if(modal.style.display === 'none') modal.style.display = 'flex';
-    else modal.style.display = 'none';
 });
 
 document.getElementById("modal-close").addEventListener('click', () => {

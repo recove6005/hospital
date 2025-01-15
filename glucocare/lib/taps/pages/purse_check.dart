@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
 import 'package:glucocare/models/purse_danger_model.dart';
@@ -72,8 +73,8 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
 
     _state = _stateController.text;
 
-    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
-    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
+    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toUtc());
+    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toUtc());
   }
 
   void _onSaveButtonPressed() async {
@@ -131,6 +132,24 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
       krTime = '오후 $krTime';
     }
     return krTime;
+  }
+
+  @override
+  TextInputFormatter rangeTextInputFormatter(int min, int max) {
+    return TextInputFormatter.withFunction(
+        (TextEditingValue oldValue, TextEditingValue newValue) {
+          if(newValue.text.isEmpty) {
+            return newValue; // Allow empty input
+          }
+
+          final int? value = int.tryParse(newValue.text);
+          if (value == null || value < min || value > max) {
+            return oldValue; // Revert to previous value if out of range
+          }
+
+          return newValue; // Accept valid input
+        },
+    );
   }
 
   @override
@@ -206,6 +225,10 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                   controller: _shrinkController,
                                   keyboardType: TextInputType.number,
                                   maxLength: 3,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    rangeTextInputFormatter(0, 200),
+                                  ],
                                   decoration: const InputDecoration(
                                       counterText: '',
                                       hintStyle: TextStyle(color: Colors.black38)
@@ -245,6 +268,10 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                   controller: _relaxController,
                                   keyboardType: TextInputType.number,
                                   maxLength: 3,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                    rangeTextInputFormatter(0, 200),
+                                  ],
                                   decoration: const InputDecoration(
                                       counterText: '',
                                       hintStyle: TextStyle(color: Colors.black38)
@@ -284,6 +311,10 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                     controller: _purseController,
                                     keyboardType: TextInputType.number,
                                     maxLength: 3,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      rangeTextInputFormatter(0, 200),
+                                    ],
                                     decoration: const InputDecoration(
                                         counterText: '',
                                         hintStyle: TextStyle(color: Colors.black38)

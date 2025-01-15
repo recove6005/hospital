@@ -305,7 +305,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             const SizedBox(height: 10,),
             SizedBox(
               width: MediaQuery.of(context).size.width-50,
-              height: 160,
+              height: 150,
               child: ElevatedButton(
                 onPressed: () async {
                   final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const GlucoCheckPage()));
@@ -414,7 +414,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             const SizedBox(height: 20,),
             SizedBox(
               width: MediaQuery.of(context).size.width-50,
-              height: 160,
+              height: 150,
               child: ElevatedButton(
                 onPressed: () async {
                   final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PurseCheckPage()));
@@ -523,7 +523,7 @@ class _HomeTapForm extends State<HomeTapForm> {
             const SizedBox(height: 20,),
             SizedBox(
               width: MediaQuery.of(context).size.width-50,
-              height: 160,
+              height: 150,
               child: ElevatedButton(
                 onPressed: () async {
                   final result = await Navigator.push(context, MaterialPageRoute(builder: (context) => const PillCheckPage()));
@@ -715,6 +715,20 @@ class _HomeTapForm extends State<HomeTapForm> {
                 ],
               ),
             ),
+            const SizedBox(height: 50,),
+            GestureDetector(
+              onTap:  () async {
+                await launchUrl(Uri.parse('https://aligoad.co.kr/'));
+              },
+              child: Container(
+                margin: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Image.asset('assets/images/banner_aligo.jpg'),
+              )
+            ),
+            const SizedBox(height: 50,),
           ],
         ),
       ),

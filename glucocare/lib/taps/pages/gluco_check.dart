@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/gluco_col_name_model.dart';
 import 'package:glucocare/models/gluco_danger_model.dart';
@@ -80,8 +81,8 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     _value = int.parse(_valueController.text);
     _glucoDanger = DangerCheck.glucoDangerCheck(_value);
     _state = _stateController.text;
-    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now());
-    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now());
+    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toUtc());
+    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toUtc());
     _glucoDanger = DangerCheck.glucoDangerCheck(_value);
   }
 
@@ -128,6 +129,24 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
       GlucoColNameRepository.insertGlucoColName(nameModel);
     }
     Navigator.pop(context, true);
+  }
+
+  @override
+  TextInputFormatter rangeTextInputFormatter(int min, int max) {
+    return TextInputFormatter.withFunction(
+          (TextEditingValue oldValue, TextEditingValue newValue) {
+        if(newValue.text.isEmpty) {
+          return newValue; // Allow empty input
+        }
+
+        final int? value = int.tryParse(newValue.text);
+        if (value == null || value < min || value > max) {
+          return oldValue; // Revert to previous value if out of range
+        }
+
+        return newValue; // Accept valid input
+      },
+    );
   }
 
   @override
@@ -198,6 +217,10 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                         child: TextField(
                           controller: _valueController,
                           maxLength: 3,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly,
+                            rangeTextInputFormatter(0, 200),
+                          ],
                           decoration: const InputDecoration(
                             counterText: '',
                           ),

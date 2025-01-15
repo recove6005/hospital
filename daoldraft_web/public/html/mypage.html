@@ -8,85 +8,44 @@
 </head>
 <body>
     <!-- topbar -->
-    <header id="topbar">
+    <header>
         <div id="logo-container">
-            <a href="./home.html">
-                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
-                TEMP LOGO
-            </a>
+            <a href="./home.html"><img src="../images/aligo_logo.png" alt="logo"></a>
         </div>
+
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
                 <a id="profile-link" href="#">
-                    <img src="../images/ic_profile_default.png" alt="photo">
-                    <span><p id="user-email">example@gmail.com</p></span>
+                    <span><p id="user-email">example@google.com</p></span>
                 </a>
                 <div id="dropdown-menu" style="display: none;">
                     <ul>
-                        <li><a id="dropdown-mypage" href="../html/mypage.html">마이페이지</a></li>
-                        <li><a id="dropdown-logout">로그아웃</a></li>
                         <li><a id="dropdown-management" href="../html/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
+                        <li><a id="drowdown-subscribe" href="#">구독 정보</a></li>
+                        <li><a id="update-password" href="#">비밀번호 변경</a></li>
+                        <li><a id="dropdown-logout">로그아웃</a></li>
                     </ul>
                 </div>
             </div>
             <div id="to-signin" style="display: none;">
-                <a href="../html/login-email.html">로그인</a>
+                <a href="../html/login-email.html">Login</a>
             </div>
         </div>
     </header>
 
     <main>
-        <div id="main_title">
-            <div>
-                <h1>마이페이지</h1>
-                <a id="update-password">비밀번호 변경</a>
-            </div>
-            <a id="see_membership">구독 정보</a>
-            <div id="subscribe-infos" style="opacity: 0;"></div>
-        </div>
-
+        <h1>마이페이지</h1>
         <div id="list-container">
-            <div id="project-list">
-                <!-- <a class="list-item">
-                    <p class="item-title">원내시안 및 단순 디자인</p>
-                    <p class="item-date">문의날짜 0000-00-00</p>
-                    <div class="list-divider"></div>
-                </a> -->
-            </div>
+            <div id="project-list"></div>
         </div>
         
         <div id="projects-wrapper" style="display: none;">
-            <div id="main_project_selector">
-                <div id="swipe-wrapper">
-                    <div class="item"><p class="project-name">Project Name A</p></div>
-                </div>
+            <div id="project-title">
+                <div> </div>
+                <p class="project-name">Project Name A</p>
             </div>
-    
-            <div id="main-project-info">
-                <!-- <div class="description">
-                    <p class="description-title">기관명</p>
-                    <p class="description-content" id="organization">organization</p>
-                </div>
-                <div class="description">
-                    <p class="description-title">성함</p>
-                    <p class="description-content" id="name">name</p>
-                </div>
-                <div class="description">
-                    <p class="description-title">직위</p>
-                    <p class="description-content" id="rank">rank</p>
-                </div>
-                <div class="description">
-                    <p class="description-title">연락처</p>
-                    <p class="description-content" id="phone">phone</p>
-                </div>
-                <div class="description">
-                    <p class="description-title">문의내용</p>
-                    <p class="description-content" id="details">details</p>
-                </div>
-                <div class="description">
-                    <p class="description-title">가격</p>
-                    <p class="description-content" id="price">price</p> -->
-                </div>
+
+            <div id="main-project-info"></div>
     
     
             <div id="main-progress">
@@ -115,24 +74,27 @@
             </div>
 
             <div id="modal" style="display: none;">
-                <div>
-                    <div class="modal-top">
-                        <h1>결제</h1>
+                <div id="modal-container">
+                    <div id="modal-top">
+                        <p>결제</p>
                         <a id="modal-close">X</a>
                     </div>
-                    <div class="divider"></div>
+
                     <div class="modal-inner-box">
                         <p>결제 방법</p>
-                        <label><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>무통장입금</label>
-                        <label><input type="radio" name="paytype" value="kakaopay" id="payment-kakaopay">카카오페이</label>
+                        <label for="payment-deposit"><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>무통장입금</label>
+                        <label for="payment-kakaopay"><input type="radio" name="paytype" value="kakaopay" id="payment-kakaopay">카카오페이</label>
                     </div>
+
                     <form class="pay-form" id="deposit-box">
                         <label><input id="deposit-name" name="deposit-name" placeholder="예금주" required></label>
                         <button>결제요청</button>
                     </form>
-                    <form class="pay-form hidden" id="kakaopay-box">
+
+                    <form class="pay-form hidden" id="kakaopay-box" style="display: none;">
                         <button>결제요청</button>
                     </form>
+
                 </div>
             </div>
         </div>
@@ -147,6 +109,9 @@
             
         </div>
     </div>
+
+    <div id="subscribe-infos" style="opacity: 0;"></div>
+
 </body>
 <script src="/node_modules/sweetalert2/dist/sweetalert2.all.min.js"></script>
 <script src="../javascript/mypage.js" type="module" defer></script>
