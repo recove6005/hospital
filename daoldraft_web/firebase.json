@@ -4,12 +4,16 @@
     "indexes": "firestore.indexes.json"
   },
   "hosting": {
-    "site": "daoldraft",
     "public": "public",
-    "rewrites": [
+    "headers": [
       {
-        "source": "**",
-        "function": "appFunctions"
+        "source": "**/*.@(css|js)",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, no-store, must-revalidate"
+          }
+        ]
       }
     ],
     "ignore": [
@@ -20,23 +24,5 @@
   },
   "storage": {
     "rules": "storage.rules"
-  },
-  "functions": [
-    {
-      "source": "functions",
-      "codebase": "default",
-      "ignore": [
-        "node_modules",
-        ".git",
-        "firebase-debug.log",
-        "firebase-debug.*.log",
-        "*.local"
-      ]
-    }
-  ],
-  "emulators": {
-    "functions": {
-      "port": 5001
-    }
   }
 }

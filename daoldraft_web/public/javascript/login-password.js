@@ -21,7 +21,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify({ email, password }),
                 });
-        
+
                 const loginResult = await loginResponse.json();
                 
                 if(loginResult.code == 'auth/invalid-credential') {
@@ -31,7 +31,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                         headers: { 'Content-Type' : 'application/json'},
                         body: JSON.stringify({ email, password }),
                     });
-        
+                            
                     if(response.ok) {
                         alert(`어서오세요, ${email}님`);
                         window.location.href = "/html/home.html";
@@ -44,7 +44,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                     alert(`잠시 후에 다시 시도해주세요. ${loginResult.code}`);
                 }
                 
-                if(loginResponse.ok) {
+                if(loginResponse.status == 200) {
                     alert(`어서오세요, ${loginResult.email}`);
         
                     window.location.href = "../html/home.html";

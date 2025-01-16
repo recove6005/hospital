@@ -112,9 +112,12 @@ main {
 }
 
 #project-nav {
+    position: relative;
     display: flex;
     flex-direction: row;
+    flex-shrink: 0;
     align-items: center;
+    border-bottom: 1px solid #00a99d;
 }
 
 #project-nav ul {
@@ -185,17 +188,22 @@ main {
 
 .swipe-btn {
     position: absolute;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    z-index: 1000;
 }
 
 #swipe-prev-btn {
-    display: none;
     transform: rotate(180deg);
-    z-index: 9999;
+    top: 28px;
+    left: 5px;
+    display: none;
 }
 
 #swipe-next-btn {
-    margin-left: 1040px;
-    z-index: 9999;
+    bottom: 28px;
+    right: 5px;
 }
 
 
@@ -227,7 +235,7 @@ main {
     color: #00a99d;
 }
 
-#contact-display-wrapper div {
+#contact-display-wrapper > div {
     width: 410px;
     height: 770px;
     border: 1px solid #00a99d;
@@ -237,6 +245,62 @@ main {
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+
+}
+
+.display-box {
+    width: 410px;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: start;
+    align-items: center;
+    transition-duration: 0.5s;
+}
+
+#display-box-0 {
+    width: 410px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+
+#display-box-1 {
+    width: 410px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 디스플레이: 자동 슬라이드 */
+#display-swipe-wrapper {
+    width: 200px;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    margin-top: 80px;
+}
+
+#display-swipe-wrapper p {
+    width: 50px;
+    height: 30px;
+    font-size: 20px;
+    font-weight: 100;
+    color: #232323;
+    text-align: center;
+    margin: 0 25px;
+}
+
+#display-swipe-wrapper a {
+    cursor: pointer;
 }
 
 /* 컨텍트 섹션: 입력 폼 */

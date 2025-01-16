@@ -1,55 +1,100 @@
+const apiClient = axios.create({
+    baseURL: "https://18.226.104.38:80",
+    withCredentials: true,
+    headers: { "Content-Type":"application/json" },
+});
+
 // 로그인 체크
 async function checkLogin() {
-    const response = await fetch('/login/current-user', {
-        method: 'POST',
-        credentials: "include",
-    });
+    // const response = await fetch('/login/current-user', {
+    //     method: 'POST',
+    //     credentials: "include",
+    // });
 
-    if(!response.ok) {
+    // if(!response.ok) {
+    //     document.getElementById("to-signin").style.display = 'block';
+    // }
+
+    const response = await apiClient.post("/login/current-user");
+    if(!response.data) {
         document.getElementById("to-signin").style.display = 'block';
     }
 }
 checkLogin();
 
 async function checkUserVerify() {
-    const response = await fetch('/login/verify', {
-        method: 'POST',
-        credentials: "include",
-    });
+    // const response = await fetch('/login/verify', {
+    //     method: 'POST',
+    //     credentials: "include",
+    // });
 
-    const result = await response.json();
-    if(response.ok) {
-        if(result.msg.includes("verify0")) {
-            window.location.reload();
-            alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
-            document.getElementById("to-signin").style.display = 'block';
-        } 
-        else {
-            document.getElementById("profile-photo").style.visibility = 'visible';
-            document.getElementById("profile-photo").style.display = 'flex';
-            document.getElementById("profile-photo").style.flexDirection = 'raw';
-            document.getElementById("profile-photo").style.alignItems = 'center';
+    // const result = await response.json();
 
-            document.getElementById("user-email").innerText = result.msg;
+    // if(response.ok) {
+    //     if(result.msg.includes("verify0")) {
+    //         window.location.reload();
+    //         alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
+    //         document.getElementById("to-signin").style.display = 'block';
+    //     } 
+    //     else {
+    //         document.getElementById("profile-photo").style.visibility = 'visible';
+    //         document.getElementById("profile-photo").style.display = 'flex';
+    //         document.getElementById("profile-photo").style.flexDirection = 'raw';
+    //         document.getElementById("profile-photo").style.alignItems = 'center';
+
+    //         document.getElementById("user-email").innerText = result.msg;
             
-            document.getElementById("to-signin").style.display = 'none';
+    //         document.getElementById("to-signin").style.display = 'none';
+    //     }
+    // }
+
+    try {
+        const response = await apiClient.post("/login/verify");
+        const result = response.data;
+    
+        if(result.msg.includes("verify0")) {
+            alert("인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.");
+                window.location.reload();
+                document.getElementById("to-signin").style.display = "block";
+        } else {
+            document.getElementById("profile-photo").style.visibility = "visible";
+                document.getElementById("profile-photo").style.display = "flex";
+                document.getElementById("profile-photo").style.flexDirection = "raw";
+                document.getElementById("profile-photo").style.alignItems = "center";
+    
+                document.getElementById("user-email").innerText = result.msg;
+    
+                document.getElementById("to-signin").style.display = "none";
         }
+    } catch(e) {
+        console.error("Error verifying user:", e);
     }
+    
 }
 checkUserVerify();
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
-    const response = await fetch('/login/check-admin', {
-        method: 'POST',
-        credentials: "include",  
-    });
+    // const response = await fetch('/login/check-admin', {
+    //     method: 'POST',
+    //     credentials: "include",  
+    // });
 
-    const result = await response.json();
+    // const result = await response.json();
 
-    if(response.ok) {
-        if(result.admin) document.getElementById('dropdown-management').style.display = 'block';  
-        else document.getElementById('dropdown-management').style.display = 'none';  
+    // if(response.ok) {
+    //     if(result.admin) document.getElementById('dropdown-management').style.display = 'block';  
+    //     else document.getElementById('dropdown-management').style.display = 'none';  
+    // } else {
+    //     console.log(`error: ${result.error}`);
+    // }
+
+    const response = await apiClient.post("/login/check-admin");
+    const result = response.data;
+
+    if(response.status === 200) {
+        if(result.admin) document.getElementById('dropdown-management').style.display = 'block';
+        else document.getElementById('dropdown-management').style.display = 'none';    
     } else {
         console.log(`error: ${result.error}`);
     }
@@ -86,35 +131,44 @@ document.getElementById("to-signin").addEventListener('click', () => {
 // 드롭다운 메뉴 로그아웃
 document.getElementById("dropdown-logout").addEventListener('click', async (e) => {
     try {
-        const response = await fetch('/login/logout', {
-            method: 'POST',
-            credentials: 'include',
-        });
+        // const response = await fetch('/login/logout', {
+        //     method: 'POST',
+        //     credentials: 'include',
+        // });
 
-        if(!response.ok) {
-            const error = await response.json();
-            console.error("Logout failed:", error.msg || "Unknown error");
-            alert(`Error: ${error.msg || "Logout failed."}`);
-            return;
+        // if(!response.ok) {
+        //     const error = await response.json();
+        //     console.error("Logout failed:", error.msg || "Unknown error");
+        //     alert(`Error: ${error.msg || "Logout failed."}`);
+        //     return;
+        // }
+
+        // const result = await response.json();
+        // console.log(result.msg);
+
+    
+        const response = await apiClient.post("/login/logout");
+        if(response.status === 200) {
+            const result = response.data;
+            console.log(result.msg);
+        
+            // 드롭다운 메뉴 숨기기
+            const dropdownMenu = document.getElementById('dropdown-menu');
+            dropdownMenu.style.display = 'none';
+
+            // 프로필 구역 UI변경
+            document.getElementById("profile-photo").style.visibility = 'hidden';
+            document.getElementById("profile-photo").style.display = 'none';
+
+            document.getElementById("to-signin").style.visibility = 'visible';
+            document.getElementById("to-signin").style.display = 'block';
+
+            window.location.href="../html/home.html";
+        } else {
+            alert("Logout failed. Please try again.");
         }
-
-        const result = await response.json();
-        console.log(result.msg);
-
-        // 드롭다운 메뉴 숨기기
-        const dropdownMenu = document.getElementById('dropdown-menu');
-        dropdownMenu.style.display = 'none';
-
-        // 프로필 구역 UI변경
-        document.getElementById("profile-photo").style.visibility = 'hidden';
-        document.getElementById("profile-photo").style.display = 'none';
-
-        document.getElementById("to-signin").style.visibility = 'visible';
-        document.getElementById("to-signin").style.display = 'block';
-
-        window.location.href="../html/home.html";
     } catch(e) {
-        console.error("Unexpected error during logout:", error);
-        alert("An unexpected error occurred. Please try again.");
+    console.error("Unexpected error during logout:", error);
+    alert("An unexpected error occurred. Please try again.");
     }
 });
