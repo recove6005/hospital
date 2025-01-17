@@ -3,7 +3,6 @@ import { fileURLToPath } from 'url';
 import { db, auth, storage } from "../public/firebase-config.js";
 import { collection, doc, getDocs, orderBy, setDoc, getDoc, addDoc, query, deleteDoc, where, updateDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL, getMetadata } from "firebase/storage";
-import axios from 'axios';
 import archiver from 'archiver';
 
 const __filename = fileURLToPath(import.meta.url);

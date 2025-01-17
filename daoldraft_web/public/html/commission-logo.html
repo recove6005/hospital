@@ -7,95 +7,125 @@
     <title>LOGO COMMISSION</title>
 </head>
 <body>
-     <!-- topbar -->
-     <header id="topbar">
+    <!-- topbar -->
+    <header>
         <div id="logo-container">
             <a href="./home.html">
-                <!-- <img id="logo" src="../images/ic_templogo.png" alt="Company Logo"> -->
-                TEMP LOGO
+                <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
             </a>
         </div>
+
         <div id="user-container">
             <div id="profile-photo" style="display:none;">
                 <a id="profile-link" href="#">
-                    <img src="../images/ic_profile_default.png" alt="photo">
-                    <span><p id="user-email">example@gmail.com</p></span>
+                    User
                 </a>
                 <div id="dropdown-menu" style="display: none;">
                     <ul>
                         <li><a id="dropdown-mypage" href="../html/mypage.html">마이페이지</a></li>
-                        <li><a id="dropdown-logout">로그아웃</a></li>
+                        <li><a id="dropdown-logout" href="#">로그아웃</a></li>
                         <li><a id="dropdown-management" href="../html/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
                     </ul>
                 </div>
             </div>
             <div id="to-signin" style="display: none;">
-                <a href="../html/login-email.html">로그인</a>
+                <div><a href="../html/login-email.html">Login</a></div>
             </div>
         </div>
-    </header>
+    </header>    
 
-    <div class="gallery-container">
-            <div class="gallery-column">
-                <img src="../images/portfolio_sample_01.jpg" alt="">
-                <img src="../images/portfolio_sample_02.png" alt="">
-                <img src="../images/portfolio_sample_03.jpg" alt="">
-            </div>
-            <div class="gallery-column">
-                <img src="../images/portfolio_sample_04.png" alt="">
-                <img src="../images/portfolio_sample_05.png" alt="">
-                <img src="../images/portfolio_sample_06.jpg" alt="">
-            </div>
-            <div class="gallery-column">
-                <img src="../images/portfolio_sample_07.jpg" alt="">
-            </div>
-    </div>
+    <div class="divider"></div>
 
-    <div class="commission-form">
-        <h1 id="form-title">Contact us</h1>
-        <div class="commission-details">
-            <form id="contact-form">
-                <input name="title" type="hidden" value="로고 디자인">
-                <div class="size-group" >
-                    <label for="" class="form-label" id="label-size">Size*</label>
-                    <div>
-                        <label class="size-input"><input  type="radio" name="size" value="하" checked><span class="size"> 하</span></label>
-                        <label class="size-input"><input type="radio" name="size" value="중"><span class="size"> 중</span></label>
-                        <label class="size-input"><input type="radio" name="size" value="상"><span class="size"> 상</span></label>
+    <main>
+        <saction id="project-nav">
+            <div class="swipe-btn" id="swipe-prev-btn">
+                <a href="#"><img src="../images/commission_nav_btn.png" alt=""></a>
+            </div>
+            <ul>
+                <li id="commission-subscribe">
+                    <a href="#"><div>구독권 구매</div></a>
+                </li>
+                <li id="commission-homepage">
+                    <a href="../html/commission-homepage.html"><div>홈페이지 제작</div></a>
+                </li>
+                <li id="commission-logo">
+                    <a href="../html/commission-logo.html"><div>로고디자인</div></a>
+                </li>
+                <li id="commission-blog">
+                    <a href="../html/commission-blog.html"><div>네이버 블로그</div></a>
+                </li>
+                <li id="commission-instagram">
+                    <a href="../html/commission-instagram.html"><div>인스타그램</div></a>
+                </li>
+                <li id="commission-naverplace">
+                    <a href="../html/commission-naverplace.html"><div>네이버 플레이스</div></a>
+                </li>
+                <li id="commission-draft">
+                    <a href="../html/commission-draft.html"><div>원내시안</div></a>
+                </li>
+                <li id="commission-signage">
+                    <a href="../html/commission-signage.html"><div>디지털 사이니지</div></a>
+                </li>
+                <li id="commission-banner">
+                    <a href="../html/commission-webbanner.html"><div>웹 배너</div></a>
+                </li>
+            </ul>
+            <div class="swipe-btn" id="swipe-next-btn">
+                <a href="#"><img src="../images/commission_nav_btn.png" alt=""></a>
+            </div>
+        </saction>
+        
+        <section id="contact-saction">
+            <div id="contact-display-wrapper">
+                <p>Portfolio</p>
+                <div>
+                    <div class="display-box">
+                        <div id="display-box-0">
+                            <img id="display-img-0" src="../images/commission_homepage_display_0.png" alt="#">
+                            <img id="display-img-1" src="../images/commission_homepage_display_1.png" alt="#">
+                        </div>
+                        <div id="display-box-1">
+                            <img id="display-img-2" src="../images/commission_homepage_display_0.png" alt="#">
+                            <img id="display-img-3" src="../images/commission_homepage_display_1.png" alt="#">
+                        </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="organization" class="form-label" id="label-organization">Organization*</label>
-                    <input type="text" class="form-input" id="input-organization" name="organization" placeholder="기관명*" required>
-                </div>
-                <div class="form-group">
-                    <label for="name" class="form-label" id="label-name">Name</label>
-                    <input type="text" class="form-input" id="input-name" name="name" placeholder="성함">
-                </div>
-                <div class="form-group">
-                    <label for="rank" class="form-label" id="label-rank">Rank</label>
-                    <input type="text" class="form-input" id="input-rank" name="rank" placeholder="직책">
-                </div>
-                <div class="form-group">
-                    <label for="phone" class="form-label" id="label-phone">Call*</label>
-                    <input type="tel" class="form-input" id="input-phone" name="phone" placeholder="연락처*" maxlength="13" required>
-                </div>
-                <div class="form-group">
-                    <label for="email" class="form-label" id="label-email">@Email</label>
-                    <input type="email" class="form-input" id="input-email" name="email" placeholder="이메일">
-                </div>
-                <div class="form-group">
-                    <label for="details" class="form-label" id="label-details">Details*</label>
-                    <textarea maxlength="1000" wrap="hard" rows="10" type="details" id="textarea-details" name="details" placeholder="문의하실 내용을 상세하게 기입해 주시기 바랍니다*" required></textarea>
-                </div>
-                <p id="project-name">로고 디자인 (하)</p>
-                <p id="discount-price" style="display: none;">285,000 원</p>
-                <input id="allprice" name="allprice" type="hidden" value="150000">
-                <p id="price">150,000 원</p>
-                <button id="contact-button">문의하기</button> 
-            </form>
-        </div>
-    </div>
+                    <div id="display-swipe-wrapper">
+                        <a href="#" id="display-swipe-prev-btn"><img src="../images/commission_prev_btn.png" alt="prev"></a>
+                        <p id="pagenation"> 1 / 2 </p>
+                        <a href="#" id="display-swipe-next-btn"><img src="../images/commission_next_btn.png" alt="next"></a>
+                    </div>
+                </div>                    
+            </div>  
+            <div id="contact-form-wrapper">
+                <p>Contact us</p>
+                <form id="contact-form">
+                    <input id="title" name="title" type="hidden" value="로고디자인">
+                    <div class="input-form">
+                        <p>성함</p>
+                        <input class="contact-input" id="name" name="name" type="text" placeholder="성함" required>
+                    </div>
+                    <div class="input-form">
+                        <p>업체명</p>
+                        <input class="contact-input" id="organization" name="organization" type="text" placeholder="업체명" required>
+                    </div>
+                    <div class="input-form">
+                        <p>연락처</p>
+                        <input class="contact-input" id="call" name="call" type="text" placeholder="연락처" required>
+                    </div>
+                    <div class="input-form">
+                        <p>이메일</p>
+                        <input class="contact-input" id="email" name="email" type="text" placeholder="이메일">
+                    </div>
+                    <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요." required></textarea>
+                    <button>문의하기</button>
+                </form>
+            </div>
+        </section>
+
+        <section id="display_section">
+            <img src="../images/commission_whole_display.jpg" alt="#">
+        </section>
+    </main>
 </body>
 <script src="../javascript/commission-logo.js" type="module" defer></script>
 </html>

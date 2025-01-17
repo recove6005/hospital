@@ -2,6 +2,9 @@
   "name": "daoldraft",
   "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": "18"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,6 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { db, auth } from "../firebase-config.js";
+import { db, auth } from "../public/firebase-config.js";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
 import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 

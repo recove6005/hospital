@@ -322,3 +322,4 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     }
 });
 
+document.getElementById('swipe-next-btn').click();

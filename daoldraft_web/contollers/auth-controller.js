@@ -19,21 +19,21 @@ export const checkUserVerify = async (req, res) => {
                         console.error("Failed to destroy session:", err);
                         // 에러 응답
                         if (!res.headersSent) {
-                            return res.status(500).send({ error: "Failed to destroy session" });
+                            return res.status(500).json({ error: "Failed to destroy session" });
                         }
                     }
 
                     // 세션 쿠키 삭제 및 응답 전송
                     if (!res.headersSent) {
                         res.clearCookie("connect.sid");
-                        return res.status(200).send({ msg: "verify0"});
+                        return res.status(200).json({ msg: "verify0"});
                     }
                 });
             } catch(e) {
                 console.error("Error sending verification email:", e);
                 // 에러 응답
                 if (!res.headersSent) {
-                    return res.status(500).send({ error: "Failed to send verification email" });
+                    return res.status(500).json({ error: "Failed to send verification email" });
                 }
             }
         } else {
@@ -78,13 +78,13 @@ export const checkUserVerify = async (req, res) => {
                     });
                 }
 
-                return res.status(200).send({ msg: `${user.email}` });
+                return res.status(200).json({ msg: `${user.email}` });
             }
         } 
     } else {
         // 세션이 존재하지 않을 경우
         if (!res.headersSent) {
-            return res.status(400).send({ msg: "세션이 존재하지 않습니다." });
+            return res.status(400).json({ msg: "세션이 존재하지 않습니다." });
         }
     }
 }
@@ -106,10 +106,10 @@ export const login = async (req, res) => {
         req.session.save(async (err) => {
             if (err) {
                 console.error("Failed to save session:", err);
-                return res.status(500).send({ error: "Failed to save session" });
+                return res.status(500).json({ error: "Failed to save session" });
             }
 
-            res.status(200).send({
+            res.status(200).json({
                 message: "User account successfully created.",
                 email: user.email,
                 uid: user.uid,
@@ -119,21 +119,21 @@ export const login = async (req, res) => {
         if(e.code === 'auth/user-not-found') {
             // 유저 정보가 없음
             console.log(`${e.code}: ${e.message}`);
-            res.status(404).send({code: e.code});
+            res.status(404).json({code: e.code});
         }
         else if(e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
             // 잘못된 비밀번호
             console.log(`${e.code}: ${e.message}`);
-            res.status(401).send({code: e.code});
+            res.status(401).json({code: e.code});
         }
         else if(e.code === 'auth/too-many-requests') {
             // 여러 번의 로그인 실패로 요청이 차단됨
             console.log(`${e.code}: ${e.message}`);
-            res.status(429).send({code: e.code});
+            res.status(429).json({code: e.code});
         }
         else {
             console.log(`${e.code}: ${e.message}`);
-            res.status(400).send({code: e.code});
+            res.status(400).json({code: e.code});
         }
     }
 };

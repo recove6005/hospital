@@ -18,14 +18,15 @@ const __dirname = path.dirname(__filename);
 
 // middleware
 expressApp.use(express.json());
-expressApp.use(cors());
+expressApp.use(cors({
+    origin: "https://daoldraft.web.app",
+    credentials: true,
+}));
 expressApp.use(bodyParser.json());
-
-console.log(`PORT: ${process.env.PORT}`);
 
 expressApp.use(
     session({
-        secret: process.env.DAOLKEY,
+        secret: "**daol2558**",
         resave: false,            // 세션 데이터가 변경되지 않으면 저장하지 않음
         saveUninitialized: false, // 초기화되지 않은 세션 저장 안 함
     })

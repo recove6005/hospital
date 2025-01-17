@@ -132,9 +132,9 @@ main {
     overflow: hidden;
 }
 
-#commission-subscribe, #commission-homepage, 
+#commission-subscribe, #commission-logo, 
 #commission-blog, #commission-instagram, 
-#commission-naverplace, #commission-draft, 
+#commission-homepage, #commission-draft, 
 #commission-signage, #commission-banner {
     display: flex;
     flex-direction: column;
@@ -148,7 +148,7 @@ main {
 
 }
 
-#commission-logo {
+#commission-naverplace {
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -161,9 +161,9 @@ main {
 
 }
 
-#commission-subscribe a, #commission-homepage a, 
+#commission-subscribe a, #commission-logo a, 
 #commission-blog a, #commission-instagram a, 
-#commission-naverplace a, #commission-draft a, 
+#commission-homepage a, #commission-draft a, 
 #commission-signage a, #commission-banner a {
     color: #232323;
     text-decoration: none;
@@ -171,7 +171,7 @@ main {
     font-weight: 600;
 }
 
-#commission-logo a {
+#commission-naverplace a {
     color: white;
     text-decoration: none;
     font-size: 18px;

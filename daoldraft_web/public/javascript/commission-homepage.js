@@ -261,7 +261,7 @@ displayWrapper.addEventListener('mouseenter', () => clearInterval(autoSlideInter
 displayWrapper.addEventListener('mouseleave', () => autoSlideInterval = setInterval(slideNext, 5000));
 
 // 연락처 input 문자열
-document.getElementById('phone').addEventListener("input", (e) => {
+document.getElementById('call').addEventListener("input", (e) => {
     let input = e.target.value;
 
     // 숫자만 남기기
@@ -292,16 +292,14 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
     const formData = new FormData(e.target);
     const formValues = Object.fromEntries(formData.entries());
 
-    // const loginCheckRes = await fetch('/login/current-user', {
-    //     method: 'POST',
-    //     credentials: "include",
-    // });
+    const loginCheckRes = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
 
-    const loginCheckRes = await apiClient.post("/login/current-user");
-
-    if(loginCheckRes.status == 200) {
+    if(loginCheckRes.ok) {
         try {
-            const response = await fetch('/user/commission-project-homepage', {
+            const response = await fetch('/user/commission-project', {
                 method: 'POST',
                 credentials: "include",
                 headers: { "Content-Type" : "application/json "},

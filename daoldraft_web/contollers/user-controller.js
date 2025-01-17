@@ -57,10 +57,10 @@ export const getSubscribeInfo = async (req, res) => {
     
 }
 
-// 프로젝트 문의 등록 - logo
-export const commissionProjectLogo = async (req, res) => {
+// 프로젝트 문의 등록
+export const commissionProject = async (req, res) => {
     const formData = req.body;
-    const { title, phone, organization, name, email, details } = formData;
+    const { title, call, organization, name, email, details } = formData;
     const user = auth.currentUser;
     
     if(user) {
@@ -75,7 +75,7 @@ export const commissionProjectLogo = async (req, res) => {
                 userEmail: userEmail,
                 date: date,
                 title: title,
-                phone: phone,
+                call: call,
                 organization: organization,
                 name: name,
                 email: email,
@@ -92,152 +92,6 @@ export const commissionProjectLogo = async (req, res) => {
     }
 };
 
-// 프로젝트 문의 등록 - draft
-export const commissionProjectDraft = async (req, res) => {
-    const formData = req.body;
-    const { title, size, rank, phone, organization, name, email, details, allprice } = formData;
-    const user = auth.currentUser;
-
-    if(user) {
-        try {
-            const uid = user.uid;
-            const userEmail = user.email;
-
-            const date = Date.now();
-
-            const docRef = await addDoc(collection(db, "projects"), {
-                uid: uid,
-                userEmail: userEmail,
-                date: date,
-                date: date,
-                title: title,
-                size: size,
-                rank: rank,
-                phone: phone,
-                organization: organization,
-                name: name,
-                email: email,
-                details: details,
-                allprice: allprice,
-                progress: '0',
-            });
-
-            res.status(200).json({msg: "Project(draft) inserted successfully.", receivedData: formData });
-        } catch(e) {
-            res.status(401).send({ error : e.message});
-        }
-    } else {
-        res.status(400).send({ error : "No firebaes user found."});
-    }
-}
-
-// 프로젝트 문의 등록 - signage
-export const commissionProjectSignage = async (req, res) => {
-    const formData = req.body;
-    const { title, size, rank, phone, organization, name, email, details, allprice } = formData;
-    const user = auth.currentUser;
-
-    if(user) {
-        try {
-            const uid = user.uid;
-            const userEmail = user.email;
-
-            const date = Date.now();
-
-            const docRef = await addDoc(collection(db, "projects"), {
-                uid: uid,
-                userEmail: userEmail,
-                date: date,
-                date: date,
-                title: title,
-                size: size,
-                rank: rank,
-                phone: phone,
-                organization: organization,
-                name: name,
-                email: email,
-                details: details,
-                allprice: allprice,
-                progress: '0',
-            });
-
-            res.status(200).json({msg: "Project(signage) inserted successfully.", receivedData: formData });
-        } catch(e) {
-            res.status(401).send({ error : e.message});
-        }
-    } else {
-        res.status(400).send({ error : "No firebaes user found."});
-    }
-}
-
-// 프로젝트 문의 등록 - blog
-export const commissionProjectBlog = async (req, res) => {
-    const formData = req.body;
-    const { title, size, rank, phone, organization, name, email, details, allprice } = formData;
-    const user = auth.currentUser;
-
-    if(user) {
-        try {
-            const uid = user.uid;
-            const userEmail = user.email;
-            const date = Date.now();
-            const docRef = await addDoc(collection(db, "projects"), {
-                uid: uid,
-                userEmail: userEmail,
-                date: date,
-                title: title,
-                size: size,
-                rank: rank,
-                phone: phone,
-                organization: organization,
-                name: name,
-                email: email,
-                details: details,
-                allprice: allprice,
-                progress: '0',
-            });
-
-            res.status(200).json({msg: "Project(blog) inserted successfully.", receivedData: formData });
-        }  catch(e) {
-            res.status(401).send({ error : e.message});
-        }
-    } else {
-        res.status(400).send({ error : "No firebaes user found."});
-    }
-}
-
-// 프로젝트 문의 등록 - hompage
-export const commissionProjectHomepage = async (req, res) => {
-    const formData = req.body;
-    const { title, phone, organization, name, email, details } = formData;
-    const user = auth.currentUser;
-
-    if(user) {
-        try {
-            const uid = user.uid;
-            const userEmail = user.email;
-            const date = Date.now();
-            const docRef = await addDoc(collection(db, "projects"), {
-                uid: uid,
-                userEmail: userEmail,
-                date: date,
-                title: title,
-                phone: phone,
-                organization: organization,
-                name: name,
-                email: email,
-                details: details,
-                progress: '0',
-            });
-
-            res.status(200).json({msg: "Project(homepage) inserted successfully.", receivedData: formData });
-        }  catch(e) {
-            res.status(401).send({ error : e.message});
-        }
-    } else {
-        res.status(400).send({ error : "No firebaes user found."});
-    }
-}
 
 // 카카오페이 정기 결제 - basic 첫 결제
 export const subscribeBasic = async (req, res) => {
