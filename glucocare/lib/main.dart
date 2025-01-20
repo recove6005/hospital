@@ -11,6 +11,7 @@ import 'package:glucocare/login.dart';
 import 'package:glucocare/drawer/my_info.dart';
 import 'package:glucocare/models/user_model.dart';
 import 'package:glucocare/repositories/patient_repository.dart';
+import 'package:glucocare/repositories/toekn_repository.dart';
 import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/notification_service.dart';
@@ -78,7 +79,21 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'DaolCare',
+      builder: (context, child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(textScaleFactor: 1),
+          child: child!,
+        );
+      },
       theme: ThemeData(
+          dialogTheme: DialogTheme(
+            backgroundColor: Colors.grey[100],
+          ),
+          appBarTheme: const AppBarTheme(color: Colors.white),
+          cardColor: Colors.grey[100],
+          drawerTheme: DrawerThemeData(
+            backgroundColor: Colors.grey[100],
+          ),
           scaffoldBackgroundColor: Colors.white,
           brightness: Brightness.light,
       ),
@@ -143,12 +158,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool _isMaster = false;
-  void _checkIsMaster() async {
+  Future<void> _checkIsMaster() async {
     if(await AuthService.isMasterUser()) {
       setState(() {
         _isMaster = true;
       });
     }
+  }
+
+  Future<void> _updateToken() async {
+    await TokenRepository.insertToken(_isAdmin, _isMaster);
+  }
+
+  void _getCheckUserAuth() async {
+    await _getUserName();
+    await _checkIsMaster();
+    await  _updateToken();
   }
 
   bool _isDeleting = false;
@@ -196,10 +221,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _getUserName();
-    _checkIsMaster();
+    _getCheckUserAuth();
     FetchService.initConfigureBackgroundFetch();
-    logger.d('[glucocare_log] main init state.');
   }
 
   @override

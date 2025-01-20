@@ -5,12 +5,14 @@ class GlucoDangerModel {
   final int value;
   final bool danger;
   final Timestamp checkTime;
+  final String checkTimeName;
 
   GlucoDangerModel({
     required this.uid,
     required this.value,
     required this.danger,
-    required this.checkTime
+    required this.checkTime,
+    required this.checkTimeName,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class GlucoDangerModel {
       'value': value,
       'danger': danger,
       'check_time': checkTime,
+      'check_time_name': checkTimeName,
     };
   }
 
@@ -28,6 +31,7 @@ class GlucoDangerModel {
       value: json['value'],
       danger: json['danger'],
       checkTime: json['check_time'],
+      checkTimeName: json['check_time_name'],
     );
   }
 }

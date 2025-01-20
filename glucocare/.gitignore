@@ -72,6 +72,8 @@ migrate_working_dir/
 *.iws
 .idea/
 
+glucocare-7820b-3f504dfdf329.json
+
 # The .vscode folder contains launch configuration and tasks you configure in
 # VS Code which you may wish to be included in version control, so this line
 # is commented out by default.

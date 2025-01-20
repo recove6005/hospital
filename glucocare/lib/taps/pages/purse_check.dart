@@ -5,9 +5,11 @@ import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
 import 'package:glucocare/models/purse_danger_model.dart';
 import 'package:glucocare/models/purse_model.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/purse_danger_repository.dart';
 import 'package:glucocare/repositories/purse_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/fcm_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import '../../repositories/purse_colname_repository.dart';
@@ -49,6 +51,8 @@ class PurseCheckForm extends StatefulWidget {
 
 class _PurseCheckFormState extends State<PurseCheckForm> {
   Logger logger = Logger();
+
+  Color _backgroundColor = Colors.white;
 
   final TextEditingController _shrinkController = TextEditingController();
   final TextEditingController _relaxController = TextEditingController();
@@ -96,31 +100,158 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
         checkTime: _checkTime,
         checkDate: _checkDate,
       );
-      PurseRepository.insertPurseCheck(purseModel);
+      await PurseRepository.insertPurseCheck(purseModel);
+
+      if(await AuthService.userLoginedFa()) {
+        String? uid = AuthService.getCurUserUid();
+        PurseColNameModel nameModel = PurseColNameModel(uid: uid!, date: _checkDate);
+        PurseColNameRepository.insertPurseColName(nameModel);
+      } else {
+        String? kakaoId = await AuthService.getCurUserId();
+        PurseColNameModel nameModel = PurseColNameModel(uid: kakaoId!, date: _checkDate);
+        PurseColNameRepository.insertPurseColName(nameModel);
+      }
 
       if(_shrinkDanger || _relaxDanger) {
+        // fcm service
+        String name = await UserRepository.getCurrentUserName();
+        await FCMService.sendPushNotification(name, '혈압', '${_shrink}/${_relax}', _checkDate, _checkTime);
+
+        // 위험 단계 수치
         PurseDangerModel dangerModel = PurseDangerModel(
           uid: uid,
           shrink: _shrink,
           relax: _relax,
           shrinkDanger: _shrinkDanger,
           relaxDanger: _relaxDanger,
-          checkTime: Timestamp.fromDate(DateTime.now()),
+          checkTime: Timestamp.fromDate(DateTime.now().toUtc()),
         );
         PurseDangerRepository.insertDanger(dangerModel);
+
+        if(_shrink.toInt() >= 180 || _relax.toInt() >= 120) {
+          showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                    title: Row(
+                      children: [
+                        Icon(Icons.dangerous, color: Colors.red[300],),
+                        Text('경고: 고혈압 위기 상태', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),),
+                      ],
+                    ),
+                    content: const Text('혈당이 높습니다. 운동 및 신체 활동량을 늘리시고 지속적인 혈당 상승 시 진료 바랍니다.', style: TextStyle(fontSize: 20),),
+                    actions: <Widget> [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('확인'),
+                      )
+                    ]
+                );
+              }
+          );
+        } else if(_shrink.toInt() >= 170 || _relax.toInt() >= 100) {
+          showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                    title: Row(
+                      children: [
+                        Icon(Icons.warning, color: Colors.red[300],),
+                        Text('경고: 고혈압 2단계', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),),
+                      ],
+                    ),
+                    content: const Text('안정 후 재측정하시고 지속적으로 혈압이 높을 경우 진료 바랍니다.', style: TextStyle(fontSize: 20),),
+                    actions: <Widget> [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('확인'),
+                      )
+                    ]
+                );
+              }
+          );
+        } else if(_shrink.toInt() >= 140 || _relax.toInt() >= 90) {
+          showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.warning, color: Colors.orangeAccent,),
+                        Text('경고: 고혈압 1단계', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
+                      ],
+                    ),
+                    content: const Text('혈압이 고혈압 수준입니다. 주치의와의 상담을 통해 건강에 유의하시기 바랍니다.', style: TextStyle(fontSize: 20),),
+                    actions: <Widget> [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('확인'),
+                      )
+                    ]
+                );
+              }
+          );
+        } else if(_shrink.toInt() >= 120 || _relax.toInt() >= 80) {
+          showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.warning, color: Colors.orangeAccent,),
+                        const Text('경고: 고혈압 전단계', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
+                      ],
+                    ),
+                    content: const Text('생활 습관 개선을 통한 혈압 관리가 필요합니다. 염분 섭취를 줄이고 규칙적인 운동과 스트레스 관리에 힘써주세요.', style: TextStyle(fontSize: 20),),
+                    actions: <Widget> [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('확인'),
+                      )
+                    ]
+                );
+              }
+          );
+        }
+
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.save, color: Colors.grey,),
+                      Text('혈압 측정 완료', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),),
+                    ],
+                  ),
+                  content: const Text('혈압이 정상 범위 내에 있습니다.', style: TextStyle(fontSize: 20),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('확인'),
+                    )
+                  ]
+              );
+            }
+        );
       }
     }
-
-    if(await AuthService.userLoginedFa()) {
-      String? uid = AuthService.getCurUserUid();
-      PurseColNameModel nameModel = PurseColNameModel(uid: uid!, date: _checkDate);
-      PurseColNameRepository.insertPurseColName(nameModel);
-    } else {
-      String? kakaoId = await AuthService.getCurUserId();
-      PurseColNameModel nameModel = PurseColNameModel(uid: kakaoId!, date: _checkDate);
-      PurseColNameRepository.insertPurseColName(nameModel);
-    }
-    Navigator.pop(context, true);
   }
 
   String krTime = '';
@@ -161,223 +292,326 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width:  MediaQuery.of(context).size.width-80,
-                  height: 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Text(_getKrTime(),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width:  MediaQuery.of(context).size.width-50,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9F9F9),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 60),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 300,
-                        child: Center(
-                          child: Row(
-                            children: [
-                              const SizedBox(
-                                width: 90,
-                                height: 40,
-                                child: Text(
-                                  '수축기',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 70,
-                                height: 40,
-                                child: TextField(
-                                  controller: _shrinkController,
-                                  keyboardType: TextInputType.number,
-                                  maxLength: 3,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                    rangeTextInputFormatter(0, 200),
-                                  ],
-                                  decoration: const InputDecoration(
-                                      counterText: '',
-                                      hintStyle: TextStyle(color: Colors.black38)
-                                  ),
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 25,
-                                  ),
-                                ),
-                              ),
-                              const Text('mmHg', style: TextStyle(fontSize: 18),),
-                            ],
+      body: AnimatedContainer(
+        height: MediaQuery.of(context).size.height,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+        color: _backgroundColor,
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width:  MediaQuery.of(context).size.width-80,
+                    height: 60,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
+                          style: const TextStyle(
+                            fontSize: 22,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),),
+                        Text(_getKrTime(),
+                          style: const TextStyle(
+                            fontSize: 22,
+                            color: Colors.black,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 15,),
-                      SizedBox(
-                        width: 300,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(
-                                width: 90,
-                                height: 40,
-                                child: Text('이완기', style: TextStyle(
-                                  fontSize: 25,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                ),),
-                              ),
-                              SizedBox(
-                                width: 70,
-                                height: 40,
-                                child: TextField(
-                                  controller: _relaxController,
-                                  keyboardType: TextInputType.number,
-                                  maxLength: 3,
-                                  inputFormatters: [
-                                    FilteringTextInputFormatter.digitsOnly,
-                                    rangeTextInputFormatter(0, 200),
-                                  ],
-                                  decoration: const InputDecoration(
-                                      counterText: '',
-                                      hintStyle: TextStyle(color: Colors.black38)
-                                  ),
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.black,
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width:  MediaQuery.of(context).size.width-50,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF9F9F9),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 60),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: 300,
+                          child: Center(
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                  width: 90,
+                                  height: 40,
+                                  child: Text(
+                                    '수축기',
+                                    style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.start,
                                   ),
                                 ),
-                              ),
-                              const Text('mmHg', style: TextStyle(fontSize: 18),),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 15,),
-                      SizedBox(
-                        width: 300,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const SizedBox(
-                                width: 90,
-                                height: 40,
-                                child: Text('맥박', style: TextStyle(
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black
-                                ),),
-                              ),
-                              SizedBox(
-                                width: 70,
-                                height: 40,
-                                child: TextField(
-                                    controller: _purseController,
+                                SizedBox(
+                                  width: 70,
+                                  height: 40,
+                                  child: TextField(
+                                    controller: _shrinkController,
                                     keyboardType: TextInputType.number,
                                     maxLength: 3,
                                     inputFormatters: [
                                       FilteringTextInputFormatter.digitsOnly,
-                                      rangeTextInputFormatter(0, 200),
+                                      rangeTextInputFormatter(0, 300),
                                     ],
+                                    onChanged: (text) {
+                                      setState(() {
+                                        _shrink = int.parse(text);
+                                        if(_shrink >= 160 || _relax >= 120) {
+                                          _backgroundColor = const Color(0xffff0000);
+                                        }
+                                        else if((_shrink < 160 && _shrink >= 120) || (_relax < 120 && _relax >= 80)) {
+                                          _backgroundColor = const Color(0xffff4500);
+                                        }
+                                        else {
+                                          _backgroundColor = Colors.white;
+                                        }
+                                      });
+                                    },
                                     decoration: const InputDecoration(
                                         counterText: '',
                                         hintStyle: TextStyle(color: Colors.black38)
                                     ),
                                     style: const TextStyle(
-                                        fontSize: 30,
-                                        color: Colors.black
-                                    )
+                                      color: Colors.black,
+                                      fontSize: 25,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                              const Text('회/1분', style: TextStyle(fontSize: 18),),
-                            ],
+                                const Text('mmHg', style: TextStyle(fontSize: 18),),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30,),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width-80,
-                  child: const Text('메모',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+                        const SizedBox(height: 15,),
+                        SizedBox(
+                          width: 300,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                const SizedBox(
+                                  width: 90,
+                                  height: 40,
+                                  child: Text('이완기', style: TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),),
+                                ),
+                                SizedBox(
+                                  width: 70,
+                                  height: 40,
+                                  child: TextField(
+                                    controller: _relaxController,
+                                    keyboardType: TextInputType.number,
+                                    maxLength: 3,
+                                    inputFormatters: [
+                                      FilteringTextInputFormatter.digitsOnly,
+                                      rangeTextInputFormatter(0, 300),
+                                    ],
+                                    onChanged: (text) {
+                                      setState(() {
+                                        _relax = int.parse(text);
+                                        if(_shrink >= 170 || _relax >= 120) {
+                                          _backgroundColor = const Color(0xffff0000);
+                                        }
+                                        else if((_shrink < 170 && _shrink >= 120) || (_relax < 120 && _relax >= 80)) {
+                                          _backgroundColor = const Color(0xffff4500);
+                                        }
+                                        else {
+                                          _backgroundColor = Colors.white;
+                                        }
+                                      });
+                                    },
+                                    decoration: const InputDecoration(
+                                        counterText: '',
+                                        hintStyle: TextStyle(color: Colors.black38)
+                                    ),
+                                    style: const TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                                const Text('mmHg', style: TextStyle(fontSize: 18),),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 15,),
+                        SizedBox(
+                          width: 300,
+                          child: Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                const SizedBox(
+                                  width: 90,
+                                  height: 40,
+                                  child: Text('맥박', style: TextStyle(
+                                      fontSize: 25,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black
+                                  ),),
+                                ),
+                                SizedBox(
+                                  width: 70,
+                                  height: 40,
+                                  child: TextField(
+                                      controller: _purseController,
+                                      keyboardType: TextInputType.number,
+                                      maxLength: 3,
+                                      inputFormatters: [
+                                        FilteringTextInputFormatter.digitsOnly,
+                                        rangeTextInputFormatter(0, 200),
+                                      ],
+                                      decoration: const InputDecoration(
+                                          counterText: '',
+                                          hintStyle: TextStyle(color: Colors.black38)
+                                      ),
+                                      style: const TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.black
+                                      )
+                                  ),
+                                ),
+                                const Text('회/1분', style: TextStyle(fontSize: 18),),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                ),
-                const SizedBox(height: 10,),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width-50,
-                  child: TextField(
-                    controller: _stateController,
-                    maxLines: null,
-                    minLines: 1,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                  const SizedBox(height: 30,),
+                  if((_shrink >= 200) || _relax >= 120)
+                    Container(
+                      width: 200,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.red[100],
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.dangerous, color: Colors.red,),
+                          Text('혈압 위기 상태', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),),
+                        ],
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFF9F9F9),
-                      hintText: '메모를 입력하세요',
-                      hintStyle: const TextStyle(fontSize: 20),
                     ),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
+                  if((_shrink < 200 && _shrink >= 170) || (_relax < 120 && _relax >= 100))
+                    Container(
+                      width: 200,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.red[100],
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.warning, color: Colors.redAccent,),
+                          Text('2단계 고혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),),
+                        ],
+                      ),
+                    ),
+                  if((_shrink < 170 && _shrink >= 140) || (_relax < 100 && _relax >= 90))
+                    Container(
+                      width: 200,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.orange[100],
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.warning, color: Colors.orangeAccent,),
+                          Text('1단계 고혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
+                        ],
+                      ),
+                    ),
+                  if((_shrink < 140 && _shrink >= 120) || (_relax < 90 && _relax >= 80))
+                    Container(
+                      width: 200,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Colors.orange[100],
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.warning, color: Colors.orangeAccent,),
+                          Text('고혈압 전단계', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
+                        ],
+                      ),
+                    ),
+                  const SizedBox(height: 30,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width-80,
+                    child: const Text('메모',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 100,),
-              ]
+                  const SizedBox(height: 10,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width-50,
+                    child: TextField(
+                      controller: _stateController,
+                      maxLines: null,
+                      minLines: 1,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: const BorderSide(color: Colors.transparent),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: const BorderSide(color: Colors.transparent),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(25),
+                          borderSide: const BorderSide(color: Colors.transparent),
+                        ),
+                        filled: true,
+                        fillColor: const Color(0xFFF9F9F9),
+                        hintText: '메모를 입력하세요',
+                        hintStyle: const TextStyle(fontSize: 20),
+                      ),
+                      textAlign: TextAlign.start,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 100,),
+                ]
+            ),
           ),
         ),
       ),

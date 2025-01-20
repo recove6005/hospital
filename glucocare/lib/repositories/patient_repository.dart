@@ -144,4 +144,19 @@ class UserRepository {
     if(docSnapshot.exists) model = LoginAdminModel.fromJson(docSnapshot.data()!);
     return model;
   }
+
+  static Future<String> getCurrentUserName() async {
+    String name = '';
+    String? uid = '';
+    if(await AuthService.userLoginedFa()) {
+      uid = AuthService.getCurUserUid();
+    } else {
+      uid = await AuthService.getCurUserId();
+    }
+
+    var doc = await _store.collection('patients').doc(uid).get();
+    name = doc.data()?['name'];
+
+    return name;
+  }
 }

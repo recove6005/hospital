@@ -7,7 +7,7 @@ class GlucoDangerRepository {
   static final Logger logger = Logger();
   static final FirebaseFirestore _store = FirebaseFirestore.instance;
 
-  static void insertDanger(GlucoDangerModel model) async {
+  static Future<void> insertDanger(GlucoDangerModel model) async {
     try {
       _store.collection('gluco_danger').doc(model.checkTime.toString()).set(model.toJson());
     } catch(e) {

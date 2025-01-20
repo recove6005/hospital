@@ -15,8 +15,11 @@ class DangerCheck {
     }
   }
 
-  static bool glucoDangerCheck(int value) {
-    if(value >= 126) {
+  static bool glucoDangerCheck(int value, String name) {
+    if(name == '식전' && value >= 100) {
+      return true;
+    }
+    else if(name == '식후' && value >= 140) {
       return true;
     } else {
       return false;

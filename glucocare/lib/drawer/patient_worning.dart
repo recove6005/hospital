@@ -234,7 +234,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                             const Text('측정 수치', style: TextStyle(fontWeight: FontWeight.bold),),
                             Row(
                               children: [
-                                Text('${_glucoWornings[index].value}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
+                                Text('${_glucoWornings[index].checkTimeName} ${_glucoWornings[index].value}', style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),),
                                 const Text(' mg/dL'),
                               ],
                             ),

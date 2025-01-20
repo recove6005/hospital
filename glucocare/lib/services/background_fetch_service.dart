@@ -53,23 +53,27 @@ class FetchService {
       ),
           (taskId) async {
         try {
-          if(taskId.toString().contains('first')) {
-            await NotificationService.showNotification();
+          if(taskId == "flutter_background_fetch") {
 
-            String secondTaskId = taskId.toString().substring(5);
+          } else {
+            if(taskId.toString().contains('first')) {
+              await NotificationService.showNotification();
 
-            await BackgroundFetch.scheduleTask(TaskConfig(
-              taskId: secondTaskId,
-              periodic: true,
-              delay: 86400000,
-              stopOnTerminate: false,
-              enableHeadless: true,
-              forceAlarmManager: true,
-            ),);
-          }
-          else {
-            await NotificationService.showNotification();
-            logger.d('[glucocare_log] The second fetch task excuted.');
+              String secondTaskId = taskId.toString().substring(5);
+
+              await BackgroundFetch.scheduleTask(TaskConfig(
+                taskId: secondTaskId,
+                periodic: true,
+                delay: 86400000,
+                stopOnTerminate: false,
+                enableHeadless: true,
+                forceAlarmManager: true,
+              ),);
+            }
+            else {
+              await NotificationService.showNotification();
+              logger.d('[glucocare_log] The second fetch task excuted.');
+            }
           }
         } catch (e) {
           logger.e("[glucocare_log] BackgroundFetchConfig Error: $e");

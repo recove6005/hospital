@@ -139,6 +139,14 @@ class _LoginFormState extends State<LoginForm> {
                 width: 280,
                 child: Image.asset('assets/images/login_daol.png'),
               ),
+              const SizedBox(height: 20,),
+              Container(
+                width: 280,
+                height: 1,
+                decoration: const BoxDecoration(
+                  color: Color(0xFFD1D1D1),
+                ),
+              ),
               const SizedBox(height: 60,),
               Container(
                 width: 280,
@@ -168,19 +176,11 @@ class _LoginFormState extends State<LoginForm> {
                   child: Image.asset('assets/images/login/kakao_login_large_narrow.png'),
                 ),
               ),
-              const SizedBox(height: 30,),
-              Container(
-                width: 280,
-                height: 1,
-                decoration: const BoxDecoration(
-                  color: Color(0xFFD1D1D1),
-                ),
-              ),
-              const SizedBox(height: 30,),
+              const SizedBox(height: 40,),
               if(_isMasterLogin)
                 Container(
-                  width: 200,
-                  height: 35,
+                  width: 280,
+                  height: 40,
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
@@ -207,8 +207,8 @@ class _LoginFormState extends State<LoginForm> {
               const SizedBox(height: 10,),
               if(_isMasterLogin)
                 Container(
-                  width: 200,
-                  height: 35,
+                  width: 280,
+                  height: 40,
                   padding: const EdgeInsets.symmetric(horizontal: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(30),
@@ -237,8 +237,8 @@ class _LoginFormState extends State<LoginForm> {
                 const SizedBox(height: 20,),
               if(_isMasterLogin)
                 SizedBox(
-                  width: 200,
-                  height: 35,
+                  width: 280,
+                  height: 40,
                   child: ElevatedButton(
                     onPressed: _loginAdminLogin,
                     style: ElevatedButton.styleFrom(

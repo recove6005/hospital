@@ -1,133 +1,56 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:glucocare/repositories/toekn_repository.dart';
 import 'package:logger/logger.dart';
 import 'package:http/http.dart' as http;
 
 class FCMService {
   static Logger logger = Logger();
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
+  static final FirebaseFunctions _functions = FirebaseFunctions.instance;
 
   static Future<String?> getToken() async {
-    // FCM 토큰 획득
     String? token = await _messaging.getToken();
     logger.d('[glucocare_log] A FCM token was gatted : $token');
     return token;
   }
 
-  static Future<void> onBackgroundMsg(RemoteMessage msg) async {
-      FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage? msg) {
-        if(msg != null) {
-          if(msg.notification != null) {
-            logger.e('[glucocare_log] ${msg.notification!.title}');
-            logger.e('[glucocare_log] ${msg.notification!.body}');
-            logger.e('[glucocare_log] ${msg.data['click_action']}');
-          }
-        }
-      });
-  }
+  static Future<void> sendPushNotification(String name, String type, String value, String checkDate, String checkTime) async {
+    List<String> tokens = await TokenRepository.selectMasterTokens();
 
-  static Future<void> onForegroundMsg() async {
-    getToken();
+    logger.d('[glucocare_log] tokens:$tokens, name: $name, type: $type, value:$value, checkDate:$checkDate, checkTime:$checkTime');
 
-    // 포그라운드 알림 처리
-    FirebaseMessaging.onMessage.listen((RemoteMessage? msg) async {
-      if(msg != null) {
-        if(msg.notification != null) {
-          logger.e('[glucocare_log] ${msg.notification!.title}');
-          logger.e('[glucocare_log] ${msg.notification!.body}');
-          logger.e('[glucocare_log] ${msg.data['click_action']}');
-        }
-      }
-    });
-  }
+    const url = "https://us-central1-glucocare-7820b.cloudfunctions.net/sendPushNotification";
 
-  static Future<void> onTerminateMsg() async {
-    FirebaseMessaging.instance.getInitialMessage().then((RemoteMessage? msg){
-      if(msg != null) {
-        if(msg.notification != null) {
-          logger.e('[glucocare_log] ${msg.notification!.title}');
-          logger.e('[glucocare_log] ${msg.notification!.body}');
-          logger.e('[glucocare_log] ${msg.data['click_action']}');
-        }
-      }
-    });
-  }
-
-  static Future<void> initialize() async {
-    // ios 권한
-    NotificationSettings permissionSetting = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-    await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(const AndroidNotificationChannel(
-        'high_importance_ch',
-        'high_importance_ntc',
-        importance: Importance.max)
-    );
-    await flutterLocalNotificationsPlugin.initialize(const InitializationSettings(
-      android: AndroidInitializationSettings("@mipmap/ic_launcher"),
-    ));
-  }
-
-  static Future<String?> postMessage(String fcmToken) async {
     try {
-      String? accessToken = dotenv.env['FIREBASE_MSG_ACCESS_TOKEN'];
-      http.Response response = http.post(
-        Uri.parse("https://fcm.googleapis.com/v1/projects/glucocare-7820b/messages:send"),
+      final response = await http.post(
+        Uri.parse(url),
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $accessToken',
+          "Content-Type": "application/json",
         },
-        body: json.encode({
-          "message": {
-            "token": fcmToken,
-            // "topic": "user_uid",
+        body: jsonEncode({
+          "tokens": tokens,
+          "name": name,
+          "type": type,
+          "value": value,
+          "checkDate": checkDate,
+          "checkTime": checkTime,
+        }),
+      );
 
-            "notification": {
-              "title": "FCM Test Title",
-              "body": "FCM Test Body",
-            },
-            "data": {
-              "click_action": "FCM Test Click Action",
-            },
-            "android": {
-              "notification": {
-                "click_action": "Android Click Action",
-              }
-            },
-            "apns": {
-              "payload": {
-                "aps": {
-                  "category": "Message Category",
-                  "content-available": 1
-                }
-              }
-            }
-          }
-        })) as http.Response;
-      if (response.statusCode == 200) {
-        return null;
+      // final HttpsCallable callable = _functions.httpsCallable('sendPushNotification');
+      // final response = await callable.call({});
+
+      if(response.statusCode == 200) {
+        logger.d('[glucocare_log] Patient alert is pushed.');
       } else {
-        return "Faliure";
+        logger.e('[glucocare_log] FCM failed: ${response.body}');
       }
-    } on HttpException catch(e) {
-      return e.message;
+
+    } catch(e) {
+      logger.e('[glucocare_log] error: $e');
     }
   }
-
-
 }

@@ -8,7 +8,9 @@ import 'package:glucocare/models/gluco_danger_model.dart';
 import 'package:glucocare/models/gluco_model.dart';
 import 'package:glucocare/repositories/gluco_danger_repository.dart';
 import 'package:glucocare/repositories/gluco_repository.dart';
+import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/fcm_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
@@ -52,6 +54,8 @@ class GlucoCheckForm extends StatefulWidget {
 class _GlucoCheckFormState extends State<GlucoCheckForm> {
   Logger logger = Logger();
 
+  Color _backgroundColor = Colors.white;
+
   final TextEditingController _valueController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
 
@@ -79,11 +83,10 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   void _setState() {
     _checkTimeName = _checkTimeName;
     _value = int.parse(_valueController.text);
-    _glucoDanger = DangerCheck.glucoDangerCheck(_value);
     _state = _stateController.text;
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toUtc());
     _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toUtc());
-    _glucoDanger = DangerCheck.glucoDangerCheck(_value);
+    _glucoDanger = DangerCheck.glucoDangerCheck(_value, _checkTimeName);
   }
 
   Future<void> _onSaveButtonPressed() async {
@@ -94,27 +97,6 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
       uid = AuthService.getCurUserUid();
     } else {
       uid = await AuthService.getCurUserId();
-    }
-
-    if(uid != null) {
-      GlucoModel glucoModel = GlucoModel(
-        checkTimeName: _checkTimeName,
-        value: _value,
-        state: _state,
-        checkTime: _checkTime,
-        checkDate: _checkDate,
-      );
-      GlucoRepository.insertGlucoCheck(glucoModel);
-
-      if(_glucoDanger) {
-        GlucoDangerModel model = GlucoDangerModel(
-            uid: uid,
-            value: _value,
-            danger: _glucoDanger,
-            checkTime: Timestamp.fromDate(DateTime.now()),
-        );
-        GlucoDangerRepository.insertDanger(model);
-      }
     }
 
     if(await AuthService.userLoginedFa()) {
@@ -128,7 +110,161 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
       GlucoColNameModel nameModel = GlucoColNameModel(uid: kakaoId, date: _checkDate);
       GlucoColNameRepository.insertGlucoColName(nameModel);
     }
-    Navigator.pop(context, true);
+
+    if(uid != null) {
+      GlucoModel glucoModel = GlucoModel(
+        checkTimeName: _checkTimeName,
+        value: _value,
+        state: _state,
+        checkTime: _checkTime,
+        checkDate: _checkDate,
+      );
+      GlucoRepository.insertGlucoCheck(glucoModel);
+
+      if(_glucoDanger) {
+        // fcm service
+        String name = await UserRepository.getCurrentUserName();
+        await FCMService.sendPushNotification(name, '혈당', _value.toString(), _checkDate, _checkTime);
+        
+        // 위험 단계 수치
+        GlucoDangerModel model = GlucoDangerModel(
+            uid: uid,
+            value: _value,
+            danger: _glucoDanger,
+            checkTime: Timestamp.fromDate(DateTime.now().toUtc()),
+            checkTimeName: _checkTimeName,
+        );
+        GlucoDangerRepository.insertDanger(model);
+
+        if(_checkTimeName == '식전') {
+          if(_value >= 126) {
+            showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                  title: Row(
+                    children: [
+                      Icon(Icons.dangerous, color: Colors.red[300],),
+                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),)
+                    ],
+                  ),
+                  content: const Text('혈당이 매우 높습니다. 즉시 의사에게 상담받으세요.', style: TextStyle(fontSize: 20),),
+                    actions: <Widget> [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.pop(dialogContext);
+                          Navigator.pop(context, true);
+                        },
+                        child: const Text('확인'),
+                      )
+                    ]
+                );
+              },
+            );
+          } else if(_value >= 100) {
+            showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                  title: Row(
+                    children: [
+                      Icon(Icons.warning, color: Colors.orange[300],),
+                      Text('경고: 전당뇨', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[300]),)
+                    ],
+                  ),
+                  content: const Text('혈당이 높습니다. 생활 습관 개선을 통한 관리가 필요합니다.', style: TextStyle(fontSize: 20),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('확인'),
+                    )
+                  ]
+                );
+              },
+            );
+          }
+        }
+
+        if(_checkTimeName == '식후') {
+          if(_value >= 200) {
+            showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                  title: Row(
+                    children: [
+                      Icon(Icons.dangerous, color: Colors.red[300],),
+                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),)
+                    ],
+                  ),
+                  content: const Text('혈당이 매우 높습니다. 즉시 의사에게 상담받으세요.', style: TextStyle(fontSize: 20),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('확인'),
+                    )
+                  ]
+                );
+              },
+            );
+          } else if(_value >= 140) {
+            showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                  title: Row(
+                    children: [
+                      Icon(Icons.warning, color: Colors.orange[300],),
+                      Text('경고: 전당뇨', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[300]),)
+                    ],
+                  ),
+                  content: const Text('혈당이 높습니다. 생활 습관 개선을 통한 관리가 필요합니다.', style: TextStyle(fontSize: 20),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      child: const Text('확인'),
+                    )
+                  ]
+                );
+              },
+            );
+          }
+        }
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) {
+            return AlertDialog(
+                title: const Row(
+                  children: [
+                    Icon(Icons.warning, color: Colors.grey,),
+                    Text('혈당 수치 정상', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),)
+                  ],
+                ),
+                content: const Text('혈당 수치가 정상 수준입니다.', style: TextStyle(fontSize: 30),),
+                actions: <Widget> [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(dialogContext);
+                      Navigator.pop(context, true);
+                    },
+                    child: const Text('확인'),
+                  ),
+                ]
+            );
+          },
+        );
+      }
+    }
   }
 
   @override
@@ -153,222 +289,371 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   void initState() {
     super.initState();
     _checkTimeValue = 0;
+    _checkTimeName = '식전';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 20,),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width-80,
-                  height: 60,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold,
-                        ),),
-                      Text(_getKrTime(),
-                        style: const TextStyle(
-                          fontSize: 22,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10,),
-                Container(
-                  width:  MediaQuery.of(context).size.width-80,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF9F9F9),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const SizedBox(
-                        width: 60,
-                        height: 40,
-                        child: Text('혈당', style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
-                        ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(width: 30,),
-                      SizedBox(
-                        width: 90,
-                        height: 50,
-                        child: TextField(
-                          controller: _valueController,
-                          maxLength: 3,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.digitsOnly,
-                            rangeTextInputFormatter(0, 200),
-                          ],
-                          decoration: const InputDecoration(
-                            counterText: '',
-                          ),
-                          style: const TextStyle(
-                            fontSize: 35,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 40,
-                        child: Text('mg/dL', style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.black87
-                        ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 30,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+      body: AnimatedContainer(
+          height: MediaQuery.of(context).size.height,
+          duration: const Duration(seconds: 1),
+          curve: Curves.easeInOut,
+          color: _backgroundColor,
+          child: SingleChildScrollView(
+            child: Center(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    const SizedBox(height: 20,),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width-80,
+                      height: 60,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            DateFormat('MM월 dd일 E요일', 'ko_KR').format(DateTime.now()),
+                            style: const TextStyle(
+                              fontSize: 22,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),),
+                          Text(_getKrTime(),
+                            style: const TextStyle(
+                              fontSize: 22,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 10,),
                     Container(
-                      width: 100,
-                      height: 50,
+                      width:  MediaQuery.of(context).size.width-80,
+                      height: 150,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
                         color: const Color(0xFFF9F9F9),
+                        borderRadius: BorderRadius.circular(20),
                       ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: _btnToggle
-                              ? const Color(0xFFDCF9F9)
-                              : const Color(0xFFF9F9F9),
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(
+                            width: 60,
+                            height: 40,
+                            child: Text('혈당', style: TextStyle(
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black
+                            ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(width: 30,),
+                          SizedBox(
+                            width: 90,
+                            height: 50,
+                            child: TextField(
+                              controller: _valueController,
+                              maxLength: 3,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                                rangeTextInputFormatter(0, 300),
+                              ],
+                              onChanged: (text) {
+                                _value = int.parse(text);
+                                if(_checkTimeName == '식전') {
+                                  if(_value >= 126) {
+                                    setState(() {
+                                      _backgroundColor = const Color(0xffff0000);
+                                    });
+                                  }
+                                  else if(_value >= 100) {
+                                    setState(() {
+                                      _backgroundColor = const Color(0xffff4500);
+                                    });
+                                  }
+                                  else if(_value < 100) {
+                                    setState(() {
+                                      _backgroundColor = Colors.white;
+                                    });
+                                  }
+                                }
+                                if(_checkTimeName == '식후') {
+                                  if(_value >= 200) {
+                                    setState(() {
+                                      _backgroundColor = const Color(0xffff0000);
+                                    });
+                                  }
+                                  else if(_value >= 140) {
+                                    setState(() {
+                                      _backgroundColor = const Color(0xffff4500);
+                                    });
+                                  }
+                                  else if(_value < 140) {
+                                    setState(() {
+                                      _backgroundColor = Colors.white;
+                                    });
+                                  }
+                                }
+                              },
+                              decoration: const InputDecoration(
+                                counterText: '',
+                              ),
+                              style: const TextStyle(
+                                fontSize: 35,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                            child: Text('mg/dL', style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.black87
+                            ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 30,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 100,
+                          height: 50,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
-                            side: _btnToggle
-                                ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
-                                : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                            color: const Color(0xFFF9F9F9),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              backgroundColor: _btnToggle
+                                  ? const Color(0xFFDCF9F9)
+                                  : const Color(0xFFF9F9F9),
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                side: _btnToggle
+                                    ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
+                                    : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _btnToggle = true;
+                                _checkTimeName = '식전';
+                                if(_value >= 126) {
+                                  setState(() {
+                                    _backgroundColor = const Color(0xffff0000);
+                                  });
+                                }
+                                else if(_value >= 100) {
+                                  setState(() {
+                                    _backgroundColor = const Color(0xffff4500);
+                                  });
+                                }
+                                else if(_value < 100) {
+                                  setState(() {
+                                    _backgroundColor = Colors.white;
+                                  });
+                                }
+                              });
+                            },
+                            child: const Text(
+                              '식전',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _btnToggle = true;
-                          });
-                        },
-                        child: const Text(
-                          '식전',
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 50,),
-                    Container(
-                      width: 100,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: const Color(0xFFF9F9F9),
-                      ),
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.zero,
-                          backgroundColor: !_btnToggle
-                              ? const Color(0xFFDCF9F9)
-                              : const Color(0xFFF9F9F9),
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(
+                        const SizedBox(width: 50,),
+                        Container(
+                          width: 100,
+                          height: 50,
+                          decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(30),
-                            side: !_btnToggle
-                                ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
-                                : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                            color: const Color(0xFFF9F9F9),
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.zero,
+                              backgroundColor: !_btnToggle
+                                  ? const Color(0xFFDCF9F9)
+                                  : const Color(0xFFF9F9F9),
+                              shadowColor: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                side: !_btnToggle
+                                    ? const BorderSide(color: Color(0xFF28C2CE), width: 2,)
+                                    : const BorderSide(color: Color(0xFFB7B7B7), width: 2,),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _btnToggle = false;
+                                _checkTimeName = '식후';
+                                if(_value >= 200) {
+                                  setState(() {
+                                    _backgroundColor = const Color(0xffff0000);
+                                  });
+                                }
+                                else if(_value >= 140) {
+                                  setState(() {
+                                    _backgroundColor = const Color(0xffff4500);
+                                  });
+                                }
+                                else if(_value < 140) {
+                                  setState(() {
+                                    _backgroundColor = Colors.white;
+                                  });
+                                }
+                              });
+                            },
+                            child: const Text(
+                              '식후',
+                              style: TextStyle(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
                           ),
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _btnToggle = false;
-                          });
-                        },
-                        child: const Text(
-                          '식후',
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                      ],
+                    ),
+                    const SizedBox(height: 50,),
+                    if(_value >= 126)
+                      if(_checkTimeName == '식전')
+                        Container(
+                          width: 200,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red[100],
                           ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.dangerous, color: Colors.red,),
+                              Text('당뇨병', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),),
+                            ],
+                          ),
+                        ),
+                    if(_value < 126 && _value >= 100)
+                      if(_checkTimeName == '식전')
+                        Container(
+                          width: 200,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.orange[100],
+                          ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.dangerous, color: Colors.orange,),
+                              Text('전당뇨', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),),
+                            ],
+                          ),
+                        ),
+                    if(_value >= 200)
+                      if(_checkTimeName == '식후')
+                        Container(
+                          width: 200,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.red[100],
+                          ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.dangerous, color: Colors.red,),
+                              Text('당뇨병', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),),
+                            ],
+                          ),
+                        ),
+                    if(_value < 200 && _value >= 140)
+                      if(_checkTimeName == '식후')
+                        Container(
+                          width: 200,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.orange[100],
+                          ),
+                          child: const Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Icon(Icons.dangerous, color: Colors.orange,),
+                              Text('전당뇨', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),),
+                            ],
+                          ),
+                        ),
+                    const SizedBox(height: 30,),
+                    SizedBox(
+                      width:  MediaQuery.of(context).size.width-80,
+                      child: const Text('메모',
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
                         ),
                       ),
                     ),
-                  ],
-                ),
-                const SizedBox(height: 50,),
-                SizedBox(
-                  width:  MediaQuery.of(context).size.width-80,
-                  child: const Text('메모',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 10,),
-                SizedBox(
-                  width:  MediaQuery.of(context).size.width-80,
-                  child: TextField(
-                    controller: _stateController,
-                    maxLines: null,
-                    minLines: 1,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.transparent),
+                    const SizedBox(height: 10,),
+                    SizedBox(
+                      width:  MediaQuery.of(context).size.width-80,
+                      child: TextField(
+                        controller: _stateController,
+                        maxLines: null,
+                        minLines: 1,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: Colors.transparent),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: Colors.transparent),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: const BorderSide(color: Colors.transparent),
+                          ),
+                          filled: true,
+                          fillColor: const Color(0xFFF9F9F9),
+                          hintText: '메모를 입력하세요',
+                          hintStyle: const TextStyle(fontSize: 20),
+                        ),
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black,
+                        ),
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: const BorderSide(color: Colors.transparent),
-                      ),
-                      filled: true,
-                      fillColor: const Color(0xFFF9F9F9),
-                      hintText: '메모를 입력하세요',
-                      hintStyle: const TextStyle(fontSize: 20),
                     ),
-                    textAlign: TextAlign.start,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 100,),
-              ]
+                    const SizedBox(height: 100,),
+                  ]
+              ),
+            ),
           ),
-        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SizedBox(

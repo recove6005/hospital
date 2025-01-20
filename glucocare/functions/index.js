@@ -1,19 +1,56 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const functions = require("firebase-functions");
+const admin = require("firebase-admin");
 
-const {onRequest} = require("firebase-functions/v2/https");
-const logger = require("firebase-functions/logger");
+admin.initializeApp();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+exports.sendPushNotification = functions.https.onRequest(async (req, res) => {
+    try {
+        if (req.method !== "POST") {
+            return res.status(405).send({ success: false, error: "Method not allowed" });
+        }
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+        const { tokens, name, type, value, checkDate, checkTime } = req.body;
+
+        // Subscribe tokens to the topic
+        await admin.messaging().subscribeToTopic(tokens, 'patient_alert');
+
+        let message = {};
+
+        // FCM 메시지 정의
+        if(type == '혈당') {
+            message = {
+                topic: 'patient_alert',
+                notification: {
+                    title: `혈당 수치 위험 환자 : ${name}`,
+                    body: `${checkDate} ${checkTime} 측정된 ${name}님의 혈당 측정 수치가 ${value}mg/dL 로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
+                
+                },
+                android: {
+                    priority: 'high',
+                },
+                apns: {
+                    headers: {
+                        'apns-priority': '10'
+                    },
+                },
+            };
+        } else if(type == '혈압') {
+            message = {
+                topic: 'patient_alert',
+                notification: {
+                    title: `혈압 수치 위험 환자 : ${name}`,
+                    body: `${checkDate} ${checkTime} 측정된 ${name}님의 혈당 측정 수치가 ${value}mg/dL 로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
+                }
+            };
+        }
+
+        const response = await admin.messaging().send(message);
+        console.log("Successfully sent message:", response);
+
+        return res.status(200).json({ success: true });
+    } catch(error) {
+        console.error("Error sending message:", error);
+
+        return res.status(500).json({ success: false, error: error.message });
+    }
+});
