@@ -264,7 +264,7 @@ class _HomeTapForm extends State<HomeTapForm> {
         width: MediaQuery.of(context).size.width,
         child: Column(
           children: [
-            const SizedBox(height: 10,),
+            const SizedBox(height: 15,),
             SizedBox(
               width: MediaQuery.of(context).size.width-50,
               height: 35,

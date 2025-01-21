@@ -51,7 +51,7 @@ class PurseCheckForm extends StatefulWidget {
 
 class _PurseCheckFormState extends State<PurseCheckForm> {
   Logger logger = Logger();
-
+  bool _isSaving = false;
   Color _backgroundColor = Colors.white;
 
   final TextEditingController _shrinkController = TextEditingController();
@@ -82,16 +82,19 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   }
 
   void _onSaveButtonPressed() async {
+    setState(() {
+      _isSaving = true;
+    });
     _setStates();
 
     String? uid = '';
-    if(await AuthService.userLoginedFa()) {
+    if (await AuthService.userLoginedFa()) {
       uid = AuthService.getCurUserUid();
     } else {
       uid = await AuthService.getCurUserId();
     }
 
-    if(uid != null) {
+    if (uid != null) {
       PurseModel purseModel = PurseModel(
         shrink: _shrink,
         relax: _relax,
@@ -102,17 +105,19 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
       );
       await PurseRepository.insertPurseCheck(purseModel);
 
-      if(await AuthService.userLoginedFa()) {
+      if (await AuthService.userLoginedFa()) {
         String? uid = AuthService.getCurUserUid();
-        PurseColNameModel nameModel = PurseColNameModel(uid: uid!, date: _checkDate);
+        PurseColNameModel nameModel = PurseColNameModel(
+            uid: uid!, date: _checkDate);
         PurseColNameRepository.insertPurseColName(nameModel);
       } else {
         String? kakaoId = await AuthService.getCurUserId();
-        PurseColNameModel nameModel = PurseColNameModel(uid: kakaoId!, date: _checkDate);
+        PurseColNameModel nameModel = PurseColNameModel(
+            uid: kakaoId!, date: _checkDate);
         PurseColNameRepository.insertPurseColName(nameModel);
       }
 
-      if(_shrinkDanger || _relaxDanger) {
+      if (_shrinkDanger || _relaxDanger) {
         // fcm service
         String name = await UserRepository.getCurrentUserName();
         await FCMService.sendPushNotification(name, '혈압', '${_shrink}/${_relax}', _checkDate, _checkTime);
@@ -127,129 +132,151 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
           checkTime: Timestamp.fromDate(DateTime.now().toUtc()),
         );
         PurseDangerRepository.insertDanger(dangerModel);
+      }
 
-        if(_shrink.toInt() >= 180 || _relax.toInt() >= 120) {
-          showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                    title: Row(
-                      children: [
-                        Icon(Icons.dangerous, color: Colors.red[300],),
-                        Text('경고: 고혈압 위기 상태', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),),
-                      ],
-                    ),
-                    content: const Text('혈당이 높습니다. 운동 및 신체 활동량을 늘리시고 지속적인 혈당 상승 시 진료 바랍니다.', style: TextStyle(fontSize: 20),),
-                    actions: <Widget> [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(dialogContext);
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text('확인'),
-                      )
-                    ]
-                );
-              }
-          );
-        } else if(_shrink.toInt() >= 170 || _relax.toInt() >= 100) {
-          showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                    title: Row(
-                      children: [
-                        Icon(Icons.warning, color: Colors.red[300],),
-                        Text('경고: 고혈압 2단계', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),),
-                      ],
-                    ),
-                    content: const Text('안정 후 재측정하시고 지속적으로 혈압이 높을 경우 진료 바랍니다.', style: TextStyle(fontSize: 20),),
-                    actions: <Widget> [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(dialogContext);
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text('확인'),
-                      )
-                    ]
-                );
-              }
-          );
-        } else if(_shrink.toInt() >= 140 || _relax.toInt() >= 90) {
-          showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                    title: const Row(
-                      children: [
-                        Icon(Icons.warning, color: Colors.orangeAccent,),
-                        Text('경고: 고혈압 1단계', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
-                      ],
-                    ),
-                    content: const Text('혈압이 고혈압 수준입니다. 주치의와의 상담을 통해 건강에 유의하시기 바랍니다.', style: TextStyle(fontSize: 20),),
-                    actions: <Widget> [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(dialogContext);
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text('확인'),
-                      )
-                    ]
-                );
-              }
-          );
-        } else if(_shrink.toInt() >= 120 || _relax.toInt() >= 80) {
-          showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                    title: const Row(
-                      children: [
-                        Icon(Icons.warning, color: Colors.orangeAccent,),
-                        const Text('경고: 고혈압 전단계', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
-                      ],
-                    ),
-                    content: const Text('생활 습관 개선을 통한 혈압 관리가 필요합니다. 염분 섭취를 줄이고 규칙적인 운동과 스트레스 관리에 힘써주세요.', style: TextStyle(fontSize: 20),),
-                    actions: <Widget> [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(dialogContext);
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text('확인'),
-                      )
-                    ]
-                );
-              }
-          );
-        }
-
-      } else {
+      if (_shrink.toInt() >= 200 || _relax.toInt() >= 200) {
         showDialog(
             context: context,
             builder: (BuildContext dialogContext) {
               return AlertDialog(
                   title: const Row(
                     children: [
-                      Icon(Icons.save, color: Colors.grey,),
-                      Text('혈압 측정 완료', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),),
+                      Icon(Icons.dangerous, color: Color(0xFF22BED3),),
+                      Text('경고: 고혈압 위험', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),
+                      ),
                     ],
                   ),
-                  content: const Text('혈압이 정상 범위 내에 있습니다.', style: TextStyle(fontSize: 20),),
-                  actions: <Widget> [
+                  content: const Text('혈압이 위험 수준입니다. 안정을 취하시고 즉시 진료 받으시기 바랍니다.', style: TextStyle(fontSize: 25),),
+                  actions: <Widget>[
                     TextButton(
                       onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
                         Navigator.pop(dialogContext);
                         Navigator.pop(context, true);
                       },
-                      child: const Text('확인'),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
                     )
                   ]
               );
             }
         );
+      } else if (_shrink.toInt() >= 160 || _relax.toInt() >= 120) {
+        showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.warning, color: Color(0xFF22BED3),),
+                      Text('경고: 고혈압 주의', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),),
+                    ],
+                  ),
+                  content: const Text('안정 후 재측정 하시고 지속적으로 혈압이 높을 경우 진료 바랍니다.', style: TextStyle(fontSize: 25),),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    )
+                  ]
+              );
+            }
+        );
+      } else if (_shrink.toInt() >= 140 || _relax.toInt() >= 90) {
+        showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.warning, color: Color(0xFF22BED3)),
+                      Text('경고: 고혈압 주의', style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF22BED3),),),
+                    ],
+                  ),
+                  content: const Text(
+                    '고혈압 전단계 입니다. 식단 및 운동 관리를 하시어 건강에 유의하시기 바랍니다.',
+                    style: TextStyle(fontSize: 25),),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    )
+                  ]
+              );
+            }
+        );
+      }
+      else {
+          showDialog(
+              context: context,
+              builder: (BuildContext dialogContext) {
+                return AlertDialog(
+                    title: const Row(
+                      children: [
+                        Icon(Icons.check, color: Color(0xFF22BED3),),
+                        Text('정상 혈압', style: TextStyle(
+                            fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),),
+                      ],
+                    ),
+                    content: const Text('혈압이 정상 범위 내에 있습니다.', style: TextStyle(fontSize: 25),),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            _isSaving = false;
+                          });
+                          Navigator.pop(dialogContext);
+                          Navigator.pop(context, true);
+                        },
+                        style: TextButton.styleFrom(
+                            backgroundColor: Color(0xFF22BED3),
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )
+                        ),
+                        child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                      )
+                    ]
+                );
+              }
+          );
       }
     }
   }
@@ -265,7 +292,6 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     return krTime;
   }
 
-  @override
   TextInputFormatter rangeTextInputFormatter(int min, int max) {
     return TextInputFormatter.withFunction(
         (TextEditingValue oldValue, TextEditingValue newValue) {
@@ -283,14 +309,21 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     );
   }
 
+  int getDiagnosis() {
+    if(_shrink >= 200 || _relax >= 200) return 3;
+    else if(_shrink >= 160 || _relax >= 120) return 2;
+    else if(_shrink >= 140 || _relax >= 90) return 1;
+    else return 0;
+  }
+
   @override
   void initState() {
     super.initState();
-
   }
 
   @override
   Widget build(BuildContext context) {
+    if(_isSaving) return const Center(child: CircularProgressIndicator(),);
     return Scaffold(
       body: AnimatedContainer(
         height: MediaQuery.of(context).size.height,
@@ -368,11 +401,15 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                     onChanged: (text) {
                                       setState(() {
                                         _shrink = int.parse(text);
-                                        if(_shrink >= 160 || _relax >= 120) {
-                                          _backgroundColor = const Color(0xffff0000);
+                                        if(_shrink >= 200 || _relax >= 200) {
+                                          _backgroundColor = const Color(0xfffd6363);
                                         }
-                                        else if((_shrink < 160 && _shrink >= 120) || (_relax < 120 && _relax >= 80)) {
-                                          _backgroundColor = const Color(0xffff4500);
+                                        else if((_shrink < 200 && _shrink >= 160) || (_relax < 200 && _relax >= 120)) {
+                                          _backgroundColor = const Color(0xfff87c3c);
+                                        }
+                                        else if((_shrink < 160 && _shrink >= 140) || (_relax < 120 && _relax >= 90)) {
+                                          _backgroundColor = const Color(0xFFFFF2D1);
+
                                         }
                                         else {
                                           _backgroundColor = Colors.white;
@@ -425,11 +462,14 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                     onChanged: (text) {
                                       setState(() {
                                         _relax = int.parse(text);
-                                        if(_shrink >= 170 || _relax >= 120) {
-                                          _backgroundColor = const Color(0xffff0000);
+                                        if(_shrink >= 200 || _relax >= 200) {
+                                          _backgroundColor = const Color(0xfffd6363);
                                         }
-                                        else if((_shrink < 170 && _shrink >= 120) || (_relax < 120 && _relax >= 80)) {
-                                          _backgroundColor = const Color(0xffff4500);
+                                        else if((_shrink < 200 && _shrink >= 160) || (_relax < 200 && _relax >= 120)) {
+                                          _backgroundColor = const Color(0xfff87c3c);
+                                        }
+                                        else if((_shrink < 160 && _shrink >= 140) || (_relax < 120 && _relax >= 90)) {
+                                          _backgroundColor = const Color(0xFFFFF2D1);
                                         }
                                         else {
                                           _backgroundColor = Colors.white;
@@ -498,7 +538,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                     ),
                   ),
                   const SizedBox(height: 30,),
-                  if((_shrink >= 200) || _relax >= 120)
+                  if(getDiagnosis() == 3)
                     Container(
                       width: 200,
                       height: 80,
@@ -510,59 +550,59 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.dangerous, color: Colors.red,),
-                          Text('혈압 위기 상태', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),),
+                          Icon(Icons.dangerous, color: Colors.redAccent,),
+                          Text('고혈압 위험', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),),
                         ],
                       ),
                     ),
-                  if((_shrink < 200 && _shrink >= 170) || (_relax < 120 && _relax >= 100))
+                  if(getDiagnosis() == 2)
                     Container(
                       width: 200,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.red[100],
+                        color: Colors.deepOrange[100],
                       ),
                       child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.warning, color: Colors.redAccent,),
-                          Text('2단계 고혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),),
+                          Icon(Icons.warning, color: Colors.deepOrangeAccent,),
+                          Text('고혈압 주의', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),),
                         ],
                       ),
                     ),
-                  if((_shrink < 170 && _shrink >= 140) || (_relax < 100 && _relax >= 90))
+                  if(getDiagnosis() == 1)
                     Container(
                       width: 200,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.orange[100],
+                        color: Colors.amber[100],
                       ),
-                      child: const Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.warning, color: Colors.orangeAccent,),
-                          Text('1단계 고혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
+                          Icon(Icons.warning, color: Colors.orange,),
+                          Text('고혈압 주의', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),),
                         ],
                       ),
                     ),
-                  if((_shrink < 140 && _shrink >= 120) || (_relax < 90 && _relax >= 80))
+                  if(getDiagnosis() == 0)
                     Container(
                       width: 200,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: Colors.orange[100],
+                        color: const Color(0xfff4f4f4),
                       ),
                       child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Icon(Icons.warning, color: Colors.orangeAccent,),
-                          Text('고혈압 전단계', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orangeAccent),),
+                          Icon(Icons.check, color: Colors.grey,),
+                          Text('정상 혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
                         ],
                       ),
                     ),

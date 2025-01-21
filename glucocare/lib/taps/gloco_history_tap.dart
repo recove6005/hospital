@@ -174,7 +174,9 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
   final double _minX = 0;
   double _maxX = 21;
   final double _minY = 0;
-  final double _maxY = 200;
+  final double _maxY = 300;
+
+  final buffer = 10.0;
 
   String? _chartSelectedValeu = '1주일';
   double _chartSize = 500;
@@ -213,13 +215,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
           getTitlesWidget: (double value, TitleMeta meta) {
             int index = value.toInt();
             if (index >= 0 && index < _glucoX.length) {
-              if (index != 0 && _glucoX[index - 1] == _glucoX[index]) {
-                return SideTitleWidget(
-                    axisSide: meta.axisSide,
-                    child: const Text('')
-                );
-              } else {
-                return SideTitleWidget(
+              return SideTitleWidget(
                   axisSide: meta.axisSide,
                   space: 8,
                   child: Transform.rotate(
@@ -232,7 +228,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                   ),
                 );
               }
-            } else {
+            else {
               return Container();
             }
           }
@@ -419,7 +415,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                         children: [
                           const SizedBox(height: 10,),
                           SizedBox(
-                            width: 300,
+                            width: MediaQuery.of(context).size.width-100,
                             height: 30,
                             child: Text(
                               '${_focusedDate.month}월 ${_focusedDate.day}일',
@@ -560,19 +556,19 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                   switch(_chartSelectedValeu) {
                                     case '3개월' :
                                       _maxX = 270;
-                                      _chartSize = 3500;
+                                      _chartSize = _maxX*50;
                                       break;
                                     case '1개월' :
                                       _maxX = 90;
-                                      _chartSize = 1500;
+                                      _chartSize = _maxX*50;
                                       break;
                                     case '1주일' :
                                       _maxX = 21;
-                                      _chartSize = 500;
+                                      _chartSize = _maxX*50;
                                       break;
                                     case '1일' :
                                       _maxX = 4;
-                                      _chartSize = 280;
+                                      _chartSize = _maxX*100;
                                       break;
                                   }
                                 });
@@ -582,69 +578,58 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                         ),
                       ),
                       const SizedBox(height: 10,),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(left: 0, right: 0, top: 5, bottom: 5),
-                            height: 175,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(5, (index) {
-                                final reversedIndex = 4 - index;
-                                return Text('${(_minY + reversedIndex * 50).toInt()}', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.grey),);
-                              }),
-                            ),
-                          ),
-                          SizedBox(
-                            width: MediaQuery.of(context).size.width-120,
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width-120,
+                        height: 200,
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            width: _chartSize,
                             height: 200,
-                            child: SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Container(
-                                padding: const EdgeInsets.only(left: 25, right: 10, top: 15, bottom: 15),
-                                width: _chartSize,
-                                height: 200,
-                                child: LineChart(
-                                  LineChartData(
-                                    lineBarsData: [_glucoLine!],
-                                    titlesData: _buildTitles(),
-                                    gridData: FlGridData(
-                                        show: true,
-                                        drawVerticalLine: false,
-                                        horizontalInterval: 50,
-                                        getDrawingHorizontalLine: (value) {
-                                          return const FlLine(
-                                            color: Colors.grey,
-                                            strokeWidth: 1,
-                                          );
-                                        }
-                                    ),
-                                    borderData: FlBorderData(
-                                      show: true,
-                                      border: const Border(
-                                        top: BorderSide(
-                                          color: Colors.grey,
-                                          width: 0.5,
-                                        ),
-                                        bottom: BorderSide(
-                                          color: Colors.grey,
-                                          width: 1,
-                                        ),
-                                      ),
-                                    ),
-                                    minX: _minX,
-                                    maxX: _maxX,
-                                    minY: _minY,
-                                    maxY: _maxY,
+                            child: LineChart(
+                              LineChartData(
+                                lineBarsData: [_glucoLine!],
+                                clipData: const FlClipData.all(),
+                                lineTouchData: const LineTouchData(
+                                  touchTooltipData: LineTouchTooltipData(
+                                    fitInsideVertically: true,
+                                    fitInsideHorizontally: true,
                                   ),
                                 ),
+                                titlesData: _buildTitles(),
+                                gridData: FlGridData(
+                                    show: true,
+                                    drawVerticalLine: false,
+                                    horizontalInterval: 50,
+                                    getDrawingHorizontalLine: (value) {
+                                      return const FlLine(
+                                        color: Colors.grey,
+                                        strokeWidth: 1,
+                                      );
+                                    }
+                                ),
+                                borderData: FlBorderData(
+                                  show: true,
+                                  border: const Border(
+                                    top: BorderSide(
+                                      color: Colors.grey,
+                                      width: 0.5,
+                                    ),
+                                    bottom: BorderSide(
+                                      color: Colors.grey,
+                                      width: 1,
+                                    ),
+                                  ),
+                                ),
+                                minX: _minX+buffer,
+                                maxX: _maxX,
+                                minY: _minY-buffer,
+                                maxY: _maxY,
                               ),
                             ),
                           ),
-                        ],
+                        ),
                       ),
                     ],
                   ),

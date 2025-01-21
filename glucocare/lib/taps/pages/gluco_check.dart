@@ -62,6 +62,8 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   int _checkTimeValue = 0;
   bool _btnToggle = true;
 
+  bool _isSaving = false;
+
   String _checkTimeName = '식전';
   int _value = 0;
   String _state = '없음';
@@ -80,8 +82,22 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     return krTime;
   }
 
+  int getDiagnosis() {
+    if(_checkTimeName == '식후') {
+      if(_value >= 200) return 2;
+      else if(_value >= 110) return 1;
+      else return 0;
+    }
+    else if(_checkTimeName == '식전') {
+      if(_value >= 170) return 2;
+      else if(_value >= 100) return 1;
+      else return 0;
+    }
+
+    return -1;
+  }
+
   void _setState() {
-    _checkTimeName = _checkTimeName;
     _value = int.parse(_valueController.text);
     _state = _stateController.text;
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toUtc());
@@ -91,6 +107,9 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
   Future<void> _onSaveButtonPressed() async {
     _setState();
+    setState(() {
+      _isSaving = true;
+    });
 
     String? uid = '';
     if(await AuthService.userLoginedFa()) {
@@ -135,134 +154,217 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
             checkTimeName: _checkTimeName,
         );
         GlucoDangerRepository.insertDanger(model);
+      }
 
-        if(_checkTimeName == '식전') {
-          if(_value >= 126) {
-            showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                  title: Row(
+      if(_checkTimeName.contains('식전')) {
+        if(_value >= 170) {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
                     children: [
-                      Icon(Icons.dangerous, color: Colors.red[300],),
-                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),)
+                      Icon(Icons.dangerous, color: Color(0xFF22BED3),),
+                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
                     ],
                   ),
-                  content: const Text('혈당이 매우 높습니다. 즉시 의사에게 상담받으세요.', style: TextStyle(fontSize: 20),),
-                    actions: <Widget> [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(dialogContext);
-                          Navigator.pop(context, true);
-                        },
-                        child: const Text('확인'),
-                      )
-                    ]
-                );
-              },
-            );
-          } else if(_value >= 100) {
-            showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
+                  content: const Text('혈당이 높습니다. 운동 및 신체 활동량을 늘리시고 지속적인 혈당 상승 시 진료 바랍니다.', style: TextStyle(fontSize: 20),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    )
+                  ]
+              );
+            },
+          );
+        } else if(_value >= 100) {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
                   title: Row(
                     children: [
-                      Icon(Icons.warning, color: Colors.orange[300],),
-                      Text('경고: 전당뇨', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[300]),)
+                      Icon(Icons.warning, color: Color(0xFF22BED3),),
+                      Text('경고: 당뇨 주의', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
                     ],
                   ),
                   content: const Text('혈당이 높습니다. 생활 습관 개선을 통한 관리가 필요합니다.', style: TextStyle(fontSize: 20),),
                   actions: <Widget> [
                     TextButton(
                       onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
                         Navigator.pop(dialogContext);
                         Navigator.pop(context, true);
                       },
-                      child: const Text('확인'),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
                     )
                   ]
-                );
-              },
-            );
-          }
-        }
-
-        if(_checkTimeName == '식후') {
-          if(_value >= 200) {
-            showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                  title: Row(
+              );
+            },
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
                     children: [
-                      Icon(Icons.dangerous, color: Colors.red[300],),
-                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red[300]),)
+                      Icon(Icons.check, color: Color(0xFF22BED3),),
+                      Text('정상 혈당', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
                     ],
                   ),
-                  content: const Text('혈당이 매우 높습니다. 즉시 의사에게 상담받으세요.', style: TextStyle(fontSize: 20),),
+                  content: const Text('혈당 수치가 정상 범위 내에 있습니다.', style: TextStyle(fontSize: 25),),
                   actions: <Widget> [
                     TextButton(
                       onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
                         Navigator.pop(dialogContext);
                         Navigator.pop(context, true);
                       },
-                      child: const Text('확인'),
-                    )
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    ),
                   ]
-                );
-              },
-            );
-          } else if(_value >= 140) {
-            showDialog(
-              context: context,
-              builder: (BuildContext dialogContext) {
-                return AlertDialog(
-                  title: Row(
+              );
+            },
+          );
+        }
+      }
+      else if(_checkTimeName.contains('식후')) {
+        if(_value >= 200) {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
                     children: [
-                      Icon(Icons.warning, color: Colors.orange[300],),
-                      Text('경고: 전당뇨', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.orange[300]),)
+                      Icon(Icons.dangerous, color: Color(0xFF22BED3),),
+                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
                     ],
                   ),
-                  content: const Text('혈당이 높습니다. 생활 습관 개선을 통한 관리가 필요합니다.', style: TextStyle(fontSize: 20),),
+                  content: const Text('혈당이 높습니다. 운동 및 신체 활동량을 늘리시고 지속적인 혈당 상승 시 진료바랍니다.', style: TextStyle(fontSize: 25),),
                   actions: <Widget> [
                     TextButton(
                       onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
                         Navigator.pop(dialogContext);
                         Navigator.pop(context, true);
                       },
-                      child: const Text('확인'),
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
                     )
                   ]
-                );
-              },
-            );
-          }
-        }
-      } else {
-        showDialog(
-          context: context,
-          builder: (BuildContext dialogContext) {
-            return AlertDialog(
-                title: const Row(
-                  children: [
-                    Icon(Icons.warning, color: Colors.grey,),
-                    Text('혈당 수치 정상', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey),)
-                  ],
-                ),
-                content: const Text('혈당 수치가 정상 수준입니다.', style: TextStyle(fontSize: 30),),
-                actions: <Widget> [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(dialogContext);
-                      Navigator.pop(context, true);
-                    },
-                    child: const Text('확인'),
+              );
+            },
+          );
+        } else if(_value >= 110) {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: Row(
+                    children: [
+                      Icon(Icons.warning, color: Color(0xFF22BED3),),
+                      Text('경고: 혈당주의', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
+                    ],
                   ),
-                ]
-            );
-          },
-        );
+                  content: const Text('혈당이 높습니다. 생활 습관 개선을 통한 관리가 필요합니다.', style: TextStyle(fontSize: 25),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    )
+                  ]
+              );
+            },
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.check, color: Color(0xFF22BED3),),
+                      Text('정상 혈당', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
+                    ],
+                  ),
+                  content: const Text('혈당 수치가 정상 범위 내에 있습니다.', style: TextStyle(fontSize: 25),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    ),
+                  ]
+              );
+            },
+          );
+        }
       }
     }
   }
@@ -294,6 +396,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
   @override
   Widget build(BuildContext context) {
+    if(_isSaving) return const Center(child: CircularProgressIndicator());
     return Scaffold(
       body: AnimatedContainer(
           height: MediaQuery.of(context).size.height,
@@ -366,17 +469,17 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                               onChanged: (text) {
                                 _value = int.parse(text);
                                 if(_checkTimeName == '식전') {
-                                  if(_value >= 126) {
+                                  if(_value >= 170) {
                                     setState(() {
-                                      _backgroundColor = const Color(0xffff0000);
+                                      _backgroundColor = const Color(0xfffd6363);
                                     });
                                   }
                                   else if(_value >= 100) {
                                     setState(() {
-                                      _backgroundColor = const Color(0xffff4500);
+                                      _backgroundColor = const Color(0xfff87c3c);
                                     });
                                   }
-                                  else if(_value < 100) {
+                                  else {
                                     setState(() {
                                       _backgroundColor = Colors.white;
                                     });
@@ -385,15 +488,15 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                                 if(_checkTimeName == '식후') {
                                   if(_value >= 200) {
                                     setState(() {
-                                      _backgroundColor = const Color(0xffff0000);
+                                      _backgroundColor = const Color(0xfffd6363);
                                     });
                                   }
-                                  else if(_value >= 140) {
+                                  else if(_value >= 110) {
                                     setState(() {
-                                      _backgroundColor = const Color(0xffff4500);
+                                      _backgroundColor = const Color(0xfff87c3c);
                                     });
                                   }
-                                  else if(_value < 140) {
+                                  else {
                                     setState(() {
                                       _backgroundColor = Colors.white;
                                     });
@@ -451,17 +554,17 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                               setState(() {
                                 _btnToggle = true;
                                 _checkTimeName = '식전';
-                                if(_value >= 126) {
+                                if(_value >= 170) {
                                   setState(() {
-                                    _backgroundColor = const Color(0xffff0000);
+                                    _backgroundColor = const Color(0xfffd6363);
                                   });
                                 }
                                 else if(_value >= 100) {
                                   setState(() {
-                                    _backgroundColor = const Color(0xffff4500);
+                                    _backgroundColor = const Color(0xfff87c3c);
                                   });
                                 }
-                                else if(_value < 100) {
+                                else {
                                   setState(() {
                                     _backgroundColor = Colors.white;
                                   });
@@ -506,15 +609,15 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                                 _checkTimeName = '식후';
                                 if(_value >= 200) {
                                   setState(() {
-                                    _backgroundColor = const Color(0xffff0000);
+                                    _backgroundColor = const Color(0xfffd6363);
                                   });
                                 }
-                                else if(_value >= 140) {
+                                else if(_value >= 110) {
                                   setState(() {
-                                    _backgroundColor = const Color(0xffff4500);
+                                    _backgroundColor = const Color(0xfff87c3c);
                                   });
                                 }
-                                else if(_value < 140) {
+                                else {
                                   setState(() {
                                     _backgroundColor = Colors.white;
                                   });
@@ -534,8 +637,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                       ],
                     ),
                     const SizedBox(height: 50,),
-                    if(_value >= 126)
-                      if(_checkTimeName == '식전')
+                    if(getDiagnosis() == 2)
                         Container(
                           width: 200,
                           height: 80,
@@ -547,62 +649,42 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(Icons.dangerous, color: Colors.red,),
-                              Text('당뇨병', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),),
+                              Icon(Icons.dangerous, color: Colors.redAccent,),
+                              Text('당뇨병', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),),
                             ],
                           ),
                         ),
-                    if(_value < 126 && _value >= 100)
-                      if(_checkTimeName == '식전')
+                    if(getDiagnosis() == 1)
                         Container(
                           width: 200,
                           height: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.orange[100],
+                            color: Colors.deepOrange[100],
                           ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(Icons.dangerous, color: Colors.orange,),
-                              Text('전당뇨', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),),
+                              Icon(Icons.warning, color: Colors.deepOrangeAccent,),
+                              Text('혈당 주의', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),),
                             ],
                           ),
                         ),
-                    if(_value >= 200)
-                      if(_checkTimeName == '식후')
+                    if(getDiagnosis() == 0)
                         Container(
                           width: 200,
                           height: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.red[100],
+                            color: Color(0xfff4f4f4),
                           ),
                           child: const Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Icon(Icons.dangerous, color: Colors.red,),
-                              Text('당뇨병', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.red),),
-                            ],
-                          ),
-                        ),
-                    if(_value < 200 && _value >= 140)
-                      if(_checkTimeName == '식후')
-                        Container(
-                          width: 200,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.orange[100],
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Icon(Icons.dangerous, color: Colors.orange,),
-                              Text('전당뇨', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.orange),),
+                              Icon(Icons.check, color: Colors.grey,),
+                              Text('정상 혈당', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
                             ],
                           ),
                         ),

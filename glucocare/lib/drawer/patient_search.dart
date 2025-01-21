@@ -126,7 +126,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
             alignment: Alignment.center,
             child: Container(
               padding: EdgeInsets.zero,
-              width: 350,
+              width: MediaQuery.of(context).size.width- 50,
               height: 50,
               child: TextField(
                 controller: _nameController,
@@ -155,7 +155,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
             alignment: Alignment.center,
             child: Container(
               padding: EdgeInsets.zero,
-              width: 350,
+              width: MediaQuery.of(context).size.width- 50,
               height: 50,
               child: TextField(
                 controller: _birthController,
@@ -184,12 +184,14 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
             alignment: Alignment.center,
             child: Container(
               padding: EdgeInsets.zero,
-              width: 350,
-              height: MediaQuery.of(context).size.height - 300,
+              width: MediaQuery.of(context).size.width- 50,
               child: ListView.builder(
+                physics: NeverScrollableScrollPhysics(),
+                shrinkWrap: true,
                 itemCount: _searchModels.length,
                 itemBuilder: (context, index) {
                   return Card(
+                    color: Color(0xfff4f4f4),
                     margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                     child: ListTile(
                       leading: const Icon(Icons.account_box),
@@ -210,6 +212,7 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
               ),
             ),
           ),
+          const SizedBox(height: 100,),
         ],
       ),
     );

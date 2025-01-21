@@ -5,46 +5,37 @@ admin.initializeApp();
 
 exports.sendPushNotification = functions.https.onRequest(async (req, res) => {
     try {
+        const { tokens, name, type, value, checkDate, checkTime } = req.body;
+        console.log(req.body);
+
         if (req.method !== "POST") {
-            return res.status(405).send({ success: false, error: "Method not allowed" });
+            return res.status(405).send({ success: false, error: "Method not allowed 405" });
         }
 
-        const { tokens, name, type, value, checkDate, checkTime } = req.body;
+        // tokens 배열 검증
+        if (!Array.isArray(tokens) || tokens.length === 0) {
+            return res.status(400).json({ success: false, error: "Tokens must be a non-empty array 400" });
+        }
 
         // Subscribe tokens to the topic
-        await admin.messaging().subscribeToTopic(tokens, 'patient_alert');
+        // await admin.messaging().subscribeToTopic(tokens, 'patient_alert');
 
-        let message = {};
+        const notification = {
+            title: type === '혈당' ? `혈당 수치 위험 환자 : ${name}` : `혈압 수치 위험 환자 : ${name}`,
+            body: type === '혈당' 
+                ? `[${checkDate} ${checkTime}] 시각에 측정된 ${name}님의 혈당 수치가 ${value}mg/dL 으로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`
+                : `[${checkDate} ${checkTime}] 시각에 측정된 ${name}님의 혈압 수치가 ${value}mmHg 으로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
+        };
+
 
         // FCM 메시지 정의
-        if(type == '혈당') {
-            message = {
-                topic: 'patient_alert',
-                notification: {
-                    title: `혈당 수치 위험 환자 : ${name}`,
-                    body: `${checkDate} ${checkTime} 측정된 ${name}님의 혈당 측정 수치가 ${value}mg/dL 로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
-                
-                },
-                android: {
-                    priority: 'high',
-                },
-                apns: {
-                    headers: {
-                        'apns-priority': '10'
-                    },
-                },
-            };
-        } else if(type == '혈압') {
-            message = {
-                topic: 'patient_alert',
-                notification: {
-                    title: `혈압 수치 위험 환자 : ${name}`,
-                    body: `${checkDate} ${checkTime} 측정된 ${name}님의 혈당 측정 수치가 ${value}mg/dL 로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
-                }
-            };
-        }
+        const message = {
+            tokens: tokens,
+            data: notification,
+            notification: notification,  
+        };
 
-        const response = await admin.messaging().send(message);
+        const response = await admin.messaging().sendEachForMulticast(message);
         console.log("Successfully sent message:", response);
 
         return res.status(200).json({ success: true });

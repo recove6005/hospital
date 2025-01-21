@@ -14,6 +14,7 @@ import 'package:glucocare/repositories/patient_repository.dart';
 import 'package:glucocare/repositories/toekn_repository.dart';
 import 'package:glucocare/services/background_fetch_service.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:glucocare/services/fcm_service.dart';
 import 'package:glucocare/services/notification_service.dart';
 import 'package:glucocare/taps/gloco_history_tap.dart';
 import 'package:glucocare/taps/purse_history_tap.dart';
@@ -48,6 +49,10 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   rlogger.d('[glucocare_log] firebase init');
+
+  // FCM init
+  await FCMService.initialize();
+  rlogger.d('[glucocare_log] FCM init');
 
   // kakotalk api init
   await dotenv.load();

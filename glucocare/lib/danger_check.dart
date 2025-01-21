@@ -1,6 +1,6 @@
 class DangerCheck {
   static bool purseShrinkDangerCheck(int shrink) {
-    if(shrink >= 130) {
+    if(shrink >= 200) {
       return true;
     } else {
       return false;
@@ -8,7 +8,7 @@ class DangerCheck {
   }
 
   static bool purseRelaxDangerCheck(int relax) {
-    if(relax >= 90) {
+    if(relax >= 200) {
       return true;
     } else {
       return false;
@@ -16,10 +16,10 @@ class DangerCheck {
   }
 
   static bool glucoDangerCheck(int value, String name) {
-    if(name == '식전' && value >= 100) {
+    if(name == '식전' && value >= 170) {
       return true;
     }
-    else if(name == '식후' && value >= 140) {
+    else if(name == '식후' && value >= 200) {
       return true;
     } else {
       return false;

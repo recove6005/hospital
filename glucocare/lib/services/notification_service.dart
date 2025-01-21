@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:logger/logger.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
@@ -54,40 +56,30 @@ class NotificationService {
       notificationDetails,
       payload: 'item x',
     );
-
-    // try {
-    //   await flutterLocalNotificationsPlugin.zonedSchedule(
-    //     0,
-    //     'Test Title',
-    //     'Test Body',
-    //     tz.TZDateTime.now(tz.local).add(const Duration(seconds: 3)),
-    //     const NotificationDetails(
-    //       android: AndroidNotificationDetails(
-    //         'send_me_the_exaxtime_channel_id3522',
-    //         'send_me_the_exaxtime_channel_name987655',
-    //         channelDescription: 'channel_description',
-    //         importance: Importance.max,
-    //         priority: Priority.high,
-    //         ticker: 'ticker',
-    //       ),
-    //     ),
-    //     uiLocalNotificationDateInterpretation:
-    //     UILocalNotificationDateInterpretation.absoluteTime,
-    //     androidScheduleMode: AndroidScheduleMode.inexact,
-    //     //allowWhileIdle: true,
-    //   );
-    // } catch(e) {
-    //   logger.d('[glucocare_log] Failed (showNotification) : $e');
-    // }
   }
 
-  // static tz.TZDateTime _makeDate(h, m, s) {
-  //   var now = tz.TZDateTime.now(tz.local);
-  //   var when = tz.TZDateTime(tz.local, now.year, now.month, now.day, h, m, s);
-  //   if(when.isBefore(now)) {
-  //     when = when.add(const Duration(days: 1));
-  //   }
-  //   logger.d('[glucocare_log] setTime: ${when}');
-  //   return when;
-  // }
+  static Future<void> showForegreoundFCMNotification(String title, String body) async {
+    logger.d('[glucocare_log] show notification.');
+    const AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+            'alarm_name_foreground_fcm_notify',
+            'alarm_chenel_foreground_fcm_notify_patient_alert',
+            channelDescription: 'notification to alert patients in danger',
+            importance: Importance.max,
+            priority: Priority.high,
+            ticker: 'ticker',
+        );
+
+    const NotificationDetails notificationDetails = NotificationDetails(
+        android: androidNotificationDetails
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0,
+      title,
+      body,
+      notificationDetails,
+      payload: 'item x',
+    );
+  }
 }
