@@ -30,6 +30,32 @@ export const getAllProjects = async (req, res) => {
     }
 }
 
+// 프로젝트 가져오기 - 특정 문서값으로
+export const getProjectByDocId = async (req, res) => {
+    try {
+        const { docId } = req.body;
+        const docRef = doc(db, 'projects', docId);
+        const snapshot = await getDoc(docRef);
+
+        if(snapshot.exists()) {
+            return res.status(200).json({
+                title: snapshot.data().title,
+                date: snapshot.data().date,
+                organization: snapshot.data().organization,
+                name: snapshot.data().name,
+                call: snapshot.data().call,
+                email: snapshot.data().email,
+                details: snapshot.data().details,
+                progress: snapshot.data().progress,
+            });
+        } else {
+            return res.status(500).json({error: 'no doc ref found'});
+        }
+    } catch(e) {
+        return res.status(500).json({error:e.message});
+    }
+}
+
 // 프로젝트 가져오기 - 접수 문의
 export const getProjectsBy0 = async (req, res) => {
     var projectList = [];
@@ -136,16 +162,13 @@ export const acceptProject = async (req, res) => {
         const docSnap = await getDoc(docRef);
         if(docSnap.exists()) {
             await setDoc(docRef, {
-                allprice: docSnap.data().allprice,
                 date: docSnap.data().date,
                 details: docSnap.data().details,
                 email: docSnap.data().email,
                 name: docSnap.data().name,
                 organization: docSnap.data().organization,
-                phone: docSnap.data().phone,
+                call: docSnap.data().call,
                 progress: "1",
-                rank: docSnap.data().rank,
-                size: docSnap.data().size,
                 title: docSnap.data().title,
                 uid: docSnap.data().uid,
                 userEmail: docSnap.data().userEmail,
@@ -174,21 +197,25 @@ export const requestPayment = async (req, res) => {
         const docSnap = await getDoc(docRef);
         if(docSnap.exists()) {
             await setDoc(docRef, {
-                allprice: price,
                 date: docSnap.data().date,
                 details: docSnap.data().details,
                 email: docSnap.data().email,
                 name: docSnap.data().name,
                 organization: docSnap.data().organization,
-                phone: docSnap.data().phone,
+                call: docSnap.data().call,
                 progress: "2",
-                rank: docSnap.data().rank,
-                size: docSnap.data().size,
                 title: docSnap.data().title,
                 uid: docSnap.data().uid,
                 userEmail: docSnap.data().userEmail,
             });
         }
+
+        // 가격 업로드
+        const priceDocRef = doc(db, 'price', docId);
+        await setDoc(priceDocRef, {
+            docId: docId,
+            price: price,
+        });
 
         // 파일 업로드
         if(files.length > 0) {
@@ -326,7 +353,7 @@ export const checkDeposit = async (req, res) => {
     }
 }
 
-// 프로젝트 가져오기 - 회원
+// 프로젝트 가져오기 - 회원 uid로
 export const getProjectsByUid = async (req, res) => {
     const uid = auth.currentUser.uid;
 
@@ -352,6 +379,23 @@ export const getProjectsByUid = async (req, res) => {
         res.status(404).send({ error: e.message });
     }
 };
+
+// 요청 가격 가져오기
+export const getPriceValue = async (req, res) => {
+    const { docId } = req.body;
+    try {
+        const docRef = doc(db, 'price', docId);
+        const snapshot = await getDoc(docRef);
+
+        if(snapshot.exists()) {
+            return res.status(200).json({price: snapshot.data().price});
+        } else {
+            return res.status(200).json({price: '---'});
+        }
+    } catch(e) {
+        return res.status(500).json({error: e.message});
+    }
+}
 
 // 파일 다운로드
 export const getDownload = async (req, res) => {

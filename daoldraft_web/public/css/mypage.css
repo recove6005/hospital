@@ -434,17 +434,21 @@ main h1 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 20px;
-    background-color: rgb(245, 229, 200);
-    padding: 30px;
+    color: #00a99d;
     border-radius: 10px;
 }
 
 #checking-payment h1 {
+    padding: 0;
+    margin: 0;
+    height: 50px;
     font-size: 25px;
 }
 
 #checking-payment p {
+    padding: 0;
+    margin: 0;
+    height: 50px;
     font-size: 18px;
 }
 
@@ -504,4 +508,21 @@ main h1 {
     width: 80%;
     height: 1px;
     background-color: white;
+}
+
+/* swal button */
+.swal-confirm-btn {
+    background-color: #00a99d;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.swal-cancel-btn {
+    background-color: #d4d4d4;
+    color: grey;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
 }

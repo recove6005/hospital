@@ -225,6 +225,7 @@ class _HomeTapForm extends State<HomeTapForm> {
 
   List<PillModel> _alarmModels = [];
   void _getAlarmTasks() async {
+    FetchService.stopAllBackgroundFetch();
     _alarmModels = await AlarmRepository.selectAllAlarmByUid();
     for(PillModel model in _alarmModels) {
       String taskId = model.alarmTimeStr;

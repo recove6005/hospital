@@ -29,10 +29,7 @@ async function checkUserVerify() {
             document.getElementById("profile-photo").style.visibility = 'visible';
             document.getElementById("profile-photo").style.display = 'flex';
             document.getElementById("profile-photo").style.flexDirection = 'raw';
-            document.getElementById("profile-photo").style.alignItems = 'center';
-
-            document.getElementById("user-email").innerText = result.msg;
-            
+            document.getElementById("profile-photo").style.alignItems = 'center';            
             document.getElementById("to-signin").style.display = 'none';
         }
     }
@@ -100,7 +97,8 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
         }
 
         const result = await response.json();
-        console.log(result.msg);
+
+        window.location.href = '../html/home.html';
     } catch(e) {
     console.error("Unexpected error during logout:", error);
     alert("An unexpected error occurred. Please try again.");

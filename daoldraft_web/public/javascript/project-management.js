@@ -1,4 +1,3 @@
-
 async function checkUserVerify() {
     const response = await fetch('/login/verify', {
         method: 'POST',
@@ -15,10 +14,7 @@ async function checkUserVerify() {
             document.getElementById("profile-photo").style.visibility = 'visible';
             document.getElementById("profile-photo").style.display = 'flex';
             document.getElementById("profile-photo").style.flexDirection = 'raw';
-            document.getElementById("profile-photo").style.alignItems = 'center';
-
-            document.getElementById("user-email").innerText = result.msg;
-            
+            document.getElementById("profile-photo").style.alignItems = 'center';            
             document.getElementById("to-signin").style.display = 'none';
         }
     }
@@ -154,7 +150,7 @@ async function getProjects(progress) {
         
         var progress = '문의 접수';
         if(pjt.progress === '1') progress = '작업 중';
-        else if(pjt.progress === '2' || pjt.progress === '11') progress = '작업 완료, 결제 진행 중';
+        else if(pjt.progress === '2' || pjt.progress === '11') progress = '결제 중';
         else if(pjt.progress === '3') progress = '결제 완료';
 
         var email = pjt.email;
@@ -164,273 +160,88 @@ async function getProjects(progress) {
             <a class="project-item" href="#">
                     <input type="hidden" id="project-id" value="${pjt.docId}">
                     <div id="item-top">
-                        <p id="proejct-title">${pjt.title}<span id="size">(${pjt.size})</span></p>
-                        <p id="proejct-date">${formattedDate}</p>
+                        <div> 
+                            <div id="title-notifier"> </div>
+                            <p id="project-title">${pjt.title}</p>
+                            <p id="project-progress">${progress}</p>
+                        </div>
+                        <div id="date">${formattedDate}</div>
                     </div>
-                    <div id="item-middle">
+                    <div id="item-bottom">
                         <p id="project-organization">${pjt.organization}</p>
-                        <p id="proejct-phone">${pjt.phone}</p>
+                        <p id="proejct-phone">☎ ${pjt.call}</p>  
                     </div>
-                    <div id="item-progress">
-                        <p id="project-progress">${progress}</p>
-                    </div>
-                    <div class="item-details hidden" id="item-details-${pjt.docId}">
-                        <div id="item-agent">
-                            <p class="details" id="name">담당자 : ${pjt.name}</p>
-                            <p class="details" id="rank">직책 : ${pjt.rank}</p>
-                            <p class="details" id="email">이메일 : ${email} </p>
-                        </div>
-                        <div id="item-content">
-                            <p id="detail-title">문의내용 : </p>
-                            <p class="details" id="details">${pjt.details}</p>
-                        </div>
-                        <div id="item-price">
-                            <p class="details" id="price"> 가격 ${pjt.allprice}원</p>
-                        </div>
-                    </div>
-                </a>     
-                <div id="item-buttons">
-                    <a class="item-button" id="accept-btn-${pjt.docId}">수락</a>
-                    <a class="item-button" id="dismiss-btn-${pjt.docId}">거부</a>
-                    <form id="payment-form-${pjt.docId}">
-                        <input type="file" id="input-file-${pjt.docId}" multiple>
-                        <input class="item-input" id="input-price-${pjt.docId}" name="price" placeholder="결제 요청 가격" required> 
-                        <button class="item-button" id="payment-btn-${pjt.docId}">결제요청</button>
-                    </form>
-                    <p class="item-deposit" id="item-deposit-owner-${pjt.docId}">예금주: ownner</p>
-                    <a class="item-button" id="check-payment-${pjt.docId}">결제확인</a>
-                </div>
+            </a>
+            <div id="divider"></div>
         `;
 
         const projectLink = item.querySelector('.project-item');
         projectLink.addEventListener('click', (event) => {
-            event.preventDefault(); // 기본 동작(페이지 이동) 방지
+            event.preventDefault();
+
+            // 프로젝트 상세 페이지로 이동
             const projectId = projectLink.querySelector('#project-id').value;
-            console.log(`Project clicked: ${projectId}`);
-
-            const detailBox = document.querySelector(`#item-details-${projectId}`);
-            if (detailBox.classList.contains('hidden')) {
-                detailBox.classList.remove('hidden'); // 보이기
-                detailBox.style.display = 'block';
-                
-            } else {
-                detailBox.classList.add('hidden'); // 숨기기
-                detailBox.style.display = 'none';
-            }
+            window.location.href = `../html/project-management-details.html?projectid=${projectId}`;
         });
 
-        // 버튼 처리
-        const acceptBtn = item.querySelector(`#accept-btn-${pjt.docId}`);
-        const dismissBtn = item.querySelector(`#dismiss-btn-${pjt.docId}`);
-        const priceInput = item.querySelector(`#input-price-${pjt.docId}`);
-        const paymentBtn = item.querySelector(`#payment-btn-${pjt.docId}`);
-        const fileInput = item.querySelector(`#input-file-${pjt.docId}`);
-        const checkPaymentBtn = item.querySelector(`#check-payment-${pjt.docId}`);
-        const depositOwnner = item.querySelector(`#item-deposit-owner-${pjt.docId}`);
+    
+        // else {
+        //     // 결제 완료
+        //     acceptBtn.style.display = 'none';
+        //     dismissBtn.style.display = 'none';
+        //     priceInput.style.display = 'none';
+        //     paymentBtn.style.display = 'none';
+        //     fileInput.style.display = 'none';
+        //     checkPaymentBtn.style.display = 'none';
+        //     depositOwnner.style.display = 'inline-block';
 
-        // 결제 input 문자열 제한
-        priceInput.addEventListener("input", (e) => {
-            const rawValue = e.target.value.replace(/[^\d]/g, "");
-            const formattedValue = new Intl.NumberFormat("ko-KR").format(rawValue);
-            e.target.value = formattedValue ? `${formattedValue}` : "";
-        });
+        //     // 예금주 이름
+        //     const response = await fetch('/project/download-deposit-owner', {
+        //         method: 'POST',
+        //         headers: { "Content-Type" : "application/json" },
+        //         body: JSON.stringify({
+        //             docId: pjt.docId,
+        //         }),
+        //     });
 
-        if(pjt.progress === '0') {
-            // 문의 접수
-            acceptBtn.style.display = 'flex';
-            dismissBtn.style.display = 'flex';
-            priceInput.style.display = 'none';
-            paymentBtn.style.display = 'none';
-            fileInput.style.display = 'none';
-            checkPaymentBtn.style.display = 'none';
-            depositOwnner.style.display = 'none';
-        }   
-        else if(pjt.progress === '1') {
-            // 작업 중
-            acceptBtn.style.display = 'none';
-            dismissBtn.style.display = 'none';
-            priceInput.style.display = 'flex';
-            paymentBtn.style.display = 'flex';
-            fileInput.style.display = 'flex';
-            checkPaymentBtn.style.display = 'none';
-            depositOwnner.style.display = 'none';
-        }
-        else if(pjt.progress === '2') {
-            // 작업완료, 결제 진행 중
-            acceptBtn.style.display = 'none';
-            dismissBtn.style.display = 'none';
-            priceInput.style.display = 'none';
-            paymentBtn.style.display = 'none';
-            fileInput.style.display = 'none';
-            checkPaymentBtn.style.display = 'none';
-            depositOwnner.style.display = 'none';
-        }
-        else if(pjt.progress === '11')  {
-            // 작업완료, 무통장 입금 진행 중
-            acceptBtn.style.display = 'none';
-            dismissBtn.style.display = 'none';
-            priceInput.style.display = 'none';
-            paymentBtn.style.display = 'none';
-            fileInput.style.display = 'none';
-            checkPaymentBtn.style.display = 'flex';
-            depositOwnner.style.display = 'inline-block';
+        //     const result = await response.json();
+        //     let owner = '';
+        //     if(response.ok) {
+        //         owner = result.owner;
+        //     } else {
+        //         console.log(`error: ${result.error}`);
+        //     }
 
-            // 예금주 이름
-            const response = await fetch('/project/download-deposit-owner', {
-                method: 'POST',
-                headers: { "Content-Type" : "application/json" },
-                body: JSON.stringify({
-                    docId: pjt.docId,
-                }),
-            });
-
-            const result = await response.json();
-            let owner = '';
-            if(response.ok) {
-                owner = result.owner;
-            } else {
-                console.log(`error: ${result.error}`);
-            }
-
-            depositOwnner.innerText = `(무통장 입금) 예금주: ${owner}`;
-        } 
-        else {
-            // 결제 완료
-            acceptBtn.style.display = 'none';
-            dismissBtn.style.display = 'none';
-            priceInput.style.display = 'none';
-            paymentBtn.style.display = 'none';
-            fileInput.style.display = 'none';
-            checkPaymentBtn.style.display = 'none';
-            depositOwnner.style.display = 'inline-block';
-
-            // 예금주 이름
-            const response = await fetch('/project/download-deposit-owner', {
-                method: 'POST',
-                headers: { "Content-Type" : "application/json" },
-                body: JSON.stringify({
-                    docId: pjt.docId,
-                }),
-            });
-
-            const result = await response.json();
-            let owner = '';
-            if(response.ok) {
-                owner = result.owner;
-            } else {
-                console.log(`error: ${result.error}`);
-            }
-
-            depositOwnner.innerText = `(무통장 입금) 예금주: ${owner}`;
-        }
-
-
-        // 작업 수락 버튼 이벤트
-        acceptBtn.addEventListener('click', async (e) => {
-            // project progress update 0 -> 1
-            const response = await fetch('/project/accept-project', {
-                method: 'POST',
-                headers: { "Content-Type" : "application/json"},
-                body: JSON.stringify({ docId: pjt.docId }),
-            });
-
-            const acceptResult = await response.json();
-            if(response.ok) {
-                window.location.reload();
-            } else {
-                console.log(`${acceptResult.error}`);
-            }
-        });
-
-        // 작업 거부 버튼 이벤트
-        dismissBtn.addEventListener('click', async (e) => {
-            // project delete
-            const response = await fetch('/project/dismiss-project', {
-                method: 'POST',
-                headers: { "Content-Type" : "application/json "},
-                body: JSON.stringify({ docId: pjt.docId }),
-            });
-
-            const dismissResult = await response.json();
-            if(response.ok) {
-                window.location.reload();
-            } else {
-                console.log(`${dismissResult.error}`);
-            }
-        });
-
-        // 결제요청 버튼 이벤트
-        const paymentForm = item.querySelector(`#payment-form-${pjt.docId}`);
-        paymentForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const price = priceInput.value;
-            const files = fileInput.files;
-
-            const formData = new FormData();
-            formData.append("docId", pjt.docId);
-            formData.append("price", price);
-
-            for(let index = 0; index < files.length; index++) {
-                formData.append(`files`, files[index]);
-            }
-
-            Swal.fire({
-                title: '결제 요청',
-                text: `${price}원으로 결제 요청을 하시겠습니까?`,
-                showCancelButton: true,
-                confirmButtonText: "확인",
-                cancelButtonText: "취소",
-            }).then(async (result) => {
-                if(result.isConfirmed) {
-                    // project progress update 1 -> 2
-                    // 파일 업로드 및 결제 요청 처리
-                    const response = await fetch('/project/request-payment', {
-                        method: 'POST',
-                        body: formData,
-                    });
-
-                    const paymentResult = await response.json();
-                    if(response.ok) {
-                        Swal.fire('', `${pjt.organization}에서 문의한 ${pjt.title} ${pjt.size}프로젝트의 ${price}원 결제 요청이 완료되었습니다.`, 'success')
-                        .then(() => {
-                            window.location.reload();                             
-                        });
-                    } else {
-                        console.log(`payment error : ${paymentResult.error}`);
-                    }
-                }
-            });
-
-            
-        });
+        //     depositOwnner.innerText = `(무통장 입금) 예금주: ${owner}`;
+        // }
 
         // 결제확인 버튼 이벤트
-        checkPaymentBtn.addEventListener('click', async (e) => {
-            Swal.fire({
-                title: '결제 확인 처리',
-                text: '무통장 입금 결제를 확인 처리하시겠습니까? 요청자가 파일을 다운로드 할 수 있습니다.',
-                showCancelButton: true,
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-            }).then( async (result) => {
-                if(result.isConfirmed) {
-                    const response = await fetch('/project/check-deposit', {
-                        method: 'POST',
-                        headers: { "Content-Type" : "application/json "},
-                        body: JSON.stringify({ docId: pjt.docId }),
-                    });
+        // checkPaymentBtn.addEventListener('click', async (e) => {
+        //     Swal.fire({
+        //         title: '결제 확인 처리',
+        //         text: '무통장 입금 결제를 확인 처리하시겠습니까? 요청자가 파일을 다운로드 할 수 있습니다.',
+        //         showCancelButton: true,
+        //         confirmButtonText: '확인',
+        //         cancelButtonText: '취소',
+        //     }).then( async (result) => {
+        //         if(result.isConfirmed) {
+        //             const response = await fetch('/project/check-deposit', {
+        //                 method: 'POST',
+        //                 headers: { "Content-Type" : "application/json "},
+        //                 body: JSON.stringify({ docId: pjt.docId }),
+        //             });
         
-                    const result = await response.json();
-                    if(response.ok) {
-                        window.location.reload();
-                    } else {
-                        console.log(`error: ${result.error}`);
-                    }
+        //             const result = await response.json();
+        //             if(response.ok) {
+        //                 window.location.reload();
+        //             } else {
+        //                 console.log(`error: ${result.error}`);
+        //             }
 
-                    Swal.fire('', '무통장 입금이 확인되었습니다.', 'success');
-                }
-            });
-        });
+        //             Swal.fire('', '무통장 입금이 확인되었습니다.', 'success');
+        //         }
+        //     });
+        // });
         
         listElement.appendChild(item);
     }); 

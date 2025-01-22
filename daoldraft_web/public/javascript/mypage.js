@@ -245,9 +245,30 @@ function getMainProjectTitle(index) {
     }
 }
 
-// main-project-info innerHTML
-function getMainProjectInfo(index) {
+async function getPrice(index) {
     const pjt = userProjects[index];
+    const docId = pjt.docId;
+
+    const response = await fetch('/project/get-price', {
+        method: 'POST',
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({
+            docId: docId,
+        }),
+    });
+
+    const result = await response.json();
+    if(response.ok) {
+        return result.price;
+    } else {
+        return '---';
+    }
+}
+
+// main-project-info innerHTML
+async function getMainProjectInfo(index) {
+    const pjt = userProjects[index];
+    const price = await getPrice(index);
     const projectInfo = document.getElementById('main-project-info');
     projectInfo.innerHTML = `
             <div class="description">
@@ -260,11 +281,15 @@ function getMainProjectInfo(index) {
             </div>
             <div class="description">
                 <p class="description-title">연락처</p>
-                <p class="description-content" id="phone">${pjt.phone}</p>
+                <p class="description-content" id="phone">${pjt.call}</p>
             </div>
             <div class="description">
                 <p class="description-title">문의내용</p>
                 <p class="description-content" id="details">${pjt.details}</p>
+            </div>
+            <div class="description">
+                <p class="description-title">요청가격</p>
+                <p class="description-content" id="details">${price}</p>
             </div>
         `;
 }
@@ -492,6 +517,10 @@ document.getElementById('deposit-box').addEventListener('submit', async (e) => {
         showCancelButton: true,
         confirmButtonText: "확인",
         cancelButtonText: "취소",
+        customClass: {
+            confirmButton: 'swal-confirm-btn',
+            cancelButton: 'swal-cancel-btn',
+        }
     }).then( async (result) => {
         if(result.isConfirmed) {
             await getPay();
