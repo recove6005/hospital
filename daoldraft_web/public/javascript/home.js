@@ -105,4 +105,59 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     }
 });
 
-// firebase 인증 토큰 가져오기
+function initMap() {
+    if (!x || !y) {
+        console.error('Coordinates are not set. Map cannot be initialized.');
+        return;
+    }
+
+    const map = new naver.maps.Map('map', {
+        center: new naver.maps.LatLng(y, x), // 네이버 지도는 y:위도, x:경도를 사용
+        zoom: 10,
+    });
+}
+
+async function getMap() {
+//    const response = await fetch('/api/map', {
+//         method: 'GET',
+//    });
+
+//    const result = await response.blob();
+//    if(response.ok) {
+//     const mapImageUrl = URL.createObjectURL(result);
+
+//     const mapImage = document.getElementById('contact-map');
+//     if(mapImage) {
+//         mapImage.src = mapImageUrl;
+//     } else {
+//         console.error('Image element not found.');
+//     }
+//    } else {
+//     console.log(`error: ${result}`);
+//    }
+    let x = ''; let y = '';
+    try {
+        const response = await fetch(`/api/geocord?address=대구 수성구 범물동 1374-3`, {
+            method: 'GET',
+        });
+
+        const result = await response.json();
+        if(response.ok) {
+            x = result.x;
+            y = result.y;
+        }
+    } catch(e) {
+        console.log(`error: ${e}`);
+    }
+
+    const mapImage = document.getElementById('contact-map');
+    function initMap() {
+        const map = new naver.maps.Map('map', {
+            center: new naver.maps.LatLng(x, y),
+            zoom: 10
+        });
+    };
+
+    initMap();
+}
+getMap();

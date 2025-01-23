@@ -201,6 +201,10 @@ main {
     margin-bottom: 100px;
 }
 
+#map {
+    width: 300px;
+    height: 300px;
+}
 
 /* footer */
 footer {
@@ -212,17 +216,24 @@ footer {
     line-height: 1.6; /* 줄 간격 */
     padding-top: 30px;
     padding-bottom: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-footer img {
+#footer-wrapper {
+    width: 1200px;
+}
+
+#footer-wrapper img {
     margin: 20px 50px;
 }
 
-footer p {
+#footer-wrapper p {
     margin: 5px 50px; /* 요소 간격 */
 }
 
-footer span {
+#footer-wrapper span {
     font-weight: bold; /* 강조 텍스트 */
 }
 
