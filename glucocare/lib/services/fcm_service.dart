@@ -75,7 +75,6 @@ class FCMService {
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       logger.d('[glucocare_log] Notification clicked: ${message.data['title']}');
       // TODO: 알림 클릭 시의 동작 처리
-
     });
 
     // 앱 종료 상태에서 알림 클릭 처리

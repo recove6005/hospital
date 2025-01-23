@@ -153,23 +153,29 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   LineChartBarData? _shrinkLine;
   final List<String> _relaxX = [];
   LineChartBarData? _relaxLine;
-  final double _minX = 0;
-  double _maxX = 21;
-  final double _minY = 0;
-  final double _maxY = 300;
+  double _minX = -0.2;
+  double _maxX = 0;
+  double _minY = -5;
+  double _maxY = 305;
 
   final buffer = 10.0; // 차트 그래프 여유값
+  ScrollController _scrollController = ScrollController();
 
   String? _chartSelectedValeu = '1주일';
   double _chartSize = 500;
 
-  Future<void> _setLines() async {
-    List<FlSpot> shrinkData = await PurseRepository.getShrinkData(_shrinkX);
-    List<FlSpot> relaxData = await PurseRepository.getRelaxData(_relaxX);
+  List<FlSpot> _shrinkData = [];
+  List<FlSpot> _relaxData = [];
+
+  Future<void> _setLinesByThirty() async {
+    _shrinkData = await PurseRepository.getShrinkDataByThirty(_shrinkX);
+    _relaxData = await PurseRepository.getRelaxDataByThirty(_relaxX);
+    _maxX = _shrinkData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
 
     setState(() {
       _shrinkLine = LineChartBarData(
-        spots: shrinkData,
+        spots: _shrinkData,
         isCurved: true,
         color: Colors.red[300],
         barWidth: 2,
@@ -177,7 +183,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
       );
 
       _relaxLine = LineChartBarData(
-        spots: relaxData,
+        spots: _relaxData,
         isCurved: true,
         color: Colors.green,
         barWidth: 2,
@@ -187,6 +193,88 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
       _isChartLoading = false;
     });
   }
+
+  Future<void> _setLinesByNinety() async {
+    _shrinkData = await PurseRepository.getShrinkDataByNinety(_shrinkX);
+    _relaxData = await PurseRepository.getRelaxDataByNinety(_relaxX);
+    _maxX = _shrinkData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
+
+    setState(() {
+      _shrinkLine = LineChartBarData(
+        spots: _shrinkData,
+        isCurved: true,
+        color: Colors.red[300],
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _relaxLine = LineChartBarData(
+        spots: _relaxData,
+        isCurved: true,
+        color: Colors.green,
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _isChartLoading = false;
+    });
+  }
+
+  Future<void> _setLinesBySeven() async {
+    _shrinkData = await PurseRepository.getShrinkData(_shrinkX);
+    _relaxData = await PurseRepository.getRelaxData(_relaxX);
+    _maxX = _shrinkData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
+
+    setState(() {
+      _shrinkLine = LineChartBarData(
+        spots: _shrinkData,
+        isCurved: true,
+        color: Colors.red[300],
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _relaxLine = LineChartBarData(
+        spots: _relaxData,
+        isCurved: true,
+        color: Colors.green,
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _isChartLoading = false;
+    });
+  }
+
+  Future<void> _setLinesByDay() async {
+    _shrinkData = await PurseRepository.getShrinkDataByDay(_shrinkX);
+    _relaxData = await PurseRepository.getRelaxDataByDay(_relaxX);
+    _maxX = _shrinkData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
+
+    setState(() {
+      _shrinkLine = LineChartBarData(
+        spots: _shrinkData,
+        isCurved: true,
+        color: Colors.red[300],
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _relaxLine = LineChartBarData(
+        spots: _relaxData,
+        isCurved: true,
+        color: Colors.green,
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _isChartLoading = false;
+    });
+  }
+
 
   FlTitlesData _buildTitles() {
     return FlTitlesData(
@@ -201,27 +289,11 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
         ),
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: true,
+            showTitles: false,
             interval: 1,
             getTitlesWidget: (double value, TitleMeta meta) {
               int index = value.toInt();
-              if(index>= 0 && index < _shrinkX.length) {
-                return SideTitleWidget(
-                  axisSide: meta.axisSide,
-                  space: 8,
-                  child: Transform.rotate(
-                    angle: 0,
-                    child: Text(_shrinkX[index], style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),),
-                  ),
-                );
-              }
-              else {
-                return Container();
-              }
+              return Container();
             },
           ),
         )
@@ -232,7 +304,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
   void initState() {
     super.initState();
     _setPurseModels();
-    _setLines();
+    _setLinesBySeven();
   }
 
   @override
@@ -541,20 +613,29 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                 _chartSelectedValeu = newValue!;
                                 switch(_chartSelectedValeu) {
                                   case '3개월' :
-                                    _maxX = 270;
-                                    _chartSize = _maxX*50;
-                                    break;
+                                    setState(() async {
+                                      await _setLinesByNinety();
+
+                                    });
                                   case '1개월' :
-                                    _maxX = 90;
-                                    _chartSize = _maxX*50;
-                                    break;
+                                    setState(() async {
+                                      await _setLinesByThirty();
+                                      _maxX = _shrinkData.length.toDouble();
+                                      _chartSize = _maxX*50;
+                                    });
                                   case '1주일' :
-                                    _maxX = 21;
-                                    _chartSize = _maxX*50;
+                                    setState(() async {
+                                      await _setLinesBySeven();
+                                      _maxX = _shrinkData.length.toDouble();
+                                      _chartSize = _maxX*50;
+                                    });
                                     break;
                                   case '1일' :
-                                    _maxX = 4;
-                                    _chartSize = _maxX*100;
+                                    setState(() async {
+                                      await _setLinesByDay();
+                                      _maxX = _shrinkData.length.toDouble();
+                                      _chartSize = _maxX*50;
+                                    });
                                     break;
                                 }
                               });
@@ -568,6 +649,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                       width: MediaQuery.of(context).size.width-120,
                       height: 200,
                       child: SingleChildScrollView(
+                        controller: _scrollController,
                         scrollDirection: Axis.horizontal,
                         child: Container(
                           padding: const EdgeInsets.all(10),
@@ -575,6 +657,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                           height: 200,
                           child: LineChart(
                             LineChartData(
+                              backgroundColor: Colors.red[50],
                               lineBarsData: [_shrinkLine!, _relaxLine!],
                               clipData: const FlClipData.all(), // 모든 방향에서 초과된 부분 클립
                               lineTouchData: const LineTouchData(
@@ -585,7 +668,7 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                               ),
                               titlesData: _buildTitles(),
                               gridData: FlGridData(
-                                  show: true,
+                                  show: false,
                                   drawVerticalLine: false,
                                   horizontalInterval: 50,
                                   getDrawingHorizontalLine: (value) {
@@ -597,20 +680,11 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                               ),
                               borderData: FlBorderData(
                                 show: true,
-                                border: const Border(
-                                  top: BorderSide(
-                                    color: Colors.grey,
-                                    width: 0.5,
-                                  ),
-                                  bottom: BorderSide(
-                                    color: Colors.grey,
-                                    width: 1,
-                                  ),
-                                ),
+                                border: const Border(),
                               ),
-                              minX: _minX+buffer,
+                              minX: _minX,
                               maxX: _maxX,
-                              minY: _minY-buffer,
+                              minY: _minY,
                               maxY: _maxY,
                             ),
                           ),

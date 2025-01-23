@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:glucocare/models/gluco_model.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 import 'gluco_colname_repository.dart';
 
@@ -154,6 +155,28 @@ class GlucoRepository {
     }
   }
 
+  static bool _getPast(String name, int past) {
+    DateFormat format = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR');
+    DateTime parsedDate = format.parse(name);
+    DateTime today = DateTime.now();
+    int differenceInDays = today.difference(parsedDate).inDays;
+
+    if(past == 1) {
+      if(differenceInDays <= 1) return true;
+    }
+    else if(past == 7) {
+      if(differenceInDays <= 7) return true;
+    }
+    else if(past == 30) {
+      if(differenceInDays <= 30) return true;
+    }
+    else if(past == 90) {
+      if(differenceInDays <= 90) return true;
+    }
+
+    return false;
+  }
+
   static Future<List<FlSpot>> getGlucoData(list) async {
     List<FlSpot> chartDatas = [];
     double index = 0;
@@ -164,49 +187,229 @@ class GlucoRepository {
     if (await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       for (String name in colNames) {
-        try {
-          var docSnapshot = await _store.collection('gluco_check').doc(uid)
-              .collection(name)
-              .orderBy('check_time', descending: false)
-              .get();
-          for (var doc in docSnapshot.docs) {
-            GlucoModel model = GlucoModel.fromJson(doc.data());
-            chartDatas.add(FlSpot(index, model.value.toDouble()));
-            list.add(name.substring(10, 12));
+        if(_getPast(name, 7)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(uid)
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
 
-            index++;
+              index++;
 
-            if (chartDatas.length >= 30) return chartDatas;
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
           }
-        } catch (e) {
-          logger.e(
-              '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
         }
       }
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       for (String name in colNames) {
-        try {
-          var docSnapshot = await _store.collection('gluco_check').doc(kakaoId.toString())
-              .collection(name)
-              .orderBy('check_time', descending: false)
-              .get();
-          for (var doc in docSnapshot.docs) {
-            GlucoModel model = GlucoModel.fromJson(doc.data());
-            chartDatas.add(FlSpot(index, model.value.toDouble()));
-            list.add(name.substring(10, 12));
+        if(_getPast(name, 7)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(kakaoId.toString())
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
 
-            index++;
+              index++;
 
-            if (chartDatas.length >= 30) return chartDatas;
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
           }
-        } catch (e) {
-          logger.e(
-              '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
         }
       }
     }
+    return chartDatas;
+  }
 
+  static Future<List<FlSpot>> getGlucoDataByDay(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+
+    List<String> colNames = await GlucoColNameRepository.selectAllGlucoColName();
+    colNames = colNames.reversed.toList();
+
+    if (await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for (String name in colNames) {
+        if(_getPast(name, 1)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(uid)
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
+
+              index++;
+
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for (String name in colNames) {
+        if(_getPast(name, 1)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(kakaoId.toString())
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
+
+              index++;
+
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  static Future<List<FlSpot>> getGlucoDataByThirty(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+
+    List<String> colNames = await GlucoColNameRepository.selectAllGlucoColName();
+    colNames = colNames.reversed.toList();
+
+    if (await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for (String name in colNames) {
+        if(_getPast(name, 30)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(uid)
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
+
+              index++;
+
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for (String name in colNames) {
+        if(_getPast(name, 30)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(kakaoId.toString())
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
+
+              index++;
+
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  static Future<List<FlSpot>> getGlucoDataByNinety(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+
+    List<String> colNames = await GlucoColNameRepository.selectAllGlucoColName();
+    colNames = colNames.reversed.toList();
+
+    if (await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for (String name in colNames) {
+        if(_getPast(name, 90)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(uid)
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
+
+              index++;
+
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for (String name in colNames) {
+        if(_getPast(name, 90)) {
+          try {
+            var docSnapshot = await _store.collection('gluco_check').doc(kakaoId.toString())
+                .collection(name)
+                .orderBy('check_time', descending: false)
+                .get();
+            for (var doc in docSnapshot.docs) {
+              GlucoModel model = GlucoModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.value.toDouble()));
+              list.add(name.substring(10, 12));
+
+              index++;
+
+              if (chartDatas.length >= 30) return chartDatas;
+            }
+          } catch (e) {
+            logger.e(
+                '[glucocare_log] Failed to load gluco chart data (getGlucoData) : $e');
+          }
+        }
+      }
+    }
     return chartDatas;
   }
 

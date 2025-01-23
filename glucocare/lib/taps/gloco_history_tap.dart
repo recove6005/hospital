@@ -171,22 +171,80 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
   // 차트 설정
   final List<String> _glucoX = [];
   LineChartBarData? _glucoLine;
-  final double _minX = 0;
-  double _maxX = 21;
-  final double _minY = 0;
-  final double _maxY = 300;
+  double _minX = -0.2;
+  double _maxX = 0;
+  double _minY = -5;
+  double _maxY = 305;
 
   final buffer = 10.0;
 
   String? _chartSelectedValeu = '1주일';
-  double _chartSize = 500;
+  double _chartSize = 0;
 
-  Future<void> _setLines() async {
-    List<FlSpot> glucoData = await GlucoRepository.getGlucoData(_glucoX);
+  List<FlSpot> _glucoData = [];
+
+  Future<void> _setLinesBySeven() async {
+    _glucoData = await GlucoRepository.getGlucoData(_glucoX);
+    _maxX = _glucoData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
 
     setState(() {
       _glucoLine = LineChartBarData(
-        spots: glucoData,
+        spots: _glucoData,
+        isCurved: true,
+        color: Colors.orange,
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _isChartLoading = false;
+    });
+  }
+
+  Future<void> _setLinesByNinety() async {
+    _glucoData = await GlucoRepository.getGlucoDataByNinety(_glucoX);
+    _maxX = _glucoData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
+
+    setState(() {
+      _glucoLine = LineChartBarData(
+        spots: _glucoData,
+        isCurved: true,
+        color: Colors.orange,
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _isChartLoading = false;
+    });
+  }
+
+  Future<void> _setLinesByThirty() async {
+    _glucoData = await GlucoRepository.getGlucoDataByThirty(_glucoX);
+    _maxX = _glucoData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
+
+    setState(() {
+      _glucoLine = LineChartBarData(
+        spots: _glucoData,
+        isCurved: true,
+        color: Colors.orange,
+        barWidth: 2,
+        dotData: const FlDotData(show: true),
+      );
+
+      _isChartLoading = false;
+    });
+  }
+
+  Future<void> _setLinesByDay() async {
+    _glucoData = await GlucoRepository.getGlucoDataByDay(_glucoX);
+    _maxX = _glucoData.length.toDouble()+0.2;
+    _chartSize = _maxX*50;
+
+    setState(() {
+      _glucoLine = LineChartBarData(
+        spots: _glucoData,
         isCurved: true,
         color: Colors.orange,
         barWidth: 2,
@@ -210,27 +268,11 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
       ),
       bottomTitles: AxisTitles(
         sideTitles: SideTitles(
-          showTitles: true,
+          showTitles: false,
           interval: 1,
           getTitlesWidget: (double value, TitleMeta meta) {
             int index = value.toInt();
-            if (index >= 0 && index < _glucoX.length) {
-              return SideTitleWidget(
-                  axisSide: meta.axisSide,
-                  space: 8,
-                  child: Transform.rotate(
-                    angle: 0,
-                    child: Text(_glucoX[index], style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),),
-                  ),
-                );
-              }
-            else {
-              return Container();
-            }
+            return Container();
           }
         ),
       ),
@@ -241,7 +283,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
   void initState() {
     super.initState();
     _setGlucoModels();
-    _setLines();
+    _setLinesBySeven();
   }
 
   @override
@@ -555,20 +597,32 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                   _chartSelectedValeu = newValue!;
                                   switch(_chartSelectedValeu) {
                                     case '3개월' :
-                                      _maxX = 270;
-                                      _chartSize = _maxX*50;
+                                      setState(() async {
+                                        await _setLinesByNinety();
+                                        _maxX = _glucoData.length.toDouble();
+                                        _chartSize = _maxX*50;
+                                      });
                                       break;
                                     case '1개월' :
-                                      _maxX = 90;
-                                      _chartSize = _maxX*50;
+                                      setState(() async {
+                                        await _setLinesByThirty();
+                                        _maxX = _glucoData.length.toDouble();
+                                        _chartSize = _maxX*50;
+                                      });
                                       break;
                                     case '1주일' :
-                                      _maxX = 21;
-                                      _chartSize = _maxX*50;
+                                      setState(() async {
+                                        await _setLinesBySeven();
+                                        _maxX = _glucoData.length.toDouble();
+                                        _chartSize = _maxX*50;
+                                      });
                                       break;
                                     case '1일' :
-                                      _maxX = 4;
-                                      _chartSize = _maxX*100;
+                                      setState(() async {
+                                        await _setLinesByDay();
+                                        _maxX = _glucoData.length.toDouble() ;
+                                        _chartSize = _maxX*50;
+                                      });
                                       break;
                                   }
                                 });
@@ -589,6 +643,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                             height: 200,
                             child: LineChart(
                               LineChartData(
+                                backgroundColor: Colors.orange[50],
                                 lineBarsData: [_glucoLine!],
                                 clipData: const FlClipData.all(),
                                 lineTouchData: const LineTouchData(
@@ -599,7 +654,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                 ),
                                 titlesData: _buildTitles(),
                                 gridData: FlGridData(
-                                    show: true,
+                                    show: false,
                                     drawVerticalLine: false,
                                     horizontalInterval: 50,
                                     getDrawingHorizontalLine: (value) {
@@ -611,20 +666,11 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                 ),
                                 borderData: FlBorderData(
                                   show: true,
-                                  border: const Border(
-                                    top: BorderSide(
-                                      color: Colors.grey,
-                                      width: 0.5,
-                                    ),
-                                    bottom: BorderSide(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                  ),
+                                  border: const Border(),
                                 ),
-                                minX: _minX+buffer,
+                                minX: _minX,
                                 maxX: _maxX,
-                                minY: _minY-buffer,
+                                minY: _minY,
                                 maxY: _maxY,
                               ),
                             ),

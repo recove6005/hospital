@@ -152,6 +152,7 @@ class _ScheduleManagementFormState extends State<ScheduleManagementForm> {
             TextButton(
               onPressed: () async {
                 String uid = model.uid;
+                if(uid == '') uid = model.kakaoId;
                 await ReservationRepository.deleteReservationByUid(uid, reservationTimestamp);
                 setState(() {
                   _getCurReservations();

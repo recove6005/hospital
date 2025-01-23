@@ -166,13 +166,15 @@ class _DoctorReservationFormState extends State<DoctorReservationForm> {
     });
     Fluttertoast.showToast(msg: '예약이 완료되었습니다.', toastLength: Toast.LENGTH_SHORT);
 
-    _selectedDay = DateTime.now();
-    _focusedDay = DateTime.now();
-    _reservationDate = Timestamp.now();
-    _reservationHour = 0;
-    _reservationMinute = 0;
-    _buttonClicked = '00:00';
-    _subjectIndex = 0;
+    // _selectedDay = DateTime.now();
+    // _focusedDay = DateTime.now();
+    // _reservationDate = Timestamp.now();
+    // _reservationHour = 0;
+    // _reservationMinute = 0;
+    // _buttonClicked = '00:00';
+    // _subjectIndex = 0;
+
+    Navigator.pop(context);
   }
 
   @override

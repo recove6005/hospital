@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:glucocare/models/purse_model.dart';
 import 'package:glucocare/repositories/purse_colname_repository.dart';
 import 'package:glucocare/services/auth_service.dart';
+import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
 
 class PurseRepository {
@@ -180,6 +181,29 @@ class PurseRepository {
     return model;
   }
 
+  static bool _getPast(String name, int past) {
+    DateFormat format = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR');
+    DateTime parsedDate = format.parse(name);
+    DateTime today = DateTime.now();
+    int differenceInDays = today.difference(parsedDate).inDays;
+
+    if(past == 1) {
+      if(differenceInDays <= 1) return true;
+    }
+    else if(past == 7) {
+      if(differenceInDays <= 7) return true;
+    }
+    else if(past == 30) {
+      if(differenceInDays <= 30) return true;
+    }
+    else if(past == 90) {
+      if(differenceInDays <= 90) return true;
+    }
+
+    return false;
+  }
+
+  // shrink 차트 7일 이내
   static Future<List<FlSpot>> getShrinkData(list) async {
     List<FlSpot> chartDatas = [];
     double index = 0;
@@ -189,50 +213,210 @@ class PurseRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       for(String name in colNames) {
-        try{
-          var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
-              .orderBy('check_time', descending: false).get();
+        if(_getPast(name, 7)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
 
-          for(var doc in docSnapshot.docs) {
-            PurseModel model = PurseModel.fromJson(doc.data());
-            chartDatas.add(FlSpot(index, model.shrink.toDouble()));
-            list.add(name.substring(10,12));
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
 
-            index++;
-
-            if(chartDatas.length >= 30) return chartDatas;
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
           }
-        } catch(e) {
-          logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
-          return chartDatas;
         }
       }
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       for(String name in colNames) {
-        try{
-          var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
-              .orderBy('check_time', descending: false).get();
+        if(_getPast(name, 7)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
+                .orderBy('check_time', descending: false).get();
 
-          for(var doc in docSnapshot.docs) {
-            PurseModel model = PurseModel.fromJson(doc.data());
-            chartDatas.add(FlSpot(index, model.shrink.toDouble()));
-            list.add(name.substring(10,12));
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
 
-            index++;
-
-            if(chartDatas.length >= 30) return chartDatas;
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
           }
-        } catch(e) {
-          logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
-          return chartDatas;
         }
       }
     }
-
     return chartDatas;
   }
 
+  // shrink 차트 30일 이내
+  static Future<List<FlSpot>> getShrinkDataByThirty(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String name in colNames) {
+        if(_getPast(name, 7)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
+
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String name in colNames) {
+        if(_getPast(name, 7)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
+                .orderBy('check_time', descending: false).get();
+
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
+
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  // shrink 차트 90일 이내
+  static Future<List<FlSpot>> getShrinkDataByNinety(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String name in colNames) {
+        if(_getPast(name, 7)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
+
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String name in colNames) {
+        if(_getPast(name, 7)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
+                .orderBy('check_time', descending: false).get();
+
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
+
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  // shrink 차트 1일 이내
+  static Future<List<FlSpot>> getShrinkDataByDay(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String name in colNames) {
+        if(_getPast(name, 1)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
+              index++;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String name in colNames) {
+        if(_getPast(name, 1)) {
+          try{
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
+                .orderBy('check_time', descending: false).get();
+
+            for(var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.shrink.toDouble()));
+              list.add(name.substring(10,12));
+
+              index++;
+
+              if(chartDatas.length >= 30) return chartDatas;
+            }
+          } catch(e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getShrinkData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  // relax 차트 7일 이내
   static Future<List<FlSpot>> getRelaxData(list) async {
     List<FlSpot> chartDatas = [];
     double index = 0;
@@ -242,49 +426,189 @@ class PurseRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       for(String name in colNames) {
-        try {
-          var docSnapshot = await _store.collection('purse_check').doc(uid)
-              .collection(name)
-              .orderBy('check_time', descending: false)
-              .get();
+        if(_getPast(name, 7)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
 
-          for (var doc in docSnapshot.docs) {
-            PurseModel model = PurseModel.fromJson(doc.data());
-            chartDatas.add(FlSpot(index, model.relax.toDouble()));
-
-            index++;
-
-            if (chartDatas.length >= 30) return chartDatas;
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
           }
-        } catch (e) {
-          logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
-          return chartDatas;
         }
       }
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       for(String name in colNames) {
-        try {
-          var docSnapshot = await _store.collection('purse_check').doc(kakaoId)
-              .collection(name)
-              .orderBy('check_time', descending: false)
-              .get();
+        if(_getPast(name, 7)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId)
+                .collection(name).orderBy('check_time', descending: false).get();
 
-          for (var doc in docSnapshot.docs) {
-            PurseModel model = PurseModel.fromJson(doc.data());
-            chartDatas.add(FlSpot(index, model.relax.toDouble()));
-
-            index++;
-
-            if (chartDatas.length >= 30) return chartDatas;
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
           }
-        } catch (e) {
-          logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
-          return chartDatas;
         }
       }
     }
+    return chartDatas;
+  }
 
+  // relax 차트 30일 이내
+  static Future<List<FlSpot>> getRelaxDataByThirty(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String name in colNames) {
+        if(_getPast(name, 30)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String name in colNames) {
+        if(_getPast(name, 30)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId)
+                .collection(name).orderBy('check_time', descending: false).get();
+
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  // relax 차트 90일 이내
+  static Future<List<FlSpot>> getRelaxDataByNinety(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String name in colNames) {
+        if(_getPast(name, 30)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String name in colNames) {
+        if(_getPast(name, 30)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId)
+                .collection(name).orderBy('check_time', descending: false).get();
+
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    }
+    return chartDatas;
+  }
+
+  // relax 차트 1일 이내
+  static Future<List<FlSpot>> getRelaxDataByDay(list) async {
+    List<FlSpot> chartDatas = [];
+    double index = 0;
+    List<String> colNames = await PurseColNameRepository.selectAllPurseColName();
+    colNames = colNames.reversed.toList();
+
+    if(await AuthService.userLoginedFa()) {
+      String? uid = AuthService.getCurUserUid();
+      for(String name in colNames) {
+        if(_getPast(name, 1)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
+                .orderBy('check_time', descending: false).get();
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    } else {
+      String? kakaoId = await AuthService.getCurUserId();
+      for(String name in colNames) {
+        if(_getPast(name, 1)) {
+          try {
+            var docSnapshot = await _store.collection('purse_check').doc(kakaoId)
+                .collection(name).orderBy('check_time', descending: false).get();
+
+            for (var doc in docSnapshot.docs) {
+              PurseModel model = PurseModel.fromJson(doc.data());
+              chartDatas.add(FlSpot(index, model.relax.toDouble()));
+              index++;
+            }
+          } catch (e) {
+            logger.e('[glucocare_log] Faeild to load purse chart data (getRelaxData) : $e');
+            return chartDatas;
+          }
+        }
+      }
+    }
     return chartDatas;
   }
 
