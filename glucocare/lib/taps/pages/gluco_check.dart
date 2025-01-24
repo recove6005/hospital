@@ -270,7 +270,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                   title: const Row(
                     children: [
                       Icon(Icons.dangerous, color: Color(0xFF22BED3),),
-                      Text('경고: 당뇨병', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
+                      Text('경고: 고혈당', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
                     ],
                   ),
                   content: const Text('혈당이 높습니다. 운동 및 신체 활동량을 늘리시고 지속적인 혈당 상승 시 진료바랍니다.', style: TextStyle(fontSize: 25),),

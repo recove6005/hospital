@@ -588,9 +588,9 @@ class _HomeTapForm extends State<HomeTapForm> {
                       ),
                     ),
                     if(_lastPillModel == null)
-                      const SizedBox(
-                        width: 300,
-                        child: Text(' -- : -- ',
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width - 50,
+                        child: const Text(' -- : -- ',
                           style: TextStyle(
                             fontSize: 45,
                             fontWeight: FontWeight.bold,
@@ -601,7 +601,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                       ),
                     if(_lastPillModel != null)
                       SizedBox(
-                        width: 300,
+                        width: MediaQuery.of(context).size.width - 50,
                         child: Text(_alarmTime,
                           style: const TextStyle(
                             fontSize: 45,
