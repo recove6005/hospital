@@ -201,9 +201,69 @@ main {
     margin-bottom: 100px;
 }
 
+.contact-wrapper {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.contact-info-wrapper {
+    margin: auto 80px;
+}
+
+.contact-title-notifier {
+    width: 80px;
+    height: 1px;
+    border: 1px solid white;
+}
+
+.contact-box {
+    padding: 10px;
+    margin: 10px;
+}
+
+.contact-category {
+    font-size: 25px;
+    font-weight: bold;
+    margin: 8px;
+}
+
+.contact-content {
+    font-size: 23px;
+    font-weight: normal;
+    margin: 8px;
+
+}
+
+.contact-category span {
+    font-size: 23px;
+    font-weight: normal;
+    margin: 8px;
+
+}
+
+.contact-category a {
+    text-decoration: none;
+    color: bisque;
+    transition-duration: 0.3s;
+}
+
+.contact-category a:hover {
+    text-decoration: none;
+    color: burlywood;
+}
+
 #map {
-    width: 300px;
-    height: 300px;
+    width: 500px;
+    height: 500px;
+}
+
+.contact-divider {
+    height: 1px;
+    background-color: white;
+    margin: 20px auto;
 }
 
 /* footer */

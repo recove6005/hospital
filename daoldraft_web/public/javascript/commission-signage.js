@@ -123,7 +123,7 @@ const swipePrevBtn = document.getElementById('swipe-prev-btn');
 swipeNextBtn.addEventListener('click', (e) => {
     const navlist = document.querySelectorAll('#project-nav ul li');
     navlist.forEach(li => {
-        li.style.transform = `translateX(-220px)`;
+        li.style.transform = `translateX(-295px)`;
     });
 
     swipeNextBtn.style.display = 'none';

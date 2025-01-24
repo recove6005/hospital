@@ -21,7 +21,6 @@
                 <div id="dropdown-menu" style="display: none;">
                     <ul>
                         <li><a id="dropdown-management" href="../html/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
-                        <li><a id="drowdown-subscribe" href="#">구독 정보</a></li>
                         <li><a id="update-password" href="#">비밀번호 변경</a></li>
                         <li><a id="dropdown-logout">로그아웃</a></li>
                     </ul>
@@ -34,84 +33,115 @@
     </header>
 
     <main>
-        <h1>마이페이지</h1>
-        <div id="list-container">
-            <div id="project-list"></div>
+        <div class="subscribe-info-wrapper">
+            <div class="info-title-wrapper"> 
+                <div class="title-notifier"> </div>
+                <p class="info-category">구독 정보</p>
+            </div>
+            <div class="subscribe-details-wrapper">
+                구독 내역이 없습니다.
+            </div>
         </div>
         
-        <div id="projects-wrapper" style="display: none;">
-            <div id="project-title">
-                <div> </div>
-                <p class="project-name"> </p>
-            </div>
 
-            <div id="main-project-info"></div>
-    
-    
-            <div id="main-progress">
-                <div id="progress-tracker">
-                    <div class="step" id="progress-step-0"></div>
-                    <div class="line" id="progress-line-1"></div>
-                    <div class="step" id="progress-step-1"></div>
-                    <div class="line" id="progress-line-2"></div>
-                    <div class="step" id="progress-step-2"></div>
-                    <div class="line" id="progress-line-3"></div>
-                    <div class="step" id="progress-step-3"></div>
-                </div>
-                <div id="progress-tracker">
-                    <div class="sub">문의 접수</div>
-                    <div class="sub">작업 중</div>
-                    <div class="sub">작업 완료</div>
-                    <div class="sub">결제 완료</div>
-                </div>
+        <div class="payment-info-wrapper">
+            <div class="info-title-wrapper">
+                <div class="title-notifier"> </div>
+                <p class="info-category">결제 내역</p>
             </div>
-    
-            <a class="payment-button" id="request-payment">결제하기</a>
-            <a class="payment-button" id="download-file" style="display: none;">파일 다운로드</a>
-            <div id="checking-payment" style="display: none;">
-                <h1>결제 확인 중..</h1> 
-                <p>입금처: OO은행 00-000-00000-00 (ALIGO)</p>
+            <div class="payment-details-title">
+                <!-- 프로젝트 -->
+                <p class="payment-title-category">프로젝트</p>
+                <!-- 결제 방법 -->
+                <p class="payment-title-category">결제방법</p>
+                <!-- 거래일 -->
+                <p class="payment-title-category">결제일</p>                
+                <!-- 가격 -->
+                <p class="payment-title-category">금액</p>
             </div>
+            <div class="payment-details-wrapper">
+                <ul>
+                    <li>
+                        <div class="payment-detail-item">
+                            <p class="payment-detail-category">프로젝트</p>
+                            <p class="payment-detail-category">무통장 입금(예금주)</p>
+                            <p class="payment-detail-category">결제일</p>
+                            <p class="payment-detail-category">금액</p>
+                        </div>  
+                    </li>
+                    <li>
+                        <div class="payment-detail-item">
+                            <p class="payment-detail-category">프로젝트</p>
+                            <p class="payment-detail-category">무통장 입금(예금주)</p>
+                            <p class="payment-detail-category">결제일</p>
+                            <p class="payment-detail-category">금액</p>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="payment-detail-item">
+                            <p class="payment-detail-category">프로젝트</p>
+                            <p class="payment-detail-category">무통장 입금(예금주)</p>
+                            <p class="payment-detail-category">0000-00-00</p>
+                            <p class="payment-detail-category">600000</p>
+                        </div> 
+                    </li>
+                    <li>
+                        <div class="payment-detail-item">
+                            <p class="payment-detail-category">프로젝트</p>
+                            <p class="payment-detail-category">무통장 입금(예금주)</p>
+                            <p class="payment-detail-category">0000-00-00</p>
+                            <p class="payment-detail-category">600000</p>
+                        </div> 
+                    </li>
+                    <li>
+                        <div class="payment-detail-item">
+                            <p class="payment-detail-category">프로젝트</p>
+                            <p class="payment-detail-category">무통장 입금(예금주)</p>
+                            <p class="payment-detail-category">0000-00-00</p>
+                            <p class="payment-detail-category">600000</p>
+                        </div> 
+                    </li>
+                </ul>
 
-            <div id="modal" style="display: none;">
-                <div id="modal-container">
-                    <div id="modal-top">
-                        <p>결제</p>
-                        <a id="modal-close">X</a>
+                <div class="pager" id="payment-pager">
+                    <a id="pager-prev-btn" href="#"><img src="../images/icon/ic_prev_arrow.png" alt=""></a>
+                    <div class="indexes">
+                        <a href="#">1</a>
+                        <a href="#">2</a>
+                        <a href="#">3</a>
+                        <a href="#">4</a>
+                        <a href="#">5</a>
                     </div>
-
-                    <div class="modal-inner-box">
-                        <p>결제 방법</p>
-                        <label for="payment-deposit"><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>무통장입금</label>
-                        <label for="payment-kakaopay"><input type="radio" name="paytype" value="kakaopay" id="payment-kakaopay">카카오페이</label>
-                    </div>
-
-                    <form class="pay-form" id="deposit-box">
-                        <label><input id="deposit-name" name="deposit-name" placeholder="예금주" required></label>
-                        <button>결제요청</button>
-                    </form>
-
-                    <form class="pay-form hidden" id="kakaopay-box" style="display: none;">
-                        <button>결제요청</button>
-                    </form>
-
+                    <a id="pager-next-btn" href="#"><img src="../images/icon/ic_next_arrow.png" alt=""></a>
                 </div>
             </div>
         </div>
 
-        <div id="projects-wrapper-none" style="display: none;">
-            <h1>문의하신 프로젝트가 없습니다.</h1>
+        <div class="project-info-wrapper">
+            <div class="info-title-wrapper">
+                <div class="title-notifier"> </div>
+                <p class="info-category">프로젝트 문의 내역</p>
+            </div>
+            <div class="project-list-title">
+                <p class="project-list-title-item">프로젝트</p>
+                <p class="project-list-title-item">진행 현황</p>
+                <p class="project-list-title-item">접수일자</p>
+                <p class="project-list-title-item">금액</p>
+            </div>
+            <div class="project-list">
+                <ul></ul>
+
+                <div class="pager" id="project-pager">
+                    <a id="pager-prev-btn" href="#"><img src="../images/icon/ic_prev_arrow.png" alt=""></a>
+                    <div class="indexes" id="project-indexes">
+
+                    </div>
+                    <a id="pager-next-btn" href="#"><img src="../images/icon/ic_next_arrow.png" alt=""></a>
+                </div>
+            </div>
+    
         </div>
     </main>
-
-    <div id="loading-screen" style="display: none;">
-        <div class="spinner">
-            
-        </div>
-    </div>
-
-    <div id="subscribe-infos" style="opacity: 0;"></div>
-
 </body>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 <script src="../javascript/mypage.js" type="module" defer></script>

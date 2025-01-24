@@ -21,20 +21,8 @@ async function getSubscribeInfos() {
     await getUserInitData();
 
     if(subscribeType === '0') {
-        const subscribeInfosBox = document.getElementById('subscribe-infos');
-        subscribeInfosBox.innerHTML = `
-                <p>구매하신 구독권이 없습니다.</p>
-                <a id="subscribe-close">닫기</a>
-        `;
+        // 구독권 없음
 
-        document.body.appendChild(subscribeInfosBox);
-
-        // 구독정보 닫기
-        document.getElementById('subscribe-close').addEventListener('click', (e) => {
-            const infoBox = document.getElementById('subscribe-infos');
-            infoBox.style.opacity = '0';
-        });
-        
     } else {
         const response = await fetch('/user/get-subscribe-info', {
             method: 'POST',
@@ -42,38 +30,13 @@ async function getSubscribeInfos() {
     
         const result = await response.json();
         if(response.ok) {
-            const subscribeInfosBox = document.getElementById('subscribe-infos');
-            subscribeInfosBox.innerHTML = `
-                    <p>로고 디자인 <span>${result.subscribeInfo.logo}회</span> 무료 사용 가능</p>
-                    <p>원내시안 및 단순디자인 <span>${result.subscribeInfo.draft}회</span> 무료 사용 가능</p>
-                    <p>디지털 사이니지 디자인 <span>${result.subscribeInfo.signage}회</span> 무료 사용 가능</p>
-                    <p>블로그 포스팅 <span>${result.subscribeInfo.blog}회</span> 무료 사용 가능</p>
-                    <p>웹페이지 디자인 <span>${result.subscribeInfo.homepage}회</span> 무료 사용 가능</p>    
-                    <p>모든 서비스 <span>${result.subscribeInfo.discount}%</span> 할인 적용</p>
-                    <a id="subscribe-close">닫기</a>
-            `;
-
-            // 구독정보 닫기
-            document.getElementById('subscribe-close').addEventListener('click', (e) => {
-                const infoBox = document.getElementById('subscribe-infos');
-                infoBox.style.opacity = '0';
-            });
-        
-            document.body.appendChild(subscribeInfosBox);
+            
         } else {
             console.log(`error: ${result.error}`);
         }
     }
 }
 getSubscribeInfos();
-
-// 구독정보 버튼
-document.getElementById('drowdown-subscribe').addEventListener('click', (e) => {
-    e.preventDefault();
-    const infoBox = document.getElementById('subscribe-infos');
-    infoBox.style.opacity = '100';
-});
-
 
 async function checkUserVerify() {
     const response = await fetch('/login/verify', {
@@ -215,6 +178,7 @@ document.getElementById('update-password').addEventListener('click', async (e) =
 
 // Project 데이터 리스트 (예시 데이터)
 const userProjects = [];
+let pagedProjects = [];
 
 // 프로젝트 정보 가져오기
 async function getProjects() {
@@ -226,29 +190,15 @@ async function getProjects() {
     if(response.ok) {
         result.forEach((pjt) => {
             userProjects.push(pjt);
-            console.log(`pjt: ${pjt} ${pjt.title}`);
         });
     } else {
         console.log(`error: ${result.error}`);
     }
 }
+await getProjects();
 
-// main-project-title
-function getMainProjectTitle(index) {
-    const pjt = userProjects[index];
-    const projectTitle = document.querySelector('.project-name');
 
-    if(pjt.size == "") {
-        projectTitle.innerText = pjt.title;
-    } else {
-        projectTitle.innerText = `${pjt.title}`;
-    }
-}
-
-async function getPrice(index) {
-    const pjt = userProjects[index];
-    const docId = pjt.docId;
-
+async function getPrice(docId) {
     const response = await fetch('/project/get-price', {
         method: 'POST',
         headers: {"Content-Type":"application/json"},
@@ -265,313 +215,101 @@ async function getPrice(index) {
     }
 }
 
-// main-project-info innerHTML
-async function getMainProjectInfo(index) {
-    const pjt = userProjects[index];
-    const price = await getPrice(index);
-    const projectInfo = document.getElementById('main-project-info');
-    projectInfo.innerHTML = `
-            <div class="description">
-                <p class="description-title">기관명</p>
-                <p class="description-content" id="organization">${pjt.organization}</p>
-            </div>
-            <div class="description">
-                <p class="description-title">성함</p>
-                <p class="description-content" id="name">${pjt.name}</p>
-            </div>
-            <div class="description">
-                <p class="description-title">연락처</p>
-                <p class="description-content" id="phone">${pjt.call}</p>
-            </div>
-            <div class="description">
-                <p class="description-title">문의내용</p>
-                <p class="description-content" id="details">${pjt.details}</p>
-            </div>
-            <div class="description">
-                <p class="description-title">요청가격</p>
-                <p class="description-content" id="details">${price}</p>
-            </div>
-        `;
+// 프로젝트 리스트 페이저 구현
+let page = 0;
+async function setIndexes() {
+    const indexWrapper = document.getElementById('project-indexes');
+    if(!indexWrapper) console.log(`error: .indexes is not exists.`);
+
+    for(let i = 0; i < 5; i++) {
+        const itemA = document.createElement('a');
+        itemA.innerText = `${page+i+1}`;
+        itemA.addEventListener('click', (e) => {
+            e.preventDefault();
+            
+            indexWrapper.innerHTML = '';
+            pagedProjects = [];
+            
+            const indexStart = (parseInt(itemA.innerText, 10)-1)*5;
+            let currentIndex = 0;
+            for(let i = 0; i < 5; i++) {
+                currentIndex = indexStart + i;
+                if(userProjects[currentIndex]) pagedProjects.push(userProjects[currentIndex]);
+            }
+
+            initProjectInfo();
+        });
+
+        indexWrapper.appendChild(itemA);
+    }    
 }
 
-// progress ui
-function getProgressUI(index) {
-    if(userProjects[index].progress == '0') {
-        document.getElementById('progress-step-0').classList.add('active');
 
-        document.getElementById('progress-step-1').classList.remove('active');
-        document.getElementById('progress-line-1').classList.remove('active');
-        document.getElementById('progress-step-2').classList.remove('active');
-        document.getElementById('progress-line-2').classList.remove('active');
-        document.getElementById('progress-step-3').classList.remove('active');
-        document.getElementById('progress-line-3').classList.remove('active');
+    
+// 페이저 버튼
+document.getElementById('pager-prev-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    if(page != 0) page -= 5;
+    console.log(page);
+    initProjectInfo();
+});
 
-        document.getElementById('request-payment').style.display = 'none';
-        document.getElementById('download-file').style.display = 'none';
-        document.getElementById('checking-payment').style.display = 'none';
-    } 
-    else if(userProjects[index].progress == '1') {
-        document.getElementById('progress-step-0').classList.add('active');
-        document.getElementById('progress-step-1').classList.add('active');
-        document.getElementById('progress-line-1').classList.add('active');
+document.getElementById('pager-next-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log(page);
 
-        document.getElementById('progress-step-2').classList.remove('active');
-        document.getElementById('progress-line-2').classList.remove('active');
-        document.getElementById('progress-step-3').classList.remove('active');
-        document.getElementById('progress-line-3').classList.remove('active');
+    initProjectInfo();
+});
 
-        document.getElementById('request-payment').style.display = 'none';
-        document.getElementById('download-file').style.display = 'none';
-        document.getElementById('checking-payment').style.display = 'none';
-    }
-    else if(userProjects[index].progress == '2') {
-        document.getElementById('progress-step-0').classList.add('active');
-        document.getElementById('progress-step-1').classList.add('active');
-        document.getElementById('progress-line-1').classList.add('active');
-        document.getElementById('progress-step-2').classList.add('active');
-        document.getElementById('progress-line-2').classList.add('active');
-
-        document.getElementById('progress-step-3').classList.remove('active');
-        document.getElementById('progress-line-3').classList.remove('active');
-
-        document.getElementById('request-payment').style.display = 'flex';
-        document.getElementById('download-file').style.display = 'none';
-        document.getElementById('checking-payment').style.display = 'none';
-    }
-    else if(userProjects[index].progress == '3') {
-        document.getElementById('progress-step-0').classList.add('active');
-        document.getElementById('progress-step-1').classList.add('active');
-        document.getElementById('progress-line-1').classList.add('active');
-        document.getElementById('progress-step-2').classList.add('active');
-        document.getElementById('progress-line-2').classList.add('active');
-        document.getElementById('progress-step-3').classList.add('active');
-        document.getElementById('progress-line-3').classList.add('active');
-
-        document.getElementById('request-payment').style.display = 'none';
-        document.getElementById('download-file').style.display = 'flex';
-        document.getElementById('checking-payment').style.display = 'none';
-    }
-    else if(userProjects[index].progress == '11') {
-        document.getElementById('progress-step-0').classList.add('active');
-        document.getElementById('progress-step-1').classList.add('active');
-        document.getElementById('progress-line-1').classList.add('active');
-        document.getElementById('progress-step-2').classList.add('active');
-        document.getElementById('progress-line-2').classList.add('active');
-
-        document.getElementById('progress-step-3').classList.remove('active');
-        document.getElementById('progress-line-3').classList.remove('active');
-        
-        document.getElementById('request-payment').style.display = 'none';
-        document.getElementById('download-file').style.display = 'none';
-        document.getElementById('checking-payment').style.display = 'flex';
-    }
-}
 
 // 초기 UI 업데이트 함수
 async function initProjectInfo() {
-    await getProjects();
+    await setIndexes();
+    const projectList = document.querySelector('.project-list ul');
 
     // 프로젝트 표시
-    if(userProjects.length === 0) {
-        document.getElementById('projects-wrapper').style.display = 'none';
-        document.getElementById('projects-wrapper-none').style.display = 'flex';
-        return;
-    } 
+    if(pagedProjects.length === 0) {
+       
+    } else {
+        pagedProjects.forEach( async (pjt) => {    
+            // 문의 일자
+            const date = new Date(pjt.date);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            const formattedDate = `${year}-${month}-${day}`;
+    
+            // 가격
+            const price = await getPrice(pjt.docId);
 
-    document.getElementById('projects-wrapper').style.display = 'flex';
-    const projectList = document.getElementById('project-list');
+            // 프로젝트ID
+            const docId = pjt.docId;
 
-    let index = 0;
-    userProjects.forEach((pjt) => {
-        // 프로젝트 리스트
-        const itemA = document.createElement('a');
-        itemA.classList.add('list-item');
-        itemA.href = '#';
+            // 프로젝트 진행 현황
+            let progress = '문의 접수';
+            if(pjt.progress == '1') progress = '작업 중';
+            if(pjt.progress == '2' || pjt.progress == '11') progress = '결제 중';
+            if(pjt.progress == '3') progress = '결제 완료';
 
-        const date = new Date(pjt.date);
-        const year = date.getFullYear();
-        const month = String(date.getMonth() + 1).padStart(2, '0');
-        const day = String(date.getDate()).padStart(2, '0');
-        const formattedDate = `${year}-${month}-${day}`;
+            const itemLi = document.createElement('li');
+            const itemA = document.createElement('a');
+            itemA.classList.add('project-list-item');
+            itemA.innerHTML = `
+                <p class="item-detail">${pjt.title}</p>
+                <p class="item-detail">${progress}</p>
+                <p class="item-detail">${formattedDate}</p>
+                <p class="item-detail">${price}</p>
+            `;
 
-        itemA.innerHTML = `
-            <p class="item-title" id="item-title-${pjt.docId}">${pjt.title}</p>
-            <p class="item-date" id="item-date-${pjt.docId}">문의일자 ${formattedDate}</p>
-            <input class="item-index" type="hidden" value="${index}">
-        `;
+            itemA.addEventListener("click", () => {
+                window.location.href = `../html/project-info.html?docId=${docId}`;    
+            });
+            
+            itemLi.appendChild(itemA);
+            projectList.appendChild(itemLi);
 
-        itemA.addEventListener("click", () => {
-            const projectIndex = itemA.querySelector('.item-index').value;
-            pjtIndex = projectIndex;
-            getMainProjectTitle(projectIndex);
-            getMainProjectInfo(projectIndex);
-            getProgressUI(projectIndex);
         });
-
-        const divider = document.createElement('div');
-        divider.classList.add('list-divider');
-        projectList.appendChild(itemA);
-        projectList.appendChild(divider);
-
-        index++;
-    });
-
-    // main project info
-    getMainProjectTitle(0);
-    getMainProjectInfo(0);
-    getProgressUI(0);
-}
-initProjectInfo();
-
-// 결제 모달창
-document.getElementById("request-payment").addEventListener('click', () => {
-    const modal = document.getElementById("modal");
-    if(modal.style.display === 'none') modal.style.display = 'flex';
-});
-
-document.getElementById("modal-close").addEventListener('click', () => {
-    document.getElementById("modal").style.display = 'none';
-});
-
-let paytype = 'deposit';
-document.querySelectorAll('input[name="paytype"]').forEach((radio) => {
-    radio.addEventListener("change", (e) => {
-        if(e.target.value === 'deposit') {
-            paytype = 'deposit';
-            document.getElementById('deposit-box').style.display = 'flex';
-            document.getElementById('kakaopay-box').style.display = 'none';
-        } else {
-            paytype = 'kakaopay';
-            document.getElementById('deposit-box').style.display = 'none';
-            document.getElementById('kakaopay-box').style.display = 'flex';
-        }
-    });
-});
-
-
-// 결제하기
-async function getPay() {
-    if(paytype === 'deposit') {
-        // 무통장 입금
-        const currentProject = userProjects[pjtIndex];
-        const responseGetpay = await fetch('/project/getpay-deposit', {
-            method: 'POST',
-            headers: { "Content-Type" : "application/json" },
-            body: JSON.stringify({
-                docId: currentProject.docId,
-            }),
-        });
-
-        const result = await responseGetpay.json();
-        if(!responseGetpay.ok) {
-            console.log(`error: ${result.error}`);
-        }
-
-        // 예금주 정보
-        const depositName = document.getElementById('deposit-name');
-        const responseDepositOwnner = await fetch('/project/upload-deposit-owner', {
-            method: 'POST',
-            headers: { "Content-Type" : "application/json" },
-            body: JSON.stringify({
-                owner: depositName.value,
-                docId: currentProject.docId,
-            }),
-        });
-
-        const depositResult = await responseDepositOwnner.json();
-        if(!responseDepositOwnner.ok) {
-            console.log(`error: ${depositResult.error}`);
-        }
-    }
-    else if(paytype === 'kakaopay') {
-        // 카카오페이 간편 결제
-        const currentProject = userProjects[pjtIndex];
-        const allprice = currentProject.allprice.replace(',',"");
-        const responseGetpay = await fetch('/project/getpay-kakaopay', {
-            method: 'POST',
-            headers: { "Content-Type" : "application/json" },
-            body: JSON.stringify({
-                docId: currentProject.docId,
-                userEmail: currentProject.userEmail,
-                title: currentProject.title,
-                allprice : allprice,
-            }),
-        });
-
-        const result = await responseGetpay.json();
-        if(responseGetpay.ok) {
-            window.location.href = result.redirectURL;
-        } else {
-            console.log(`error: ${result.error}`);
-        }
-    }
+    }    
 }
 
-// 무통장입금 결제 요청
-document.getElementById('deposit-box').addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    Swal.fire({
-        title: '결제',
-        text: '무통장 입금으로 결제하시겠습니까?',
-        showCancelButton: true,
-        confirmButtonText: "확인",
-        cancelButtonText: "취소",
-        customClass: {
-            confirmButton: 'swal-confirm-btn',
-            cancelButton: 'swal-cancel-btn',
-        }
-    }).then( async (result) => {
-        if(result.isConfirmed) {
-            await getPay();
-            window.location.reload();
-        }
-    });
-});
-
-// 카카오페이 결제 진행
-document.getElementById('kakaopay-box').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    await getPay();
-});
-
-
-// 파일 다운로드
-async function getFileDownload() {
-    // 로딩화면 띄우기
-    const loadingScreen = document.getElementById('loading-screen');
-    loadingScreen.style.display = "flex";
-
-
-    const pjt = userProjects[pjtIndex];
-    const response = await fetch('/project/get-download', {
-        method: 'POST',
-        headers: { "Content-Type":"application/json" },
-        body: JSON.stringify({ docId: pjt.docId }),
-    });
-
-    if(!response.ok) {
-        alert('업로드된 파일이 없습니다.');
-        return;
-    }
-
-    const blob = await response.blob();
-    const fileUrl = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = fileUrl;
-    link.download = `draft_files.zip`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(fileUrl);
-
-    // 로딩화면 숨기기
-    loadingScreen.style.display = 'none';
-}
-
-document.getElementById('download-file').addEventListener('click', async (e) => {
-    e.preventDefault();
-    await getFileDownload(); 
-});
+await initProjectInfo();

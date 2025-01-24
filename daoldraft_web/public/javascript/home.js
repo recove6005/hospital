@@ -118,23 +118,6 @@ function initMap() {
 }
 
 async function getMap() {
-//    const response = await fetch('/api/map', {
-//         method: 'GET',
-//    });
-
-//    const result = await response.blob();
-//    if(response.ok) {
-//     const mapImageUrl = URL.createObjectURL(result);
-
-//     const mapImage = document.getElementById('contact-map');
-//     if(mapImage) {
-//         mapImage.src = mapImageUrl;
-//     } else {
-//         console.error('Image element not found.');
-//     }
-//    } else {
-//     console.log(`error: ${result}`);
-//    }
     let x = ''; let y = '';
     try {
         const response = await fetch(`/api/geocord?address=대구 수성구 범물동 1374-3`, {

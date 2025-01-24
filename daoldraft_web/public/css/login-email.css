@@ -67,6 +67,7 @@ input[type="email"] {
     color: #333;
     background-color: #fff;
     outline: none;
+    padding: 3px 10px;
 }
 
 input[type="email"]::placeholder {

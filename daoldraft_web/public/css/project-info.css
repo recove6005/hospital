@@ -1,0 +1,419 @@
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0; 
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Pretendard-Regular';
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* header */
+header {
+    width: 1200px;
+    height: 100px;
+    display: flex;
+    flex-shrink: 0;
+    color: #00a99d;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#profile-photo {
+    width: 285px;
+    height: 100px;
+    text-align: center;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+#profile-photo a {
+    text-decoration: none;
+    color: #00a99d;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/* header: 드롭다운 메뉴 */
+#dropdown-menu ul {
+    position: absolute;
+    list-style: none;
+    z-index: 900;
+    background-color: white;
+    border-radius: 10px;
+    border: 3px solid #d4d4d4;
+}
+
+#dropdown-menu ul li {
+    margin: 20px;
+    font-size: 18px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+#dropdown-menu ul li:last-child {
+    border-bottom: none; /* 마지막 아이템의 하단 테두리 제거 */
+}
+
+#profile-photo a {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+#profile-photo img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #ccc;
+}
+
+
+/* main */
+main {
+    width: 1200px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+/* main: 프로젝트 정보 */
+#projects-wrapper {
+    width: 1200px;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#project-title {
+    width: 800px;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    margin-bottom: 50px;
+}
+
+#project-title > div {
+    width: 10px;
+    height: 35px;
+    background-color: #00a99d;
+    margin-right: 10px;
+}
+
+.project-name {
+    font-size: 30px;
+}
+
+#main-project-info {
+    width: 800px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    margin-left: 30px;
+    margin-bottom: 50px;
+}
+
+.description {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+.description-title {
+    width: 150px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 20px;
+    text-align: center;
+}
+
+.description-content {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: start;
+    align-items: center;
+    width: 450px;
+    font-size: 20px;
+    margin: 20px;
+}
+
+
+/* progress */
+#main-progress {
+    margin: 100px;
+}
+
+#progress-tracker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.step {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgb(158, 158, 158);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 16px;
+    position: relative;
+}
+
+.step.active {
+    background-color: #00a99d;
+}
+
+.line {
+    width: 100px;
+    height: 4px;
+    background-color: rgb(158, 158, 158);
+    margin: 0 5px;
+}
+
+.line.active {
+    background-color: #00a99d;
+}
+
+.sub {
+    width: 150px;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+}
+
+/* 결제 완료 요청 */
+.payment-button {
+    width: 150px;
+    height: 60px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: #00a99d;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 0.3s;
+    margin-bottom: 100px;
+    cursor: pointer;
+}
+
+.payment-button:hover {
+    background-color: #02776f;
+}
+
+
+/* 팝업창 */
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+#modal-container {
+    width: 600px;
+    height: 300px;
+    background-color: whitesmoke;
+    box-shadow: 10px 10px #d4d4d4;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    border-radius: 20px;
+    padding: 20px 30px;
+}
+
+#modal-top {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+#modal-top p {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+#modal-top a {
+    width: 30px;
+    height: 30px;
+    background-color: #00a99d;
+    color: white;
+    border-radius: 10px;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+#modal-top a:hover {
+    background-color: #02776f;
+}
+
+.modal-inner-box {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    height: 50px;
+}
+
+.modal-inner-box p {
+    font-size: 20px;
+    margin-right: 20px;
+}
+
+.modal-inner-box label {
+    margin-right: 10px;
+}
+
+.modal-inner-box input {
+    margin-right: 10px;
+}
+
+.pay-form {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+.pay-form button {
+    font-size: 15px;
+    width: 100px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    background-color: #00a99d;
+    color: white;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.pay-form button:hover {
+    background-color: #02776f;
+}
+
+#deposit-box input {
+    height: 30px;
+    border-radius: 10px;
+    border: 3px solid black;
+    padding: 5px;
+    margin-bottom: 30px;
+}
+
+
+/* 로딩스크린 */
+#loading-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top: 5px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+#checking-payment {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #00a99d;
+    border-radius: 10px;
+}
+
+#checking-payment h1 {
+    padding: 0;
+    margin: 0;
+    height: 50px;
+    font-size: 25px;
+}
+
+#checking-payment p {
+    padding: 0;
+    margin: 0;
+    height: 50px;
+    font-size: 18px;
+}
+
+/* swal button */
+.swal-confirm-btn {
+    background-color: #00a99d;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+}
+
+.swal-cancel-btn {
+    background-color: #d4d4d4;
+    color: grey;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+}

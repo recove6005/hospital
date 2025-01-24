@@ -17,9 +17,7 @@ export const getGeocord = async (req, res) => {
   const apiKey = process.env.API_KEY;
 
   const { address } = req.query;
-  console.log(address);
   const encodedAddress = encodeURIComponent(address);
-  console.log(encodedAddress);
   try {
     const response = await axios.get(`https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode?query=${encodedAddress}`, {
       headers: {
@@ -33,7 +31,7 @@ export const getGeocord = async (req, res) => {
 
     const x = result.addresses[0].x;
     const y = result.addresses[0].y;
-    console.log(`x: ${x}, y: ${y}`);
+    // console.log(`x: ${x}, y: ${y}`);
 
     return res.status(200).json({ x: x, y : y});
   } catch(e) {
