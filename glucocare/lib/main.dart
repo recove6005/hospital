@@ -68,6 +68,7 @@ Future<void> main() async {
   rlogger.d('[glucocare_log] notification init');
 
   // Background Fetch Headless Init
+  FetchService.initConfigureBackgroundFetch();
   FetchService.headlessInit();
   rlogger.d('[glucocare_log] headlessInit');
 

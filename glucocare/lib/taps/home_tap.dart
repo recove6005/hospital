@@ -223,13 +223,14 @@ class _HomeTapForm extends State<HomeTapForm> {
     _passedGlucoTimer  = _getPastTimer(_lastGlucoModel!.checkDate, _lastGlucoModel!.checkTime);
   }
 
+  // background fetch 커스텀 태스크 초기 등록
   List<PillModel> _alarmModels = [];
-  void _getAlarmTasks() async {
+  void _pillAlarmFetchInit() async {
     FetchService.stopAllBackgroundFetch();
     _alarmModels = await AlarmRepository.selectAllAlarmByUid();
     for(PillModel model in _alarmModels) {
       String taskId = model.alarmTimeStr;
-      FetchService.initScheduleBackgroundFetch(taskId);
+      FetchService.createFirstAlarmId(taskId);
     }
   }
 
@@ -254,7 +255,7 @@ class _HomeTapForm extends State<HomeTapForm> {
     _getLastPurseCheck();
     _getSoonerPillAlarm();
 
-    _getAlarmTasks();
+    _pillAlarmFetchInit();
   }
 
   @override

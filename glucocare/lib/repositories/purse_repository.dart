@@ -266,7 +266,7 @@ class PurseRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       for(String name in colNames) {
-        if(_getPast(name, 7)) {
+        if(_getPast(name, 30)) {
           try{
             var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
                 .orderBy('check_time', descending: false).get();
@@ -287,7 +287,7 @@ class PurseRepository {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       for(String name in colNames) {
-        if(_getPast(name, 7)) {
+        if(_getPast(name, 30)) {
           try{
             var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
                 .orderBy('check_time', descending: false).get();
@@ -319,7 +319,7 @@ class PurseRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       for(String name in colNames) {
-        if(_getPast(name, 7)) {
+        if(_getPast(name, 90)) {
           try{
             var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
                 .orderBy('check_time', descending: false).get();
@@ -340,7 +340,7 @@ class PurseRepository {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       for(String name in colNames) {
-        if(_getPast(name, 7)) {
+        if(_getPast(name, 90)) {
           try{
             var docSnapshot = await _store.collection('purse_check').doc(kakaoId).collection(name)
                 .orderBy('check_time', descending: false).get();
@@ -524,7 +524,7 @@ class PurseRepository {
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
       for(String name in colNames) {
-        if(_getPast(name, 30)) {
+        if(_getPast(name, 90)) {
           try {
             var docSnapshot = await _store.collection('purse_check').doc(uid).collection(name)
                 .orderBy('check_time', descending: false).get();
@@ -543,7 +543,7 @@ class PurseRepository {
     } else {
       String? kakaoId = await AuthService.getCurUserId();
       for(String name in colNames) {
-        if(_getPast(name, 30)) {
+        if(_getPast(name, 90)) {
           try {
             var docSnapshot = await _store.collection('purse_check').doc(kakaoId)
                 .collection(name).orderBy('check_time', descending: false).get();

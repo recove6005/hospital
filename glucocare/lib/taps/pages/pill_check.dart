@@ -150,7 +150,7 @@ class _PillCheckFormState extends State<PillCheckForm> {
     AlarmRepository.insertAlarm(pillModel);
 
     String taskId = _alarmTimeStr;
-    FetchService.initScheduleBackgroundFetch(taskId);
+    FetchService.createFirstAlarmId(taskId);
 
     _setPillModels();
     _initValues();
