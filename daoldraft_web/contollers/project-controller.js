@@ -8,6 +8,39 @@ import archiver from 'archiver';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 프로젝트 결제 가격 가져오기 - 결제 확인된 내역만
+export const getPayedPrices = async (req, res) => {
+    let priceList = [];
+    if(req.session.user) {
+        const user = auth.currentUser;
+        const uid = user.uid;
+            const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
+            const snapshots = await getDocs(q);
+    
+            if(snapshots.empty) {
+                return res.status(500).json({error: `snapshot's empty.`});
+            } else {
+                try {
+                    snapshots.forEach(doc => {
+                        const data = doc.data();
+                        priceList.push({
+                            title: data.title,
+                            price: data.price,
+                            date: data.date,
+                            paytype: data.paytype
+                        });
+                    });
+                return res.status(200).json(priceList);
+                } catch(e) {
+                    return res.status(500).json({error: e.message});
+                }
+            }
+    } else {
+        return res.status(401).json({error: `no session found`});
+    }
+};
+
+
 // 프로젝트 가져오기 - 전체
 export const getAllProjects = async (req, res) => {
     var projectList = [];
@@ -215,6 +248,11 @@ export const requestPayment = async (req, res) => {
         await setDoc(priceDocRef, {
             docId: docId,
             price: price,
+            payed: false,
+            date: Date.now(),
+            paytype: '-',
+            uid: docSnap.data().uid,
+            title: docSnap.data().title,
         });
 
         // 파일 업로드
@@ -342,11 +380,21 @@ export const downloadDepositOwner = async (req, res) => {
 
 // 무통장 입금 확인
 export const checkDeposit = async (req, res) => {
-    const { docId } = req.body;
+    const { docId, price } = req.body;
 
     try {
         const docRef = doc(db, 'projects', docId);
         await updateDoc(docRef, { progress: "3", });
+
+        // 가격 결제 정보 업데이트
+        const priceDocRef = doc(db, 'price', docId);
+        const updateData = {
+            payed: true,
+            date: Date.now(),
+            paytype: '무통장 입금',
+        };
+        updateDoc(priceDocRef, updateData);
+
         return res.status(200).send({msg: 'success'});
     } catch(e) {
         return res.status(500).send({error: e.message});

@@ -288,6 +288,7 @@ main h1 {
 }
 
 .project-list ul {
+    height: 450px;
     list-style: none;
 }
 

@@ -113,6 +113,22 @@ function getDocId() {
     return docId;
 }
 
+// 프로젝트 가격 가져오기
+async function getPrice(docId) {
+    const response = await fetch('/project/get-price', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ docId : docId }),
+    });
+
+    const result = await response.json();
+    if(response.ok) {
+        return result.price;
+    } else {
+        return '---';
+    }
+}
+
 // 프로젝트 정보 가져오기
 let title = '';
 let organization = '';
@@ -376,6 +392,7 @@ document.getElementById('pay-request-form').addEventListener('submit', async (e)
 // 결과확인 버튼 이벤트
 document.getElementById('pay-check-btn').addEventListener('click', async (e) => {
     const docId = getDocId();
+    const price = await getPrice();
 
     Swal.fire({
         title: '무통장입금 결제확인',
@@ -392,7 +409,7 @@ document.getElementById('pay-check-btn').addEventListener('click', async (e) => 
             const response = await fetch('/project/check-deposit', {
                 method: 'POST',
                 headers: { "Content-Type": "application/json"},
-                body: JSON.stringify({ docId: docId }),
+                body: JSON.stringify({ docId: docId, price: price }),
             });
 
             const result = await response.json();

@@ -176,11 +176,11 @@ document.getElementById('update-password').addEventListener('click', async (e) =
 });
 
 
-// Project 데이터 리스트 (예시 데이터)
+// 프로젝트 리스트
 const userProjects = [];
 let pagedProjects = [];
 
-// 프로젝트 정보 가져오기
+// 프로젝트 리스트 가져오기
 async function getProjects() {
     const response = await fetch('/project/get-projects-by-uid', {
         method: 'POST',
@@ -195,9 +195,8 @@ async function getProjects() {
         console.log(`error: ${result.error}`);
     }
 }
-await getProjects();
 
-
+// 프로젝트 가격 가져오기
 async function getPrice(docId) {
     const response = await fetch('/project/get-price', {
         method: 'POST',
@@ -215,101 +214,149 @@ async function getPrice(docId) {
     }
 }
 
-// 프로젝트 리스트 페이저 구현
+// 프로젝트 내역: 페이저 인덱스 버튼 innterText 설정
 let page = 0;
-async function setIndexes() {
-    const indexWrapper = document.getElementById('project-indexes');
-    if(!indexWrapper) console.log(`error: .indexes is not exists.`);
+async function setIndexes() {    
+    for(let i = 0; i < 5; i++) {
+        const index = document.getElementById(`project-index-${i}`);
+        index.innerText = `${page+i+1}`;
+    }     
+}
+
+// 페이저 인덱스 버튼 클릭 이벤트 리스너
+async function setProjectIndexEventListener() {
+    pagedProjects = [];
+    console.log(`page: ${page}`);
 
     for(let i = 0; i < 5; i++) {
-        const itemA = document.createElement('a');
-        itemA.innerText = `${page+i+1}`;
-        itemA.addEventListener('click', (e) => {
+        const indexBtn = document.getElementById(`project-index-${i}`);
+        
+        indexBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            
-            indexWrapper.innerHTML = '';
+    
+            const listwrapper = document.querySelector('.project-list ul');
             pagedProjects = [];
-            
-            const indexStart = (parseInt(itemA.innerText, 10)-1)*5;
-            let currentIndex = 0;
-            for(let i = 0; i < 5; i++) {
-                currentIndex = indexStart + i;
-                if(userProjects[currentIndex]) pagedProjects.push(userProjects[currentIndex]);
+    
+            indexBtn.innerText = `${page+i+1}`;
+            const eventIndexStart = (parseInt(indexBtn.innerText, 10)-1)*5;
+
+            for(let l = eventIndexStart; l < eventIndexStart+5; l++) {
+                if(userProjects[l]) {
+                    pagedProjects.push(userProjects[l]);
+                } 
+                else break;
             }
 
-            initProjectInfo();
-        });
-
-        indexWrapper.appendChild(itemA);
-    }    
+            listwrapper.innerHTML = ``;
+            displayProjectList();
+        }); 
+    }
 }
 
-
-    
-// 페이저 버튼
-document.getElementById('pager-prev-btn').addEventListener('click', (e) => {
+// 프로젝트 내역: 페이저 버튼 이벤트 리스너
+document.getElementById('project-pager-prev-btn').addEventListener('click', (e) => {
     e.preventDefault();
     if(page != 0) page -= 5;
-    console.log(page);
-    initProjectInfo();
+    setIndexes();
 });
 
-document.getElementById('pager-next-btn').addEventListener('click', (e) => {
+document.getElementById('project-pager-next-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    console.log(page);
-
-    initProjectInfo();
+    page += 5;
+    setIndexes();
 });
 
-
-// 초기 UI 업데이트 함수
-async function initProjectInfo() {
-    await setIndexes();
+// 프로젝트 내역 표시
+async function displayProjectList() {
     const projectList = document.querySelector('.project-list ul');
-
-    // 프로젝트 표시
-    if(pagedProjects.length === 0) {
-       
-    } else {
-        pagedProjects.forEach( async (pjt) => {    
-            // 문의 일자
-            const date = new Date(pjt.date);
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            const formattedDate = `${year}-${month}-${day}`;
+    const emptyCount = 5 - pagedProjects.length;
     
-            // 가격
-            const price = await getPrice(pjt.docId);
+    for (let pjt of pagedProjects) {    
+        // 문의 일자
+        const date = new Date(pjt.date);
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
 
-            // 프로젝트ID
-            const docId = pjt.docId;
+        // 가격
+        const price = await getPrice(pjt.docId);
 
-            // 프로젝트 진행 현황
-            let progress = '문의 접수';
-            if(pjt.progress == '1') progress = '작업 중';
-            if(pjt.progress == '2' || pjt.progress == '11') progress = '결제 중';
-            if(pjt.progress == '3') progress = '결제 완료';
+        // 프로젝트ID
+        const docId = pjt.docId;
 
-            const itemLi = document.createElement('li');
-            const itemA = document.createElement('a');
-            itemA.classList.add('project-list-item');
-            itemA.innerHTML = `
-                <p class="item-detail">${pjt.title}</p>
-                <p class="item-detail">${progress}</p>
-                <p class="item-detail">${formattedDate}</p>
-                <p class="item-detail">${price}</p>
-            `;
+        // 프로젝트 진행 현황
+        let progress = '문의 접수';
+        if(pjt.progress == '1') progress = '작업 중';
+        if(pjt.progress == '2' || pjt.progress == '11') progress = '결제 중';
+        if(pjt.progress == '3') progress = '결제 완료';
 
-            itemA.addEventListener("click", () => {
-                window.location.href = `../html/project-info.html?docId=${docId}`;    
-            });
-            
-            itemLi.appendChild(itemA);
-            projectList.appendChild(itemLi);
+        const itemLi = document.createElement('li');
+        const itemA = document.createElement('a');
+        itemA.classList.add('project-list-item');
+        itemA.innerHTML = `
+            <p class="item-detail">${pjt.title}</p>
+            <p class="item-detail">${progress}</p>
+            <p class="item-detail">${formattedDate}</p>
+            <p class="item-detail">${price}</p>
+        `;
 
+        itemA.addEventListener("click", () => {
+            window.location.href = `../html/project-info.html?docId=${docId}`;    
         });
-    }    
+        
+        itemLi.appendChild(itemA);
+        projectList.appendChild(itemLi);
+    };
+
+    for(let i = 0; i < emptyCount; i++) {
+        const itemLi = document.createElement('li');
+        const itemA = document.createElement('a');
+        itemA.classList.add('project-list-item');
+        itemA.innerHTML = `
+            <p class="item-detail">-</p>
+            <p class="item-detail">-</p>
+            <p class="item-detail">-</p>
+            <p class="item-detail">-</p>
+        `;
+
+        itemLi.appendChild(itemA);
+        projectList.appendChild(itemLi);
+    }
 }
 
-await initProjectInfo();
+
+// 결제 내역 가져오기
+let priceList = [];
+async function getPayedPrices() {
+    const response = await fetch('/project/get-payed-prices', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    const result = await response.json();
+    if(response.ok) {
+        console.log(result.priceList);
+    } else {
+        console.log(result.error);
+    }
+}
+
+// 프로젝트 내역 초기 UI 업데이트 함수
+async function initProjectInfo() {
+    // 전체 프로젝트 내역 초기화
+    await getProjects();
+
+    // 프로젝트 내역 페이징
+    await setIndexes();
+    setProjectIndexEventListener();
+
+    document.getElementById('project-index-0').click();    
+
+    // 결제내역
+    await getPayedPrices();
+}
+
+initProjectInfo();
+
+
