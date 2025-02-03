@@ -49,7 +49,6 @@ nav ul {
     flex-direction: row;
     flex-shrink: 0;
     list-style: none;
-
 }
 
 nav li {
@@ -310,4 +309,35 @@ footer a {
 
 footer a:hover {
     text-decoration: underline; /* 호버 시 밑줄 */
+}
+
+
+@media (max-width: 1200px)  {
+    header {
+        width: 100%;
+        flex-direction: column;
+        height: 250px;
+    }
+
+    nav ul {
+        width: 1200px;
+        flex-direction: column; 
+    }
+
+    nav li {
+        margin: 7px auto;
+        text-align: center;
+        border-bottom: black;
+    }
+    nav li a {
+        padding: 5px;
+        transition-duration: 0.3s;
+        border-radius: 10px;
+    }
+
+    nav li a:hover {
+        background-color: #d4d4d4;
+    }
+
+    
 }
