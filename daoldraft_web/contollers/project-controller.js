@@ -14,27 +14,38 @@ export const getPayedPrices = async (req, res) => {
     if(req.session.user) {
         const user = auth.currentUser;
         const uid = user.uid;
-            const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
-            const snapshots = await getDocs(q);
+        let deposit = '-';
+
+        const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
+        const snapshots = await getDocs(q);
     
-            if(snapshots.empty) {
-                return res.status(500).json({error: `snapshot's empty.`});
-            } else {
-                try {
-                    snapshots.forEach(doc => {
-                        const data = doc.data();
-                        priceList.push({
-                            title: data.title,
-                            price: data.price,
-                            date: data.date,
-                            paytype: data.paytype
-                        });
+        if(snapshots.empty) {
+            return res.status(500).json({error: `snapshot's empty.`});
+        } else {
+            try {
+                // if(paytype == '무통장 입금') {
+                //     const depositDocRef = doc(db, 'deposit', data.docId);
+                //     const depositSnap = await getDoc(depositDocRef);
+
+                //     deposit = depositSnap.owner
+                // } 
+
+                snapshots.forEach(doc => {
+                    const data = doc.data();
+                    priceList.push({
+                        title: data.title,
+                        price: data.price,
+                        date: data.date,
+                        paytype: data.paytype,
+                        deposit: deposit,
                     });
-                return res.status(200).json(priceList);
-                } catch(e) {
-                    return res.status(500).json({error: e.message});
-                }
+                });
+
+                return res.status(200).json({ priceList: priceList});
+            } catch(e) {
+                return res.status(500).json({error: e.message});
             }
+        }
     } else {
         return res.status(401).json({error: `no session found`});
     }

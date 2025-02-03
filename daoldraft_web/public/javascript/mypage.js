@@ -20,17 +20,24 @@ async function getUserInitData() {
 async function getSubscribeInfos() {
     await getUserInitData();
 
-    if(subscribeType === '0') {
+    const subscribeWrapper = document.querySelector('.subscribe-details-wrapper');
+    console.log(`type: ${subscribeType}`);
+    if(subscribeType == '0') {
         // 구독권 없음
-
+        subscribeWrapper.innerHTML = `<p>구독 내역이 없습니다.</p>`;
     } else {
+        // 구독권이 있음
         const response = await fetch('/user/get-subscribe-info', {
             method: 'POST',
         });
     
         const result = await response.json();
         if(response.ok) {
-            
+            subscribeWrapper.innerHTML = `
+                <p>
+                    짜라리
+                </p>
+            `;
         } else {
             console.log(`error: ${result.error}`);
         }
@@ -216,7 +223,7 @@ async function getPrice(docId) {
 
 // 프로젝트 내역: 페이저 인덱스 버튼 innterText 설정
 let page = 0;
-async function setIndexes() {    
+async function setProjectIndexes() {    
     for(let i = 0; i < 5; i++) {
         const index = document.getElementById(`project-index-${i}`);
         index.innerText = `${page+i+1}`;
@@ -226,7 +233,6 @@ async function setIndexes() {
 // 페이저 인덱스 버튼 클릭 이벤트 리스너
 async function setProjectIndexEventListener() {
     pagedProjects = [];
-    console.log(`page: ${page}`);
 
     for(let i = 0; i < 5; i++) {
         const indexBtn = document.getElementById(`project-index-${i}`);
@@ -257,13 +263,13 @@ async function setProjectIndexEventListener() {
 document.getElementById('project-pager-prev-btn').addEventListener('click', (e) => {
     e.preventDefault();
     if(page != 0) page -= 5;
-    setIndexes();
+    setProjectIndexes();
 });
 
 document.getElementById('project-pager-next-btn').addEventListener('click', (e) => {
     e.preventDefault();
     page += 5;
-    setIndexes();
+    setProjectIndexes();
 });
 
 // 프로젝트 내역 표시
@@ -328,6 +334,8 @@ async function displayProjectList() {
 
 // 결제 내역 가져오기
 let priceList = [];
+let pagedPrices = [];
+let paymentPage = 0;
 async function getPayedPrices() {
     const response = await fetch('/project/get-payed-prices', {
         method: 'POST',
@@ -336,9 +344,96 @@ async function getPayedPrices() {
 
     const result = await response.json();
     if(response.ok) {
-        console.log(result.priceList);
+        priceList = result.priceList;
     } else {
         console.log(result.error);
+    }
+}
+
+// 결제 내역: 페이저 버튼 이벤트 리스너
+document.getElementById('payment-pager-prev-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    if(paymentPage != 0) paymentPage -= 5;
+    setPaymentIndexes();
+});
+
+document.getElementById('payment-pager-next-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    paymentPage += 5;
+    setPaymentIndexes();
+});
+
+// 결제내역 표시
+async function displayPaymentList() {
+    const paymentUl = document.querySelector('.payment-details-wrapper ul');
+    paymentUl.innerHTML = ``;
+    let emptyCount = 5 - pagedPrices.length;
+
+    for(let i = 0; i < pagedPrices.length; i++) {
+        const newLi = document.createElement('li');
+        const fd = new Date(priceList[i].date);
+        const newDate = `${fd.getFullYear()}-${String(fd.getMonth()+1).padStart(2,'0')}-${String(fd.getDate()).padStart(2, '0')}`;
+        newLi.innerHTML = `
+                <div class="payment-detail-item">
+                    <p class="payment-detail-category">${priceList[i].title}</p>
+                    <p class="payment-detail-category">${priceList[i].paytype}</p>
+                    <p class="payment-detail-category">${newDate}</p>
+                    <p class="payment-detail-category">${priceList[i].price}</p>
+                </div>  
+        `;
+        paymentUl.appendChild(newLi);
+    }
+
+    for(let i = 0; i < emptyCount; i++) {
+        const itemLi = document.createElement('li');
+        itemLi.classList.add('payment-list-item');
+        itemLi.innerHTML = `
+            <div class="payment-detail-item">
+                <p class="payment-detail-category">-</p>
+                <p class="payment-detail-category">-</p>
+                <p class="payment-detail-category">-</p>
+                <p class="payment-detail-category">-</p>
+            </div>  
+        `;
+        paymentUl.appendChild(itemLi);
+    }
+}
+
+
+// 결제내역 페이징
+async function setPaymentIndexes() {
+    for(let i = 0; i < 5; i++) {
+        const index = document.getElementById(`payment-index-${i}`);
+        index.innerText = `${paymentPage+i+1}`;
+    }     
+}
+
+async function setPaymentIndexEventListener() {
+    pagedPrices = [];
+    console.log(`page: ${paymentPage}`);
+
+    for(let i = 0; i < 5; i++) {
+        const indexBtn = document.getElementById(`payment-index-${i}`);
+        
+        indexBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+    
+            const listwrapper = document.querySelector('.payment-details-wrapper ul');
+            pagedPrices = [];
+    
+            indexBtn.innerText = `${paymentPage+i+1}`;
+            const eventIndexStart = (parseInt(indexBtn.innerText, 10)-1)*5;
+
+            for(let l = eventIndexStart; l < eventIndexStart+5; l++) {
+                if(priceList[l]) {
+                    pagedPrices.push(priceList[l]);
+                } 
+                else break;
+            }
+
+            listwrapper.innerHTML = ``;
+            displayPaymentList();
+        }); 
     }
 }
 
@@ -348,15 +443,21 @@ async function initProjectInfo() {
     await getProjects();
 
     // 프로젝트 내역 페이징
-    await setIndexes();
+    await setProjectIndexes();
     setProjectIndexEventListener();
 
     document.getElementById('project-index-0').click();    
-
-    // 결제내역
-    await getPayedPrices();
 }
-
 initProjectInfo();
 
+async function initPaymentInfo() {
+    // 결제내역 페이징
+    await getPayedPrices();
 
+    await setPaymentIndexes();
+    setPaymentIndexEventListener();
+
+    document.getElementById('payment-index-0').click();
+}
+
+initPaymentInfo();

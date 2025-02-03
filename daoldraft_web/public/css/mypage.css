@@ -163,7 +163,8 @@ main h1 {
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
-    background-color: #d4d4d4;
+    background-color: #f4f4f4;
+    border-radius: 15px;
 }
 
 /* main: 결제 내역 */
@@ -200,6 +201,7 @@ main h1 {
 
 .payment-details-wrapper ul {
     width: 1000px;
+    height: 410px;
     list-style: none;
     display: flex;
     flex-direction: column;

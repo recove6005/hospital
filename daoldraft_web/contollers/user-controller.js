@@ -2,7 +2,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { db, auth } from "../public/firebase-config.js";
 import { collection, doc, addDoc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { error } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +14,7 @@ export const getSubscribeType = async (req, res) => {
         const docSnap = await getDoc(docRef);
 
         if(docSnap.exists()) {
-            const subscribeType = docSnap.data().subscribe;
+            const subscribeType = docSnap.data().type;
             return res.status(200).send({ subscribe: subscribeType });
         } else {
             return res.status(401).send({ error: "No data found."});
