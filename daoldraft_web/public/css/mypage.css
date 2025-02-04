@@ -315,7 +315,6 @@ main h1 {
     background-color: #f4f4f4;
 }
 
-
 .item-detail {
     width: 200px;
     height: 50px;
@@ -341,4 +340,170 @@ main h1 {
     border: none;
     border-radius: 10px;
     padding: 10px 20px;
+}
+
+@media (max-width: 1200px)  {
+    header {
+        margin: 50px auto;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    main {
+        width: 100%;
+    }
+
+    .payment-info-wrapper {
+        width: 100%;
+    }
+
+    .info-title-wrapper {
+        width: 100%;
+        margin-left: 20px;
+        margin-bottom: 20px;
+    }
+
+    .payment-info-wrapper .payment-details-title {
+        width: 100%;
+    }
+
+    .payment-info-wrapper .payment-title-category {
+        width: 25%;
+    }
+
+    .payment-details-wrapper {
+        width: 100%;
+    }
+
+    .payment-details-wrapper ul {
+        width: 100%;
+    }
+
+    .payment-details-wrapper ul li {
+        width: 100%;
+    }
+
+    .payment-details-wrapper .payment-detail-item {
+        width: 100%;
+    }
+
+    .payment-details-wrapper .payment-detail-category {
+        width: 25%;
+    }
+
+    .pager {
+        width: 100%;
+    }
+
+    .project-info-wrapper {
+        width: 100%;
+    }
+
+    .project-list-title {
+        width: 100%;
+    }
+
+    .project-list-title-item {
+        width: 25% !important;
+    }
+
+    .project-list-item {
+        width: 100%;
+    }
+
+    .item-detail {
+        width: 25%;
+    }
+
+    /* 유저 정보 */
+    #user-container {
+        width: 200px;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: -200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        z-index: 999;
+        background-color: whitesmoke;
+        transition-duration: 0.3s;
+    }
+
+    #profile-photo {
+        width: 200px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: center;
+        z-index: 1000;
+        margin: 20px auto;
+    }
+
+    #dropdown-menu {
+        display: flex !important;
+        width: 200px;
+        height: 100%;
+        z-index: 1000;
+    }
+
+    #dropdown-menu ul {
+        width: 200px;
+        list-style: none;
+        margin: 50px 0;
+        padding: 0;
+        border: none;
+        border-radius: 0;
+    }
+
+    #dropdown-menu ul li {
+        width: 200px;
+        height: 50px;
+        margin: 0;
+        padding: 0;
+        background-color: whitesmoke;
+        border-top: 1px solid #d4d4d4;
+        border-bottom: none;
+    }
+
+    #dropdown-menu ul li a {
+        width: 200px;
+        height: 50px;
+        transition-duration: 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #dropdown-management {
+        display: flex !important;
+    }
+
+    #dropdown-menu ul li a:hover {
+        background-color: #d4d4d4;
+    }
+
+    #profile-link {
+        pointer-events: none;
+        cursor: default;
+        display: none !important;
+    }
+    
+    #menu-display-btn {
+        display: flex !important;
+        width: 40px;
+        height: 40px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        cursor: pointer;
+        z-index: 1002;
+    }
+
+    #menu-display-btn img {
+        width: 40px;
+        height: 40px;
+    }
 }

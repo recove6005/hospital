@@ -61,7 +61,7 @@ document.getElementById('profile-link').addEventListener('click', function (e) {
     
     // 드롭다운 메뉴 보이기/숨기기
     if (dropdownMenu.style.display === 'none' || dropdownMenu.style.display === '') {
-        dropdownMenu.style.display = 'block';
+        dropdownMenu.style.display = 'flex';
     } else {
         dropdownMenu.style.display = 'none';
     }
@@ -144,3 +144,23 @@ async function getMap() {
     initMap();
 }
 getMap();
+
+// 1200px 이하 유저 메뉴 리스트 열기
+document.getElementById('menu-display-btn').addEventListener('click', (e) => {
+    const menus = document.getElementById('user-container');
+    if(menus.style.left === '0px') {
+        console.log('ddd');
+        menus.style.left = '-200px';
+    } else {
+        menus.style.left = '0';
+    }
+});
+
+// 1200px 이하 유저 메뉴 리스트 닫기
+document.addEventListener('click', function (e) {
+    const menus = document.getElementById('user-container');
+    const btn = document.getElementById('menu-display-btn');
+    if (!menus.contains(e.target) && !btn.contains(e.target)) {
+        menus.style.left = '-200px';
+    }
+});
