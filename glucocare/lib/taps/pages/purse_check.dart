@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/purse_col_name_model.dart';
 import 'package:glucocare/models/purse_danger_model.dart';
@@ -56,7 +57,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
 
   final TextEditingController _shrinkController = TextEditingController();
   final TextEditingController _relaxController = TextEditingController();
-  final TextEditingController _purseController = TextEditingController();
+  // final TextEditingController _purseController = TextEditingController();
   final TextEditingController _stateController = TextEditingController();
 
   int _shrink = 0;
@@ -71,7 +72,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
   void _setStates() {
     _shrink = int.parse(_shrinkController.text);
     _relax = int.parse(_relaxController.text);
-    _purse = int.parse(_purseController.text);
+    _purse = 0;
     _shrinkDanger = DangerCheck.purseShrinkDangerCheck(_shrink);
     _relaxDanger = DangerCheck.purseRelaxDangerCheck(_relax);
 
@@ -85,7 +86,25 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     setState(() {
       _isSaving = true;
     });
+
+    if(_shrinkController.text == '') {
+      Fluttertoast.showToast(msg: '수축기 수치를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+    
+    if(_relaxController.text == '') {
+      Fluttertoast.showToast(msg: '이완기 수치를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+    
     _setStates();
+
 
     String? uid = '';
     if (await AuthService.userLoginedFa()) {
@@ -272,7 +291,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                             )
                         ),
                         child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
-                      )
+                      ),
                     ]
                 );
               }
@@ -491,49 +510,49 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 15,),
-                        SizedBox(
-                          width: 300,
-                          child: Center(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const SizedBox(
-                                  width: 90,
-                                  height: 40,
-                                  child: Text('맥박', style: TextStyle(
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black
-                                  ),),
-                                ),
-                                SizedBox(
-                                  width: 70,
-                                  height: 40,
-                                  child: TextField(
-                                      controller: _purseController,
-                                      keyboardType: TextInputType.number,
-                                      maxLength: 3,
-                                      inputFormatters: [
-                                        FilteringTextInputFormatter.digitsOnly,
-                                        rangeTextInputFormatter(0, 200),
-                                      ],
-                                      decoration: const InputDecoration(
-                                          counterText: '',
-                                          hintStyle: TextStyle(color: Colors.black38)
-                                      ),
-                                      style: const TextStyle(
-                                          fontSize: 25,
-                                          color: Colors.black
-                                      )
-                                  ),
-                                ),
-                                const Text('회/1분', style: TextStyle(fontSize: 18),),
-                              ],
-                            ),
-                          ),
-                        ),
+                        // const SizedBox(height: 15,),
+                        // SizedBox(
+                        //   width: 300,
+                        //   child: Center(
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       crossAxisAlignment: CrossAxisAlignment.end,
+                        //       children: [
+                        //         const SizedBox(
+                        //           width: 90,
+                        //           height: 40,
+                        //           child: Text('맥박', style: TextStyle(
+                        //               fontSize: 25,
+                        //               fontWeight: FontWeight.bold,
+                        //               color: Colors.black
+                        //           ),),
+                        //         ),
+                        //         SizedBox(
+                        //           width: 70,
+                        //           height: 40,
+                        //           child: TextField(
+                        //               controller: _purseController,
+                        //               keyboardType: TextInputType.number,
+                        //               maxLength: 3,
+                        //               inputFormatters: [
+                        //                 FilteringTextInputFormatter.digitsOnly,
+                        //                 rangeTextInputFormatter(0, 200),
+                        //               ],
+                        //               decoration: const InputDecoration(
+                        //                   counterText: '',
+                        //                   hintStyle: TextStyle(color: Colors.black38)
+                        //               ),
+                        //               style: const TextStyle(
+                        //                   fontSize: 25,
+                        //                   color: Colors.black
+                        //               )
+                        //           ),
+                        //         ),
+                        //         const Text('회/1분', style: TextStyle(fontSize: 18),),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "126005868202",
+    "project_id": "daoldraft",
+    "storage_bucket": "daoldraft.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126005868202:android:c153ac71b6389d1f9642d3",
+        "android_client_info": {
+          "package_name": "com.aligo.aligo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "126005868202-htk3f9mgi9m3mqjd1s9me3u8749cmpgk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6ivSYTgeUFTYxX-zi8jjQiOeK9ubaX8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "126005868202-htk3f9mgi9m3mqjd1s9me3u8749cmpgk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

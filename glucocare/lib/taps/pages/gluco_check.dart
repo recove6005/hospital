@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:glucocare/danger_check.dart';
 import 'package:glucocare/models/gluco_col_name_model.dart';
 import 'package:glucocare/models/gluco_danger_model.dart';
@@ -106,10 +107,19 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
   }
 
   Future<void> _onSaveButtonPressed() async {
-    _setState();
     setState(() {
       _isSaving = true;
     });
+
+    if(_valueController.text == '') {
+      Fluttertoast.showToast(msg: '혈당 수치를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
+      setState(() {
+        _isSaving = false;
+      });
+      return;
+    }
+
+    _setState();
 
     String? uid = '';
     if(await AuthService.userLoginedFa()) {
@@ -196,7 +206,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
             context: context,
             builder: (BuildContext dialogContext) {
               return AlertDialog(
-                  title: Row(
+                  title: const Row(
                     children: [
                       Icon(Icons.warning, color: Color(0xFF22BED3),),
                       Text('경고: 당뇨 주의', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
@@ -461,6 +471,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                             height: 50,
                             child: TextField(
                               controller: _valueController,
+                              keyboardType: TextInputType.number,
                               maxLength: 3,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -650,7 +661,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Icon(Icons.dangerous, color: Colors.redAccent,),
-                              Text('당뇨병', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),),
+                              Text('고당뇨', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),),
                             ],
                           ),
                         ),
