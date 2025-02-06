@@ -105,45 +105,31 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
     }
 });
 
-function initMap() {
-    if (!x || !y) {
-        console.error('Coordinates are not set. Map cannot be initialized.');
-        return;
+// portfolio 버튼 이벤트
+document.getElementById('service-prev-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    const serviceContainer1 = document.getElementById('service-container-1');
+    const serviceContainer2 = document.getElementById('service-container-2');
+
+    if(serviceContainer1.style.transform === 'translateX(-971px)') {
+        serviceContainer1.style.transform = 'translateX(0px)';
+        serviceContainer2.style.transform = 'translateX(0px)';
     }
+});
 
-    const map = new naver.maps.Map('map', {
-        center: new naver.maps.LatLng(y, x), // 네이버 지도는 y:위도, x:경도를 사용
-        zoom: 10,
-    });
-}
+document.getElementById('service-next-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    const serviceBox = document.getElementById('service-container-box');
+    const serviceContainer1 = document.getElementById('service-container-1');
+    const serviceContainer2 = document.getElementById('service-container-2');
 
-async function getMap() {
-    let x = ''; let y = '';
-    try {
-        const response = await fetch(`/api/geocord?address=대구 수성구 범물동 1374-3`, {
-            method: 'GET',
-        });
-
-        const result = await response.json();
-        if(response.ok) {
-            x = result.x;
-            y = result.y;
-        }
-    } catch(e) {
-        console.log(`error: ${e}`);
+    if(serviceContainer1.style.transform = 'translateX(0px)') {
+        serviceContainer1.style.transform = 'translateX(-971px)';
+        serviceContainer2.style.transform = 'translateX(-971px)';
     }
+});
 
-    const mapImage = document.getElementById('contact-map');
-    function initMap() {
-        const map = new naver.maps.Map('map', {
-            center: new naver.maps.LatLng(x, y),
-            zoom: 10
-        });
-    };
 
-    initMap();
-}
-getMap();
 
 // 1200px 이하 유저 메뉴 리스트 열기
 document.getElementById('menu-display-btn').addEventListener('click', (e) => {
