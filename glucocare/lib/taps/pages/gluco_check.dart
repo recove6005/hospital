@@ -83,27 +83,81 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     return krTime;
   }
 
-  int getDiagnosis() {
-    if(_checkTimeName == '식후') {
-      if(_value >= 200) return 2;
-      else if(_value >= 110) return 1;
-      else return 0;
-    }
-    else if(_checkTimeName == '식전') {
-      if(_value >= 170) return 2;
-      else if(_value >= 100) return 1;
-      else return 0;
+  int _diagnosisValue = -1;
+  void _getDiagnosis(text) {
+      if(_valueController.text == '') {
+        setState(() {
+          _diagnosisValue = -1;
+        });
+        return;
+      }
+
+      _value = int.parse(text);
+
+      if(_value <= 70) {
+        setState(() {
+          _diagnosisValue = -2;
+        });
+        return;
+      }
+
+      if(_checkTimeName == '식후') {
+        if(_value >= 200) {
+          setState(() {
+            _diagnosisValue = 2;
+          });
+          return;
+        }
+        else if(_value >= 110) {
+          setState(() {
+            _diagnosisValue = 1;
+          });
+          return;
+        }
+        else {
+          setState(() {
+            _diagnosisValue = 0;
+          });
+          return;
+        }
+      }
+      else if(_checkTimeName == '식전') {
+        if(_value >= 170) {
+          setState(() {
+            _diagnosisValue = 2;
+          });
+          return;
+        }
+        else if(_value >= 100) {
+          setState(() {
+            _diagnosisValue = 1;
+          });
+          return;
+        }
+        else {
+          setState(() {
+            _diagnosisValue = 0;
+          });
+          return;
+        }
+      }
+
+      setState(() {
+        _diagnosisValue = -1;
+      });
     }
 
-    return -1;
-  }
 
   void _setState() {
     _value = int.parse(_valueController.text);
     _state = _stateController.text;
-    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toUtc());
-    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toUtc());
+    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toLocal());
+    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toLocal());
     _glucoDanger = DangerCheck.glucoDangerCheck(_value, _checkTimeName);
+
+    logger.d("[glucocare_log] 현재 기기 시간: ${DateTime.now().toLocal()}, $_checkTime");
+    logger.d("[glucocare_log] 현재 UTC 시간: ${DateTime.now().toUtc()}");
+    logger.d("[glucocare_log] 현재 타임존 오프셋: ${DateTime.now().timeZoneOffset}");
   }
 
   Future<void> _onSaveButtonPressed() async {
@@ -235,7 +289,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
               );
             },
           );
-        } else {
+        } else if(_value >= 70) {
           showDialog(
             context: context,
             builder: (BuildContext dialogContext) {
@@ -247,6 +301,40 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                     ],
                   ),
                   content: const Text('혈당 수치가 정상 범위 내에 있습니다.', style: TextStyle(fontSize: 25),),
+                  actions: <Widget> [
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    ),
+                  ]
+              );
+            },
+          );
+        } else {
+          showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.warning, color: Color(0xFF22BED3),),
+                      Text('저혈당', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),)
+                    ],
+                  ),
+                  content: const Text('혈당 수치가 너무 낮습니다. 생활 습관 관리에 유의하시고, 의료진의 도움을 받으세요.', style: TextStyle(fontSize: 25),),
                   actions: <Widget> [
                     TextButton(
                       onPressed: () {
@@ -478,6 +566,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                                 rangeTextInputFormatter(0, 300),
                               ],
                               onChanged: (text) {
+                                _getDiagnosis(text);
                                 _value = int.parse(text);
                                 if(_checkTimeName == '식전') {
                                   if(_value >= 170) {
@@ -648,9 +737,9 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                       ],
                     ),
                     const SizedBox(height: 50,),
-                    if(getDiagnosis() == 2)
+                    if(_diagnosisValue == 2)
                         Container(
-                          width: 200,
+                          width: MediaQuery.of(context).size.width-80,
                           height: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -665,9 +754,9 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                             ],
                           ),
                         ),
-                    if(getDiagnosis() == 1)
+                    if(_diagnosisValue == 1)
                         Container(
-                          width: 200,
+                          width: MediaQuery.of(context).size.width-80,
                           height: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -682,9 +771,9 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                             ],
                           ),
                         ),
-                    if(getDiagnosis() == 0)
+                    if(_diagnosisValue == 0)
                         Container(
-                          width: 200,
+                          width: MediaQuery.of(context).size.width-80,
                           height: 80,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
@@ -699,6 +788,40 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                             ],
                           ),
                         ),
+                    if(_diagnosisValue == -1)
+                      Container(
+                        width: MediaQuery.of(context).size.width-80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xfff4f4f4),
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.edit, color: Colors.grey,),
+                            Text('혈당 측정값을 입력해 주세요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+                          ],
+                        ),
+                      ),
+                    if(_diagnosisValue == -2)
+                      Container(
+                        width: MediaQuery.of(context).size.width-80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: Color(0xfff4f4f4),
+                        ),
+                        child: const Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.warning, color: Colors.grey,),
+                            Text('저혈당', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+                          ],
+                        ),
+                      ),
                     const SizedBox(height: 30,),
                     SizedBox(
                       width:  MediaQuery.of(context).size.width-80,

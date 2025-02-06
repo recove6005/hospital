@@ -395,12 +395,13 @@ class _HomeTapForm extends State<HomeTapForm> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           SizedBox(
-                            child: Text('${_lastGlucoModel!.value}.0', style: const TextStyle(
+                            child: Text('${_lastGlucoModel!.value}', style: const TextStyle(
                               fontSize: 45,
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),),
                           ),
+                          const SizedBox(width: 5,),
                           const SizedBox(
                             child: Text('mg/dL', style: TextStyle(
                               fontSize: 30,
@@ -510,6 +511,7 @@ class _HomeTapForm extends State<HomeTapForm> {
                               color: Colors.black,
                             ),),
                           ),
+                          const SizedBox(width: 5,),
                           const SizedBox(
                             child: Text('mmHg', style: TextStyle(
                               fontSize: 30,

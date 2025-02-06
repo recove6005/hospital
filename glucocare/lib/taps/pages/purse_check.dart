@@ -78,8 +78,12 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
 
     _state = _stateController.text;
 
-    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toUtc());
-    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toUtc());
+    _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toLocal());
+    _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toLocal());
+
+    logger.d("[glucocare_log] 현재 기기 시간: ${DateTime.now().toLocal()}, $_checkTime");
+    logger.d("[glucocare_log] 현재 UTC 시간: ${DateTime.now().toUtc()}");
+    logger.d("[glucocare_log] 현재 타임존 오프셋: ${DateTime.now().timeZoneOffset}");
   }
 
   void _onSaveButtonPressed() async {
@@ -180,7 +184,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
-                          )
+                          ),
                       ),
                       child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
                     )
@@ -261,7 +265,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
             }
         );
       }
-      else {
+      else if(_shrink.toInt() >= 90 || _relax.toInt() >= 60) {
           showDialog(
               context: context,
               builder: (BuildContext dialogContext) {
@@ -296,7 +300,42 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                 );
               }
           );
-      }
+      } else {
+        showDialog(
+            context: context,
+            builder: (BuildContext dialogContext) {
+              return AlertDialog(
+                  title: const Row(
+                    children: [
+                      Icon(Icons.warning, color: Color(0xFF22BED3),),
+                      Text('저혈압', style: TextStyle(
+                          fontWeight: FontWeight.bold, color: Color(0xFF22BED3)),),
+                    ],
+                  ),
+                  content: const Text('혈압이 너무 낮습니다. 생활 습관 관리에 유의하시고 의료진의 도움을 받으세요.', style: TextStyle(fontSize: 25),),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          _isSaving = false;
+                        });
+                        Navigator.pop(dialogContext);
+                        Navigator.pop(context, true);
+                      },
+                      style: TextButton.styleFrom(
+                          backgroundColor: Color(0xFF22BED3),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          )
+                      ),
+                      child: const Text('확인', style: TextStyle(fontSize: 20, color: Colors.white),),
+                    ),
+                  ]
+              );
+            }
+        );
+      };
     }
   }
 
@@ -328,11 +367,57 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     );
   }
 
-  int getDiagnosis() {
-    if(_shrink >= 200 || _relax >= 200) return 3;
-    else if(_shrink >= 160 || _relax >= 120) return 2;
-    else if(_shrink >= 140 || _relax >= 90) return 1;
-    else return 0;
+  int _diagnosisValue = -1;
+  void _getDiagnosis(textShrink, textRelex) {
+    if (_shrinkController.text.isEmpty || _relaxController.text.isEmpty) {
+      setState(() {
+        _diagnosisValue = (_shrinkController.text.isEmpty && _relaxController.text.isEmpty)
+            ? -1
+            : (_shrinkController.text.isEmpty ? -2 : -3);
+      });
+      return;
+    }
+
+    _shrink = int.parse(textShrink);
+    _relax = int.parse(textRelex);
+
+    logger.d('glucocare_log ${_shrink}, ${_relax}');
+
+    // 고혈압 3
+    // 고혈압 주의2단계 2
+    // 고혈압 주의1단계 1
+    // 정상 혈압 0
+    // 저혈압 -4
+    if(_shrink < 90 || _relax < 60) {
+      setState(() {
+        _diagnosisValue = -4;
+      });
+      return;
+    }
+
+    if(_shrink >= 200 || _relax >= 200) {
+      setState(() {
+        _diagnosisValue = 3;
+      });
+      return;
+    }
+    else if(_shrink >= 160 || _relax >= 120) {
+      setState(() {
+        _diagnosisValue = 2;
+      });
+      return;
+    }
+    else if(_shrink >= 140 || _relax >= 90) {
+      setState(() {
+        _diagnosisValue = 1;
+      });
+      return;
+    } else {
+      setState(() {
+        _diagnosisValue = 0;
+      });
+      return;
+    }
   }
 
   @override
@@ -419,7 +504,13 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                     ],
                                     onChanged: (text) {
                                       setState(() {
+                                        _getDiagnosis(text, _relaxController.text);
+                                        logger.d('glucocare_log  shrink value: ${_diagnosisValue}');
+
+                                        if(text == '')  _backgroundColor = Colors.white;
+
                                         _shrink = int.parse(text);
+
                                         if(_shrink >= 200 || _relax >= 200) {
                                           _backgroundColor = const Color(0xfffd6363);
                                         }
@@ -428,7 +519,6 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                         }
                                         else if((_shrink < 160 && _shrink >= 140) || (_relax < 120 && _relax >= 90)) {
                                           _backgroundColor = const Color(0xFFFFF2D1);
-
                                         }
                                         else {
                                           _backgroundColor = Colors.white;
@@ -479,8 +569,14 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                                       rangeTextInputFormatter(0, 300),
                                     ],
                                     onChanged: (text) {
+                                      _getDiagnosis(_shrinkController.text, text);
+                                      logger.d('glucocare_log relex value: ${_diagnosisValue}');
+
                                       setState(() {
                                         _relax = int.parse(text);
+
+                                        if(text == '')  _backgroundColor = Colors.white;
+
                                         if(_shrink >= 200 || _relax >= 200) {
                                           _backgroundColor = const Color(0xfffd6363);
                                         }
@@ -557,9 +653,9 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                     ),
                   ),
                   const SizedBox(height: 30,),
-                  if(getDiagnosis() == 3)
+                  if(_diagnosisValue == 3)
                     Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width - 80,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -574,9 +670,9 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         ],
                       ),
                     ),
-                  if(getDiagnosis() == 2)
+                  if(_diagnosisValue == 2)
                     Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width - 80,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -591,15 +687,15 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         ],
                       ),
                     ),
-                  if(getDiagnosis() == 1)
+                  if(_diagnosisValue == 1)
                     Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width - 80,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: Colors.amber[100],
                       ),
-                      child: Column(
+                      child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -608,9 +704,9 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         ],
                       ),
                     ),
-                  if(getDiagnosis() == 0)
+                  if(_diagnosisValue == 0)
                     Container(
-                      width: 200,
+                      width: MediaQuery.of(context).size.width - 80,
                       height: 80,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -622,6 +718,74 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
                         children: [
                           Icon(Icons.check, color: Colors.grey,),
                           Text('정상 혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+                        ],
+                      ),
+                    ),
+                  if(_diagnosisValue == -1)
+                    Container(
+                      width: MediaQuery.of(context).size.width - 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xfff4f4f4),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.edit, color: Colors.grey,),
+                          Text('혈압 측정 수치를 입력해 주세요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+                        ],
+                      ),
+                    ),
+                  if(_diagnosisValue == -2)
+                    Container(
+                      width: MediaQuery.of(context).size.width - 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xfff4f4f4),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.edit, color: Colors.grey,),
+                          Text('수축기 수치를 입력해 주세요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+                        ],
+                      ),
+                    ),
+                  if(_diagnosisValue == -3)
+                    Container(
+                      width: MediaQuery.of(context).size.width - 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xfff4f4f4),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.edit, color: Colors.grey,),
+                          Text('이완기 수치를 입력해 주세요.', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+                        ],
+                      ),
+                    ),
+                  if(_diagnosisValue == -4)
+                    Container(
+                      width: MediaQuery.of(context).size.width - 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: const Color(0xfff4f4f4),
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Icon(Icons.warning, color: Colors.grey,),
+                          Text('저혈압', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
                         ],
                       ),
                     ),

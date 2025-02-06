@@ -514,54 +514,104 @@ class _PurseHistoryForm extends State<PurseHistoryForm> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Container(
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    if(_purseModels[index].checkTime.substring(0,2) == 'AM' ||
-                                                        _purseModels[index].checkTime.substring(0,2) == '오전')
-                                                      Text('오전 ${_purseModels[index].checkTime.substring(3,8)}',
-                                                        style: const TextStyle(
-                                                          fontSize: 19,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Colors.black,
-                                                        ),),
-                                                    if(_purseModels[index].checkTime.substring(0,2) == 'PM' ||
-                                                        _purseModels[index].checkTime.substring(0,2) == '오후')
-                                                      Text('오후 ${_purseModels[index].checkTime.substring(3,8)}',
-                                                        style: const TextStyle(
-                                                          fontSize: 19,
-                                                          fontWeight: FontWeight.bold,
-                                                          color: Colors.black,
-                                                        ),),
-                                                    Text('${_purseModels[index].shrink}/${_purseModels[index].relax} mmHg  |  ${_purseModels[index].purse}회/1분',
-                                                      style: const TextStyle(
-                                                        fontSize: 18,
-                                                        color: Colors.black,
-                                                      ),),
-                                                    if(_purseModels[index].state != '')
-                                                      Text(_purseModels[index].state,
-                                                        style: const TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.black,
-                                                        ),
-                                                      ),
-                                                    const SizedBox(height: 10,),
-                                                    Container(
-                                                      width: MediaQuery.of(context).size.width-100,
-                                                      height: 10,
-                                                      decoration: const BoxDecoration(
-                                                        border: Border(
-                                                          bottom: BorderSide(
-                                                            width: 1,
-                                                            color: Colors.grey,
+                                              child: ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                    shape: RoundedRectangleBorder(
+                                                      borderRadius: BorderRadius.circular(5),
+                                                    ),
+                                                    backgroundColor: Colors.transparent,
+                                                    shadowColor: Colors.transparent,
+                                                  ),
+                                                  onPressed: () => {
+                                                    showModalBottomSheet(
+                                                        context: context,
+                                                        builder: (context) {
+                                                          return Container(
+                                                            width: MediaQuery.of(context).size.width - 50,
+                                                            height: MediaQuery.of(context).size.height,
+                                                            padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                                                            decoration: BoxDecoration(
+                                                              color: Color(0xfff4f4f4),
+                                                              borderRadius: BorderRadius.circular(30),
+                                                            ),
+                                                            child: Column(
+                                                              children: [
+                                                                const Text(
+                                                                  '특이 사항',
+                                                                  style: TextStyle(
+                                                                    fontSize: 20,
+                                                                    fontWeight: FontWeight.bold,
+                                                                    color: Color(0xff232323),
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(
+                                                                  height: 10,
+                                                                ),
+                                                                Flexible(
+                                                                  child: SingleChildScrollView(
+                                                                    child: Text(
+                                                                      _purseModels[index].state,
+                                                                      style: const TextStyle(
+                                                                        color: Color(0xff232323),
+                                                                        fontSize: 18,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          );
+                                                        }
+                                                    ),
+                                                  },
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+                                                    child: Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        if(_purseModels[index].checkTime.substring(0,2) == 'AM' ||
+                                                            _purseModels[index].checkTime.substring(0,2) == '오전')
+                                                          Text('오전 ${_purseModels[index].checkTime.substring(3,8)}',
+                                                            style: const TextStyle(
+                                                              fontSize: 19,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Colors.black,
+                                                            ),),
+                                                        if(_purseModels[index].checkTime.substring(0,2) == 'PM' ||
+                                                            _purseModels[index].checkTime.substring(0,2) == '오후')
+                                                          Text('오후 ${_purseModels[index].checkTime.substring(3,8)}',
+                                                            style: const TextStyle(
+                                                              fontSize: 19,
+                                                              fontWeight: FontWeight.bold,
+                                                              color: Colors.black,
+                                                            ),),
+                                                        Text('${_purseModels[index].shrink}/${_purseModels[index].relax} mmHg',
+                                                          style: const TextStyle(
+                                                            fontSize: 18,
+                                                            color: Colors.black,
+                                                          ),),
+                                                        // if(_purseModels[index].state != '')
+                                                        //   Text(_purseModels[index].state,
+                                                        //     style: const TextStyle(
+                                                        //       fontSize: 18,
+                                                        //       color: Colors.black,
+                                                        //     ),
+                                                        //   ),
+                                                        Container(
+                                                          width: MediaQuery.of(context).size.width-100,
+                                                          height: 10,
+                                                          decoration: const BoxDecoration(
+                                                            border: Border(
+                                                              bottom: BorderSide(
+                                                                width: 1,
+                                                                color: Colors.grey,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
+                                                  )
                                               ),
                                             ),
                                           ],
