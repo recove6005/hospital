@@ -14,15 +14,14 @@ export const getSubscribeType = async (req, res) => {
         const docSnap = await getDoc(docRef);
 
         if(docSnap.exists()) {
-            const subscribeType = docSnap.data().type;
-            return res.status(200).send({ subscribe: subscribeType });
+            const subscribeType = docSnap.data().subscribe;
+            return res.status(200).json({ subscribe: subscribeType });
         } else {
-            return res.status(401).send({ error: "No data found."});
+            return res.status(401).json({ error: "No data found."});
         }
-
     } else {
         console.log("No Firebase user session.");
-        return res.status(401).send({ error: "No Firebase session found." });
+        return res.status(401).json({ error: "No Firebase session found." });
     }   
 }
 
@@ -53,7 +52,6 @@ export const getSubscribeInfo = async (req, res) => {
     } else {
         return res.status(401).json({ error: 'No Firebase session found.'});
     }
-    
 }
 
 // 프로젝트 문의 등록

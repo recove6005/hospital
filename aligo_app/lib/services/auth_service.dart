@@ -6,6 +6,20 @@ class AuthService  {
   static final _auth = FirebaseAuth.instance;
   static Logger logger = Logger();
 
+  // 로그인 상태 확인
+  static Future<bool> checkLogin() async {
+    try {
+      User? user = _auth.currentUser;
+      if(user != null) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch(e) {
+      return false;
+    }
+  }
+
   // 현재 사용자 uid 가져오기
   static Future<String> getCurrentUserUid() async {
     String? uid = _auth.currentUser?.uid;

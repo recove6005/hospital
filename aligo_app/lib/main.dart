@@ -4,13 +4,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:logger/logger.dart';
 
 void main() async {
-  runApp(const AligoApp());
   WidgetsFlutterBinding.ensureInitialized();
 
   // firebase init
   await Firebase.initializeApp();
+
+  runApp(const AligoApp());
 }
 
 class AligoApp extends StatelessWidget {
@@ -36,8 +38,16 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final Logger logger = Logger();
+
   final _emailController = TextEditingController();
   final _pwController = TextEditingController();
+
+  Future<void> _autoLogin() async {
+    bool result = await AuthService.checkLogin();
+
+    if(result) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeTab()));
+  }
 
   Future<void> _login() async {
     String email = _emailController.text.trim();
@@ -52,6 +62,12 @@ class _LoginPageState extends State<LoginPage> {
     else {
       Fluttertoast.showToast(msg: '이메일과 패스워드를 확인해 주세요.', toastLength: Toast.LENGTH_SHORT);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _autoLogin();
   }
 
   @override

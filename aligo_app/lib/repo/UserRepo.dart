@@ -1,7 +1,6 @@
 import 'package:aligo_app/model/UserModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:logger/logger.dart';
-
 import '../services/auth_service.dart';
 
 class UserRepo {
