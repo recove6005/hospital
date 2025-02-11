@@ -4,13 +4,18 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:logger/logger.dart';
 
 void main() async {
+  // 비동기 작업
   WidgetsFlutterBinding.ensureInitialized();
 
   // firebase init
   await Firebase.initializeApp();
+
+  // intl init
+  await initializeDateFormatting('ko_KR', '');
 
   runApp(const AligoApp());
 }

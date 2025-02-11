@@ -1,4 +1,5 @@
-import 'package:aligo_app/repo/UserRepo.dart';
+import 'package:aligo_app/repo/subscribe_repo.dart';
+import 'package:aligo_app/repo/user_repo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logger/logger.dart';
 
@@ -59,6 +60,10 @@ class AuthService  {
           await _auth.createUserWithEmailAndPassword(email: email, password: password);
           await UserRepo.addUser();
           await sendVeifyEmail();
+
+          // 계정 생성 시 구독 정보 초기화
+          await SubscribeRepo.initSubscribe();
+
           return 0;
         } catch(e) {
           logger.e('aligo-log $e');

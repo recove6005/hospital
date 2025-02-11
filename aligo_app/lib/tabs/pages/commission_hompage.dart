@@ -1,5 +1,10 @@
+import 'package:aligo_app/repo/project_repo.dart';
+import 'package:aligo_app/services/auth_service.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import '../../model/project_model.dart';
 
 class HomepageCommissionPage extends StatefulWidget {
   const HomepageCommissionPage({super.key});
@@ -15,9 +20,86 @@ class _HomepageCommissionPageState extends State<HomepageCommissionPage> {
   final TextEditingController _emailContoller = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  Future<void> _submitCommission() async {
-    // 문의 접수 로직
+  // call TextField formater
+  void _formatCallNumber() {
+    String rawCallText = _callController.text.replaceAll(RegExp(r'[^0-9]'), '');
+    if(rawCallText.length > 11) {
+      rawCallText = rawCallText.substring(0, 11);
+    }
 
+    String formattedText = _applyPhoneNumberFormat(rawCallText);
+
+    if(_callController.text != formattedText) {
+      _callController.value = TextEditingValue(
+        text: formattedText,
+        selection: TextSelection.collapsed(offset: formattedText.length),
+      );
+    }
+
+  }
+  String _applyPhoneNumberFormat(String numbers) {
+    if (numbers.length <= 3) return numbers;
+    if (numbers.length <= 6) return '${numbers.substring(0, 3)}-${numbers.substring(3)}';
+    if (numbers.length > 6 && numbers.length <= 10) return '${numbers.substring(0, 3)}-${numbers.substring(3, 6)}-${numbers.substring(6)}';
+    if (numbers.length > 10) return '${numbers.substring(0, 3)}-${numbers.substring(3, 7)}-${numbers.substring(7)}';
+    return numbers;
+  }
+
+  // Textfield 컨트롤러 문자열 체크
+  bool _checkTextFieldStrings() {
+    // 빈문자열 체크
+    Map<String, TextEditingController> fields = {
+      '성함을 입력해 주세요.': _nameController,
+      '업체명을 입력해 주세요.': _corpController,
+      '연락처를 입력해 주세요.': _callController,
+      '문의내용을 입력해 주세요.': _contentController,
+    };
+
+    for(var entry in fields.entries) {
+      if(entry.value.text.trim().isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                Icon(Icons.warning, color: Colors.orange),
+                const SizedBox(width: 5),
+                Text(entry.key, style: TextStyle(color: Colors.black)),
+              ],
+            ),
+            backgroundColor: Colors.white,
+            duration: Duration(seconds: 2),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<void> _submitCommission() async {
+    // TextField 문자열 체크
+    if(!_checkTextFieldStrings()) return;
+
+    // 문의 접수 DB 로직
+    int date = DateTime.now().toLocal().millisecondsSinceEpoch;
+    String uid = await AuthService.getCurrentUserUid();
+    String email = await AuthService.getCurrentUserEmail();
+    ProjectModel newProjectModel = ProjectModel(
+        call: _callController.text.trim(),
+        date: date,
+        details: _contentController.text,
+        email: _emailContoller.text.trim(),
+        name: _nameController.text.trim(),
+        organization: _corpController.text,
+        progress: '0',
+        title: '홈페이지 제작',
+        uid: uid,
+        userEmail: email,
+    );
+    await ProjectRepo.insertProject(newProjectModel);
+
+    // 다이얼로그, 화면 전환
     showDialog(
         context: context,
         builder: (BuildContext dialogContext) {
@@ -39,6 +121,24 @@ class _HomepageCommissionPageState extends State<HomepageCommissionPage> {
           );
         },
     );
+  }
+
+  @override
+  void initState() {
+    _callController.addListener(_formatCallNumber);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // 컨트롤러 dispose
+    _nameController.dispose();
+    _corpController.dispose();
+    _callController.removeListener(_formatCallNumber);
+    _callController.dispose();
+    _emailContoller.dispose();
+    _contentController.dispose();
+    super.dispose();
   }
 
   @override
@@ -132,6 +232,10 @@ class _HomepageCommissionPageState extends State<HomepageCommissionPage> {
               height: 45,
               child: TextField(
                 controller: _callController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.digitsOnly,
+                ],
                 decoration: InputDecoration(
                   labelText: 'call',
                   labelStyle: const TextStyle(color: Color(0xffd4d4d4), fontSize: 18),

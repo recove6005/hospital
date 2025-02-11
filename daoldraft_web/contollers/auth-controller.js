@@ -75,6 +75,10 @@ export const checkUserVerify = async (req, res) => {
                         blog: 0,
                         homepage: 0,
                         discount: 0,
+                        instagram: 0,
+                        naverplace: 0,
+                        banner: 0,
+                        video: 0,
                     });
                 }
 

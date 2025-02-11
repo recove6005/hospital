@@ -1,6 +1,15 @@
 import 'package:aligo_app/main.dart';
 import 'package:aligo_app/services/auth_service.dart';
+import 'package:aligo_app/tabs/drawer/mypage.dart';
+import 'package:aligo_app/tabs/pages/commission_banner.dart';
+import 'package:aligo_app/tabs/pages/commission_blog.dart';
+import 'package:aligo_app/tabs/pages/commission_draft.dart';
 import 'package:aligo_app/tabs/pages/commission_hompage.dart';
+import 'package:aligo_app/tabs/pages/commission_instagram.dart';
+import 'package:aligo_app/tabs/pages/commission_logo.dart';
+import 'package:aligo_app/tabs/pages/commission_naverplace.dart';
+import 'package:aligo_app/tabs/pages/commission_signage.dart';
+import 'package:aligo_app/tabs/pages/commission_video.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
@@ -96,17 +105,23 @@ class _HomeTabState extends State<HomeTab> {
             ListTile(
               leading: Icon(Icons.manage_accounts),
               title: Text('마이페이지'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MypagePage()));
+              },
             ),
             ListTile(
               leading: Icon(Icons.folder),
               title: Text('프로젝트 관리'),
-              onTap: () {},
+              onTap: () {
+                
+              },
             ),
             ListTile(
               leading: Icon(Icons.card_membership),
               title: Text('구독권 구매'),
-              onTap: () {},
+              onTap: () {
+
+              },
             ),
             ListTile(
               leading: Icon(Icons.logout),
@@ -166,7 +181,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => LogoCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(10),
@@ -198,7 +213,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>BlogCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.05),
                                   borderRadius: BorderRadius.circular(10),
@@ -225,7 +240,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>InstagramCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(10),
@@ -257,7 +272,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>NaverplaceCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.05),
                                   borderRadius: BorderRadius.circular(10),
@@ -284,7 +299,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>DraftCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(10),
@@ -293,7 +308,7 @@ class _HomeTabState extends State<HomeTab> {
                             ),
                           ],
                         ),
-                        Text('원내시안', style: TextStyle(fontSize: 18, color: Color(0xff232323)),),
+                        Text('원내시안 및 단순디자인', style: TextStyle(fontSize: 18, color: Color(0xff232323)),),
                       ],
                     )
                 ),
@@ -316,7 +331,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => SignageCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.05),
                                   borderRadius: BorderRadius.circular(10),
@@ -343,7 +358,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>BannerCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(10),
@@ -375,7 +390,7 @@ class _HomeTabState extends State<HomeTab> {
                                 color: Colors.transparent,
                                 child: InkWell(
                                   onTap: () {
-
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => VideoCommissionPage()));
                                   },
                                   splashColor: Color(0xff00a99d).withOpacity(0.05),
                                   borderRadius: BorderRadius.circular(10),

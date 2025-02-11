@@ -122,10 +122,6 @@ export const subscribeBasic = async (req, res) => {
         const data = await response.json();
         const redirectURL = data.next_redirect_pc_url;
         const tid = data.tid;
-        console.log("Response tid:", tid);
-        console.log("Response status:", response.status);
-        console.log("Response data:", data);
-        console.log("Response redirectURL:", data.next_redirect_pc_url);
 
         if(response.ok) {
             // 정기 결제 구독권 정보 업데이트
