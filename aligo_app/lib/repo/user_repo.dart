@@ -10,15 +10,31 @@ class UserRepo {
   // 현재 로그인된 사용자 모델 가져오기
   static Future<UserModel?> getCurrentUser() async {
     final email = await AuthService.getCurrentUserEmail();
-    final snap = await _store.collection('users').doc(email).get();
 
     try {
+      final snap = await _store.collection('users').doc(email).get();
       UserModel userModel = UserModel.fromFirestore(snap.data()!);
       return userModel;
     } catch(e) {
       logger.e('aligo-log: Error parsing user data - $e');
       return null;
     }
+  }
+
+  // 현재 로그인된 사용자 어드민 체크
+  static Future<bool> checkAdmin() async {
+    final email = await AuthService.getCurrentUserEmail();
+    bool isAdmin = false;
+
+    try {
+      final snap = await _store.collection('users').doc(email).get();
+      UserModel userModel = UserModel.fromFirestore(snap.data()!);
+      isAdmin = userModel.admin;
+    } catch(e) {
+      logger.e('aligo-log: Error parsing user data - $e');
+    }
+
+    return isAdmin;
   }
 
   // 신규 사용자 모델 insert

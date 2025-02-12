@@ -198,9 +198,11 @@ async function getDepositInfo() {
 
     const result = await response.json();
     let owner = '';
+    let actNum = '';
     if(response.ok) {
         owner = result.owner;
-        document.getElementById('deposit').innerText = owner;
+        actNum = result.actNum;
+        document.getElementById('deposit').innerText = `${owner}  ${actNum}`;
     } else {
         console.log(`error: ${result.error}`);
     }
@@ -249,6 +251,7 @@ async function buttonDisplay() {
     }
     else if(progress === '3') {
         progressTitle.innerText = '결제 완료';
+        const deposit = getDepositInfo();
         acceptBtn.style.display = 'none';
         rejectBtn.style.display = 'none';
         payRequestForm.style.display = 'none';

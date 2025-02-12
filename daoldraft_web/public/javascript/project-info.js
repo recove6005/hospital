@@ -361,7 +361,7 @@ document.querySelectorAll('input[name="paytype"]').forEach((radio) => {
 // 결제하기
 async function getPay() {
     if(paytype === 'deposit') {
-        // 무통장 입금
+        // 수동이체
         const responseGetpay = await fetch('/project/getpay-deposit', {
             method: 'POST',
             headers: { "Content-Type" : "application/json" },
@@ -375,16 +375,18 @@ async function getPay() {
             console.log(`error: ${result.error}`);
         }
 
-        // 예금주 정보
+        // 예금 정보 등록
         const depositName = document.getElementById('deposit-name');
+        const actNum = document.getElementById('deposit-num');
         const responseDepositOwnner = await fetch('/project/upload-deposit-owner', {
             method: 'POST',
             headers: { "Content-Type" : "application/json" },
             body: JSON.stringify({
                 owner: depositName.value,
                 docId: docId,
+                actNum: actNum.value,
             }),
-        });
+        });       
 
         const depositResult = await responseDepositOwnner.json();
         if(!responseDepositOwnner.ok) {
@@ -413,13 +415,13 @@ async function getPay() {
     }
 }
 
-// 무통장입금 결제 요청
+// 수동이체 결제 요청
 document.getElementById('deposit-box').addEventListener('submit', async (e) => {
     e.preventDefault();
 
     Swal.fire({
         title: '결제',
-        text: '무통장 입금으로 결제하시겠습니까?',
+        text: '수동 이체로 결제하시겠습니까?',
         showCancelButton: true,
         confirmButtonText: "확인",
         cancelButtonText: "취소",

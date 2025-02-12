@@ -338,7 +338,7 @@ export const getpayKakaopay = async (req, res) => {
 
 // 프로젝트 progress 업데이트 : 결제 완료 
 // 작업완료, 결제중(2) -> 결제완료(3)
-// 무통장 입금
+// 수동이체
 export const getpayDeposit = async (req, res) => {
     const { docId } = req.body;
     try {
@@ -350,13 +350,14 @@ export const getpayDeposit = async (req, res) => {
     }
 }
 
-// 무통장 입금 예금주 등록
+// 수동이체 예금주 등록
 export const uploadDepositOwner = async (req, res) => {
-    const { owner, docId } = req.body;
+    const { owner, docId, actNum } = req.body;
     try {
       await setDoc(doc(db, 'deposit', docId), {
         owner: owner,
         docId: docId,
+        actNum: actNum,
       });
 
       return res.status(200).send({msg: 'succes'});
@@ -365,7 +366,7 @@ export const uploadDepositOwner = async (req, res) => {
     }
 }
 
-// 무통장 입금 예금주 정보 가져오기
+// 수동이체 예금주 정보 가져오기
 export const downloadDepositOwner = async (req, res) => {
     const { docId } = req.body;
 
@@ -378,9 +379,10 @@ export const downloadDepositOwner = async (req, res) => {
         const docSnap = await getDoc(docRef);
 
         let owner = docSnap.data().owner;
+        let actNum = docSnap.data().actNum;
 
         if(docSnap.exists()) {
-            return res.status(200).json({ owner: `${owner}` });
+            return res.status(200).json({ owner: `${owner}`, actNum: `${actNum}` });
         }
 
         return res.status(404).json({ error: 'Document does not exist.'});
@@ -389,7 +391,7 @@ export const downloadDepositOwner = async (req, res) => {
     }
 }
 
-// 무통장 입금 확인
+// 수동 이체 확인
 export const checkDeposit = async (req, res) => {
     const { docId, price } = req.body;
 
@@ -402,7 +404,7 @@ export const checkDeposit = async (req, res) => {
         const updateData = {
             payed: true,
             date: Date.now(),
-            paytype: '무통장 입금',
+            paytype: '수동 이체',
         };
         updateDoc(priceDocRef, updateData);
 

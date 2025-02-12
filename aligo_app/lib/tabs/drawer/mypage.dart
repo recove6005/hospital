@@ -2,6 +2,7 @@ import 'package:aligo_app/model/project_model.dart';
 import 'package:aligo_app/repo/price_repo.dart';
 import 'package:aligo_app/repo/project_repo.dart';
 import 'package:aligo_app/repo/subscribe_repo.dart';
+import 'package:aligo_app/tabs/drawer/pages/mypage_project_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -36,7 +37,7 @@ class _MypagePageState extends State<MypagePage> {
 
   // 결제 완료된 프로젝트 가져오기
   Future<void> _getMyPayedProjects() async {
-    List<PriceModel> models = await PriceRepo.getPayedPriceModels();
+    List<PriceModel> models = await PriceRepo.getPayedPriceModels(5);
     setState(() {
       _payedPriceModels = models;
     });
@@ -48,6 +49,19 @@ class _MypagePageState extends State<MypagePage> {
     setState(() {
       _projectModels = models;
     });
+  }
+
+  // 프로젝트 진행 아이콘 설정 문자열
+  IconData _getProgressIconName(index) {
+    IconData iconName = Icons.mark_email_read;
+    switch(_projectModels[index].progress) {
+      case '0': iconName = Icons.mark_email_unread; break;
+      case '1': iconName = Icons.hourglass_empty; break;
+      case '2': iconName = Icons.attach_money; break;
+      case '11': iconName = Icons.attach_money; break;
+      case '3': iconName = Icons.done; break;
+    }
+    return iconName;
   }
 
   Future<void> _initAsyncState() async {
@@ -72,7 +86,16 @@ class _MypagePageState extends State<MypagePage> {
 
   @override
   Widget build(BuildContext context) {
-    if(_isLoading) return const Center(child: CircularProgressIndicator(),);
+    if(_isLoading) {
+      return Container(
+        color: Colors.white,
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -151,7 +174,7 @@ class _MypagePageState extends State<MypagePage> {
                   children: [
                     Icon(Icons.rectangle, color: Color(0xff00a99d), size: 15,),
                     const SizedBox(width: 5,),
-                    Text('결제 내역', style: TextStyle(color: Color(0xff232323), fontSize: 20, fontWeight: FontWeight.bold),),
+                    Text('최근 결제 내역', style: TextStyle(color: Color(0xff232323), fontSize: 20, fontWeight: FontWeight.bold),),
                   ],
                 ),
               ),
@@ -159,19 +182,22 @@ class _MypagePageState extends State<MypagePage> {
             Align(
               child: Container(
                 width: MediaQuery.of(context).size.width - 50,
-                height: 300,
+                height: _payedPriceModels.length * 80,
                 child: ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
                     itemCount: _payedPriceModels.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Icon(Icons.payment),
-                        title: Text('${_payedPriceModels[index].title}', style: TextStyle(color: Color(0xff232323), fontSize: 18),),
-                        subtitle: Text(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(_payedPriceModels[index].date).toLocal())),
-                      );
+                        return ListTile(
+                          leading: Icon(Icons.credit_card),
+                          title: Text('${_payedPriceModels[index].title}', style: TextStyle(color: Color(0xff232323), fontSize: 18),),
+                          subtitle: Text(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(_payedPriceModels[index].date).toLocal())),
+                        );
                     }
                 ),
               ),
             ),
+            const SizedBox(height: 20,),
             // 프로젝트 내역
             Align(
               child: SizedBox(
@@ -188,15 +214,17 @@ class _MypagePageState extends State<MypagePage> {
             Align(
               child: Container(
                 width: MediaQuery.of(context).size.width - 50,
-                height: 300,
                 child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
                     itemCount: _projectModels.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         onTap: () {
-
+                          String docId = _projectModels[index].docId;
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> MypageProjectDetailPage(docId: docId)));
                         },
-                        leading: Icon(Icons.payment),
+                        leading: Icon(_getProgressIconName(index)),
                         title: Text('${_projectModels[index].title}', style: TextStyle(color: Color(0xff232323), fontSize: 18),),
                         subtitle: Text(DateFormat('yyyy-MM-dd').format(DateTime.fromMillisecondsSinceEpoch(_projectModels[index].date).toLocal())),
                       );
@@ -204,6 +232,7 @@ class _MypagePageState extends State<MypagePage> {
                 ),
               ),
             ),
+            const SizedBox(height: 100,)
           ],
         ),
       ),

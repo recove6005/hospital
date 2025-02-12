@@ -48,9 +48,9 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _pwController = TextEditingController();
 
+  // 자동 로그인
   Future<void> _autoLogin() async {
     bool result = await AuthService.checkLogin();
-
     if(result) Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeTab()));
   }
 
@@ -69,10 +69,14 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  void _initAsyncSatate() async {
+    await _autoLogin();
+  }
+
   @override
   void initState() {
     super.initState();
-    _autoLogin();
+    _initAsyncSatate();
   }
 
   @override

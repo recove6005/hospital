@@ -65,8 +65,8 @@
             <a class="payment-button" id="request-payment">결제하기</a>
             <a class="payment-button" id="download-file" style="display: none;">파일 다운로드</a>
             <div id="checking-payment" style="display: none;">
-                <h1>결제 확인 중..</h1> 
-                <p>입금처: OO은행 00-000-00000-00 (ALIGO)</p>
+                <h1>입금 확인 중</h1> 
+                <p>입금처 OO은행 (주)알리고 00-000-00000-00 </p>
             </div>
 
             <div id="modal" style="display: none;">
@@ -78,12 +78,13 @@
 
                     <div class="modal-inner-box">
                         <p>결제 방법</p>
-                        <label for="payment-deposit"><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>무통장입금</label>
+                        <label for="payment-deposit"><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>수동이체</label>
                         <label for="payment-kakaopay"><input type="radio" name="paytype" value="kakaopay" id="payment-kakaopay">카카오페이</label>
                     </div>
 
                     <form class="pay-form" id="deposit-box">
                         <label><input id="deposit-name" name="deposit-name" placeholder="예금주" required></label>
+                        <label><input id="deposit-num" name="deposit-num" placeholder="계좌번호" type="number" required></label>
                         <button>결제요청</button>
                     </form>
 

@@ -14,6 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 
+import '../repo/user_repo.dart';
+
 class HomeTab extends StatefulWidget {
   const HomeTab({super.key});
 
@@ -41,6 +43,15 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
 
+  // 어드민 계정 체크
+  bool _isAdmin = false;
+  Future<void> _checkAdmin() async {
+    bool isAdmin = await UserRepo.checkAdmin();
+    setState(() {
+      _isAdmin = isAdmin;
+    });
+  }
+
   // 이메일 인증 확인
   Future<void> _verifyEmailAuth() async {
     bool isVerifyed = await AuthService.verifyEmail();
@@ -49,8 +60,6 @@ class _HomeTabState extends State<HomeTab> {
       AuthService.sendVeifyEmail();
       AuthService.logout();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
-    } else {
-      Fluttertoast.showToast(msg: '인증된 사용자', toastLength: Toast.LENGTH_SHORT);
     }
   }
 
@@ -67,6 +76,7 @@ class _HomeTabState extends State<HomeTab> {
 
     await _verifyEmailAuth();
     await _getUserInfo();
+    await _checkAdmin();
 
     setState(() {
       _isLoading = false;
@@ -109,6 +119,7 @@ class _HomeTabState extends State<HomeTab> {
                 Navigator.push(context, MaterialPageRoute(builder: (context) => MypagePage()));
               },
             ),
+            if(_isAdmin)
             ListTile(
               leading: Icon(Icons.folder),
               title: Text('프로젝트 관리'),

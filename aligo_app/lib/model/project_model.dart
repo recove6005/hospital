@@ -11,6 +11,7 @@ class ProjectModel {
   final String title;
   final String uid;
   final String userEmail;
+  String docId = '';
 
   ProjectModel({
     required this.call,
