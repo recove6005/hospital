@@ -396,6 +396,7 @@ export const checkDeposit = async (req, res) => {
     const { docId, price } = req.body;
 
     try {
+        // 프로젝트 진행 현황 업데이트
         const docRef = doc(db, 'projects', docId);
         await updateDoc(docRef, { progress: "3", });
 
@@ -405,6 +406,30 @@ export const checkDeposit = async (req, res) => {
             payed: true,
             date: Date.now(),
             paytype: '수동 이체',
+        };
+        updateDoc(priceDocRef, updateData);
+
+        return res.status(200).send({msg: 'success'});
+    } catch(e) {
+        return res.status(500).send({error: e.message});
+    }
+}
+
+// 구독권 결제 확인
+export const checkSubscribePay = async (req, res) => {
+    const { docId, price } = req.body;
+
+    try {
+        // 프로젝트 진행 현황 업데이트
+        const docRef = doc(db, 'projects', docId);
+        await updateDoc(docRef, { progress: "3", });
+
+        // 가격 결제 정보 업데이트
+        const priceDocRef = doc(db, 'price', docId);
+        const updateData = {
+            payed: true,
+            date: Date.now(),
+            paytype: '구독권 결제',
         };
         updateDoc(priceDocRef, updateData);
 

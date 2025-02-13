@@ -1,6 +1,6 @@
 import express from 'express';
 import multer from "multer";
-import { acceptProject, checkDeposit, dismissProject, downloadDepositOwner, getAllProjects, getDownload, getpayDeposit, getPayedPrices, getpayKakaopay, getPriceValue, getProjectByDocId, getProjectsBy0, getProjectsBy1, getProjectsBy2, getProjectsBy3, getProjectsByUid, requestPayment, uploadDepositOwner } from '../contollers/project-controller.js';
+import { acceptProject, checkDeposit, checkSubscribePay, dismissProject, downloadDepositOwner, getAllProjects, getDownload, getpayDeposit, getPayedPrices, getpayKakaopay, getPriceValue, getProjectByDocId, getProjectsBy0, getProjectsBy1, getProjectsBy2, getProjectsBy3, getProjectsByUid, requestPayment, uploadDepositOwner } from '../contollers/project-controller.js';
 
 const router = express.Router();
 
@@ -30,6 +30,7 @@ router.post('/get-price', getPriceValue);
 router.post('/get-payed-prices', getPayedPrices);
 
 router.post('/check-deposit', checkDeposit);
+router.post('/check-subscribe-pay', checkSubscribePay);
 
 router.post('/get-download', getDownload);
 

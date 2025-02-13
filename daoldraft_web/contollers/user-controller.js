@@ -54,6 +54,46 @@ export const getSubscribeInfo = async (req, res) => {
     }
 }
 
+// 구독권 결제
+export const getPayWithSubscribe = async (req, res) => {
+    const userEmail = auth.currentUser.email;
+    const { title } = req.body;
+
+    let category = '';
+    switch(title) {
+        case '네이버 블로그': category = 'blog'; break;
+        case '원내시안': category = 'draft'; break;
+        case '홈페이지 제작': category = 'homepage'; break;
+        case '인스타그램': category = 'instagram'; break;
+        case '로고디자인': category = 'logo'; break;
+        case '네이버 플레이스': category = 'naverplace'; break;
+        case '디지털 사이니지': category = 'signage'; break;
+        case '홍보영상 제작/편집': category = 'video'; break;
+        case '웹 배너': category = 'banner'; break;
+    }
+
+    try {
+        const subscribeInfoDocRef = doc(db, 'subscribes', userEmail);
+        const subscribeDocSnap = await getDoc(subscribeInfoDocRef);
+    
+        if(subscribeDocSnap.exists()) {
+            const info = subscribeDocSnap.data();
+            if(info[category] < 0) {
+                return res.status(402).json({ error: `무료 회분이 남아있지 않습니다.` });
+            } else {
+                await updateDoc(subscribeInfoDocRef, {
+                    [category] : info[category] - 1,
+                });
+    
+                return res.status(200).json({ msg: `결제 완료` });
+            }
+        }
+    } catch(e) {
+        return res.status(500).json({ error: e.message });
+    }
+}
+
+
 // 프로젝트 문의 등록
 export const commissionProject = async (req, res) => {
     const formData = req.body;

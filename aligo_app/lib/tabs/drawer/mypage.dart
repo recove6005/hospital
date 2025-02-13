@@ -124,13 +124,13 @@ class _MypagePageState extends State<MypagePage> {
             Align(
               child: Container(
                 width: MediaQuery.of(context).size.width - 50,
-                height: 300,
+                height: 330,
                 decoration: BoxDecoration(
                   color: Color(0xfff4f4f4),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,

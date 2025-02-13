@@ -45,4 +45,23 @@ class SubscribeRepo {
     }
     return null;
   }
+
+  // 구독권 사용
+  static Future<bool> getpayWithSubscribe(String category) async {
+    String? email = await AuthService.getCurrentUserEmail();
+    try {
+      var snap = await _store.collection('subscribes').doc(email).get();
+      if(snap.exists) {
+        var count = snap.get(category);
+        if(count > 0) {
+          await _store.collection('subscribes').doc(email).update({ category : count - 1});
+          return true;
+        }
+      }
+    } catch(e) {
+      logger.e('aligo-log Failed to pay with subscribe. $e');
+    }
+
+    return false;
+  }
 }

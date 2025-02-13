@@ -93,7 +93,7 @@ class _DraftCommissionPageState extends State<DraftCommissionPage> {
       name: _nameController.text.trim(),
       organization: _corpController.text,
       progress: '0',
-      title: '원내시안 및 단순디자인',
+      title: '원내시안',
       uid: uid,
       userEmail: email,
     );

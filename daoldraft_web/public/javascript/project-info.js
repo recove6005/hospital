@@ -21,7 +21,6 @@ async function getProject() {
 
     if(response.ok) {
         project = await response.json();
-        console.log(`project: ${project}, title: ${project.title}`);
     } else {
         console.log(`error: ${response.json().error}`);
     }
@@ -349,12 +348,24 @@ document.querySelectorAll('input[name="paytype"]').forEach((radio) => {
             paytype = 'deposit';
             document.getElementById('deposit-box').style.display = 'flex';
             document.getElementById('kakaopay-box').style.display = 'none';
-        } else {
+            document.getElementById('subscribe-box').style.display = 'none';
+        } else if(e.target.value === 'kakaopay') {
             paytype = 'kakaopay';
             document.getElementById('deposit-box').style.display = 'none';
             document.getElementById('kakaopay-box').style.display = 'flex';
+            document.getElementById('subscribe-box').style.display = 'none';
+        } else {
+            paytype = 'subscribe';
+            document.getElementById('deposit-box').style.display = 'none';
+            document.getElementById('kakaopay-box').style.display = 'none';
+            document.getElementById('subscribe-box').style.display = 'flex';
         }
     });
+});
+
+// 계좌번호 입력 로직
+document.getElementById("deposit-num").addEventListener("input", function (e) {
+    this.value = this.value.replace(/\D/g, ""); // 숫자가 아닌 문자 제거
 });
 
 
@@ -413,6 +424,43 @@ async function getPay() {
             console.log(`error: ${result.error}`);
         }
     }
+    else if(paytype === 'subscribe') {
+        if(subscribeType === '0') {
+            alert(`구독 중인 구독권이 없습니다.`);
+        } else {
+            // 구독권 결제
+            const title = project.title;
+            const response = await fetch('/user/getpay-with-subscribe', {
+                method: 'POST',
+                headers: { "Content-Type":"application/json" },
+                body: JSON.stringify({
+                    title: title,
+                }),
+            });
+            
+            const result = await response.json();
+            if(response.ok) {                
+                // 프로젝트 진행현황 업데이트 -> 결제 완료
+                const progressResponse = await fetch('/project/check-subscribe-pay', {
+                    method: 'POST',
+                    headers: { "Content-Type":"application/json" },
+                    body: JSON.stringify({
+                        docId: docId,
+                        price: project.price,
+                    }),
+                });
+
+                if(progressResponse.ok) {
+                    alert('구독권 결제가 완료되었습니다.');
+                    window.location.reload();
+                } else {
+                    console.log(`error: ${progressResponse.json().error}`);
+                }
+            } else {
+                alert(result.error);
+            }
+        }
+    }
 }
 
 // 수동이체 결제 요청
@@ -439,6 +487,12 @@ document.getElementById('deposit-box').addEventListener('submit', async (e) => {
 
 // 카카오페이 결제 진행
 document.getElementById('kakaopay-box').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await getPay();
+});
+
+// 구독권 결제 진행
+document.getElementById('subscribe-box').addEventListener('submit', async (e) => {
     e.preventDefault();
     await getPay();
 });

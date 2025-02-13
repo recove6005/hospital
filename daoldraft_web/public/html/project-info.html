@@ -80,16 +80,24 @@
                         <p>결제 방법</p>
                         <label for="payment-deposit"><input type="radio" name="paytype" value="deposit" id="payment-deposit" checked>수동이체</label>
                         <label for="payment-kakaopay"><input type="radio" name="paytype" value="kakaopay" id="payment-kakaopay">카카오페이</label>
+                        <label for="payment-subscribe"><input type="radio" name="paytype" value="subscribe" id="payment-subscribe">구독권 결제</label>
                     </div>
 
                     <form class="pay-form" id="deposit-box">
+                        <p class="payment-box-commant">금액을 직접 송금하여 결제를 진행합니다.</p>
                         <label><input id="deposit-name" name="deposit-name" placeholder="예금주" required></label>
-                        <label><input id="deposit-num" name="deposit-num" placeholder="계좌번호" type="number" required></label>
+                        <label><input id="deposit-num" name="deposit-num" placeholder="계좌번호" required></label>
                         <button>결제요청</button>
                     </form>
 
                     <form class="pay-form hidden" id="kakaopay-box" style="display: none;">
-                        <button>결제요청</button>
+                        <p class="payment-box-commant">카카오페이로 결제를 진행합니다.</p>
+                        <button class="pay-form-button-for-css">카카오페이 결제</button>
+                    </form>
+
+                    <form class="pay-form hidden" id="subscribe-box" style="display: none;">
+                        <p class="payment-box-commant">구독권의 남은 회분으로 결제를 진행합니다.</p>
+                        <button class="pay-form-button-for-css">구독권 결제</button>
                     </form>
 
                 </div>

@@ -1,7 +1,9 @@
 import 'package:aligo_app/model/deposit_model.dart';
 import 'package:aligo_app/model/project_model.dart';
+import 'package:aligo_app/model/subscribe_model.dart';
 import 'package:aligo_app/repo/deposit_repo.dart';
 import 'package:aligo_app/repo/project_repo.dart';
+import 'package:aligo_app/repo/subscribe_repo.dart';
 import 'package:aligo_app/tabs/drawer/mypage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -25,7 +27,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
   // 프로젝트 진행 현황 설정
   String _progressName = '문의 접수';
   Future<void> _setProgressName() async {
-    switch(project!.progress) {
+    switch(_project!.progress) {
       case '1' : _progressName = '작업 중'; break;
       case '2' : _progressName = '결제 중'; break;
       case '11': _progressName = '입금 확인 중'; break;
@@ -35,11 +37,20 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
   }
 
   // 해당 프로젝트 가져오기
-  ProjectModel? project;
+  ProjectModel? _project;
   Future<void> _getProject() async {
     ProjectModel? model = await ProjectRepo.getProjectByDocId(widget.docId);
     setState(() {
-      project = model;
+      _project = model;
+    });
+  }
+
+  // 유저 구독권 정보 가져오기
+  SubscribeModel? _subscribeModel;
+  Future<void> _getSubscribeInfo() async {
+    SubscribeModel? model = await SubscribeRepo.getSubscribeInfo();
+    setState(() {
+      _subscribeModel = model;
     });
   }
 
@@ -52,7 +63,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
             title: Text('결제 수단'),
             content: Container(
               width: MediaQuery.of(context).size.width-200,
-              height: MediaQuery.of(context).size.height/7,
+              height: MediaQuery.of(context).size.height/5,
               child: Column(
                 children: [
                   ListTile(
@@ -65,11 +76,20 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                     },
                   ),
                   ListTile(
-                    title: Text('카카오페이', style: TextStyle(color: Color(0xff232323), fontSize: 18,),),
+                    title: Text('카카오페이 결제', style: TextStyle(color: Color(0xff232323), fontSize: 18,),),
                     onTap: () {
                       Navigator.pop(dialogContext);
                       setState(() {
                         _showPayDialog('카카오페이');
+                      });
+                    },
+                  ),
+                  ListTile(
+                    title: Text('구독권 결제', style: TextStyle(color: Color(0xff232323), fontSize: 18,),),
+                    onTap: () {
+                      Navigator.pop(dialogContext);
+                      setState(() {
+                        _showPayDialog('구독권');
                       });
                     },
                   ),
@@ -94,7 +114,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
         context: context,
         builder: (BuildContext dialogContext) {
           return AlertDialog(
-            title: Text('수동 이체', style: TextStyle(color: Color(0xff232323), fontSize: 18,),),
+            title: Text('수동 이체', style: TextStyle(color: Color(0xff232323), fontSize: 20,),),
             content: Container(
               width: MediaQuery.of(context).size.width-200,
               height: MediaQuery.of(context).size.height/7,
@@ -164,6 +184,68 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
         }
       );
     }
+    else if(value == '카카오페이') {
+
+    }
+    else if(value == '구독권') {
+      showDialog(
+          context: context,
+          builder: (BuildContext buildContext) {
+            return AlertDialog(
+              title: Text('구독권 결제', style: TextStyle(color: Color(0xff232323), fontSize: 20,),),
+              content: SizedBox(
+                height: MediaQuery.of(context).size.height/5,
+                child: Column(
+                  children: [
+                    Text('구독권의 남은 무료 회분으로 결제를 진행합니다.', style: TextStyle(color: Color(0xff232323), fontSize: 18,),),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  child: Text('취소'),
+                  onPressed: () {
+                    Navigator.pop(buildContext);
+                  },
+                ),
+                TextButton(
+                    child: Text('결제하기'),
+                    onPressed: () async {
+                      if(_subscribeModel!.type == '0') {
+                        Fluttertoast.showToast(msg: '구매하신 구독권이 없습니다.', toastLength: Toast.LENGTH_SHORT);
+                      } else {
+                        // 구독권 횟수 업데이트
+                        String category = '';
+                        switch(_project!.title) {
+                          case '네이버 플레이스': category = 'naverplace'; break;
+                          case '원내시안': category = 'draft'; break;
+                          case '홈페이지 제작': category = 'homepage'; break;
+                          case '인스타그램': category = 'instagram'; break;
+                          case '로고디자인': category = 'logo'; break;
+                          case '네이버 블로그': category = 'blog'; break;
+                          case '디지털 사이니지': category = 'signage'; break;
+                          case '홍보영상 제작/편집': category = 'video'; break;
+                          case '웹 배너': category = 'banner'; break;
+                        }
+                        bool result = await SubscribeRepo.getpayWithSubscribe(category);
+                        if(result) {
+                          // 프로젝트 진행현황 업데이트
+                          await ProjectRepo.updateProgressTo(widget.docId.toString(), '3');
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MypagePage()));
+                          Navigator.pop(buildContext);
+                          Fluttertoast.showToast(msg: '결제 완료', toastLength: Toast.LENGTH_SHORT);
+                        } else {
+                          Fluttertoast.showToast(msg: '결제 실패', toastLength: Toast.LENGTH_SHORT);
+                        }
+                      }
+                    }
+                ),
+              ],
+            );
+          },
+      );
+
+    }
   }
   
   void _initAsyncState() async {
@@ -173,6 +255,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
 
     await _getProject();
     await _setProgressName();
+    await _getSubscribeInfo();
 
     setState(() {
       _isLoading = false;
@@ -232,7 +315,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                   children: [
                     Icon(Icons.rectangle, color: Color(0xff00a99d), size: 15,),
                     const SizedBox(width: 5,),
-                    Text(project!.title, style: TextStyle(color: Color(0xff232323), fontSize: 20, fontWeight: FontWeight.bold),),
+                    Text(_project!.title, style: TextStyle(color: Color(0xff232323), fontSize: 20, fontWeight: FontWeight.bold),),
                   ],
                 ),
               ),
@@ -265,7 +348,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                         ),
                         SizedBox(
                           width: (MediaQuery.of(context).size.width-50) * 3 / 4,
-                          child: Text('${project!.name}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
+                          child: Text('${_project!.name}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
                         ),
                       ],
                     ),
@@ -285,7 +368,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                         ),
                         SizedBox(
                           width: (MediaQuery.of(context).size.width-50) * 3 / 4,
-                          child: Text('${project!.organization}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
+                          child: Text('${_project!.organization}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
                         ),
                       ],
                     ),
@@ -305,7 +388,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                         ),
                         SizedBox(
                           width: (MediaQuery.of(context).size.width-50) * 3 / 4,
-                          child: Text('${project!.call}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
+                          child: Text('${_project!.call}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
                         ),
                       ],
                     ),
@@ -325,7 +408,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                         ),
                         SizedBox(
                           width: (MediaQuery.of(context).size.width-50) * 3 / 4,
-                          child: Text('${project!.email}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
+                          child: Text('${_project!.email}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
                         ),
                       ],
                     ),
@@ -346,7 +429,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                         ),
                         SizedBox(
                           width: (MediaQuery.of(context).size.width-50) * 3 / 4,
-                          child: Text('${project!.details}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
+                          child: Text('${_project!.details}', style: TextStyle(color: Color(0xff232323), fontSize: 20),),
                         ),
                       ],
                     ),
@@ -401,6 +484,9 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                   ),
                   onPressed: () {
                     // 결과물 파일 다운로드
+
+
+
 
                   },
                   child: Text('파일 다운로드', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
