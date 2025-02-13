@@ -2,6 +2,7 @@ import 'package:aligo_app/model/deposit_model.dart';
 import 'package:aligo_app/model/project_model.dart';
 import 'package:aligo_app/repo/deposit_repo.dart';
 import 'package:aligo_app/repo/project_repo.dart';
+import 'package:aligo_app/tabs/drawer/mypage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
@@ -149,9 +150,9 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                       DepositRepo.addDepositInfo(model, widget.docId);
 
                       // 프로젝트 진행현황 정보 업데이트 -> 11
-                      ProjectRepo.updateProgressTo11(widget.docId.toString());
+                      ProjectRepo.updateProgressTo(widget.docId.toString(), '11');
 
-                      Navigator.pop(context);
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MypagePage()));
                       Navigator.pop(dialogContext);
                       Fluttertoast.showToast(msg: '입금 금액을 확인하고 있습니다.', toastLength: Toast.LENGTH_SHORT);
                     }
@@ -163,8 +164,6 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
         }
       );
     }
-
-
   }
   
   void _initAsyncState() async {
@@ -213,7 +212,12 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
         centerTitle: true,
       ),
       backgroundColor: Colors.white,
-      body: SingleChildScrollView(
+      body: WillPopScope(
+          onWillPop: () async {
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MypagePage()));
+            return false;
+          },
+          child: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(
@@ -396,6 +400,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                     backgroundColor: Color(0xff00a99d),
                   ),
                   onPressed: () {
+                    // 결과물 파일 다운로드
 
                   },
                   child: Text('파일 다운로드', style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold),),
@@ -406,6 +411,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

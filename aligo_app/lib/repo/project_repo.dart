@@ -64,14 +64,23 @@ class ProjectRepo {
     return model;
   }
 
-  // 프로젝트 진행현황 업데이트 -> 11
-  static Future<void> updateProgressTo11(String docId) async {
+  // 프로젝트 진행현황 업데이트
+  static Future<void> updateProgressTo(String docId, String progress) async {
     try {
       await _store.collection('projects').doc(docId).update({
-        'progress': '11'
+        'progress': progress,
       });
     } catch(e) {
       logger.e('aligo-log Failed to update progress to 11. $e');
+    }
+  }
+
+  // 프로젝트 삭제
+  static Future<void> deleteProject(String docId) async {
+    try {
+      await _store.collection('projects').doc(docId).delete();
+    } catch(e) {
+      logger.e('aligo-log Failed to delete project ${docId}. $e');
     }
   }
 }

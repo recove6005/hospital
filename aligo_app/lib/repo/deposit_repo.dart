@@ -13,4 +13,17 @@ class DepositRepo {
       logger.e('aligo-log Failed to add deposit info. $e');
     }
   }
+
+  static Future<DepositModel?> getDepositInfoByDocId(String docId) async {
+    DepositModel? model;
+
+    try {
+      var docRef = await _store.collection('deposit').doc(docId).get();
+      model = DepositModel.fromFirebase(docRef.data()!);
+    } catch(e) {
+      logger.e('aligo-log Failed to get deposit info by docId. $e');
+    }
+
+    return model;
+  }
 }

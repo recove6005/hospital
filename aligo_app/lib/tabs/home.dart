@@ -1,6 +1,7 @@
 import 'package:aligo_app/main.dart';
 import 'package:aligo_app/services/auth_service.dart';
 import 'package:aligo_app/tabs/drawer/mypage.dart';
+import 'package:aligo_app/tabs/drawer/project_management.dart';
 import 'package:aligo_app/tabs/pages/commission_banner.dart';
 import 'package:aligo_app/tabs/pages/commission_blog.dart';
 import 'package:aligo_app/tabs/pages/commission_draft.dart';
@@ -124,7 +125,7 @@ class _HomeTabState extends State<HomeTab> {
               leading: Icon(Icons.folder),
               title: Text('프로젝트 관리'),
               onTap: () {
-                
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ProjectManagementPage()));
               },
             ),
             ListTile(

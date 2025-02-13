@@ -107,7 +107,6 @@ class _MypagePageState extends State<MypagePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 타이틀
             // 구독 정보
             Align(
               child: SizedBox(
@@ -222,7 +221,7 @@ class _MypagePageState extends State<MypagePage> {
                       return ListTile(
                         onTap: () {
                           String docId = _projectModels[index].docId;
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> MypageProjectDetailPage(docId: docId)));
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> MypageProjectDetailPage(docId: docId)));
                         },
                         leading: Icon(_getProgressIconName(index)),
                         title: Text('${_projectModels[index].title}', style: TextStyle(color: Color(0xff232323), fontSize: 18),),
