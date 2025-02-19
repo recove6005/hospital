@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:glucocare/models/purse_danger_model.dart';
 import 'package:logger/logger.dart';
-
 import '../services/auth_service.dart';
 
 class PurseDangerRepository {
@@ -19,7 +18,7 @@ class PurseDangerRepository {
   static Future<List<PurseDangerModel>> selectAllDanger() async {
     List<PurseDangerModel> models = [];
     try {
-      var docSnapshot = await _store.collection('purse_danger').orderBy('check_time', descending: true).get();
+      var docSnapshot = await _store.collection('purse_danger').orderBy('check_time', descending: true).limit(200).get();
       for (var doc in docSnapshot.docs) {
         PurseDangerModel model = PurseDangerModel.fromJson(doc.data());
         models.add(model);

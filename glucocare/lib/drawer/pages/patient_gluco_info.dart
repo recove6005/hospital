@@ -83,26 +83,43 @@ class _PatientGlucoInfoFormState extends State<PatientGlucoInfoForm> {
                       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                       width: MediaQuery.of(context).size.width - 50,
                       child: ListTile(
-                        title: Text('${_glucoModels[index].checkDate} ${_glucoModels[index].checkTime}'),
+                        shape: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+                        onTap: () {
+
+                        },
+                        title: Text('${_glucoModels[index].checkDate}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text('${_glucoModels[index].checkTime}'),
                             Text(
                               '${_glucoModels[index].value} mg/dL',
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
-                            const SizedBox(height: 5,),
+                            const SizedBox(height: 10,),
                             Container(
-                              width: MediaQuery.of(context).size.width - 50,
-                              height: 1,
-                              decoration: const BoxDecoration(
-                                color: Colors.grey,
+                              width: MediaQuery.of(context).size.height - 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Color(0xfff4f4f4),
                               ),
-                            ),
+                              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('메모', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                  const SizedBox(height: 5,),
+                                  if(_glucoModels[index].state == '')
+                                    Text('없음',),
+                                  if(_glucoModels[index].state != '')
+                                  Text('${_glucoModels[index].state}'),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),

@@ -143,7 +143,7 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
       if (_shrinkDanger || _relaxDanger) {
         // fcm service
         String name = await UserRepository.getCurrentUserName();
-        await FCMService.sendPushNotification(name, '혈압', '${_shrink}/${_relax}', _checkDate, _checkTime);
+        await FCMService.sendPushNotification(name, '혈압', '${_shrink}/${_relax}');
 
         // 위험 단계 수치
         PurseDangerModel dangerModel = PurseDangerModel(

@@ -148,7 +148,7 @@ class _HomeTabState extends State<HomeTab> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const SizedBox(height: 20,),
-            Text('Our Services', style: TextStyle(fontSize: 30, color: Color(0xff00a99d), fontWeight: FontWeight.bold),),
+            Text('Services', style: TextStyle(fontSize: 30, color: Color(0xff00a99d), fontWeight: FontWeight.bold),),
             const SizedBox(height: 20,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

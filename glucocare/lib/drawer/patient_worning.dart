@@ -262,7 +262,7 @@ class _PatientWorningFormState extends State<PatientWorningForm> {
                             children: [
                               const SizedBox(height: 5,),
                               const Text('측정 일시', style: TextStyle(fontWeight: FontWeight.bold),),
-                              Text(DateFormat('yyyy년 MM월 dd일 a hh시 mm분').format(_glucoWornings[index].checkTime.toDate())),
+                              Text(DateFormat('yyyy년 MM월 dd일 a hh시 mm분').format(_glucoWornings[index].checkTime.toDate().toLocal())),
                               const SizedBox(height: 5,),
                               Container(
                                 height: 1,

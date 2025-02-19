@@ -83,10 +83,15 @@ class _PatientPurseInfoFormState extends State<PatientPurseInfoForm> {
                       margin: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                       width: MediaQuery.of(context).size.width - 50,
                       child: ListTile(
-                        title: Text('${_purseModels[index].checkDate} ${_purseModels[index].checkTime}'),
+                        onTap: () {
+
+                        },
+                        shape: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
+                        title: Text('${_purseModels[index].checkDate}'),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            Text('${_purseModels[index].checkTime}',),
                             Text(
                               '${_purseModels[index].shrink}/${_purseModels[index].relax} mg/dL',
                               style: const TextStyle(
@@ -95,14 +100,26 @@ class _PatientPurseInfoFormState extends State<PatientPurseInfoForm> {
                                 color: Colors.black,
                               ),
                             ),
-                            const SizedBox(height: 5,),
+                            const SizedBox(height: 10,),
                             Container(
-                              width: MediaQuery.of(context).size.width - 50,
-                              height: 1,
-                              decoration: const BoxDecoration(
-                                color: Colors.grey,
+                              width: MediaQuery.of(context).size.height - 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5),
+                                color: Color(0xfff4f4f4),
                               ),
-                            ),
+                              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('메모', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),),
+                                  const SizedBox(height: 5,),
+                                  if(_purseModels[index].state == '')
+                                    Text('없음',),
+                                  if(_purseModels[index].state != '')
+                                    Text('${_purseModels[index].state}'),
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),

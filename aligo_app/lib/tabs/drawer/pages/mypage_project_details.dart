@@ -2,6 +2,7 @@ import 'package:aligo_app/model/deposit_model.dart';
 import 'package:aligo_app/model/project_model.dart';
 import 'package:aligo_app/model/subscribe_model.dart';
 import 'package:aligo_app/repo/deposit_repo.dart';
+import 'package:aligo_app/repo/price_repo.dart';
 import 'package:aligo_app/repo/project_repo.dart';
 import 'package:aligo_app/repo/subscribe_repo.dart';
 import 'package:aligo_app/tabs/drawer/mypage.dart';
@@ -157,7 +158,7 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                   child: Text('취소'),
               ),
               TextButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if(_diposerContoller.text.trim().isEmpty || _accountNumberController.text.trim().isEmpty) {
                       Fluttertoast.showToast(msg: '예금주와 계좌번호를 입력해 주세요.', toastLength: Toast.LENGTH_SHORT);
                     } else {
@@ -167,13 +168,13 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                           owner: _diposerContoller.text.trim(),
                           actNum: _accountNumberController.text.trim(),
                       );
-                      DepositRepo.addDepositInfo(model, widget.docId);
+                      await DepositRepo.addDepositInfo(model, widget.docId);
 
                       // 프로젝트 진행현황 정보 업데이트 -> 11
-                      ProjectRepo.updateProgressTo(widget.docId.toString(), '11');
+                      await ProjectRepo.updateProgressTo(widget.docId.toString(), '11');
 
-                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MypagePage()));
-                      Navigator.pop(dialogContext);
+                      Navigator.pop(context);
+                      Navigator.pushReplacement(dialogContext, MaterialPageRoute(builder: (dialogContext) => MypagePage()));
                       Fluttertoast.showToast(msg: '입금 금액을 확인하고 있습니다.', toastLength: Toast.LENGTH_SHORT);
                     }
                   },
@@ -231,8 +232,12 @@ class _MypageProjectDetailPageState extends State<MypageProjectDetailPage> {
                         if(result) {
                           // 프로젝트 진행현황 업데이트
                           await ProjectRepo.updateProgressTo(widget.docId.toString(), '3');
-                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => MypagePage()));
-                          Navigator.pop(buildContext);
+                          
+                          // 가격 결제 타입 정보 업데이트
+                          await PriceRepo.updatePricePaytype(widget.docId, '구독권 결제');
+                          
+                          Navigator.pop(context);
+                          Navigator.pushReplacement(buildContext, MaterialPageRoute(builder: (buildContext) => MypagePage()));
                           Fluttertoast.showToast(msg: '결제 완료', toastLength: Toast.LENGTH_SHORT);
                         } else {
                           Fluttertoast.showToast(msg: '결제 실패', toastLength: Toast.LENGTH_SHORT);

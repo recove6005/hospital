@@ -74,12 +74,13 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
   String krTime = '';
   String _getKrTime() {
-    krTime = DateFormat('hh:mm', 'ko_KR').format(DateTime.now());
-    if(DateFormat('a').format(DateTime.now()) == 'AM') {
+    krTime = DateFormat('hh:mm', 'ko_KR').format(DateTime.now().toLocal());
+    if(DateFormat('a').format(DateTime.now().toLocal()) == 'AM') {
       krTime = '오전 $krTime';
     } else {
       krTime = '오후 $krTime';
     }
+
     return krTime;
   }
 
@@ -154,10 +155,6 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
     _checkDate = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR').format(DateTime.now().toLocal());
     _checkTime = DateFormat('a hh:mm:ss', 'ko_KR').format(DateTime.now().toLocal());
     _glucoDanger = DangerCheck.glucoDangerCheck(_value, _checkTimeName);
-
-    logger.d("[glucocare_log] 현재 기기 시간: ${DateTime.now().toLocal()}, $_checkTime");
-    logger.d("[glucocare_log] 현재 UTC 시간: ${DateTime.now().toUtc()}");
-    logger.d("[glucocare_log] 현재 타임존 오프셋: ${DateTime.now().timeZoneOffset}");
   }
 
   Future<void> _onSaveButtonPressed() async {
@@ -184,12 +181,10 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
     if(await AuthService.userLoginedFa()) {
       String? uid = AuthService.getCurUserUid();
-      logger.d('[glucocare_log] user fa: $uid');
       GlucoColNameModel nameModel = GlucoColNameModel(uid: uid, date: _checkDate);
       GlucoColNameRepository.insertGlucoColName(nameModel);
     } else {
       String? kakaoId = await AuthService.getCurUserId();
-      logger.d('[glucocare_log] user ka : $kakaoId');
       GlucoColNameModel nameModel = GlucoColNameModel(uid: kakaoId, date: _checkDate);
       GlucoColNameRepository.insertGlucoColName(nameModel);
     }
@@ -205,9 +200,9 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
       GlucoRepository.insertGlucoCheck(glucoModel);
 
       if(_glucoDanger) {
-        // fcm service
+        // fcm service 푸시 알림
         String name = await UserRepository.getCurrentUserName();
-        await FCMService.sendPushNotification(name, '혈당', _value.toString(), _checkDate, _checkTime);
+        await FCMService.sendPushNotification(name, '혈당', _value.toString());
         
         // 위험 단계 수치
         GlucoDangerModel model = GlucoDangerModel(

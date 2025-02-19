@@ -18,7 +18,7 @@ class GlucoDangerRepository {
   static Future<List<GlucoDangerModel>> selectAllDanger() async {
     List<GlucoDangerModel> models = [];
     try {
-      var docSnapshot = await _store.collection('gluco_danger').orderBy('check_time', descending: true).get();
+      var docSnapshot = await _store.collection('gluco_danger').orderBy('check_time', descending: true).limit(200).get();
       for (var doc in docSnapshot.docs) {
         GlucoDangerModel model = GlucoDangerModel.fromJson(doc.data());
         models.add(model);

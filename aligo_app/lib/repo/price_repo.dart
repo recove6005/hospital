@@ -34,9 +34,9 @@ class PriceRepo {
     try {
       var snap;
       if(limit == 0) {
-        snap = await _store.collection('price').where('uid', isEqualTo: uid).orderBy('date', descending: true).get();
+        snap = await _store.collection('price').where('uid', isEqualTo: uid).where('payed', isEqualTo: true).orderBy('date', descending: true).get();
       } else {
-        snap = await _store.collection('price').where('uid', isEqualTo: uid).orderBy('date', descending: true).limit(limit).get();
+        snap = await _store.collection('price').where('uid', isEqualTo: uid).where('payed', isEqualTo: true).orderBy('date', descending: true).limit(limit).get();
       }
       for(var doc in snap.docs) {
         PriceModel model = PriceModel.fromFirestore(doc.data());
@@ -47,5 +47,14 @@ class PriceRepo {
     }
 
     return models;
+  }
+
+  // 결제 완료 시 price 정보 업데이트
+  static Future<void> updatePricePaytype(String docId, String paytype) async {
+    try {
+      await _store.collection('price').doc(docId).update({'paytype':paytype, 'payed': true});
+    } catch(e) {
+      logger.e('aligo-log Failed to update price paytype. $e');
+    }
   }
 }

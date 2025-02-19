@@ -1,3 +1,4 @@
+
 // 로그인 체크
 async function checkLogin() {
     const response = await fetch('/login/current-user', {
@@ -150,3 +151,90 @@ document.addEventListener('click', function (e) {
         menus.style.left = '-200px';
     }
 });
+
+const serviceImage = document.getElementById('service-description-image');
+const serviceTitle = document.getElementById('service-description-title-span');
+const serviceContent = document.getElementById('service-description-content');
+const serviceBtn = document.getElementById('service-see-detail-btn');
+
+// service section
+// document.querySelectorAll('.service-tab').forEach(item => {
+//     item.addEventListener('click', (e) => {
+//         e.preventDefault();
+//         console.log(`clicked. ${e.target.id}`);
+//     });
+// });
+
+// document.getElementById('service-tab-homepage').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services2.png';
+//     serviceTitle.innerText = '홈페이지 제작';
+//     serviceContent.innerText = '홈페이지 디자인/제작/배포 및 맞춤형 모바일 앱 제작';
+//     serviceBtn.href = '../html/commission-homepage.html';
+// });
+
+// document.getElementById('service-tab-logo').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services3.png';
+//     serviceTitle.innerText = '로고 디자인';
+//     serviceContent.innerText = '로고 디자인 및 제작. 크기별 상/중/하.';
+//     serviceBtn.href = '../html/commission-logo.html';
+// });
+
+// document.getElementById('service-tab-blog').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services4.png';
+//     serviceTitle.innerText = '네이버 블로그';
+//     serviceContent.innerText = '네이버 블로그 원고 작성과 포스팅 및 운영';
+//     serviceBtn.href = '../html/commission-blog.html';
+// });
+
+// document.getElementById('service-tab-instagram').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services5.png';
+//     serviceTitle.innerText = 'SNS';
+//     serviceContent.innerText = '인스타그램 등 SNS 홍보 게시물 제작과 포스팅 및 운영';
+//     serviceBtn.href = '../html/commission-instagram.html';
+// });
+
+// document.getElementById('service-tab-naverplace').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services6.png';
+//     serviceTitle.innerText = '네이버 플레이스 등록';
+//     serviceContent.innerText = '네이버 장소 검색 노출';
+//     serviceBtn.href = '../html/commission-naverplace.html';
+// });
+
+// document.getElementById('service-tab-draft').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services7.png';
+//     serviceTitle.innerText = '원내시안';
+//     serviceContent.innerText = '---';
+//     serviceBtn.href = '../html/commission-draft.html';
+// });
+
+// document.getElementById('service-tab-signage').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services8.png';
+//     serviceTitle.innerText = '디지털 사이니지';
+//     serviceContent.innerText = '디지털 LED 디스플레이에 게시할 광고게시판 포스터 디자인 및 제작';
+//     serviceBtn.href = '../html/commission-signage.html';
+
+// });
+
+// document.getElementById('service-tab-banner').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services9.png';
+//     serviceTitle.innerText = '웹 배너';
+//     serviceContent.innerText = '홈페이지 등 웹 사이트에 표시할 배너 디자인 및 제작';
+//     serviceBtn.href = '../html/commission-webbanner.html';
+
+// });
+
+// document.getElementById('service-tab-video').addEventListener('click', (e) => {
+//     e.preventDefault();
+//     serviceImage.src = '../images/aligo_services10.png';
+//     serviceTitle.innerText = '영상';
+//     serviceContent.innerText = '홍보 영상 제작 및 편집';
+//     serviceBtn.href = '../html/commission-video.html';
+// });

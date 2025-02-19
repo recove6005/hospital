@@ -404,6 +404,10 @@ class _ProjectManagementDetailsPageState extends State<ProjectManagementDetailsP
                     onPressed: () async {
                       // 프로젝트 현황 -> 3
                       await ProjectRepo.updateProgressTo(widget.model.docId, '3');
+
+                      // 가격 결제 타입 정보 업데이트
+                      await PriceRepo.updatePricePaytype(widget.model.docId, '수동 이체');
+
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => ProjectManagementPage()));
                     },
                     style: ElevatedButton.styleFrom(

@@ -5,7 +5,7 @@ admin.initializeApp();
 
 exports.sendPushNotification = functions.https.onRequest(async (req, res) => {
     try {
-        const { tokens, name, type, value, checkDate, checkTime } = req.body;
+        const { tokens, name, type, value } = req.body;
         console.log(req.body);
 
         if (req.method !== "POST") {
@@ -23,8 +23,8 @@ exports.sendPushNotification = functions.https.onRequest(async (req, res) => {
         const notification = {
             title: type === '혈당' ? `혈당 수치 위험 환자 : ${name}` : `혈압 수치 위험 환자 : ${name}`,
             body: type === '혈당' 
-                ? `[${checkDate} ${checkTime}] 시각에 측정된 ${name}님의 혈당 수치가 ${value}mg/dL 으로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`
-                : `[${checkDate} ${checkTime}] 시각에 측정된 ${name}님의 혈압 수치가 ${value}mmHg 으로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
+                ? `[${name}님의 혈당 수치가 ${value}mg/dL 으로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`
+                : `[${name}님의 혈압 수치가 ${value}mmHg 으로 위험 수준입니다. [위험환자관리] 탭을 확인해 주세요.`,
         };
 
 
