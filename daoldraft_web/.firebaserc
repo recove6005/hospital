@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "daoldraft"
-  }
+    "default": "aligoad-00700",
+    "aligoad-00700": "aligoad-00700"
+  },
+  "targets": {},
+  "etags": {}
 }

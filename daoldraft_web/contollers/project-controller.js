@@ -15,7 +15,7 @@ export const getPayedPrices = async (req, res) => {
         const user = auth.currentUser;
         const uid = user.uid;
         let deposit = '-';
-
+        
         const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
         const snapshots = await getDocs(q);
     
