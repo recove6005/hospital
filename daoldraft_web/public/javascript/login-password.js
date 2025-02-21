@@ -24,7 +24,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
 
                 const loginResult = await loginResponse.json();
                 
-                if(loginResult.code == 'auth/invalid-credential') {
+                if(loginResult.code === '0') {
                     // 사용자가 없음 >> 회원가입 절차
                     const response = await fetch('/login/register', {
                         method: 'POST',
@@ -35,23 +35,24 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                     if(response.ok) {
                         alert(`어서오세요, ${email}님`);
                         window.location.href = "/html/home.html";
+                    } else {
+                        alert(`error`);
                     }
+                    return;
                 }
-                if(loginResult.code == 'auth/wrong-password') {
+                else if(loginResult.code === '1') {
                     alert(`비밀번호가 옳지 않습니다. ${loginResult.code}`);
-                }
-                if(loginResult.code == 'auth/too-many-requests') {
-                    alert(`잠시 후에 다시 시도해주세요. ${loginResult.code}`);
+                    return;
                 }
                 
-                if(loginResponse.status == 200) {
+                if(loginResponse.status === 200) {
                     alert(`어서오세요, ${loginResult.email}`);
-        
                     window.location.href = "../html/home.html";
                 } 
                 else {
-                    alert(`이메일과 비밀번호를 확인해주세요. ${loginResult.code}`);
+                    alert(`이메일과 비밀번호를 확인해주세요.`);
                 }
+
             } catch(e) {
                 console.error("Error:", e);
                 alert("An error occurred: " + e.message);

@@ -140,125 +140,15 @@ swipePrevBtn.addEventListener('click', (e) => {
     swipePrevBtn.style.display = 'none';
 });
 
-// 디스플레이 자동 슬라이드
-const displayBox = document.querySelector('.display-box');
-const displayBox0 = document.getElementById('display-box-0');
-const displayBox1 = document.getElementById('display-box-1');
-const displaySwipePrevBtn = document.getElementById('display-swipe-prev-btn');
-const displaySwipeNextBtn = document.getElementById('display-swipe-next-btn');
-const displayPagenation = document.getElementById('pagenation');
-
-let currentIndex = 0;
-let position = 0;
-const totalSlides = 2;
-const totalClones = 2;
-
-function setupClones() {
-    const clone0 = displayBox.children[0].cloneNode(true); // 첫 번째 슬라이드 복제
-    const clone1 = displayBox.children[1].cloneNode(true); // 두 번째 슬라이드 복제
-    
-    displayBox.appendChild(clone0);
-    displayBox.appendChild(clone1);
-}
-
-function lastSetupClones() {
-    const slides = Array.from(displayBox.children);
-    const clone0 = slides[slides.length - 2].cloneNode(true); // 첫 번째 슬라이드 복제
-    const clone1 = slides[slides.length - 1].cloneNode(true); // 두 번째 슬라이드 복제
-
-    displayBox.prepend(clone1);
-    displayBox.prepend(clone0);
-}
-
-function mod(n, m) {
-    return ((n % m) + m) % m;
-}
-
-function updateSlide(index) {
-    const slides = Array.from(displayBox.children);
-
-    // 위치 계산
-    position = index * -410;
-
-    slides.forEach((slide, i) => {
-        slide.style.transform = `translateX(${position}px)`;
-        slide.style.transition = 'transform 0.5s ease';
-    });
-
-    // 페이지네이션 업데이트
-    const modValue = mod(index, 2); // 총 슬라이드의 반복 처리
-    if (modValue === 0) displayPagenation.innerText = ` 1 / 2 `;
-    else displayPagenation.innerText = ` 2 / 2 `;
-}
-
-function slidePrev() {
-    const slides = Array.from(displayBox.children);
-
-    // 첫 번째 슬라이드로 이동 시 처리
-    if (currentIndex === 0) {
-        currentIndex = slides.length - 2; // 마지막 슬라이드로 이동
-        position = currentIndex * -410;
-
-        slides.forEach((slide) => {
-            slide.style.transition = 'none'; // 애니메이션 제거
-            slide.style.transform = `translateX(${position}px)`;
-        });
-
-        setTimeout(() => {
-            slidePrev(); // 다시 호출하여 부드럽게 이동
-        }, 50);
-    } else {
-        currentIndex--; // 이전 슬라이드로 이동
-        updateSlide(currentIndex);
-    }
-}
-
-function slideNext() {
-    const slides = Array.from(displayBox.children);
-
-    // 마지막 슬라이드로 이동 시 처리
-    if (currentIndex === slides.length - 2) {
-        currentIndex = 0; // 첫 번째 슬라이드로 이동
-        position = currentIndex * -410;
-
-        slides.forEach((slide) => {
-            slide.style.transition = 'none'; // 애니메이션 제거
-            slide.style.transform = `translateX(${position}px)`;
-        });
-
-        setTimeout(() => {
-            slideNext(); // 다시 호출하여 부드럽게 이동
-        }, 50);
-    } else {
-        currentIndex++; // 다음 슬라이드로 이동
-        updateSlide(currentIndex);
-    }
-}
-
 // 이전 버튼 이벤트
-displaySwipePrevBtn.addEventListener('click', (e) => {
+document.getElementById('display-swipe-prev-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    slidePrev();
 });
 
 // 다음 버튼 이벤트
-displaySwipeNextBtn.addEventListener('click', (e) => {
+document.getElementById('display-swipe-next-btn').addEventListener('click', (e) => {
     e.preventDefault();
-    slideNext();
 });
-
-// 초기화
-setupClones();
-lastSetupClones();
-updateSlide(currentIndex);
-
-// 자동 슬라이드 실행 (5초 간격)
-let autoSlideInterval = setInterval(slideNext, 5000);
-
-// 마우스 이벤트로 자동 슬라이드 제어
-const displayWrapper = document.getElementById('contact-display-wrapper');
-displayWrapper.addEventListener('mouseenter', () => clearInterval(autoSlideInterval));
-displayWrapper.addEventListener('mouseleave', () => autoSlideInterval = setInterval(slideNext, 5000));
 
 // 연락처 input 문자열
 document.getElementById('call').addEventListener("input", (e) => {

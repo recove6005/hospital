@@ -108,6 +108,11 @@ header {
 /* 상품 네비게이션 */
 main {
     margin-top: 15px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 #project-nav {
@@ -226,6 +231,7 @@ main {
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
+    margin-right: 50px;
 }
 
 #contact-display-wrapper p {
