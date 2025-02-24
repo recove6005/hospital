@@ -2,7 +2,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { db, auth } from "../public/firebase-config.js";
 import { collection, doc, addDoc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { error } from 'console';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,14 +15,13 @@ export const getSubscribeType = async (req, res) => {
 
         if(docSnap.exists()) {
             const subscribeType = docSnap.data().subscribe;
-            return res.status(200).send({ subscribe: subscribeType });
+            return res.status(200).json({ subscribe: subscribeType });
         } else {
-            return res.status(401).send({ error: "No data found."});
+            return res.status(401).json({ error: "No data found."});
         }
-
     } else {
         console.log("No Firebase user session.");
-        return res.status(401).send({ error: "No Firebase session found." });
+        return res.status(401).json({ error: "No Firebase session found." });
     }   
 }
 
@@ -54,8 +52,47 @@ export const getSubscribeInfo = async (req, res) => {
     } else {
         return res.status(401).json({ error: 'No Firebase session found.'});
     }
-    
 }
+
+// 구독권 결제
+export const getPayWithSubscribe = async (req, res) => {
+    const userEmail = auth.currentUser.email;
+    const { title } = req.body;
+
+    let category = '';
+    switch(title) {
+        case '네이버 블로그': category = 'blog'; break;
+        case '원내시안': category = 'draft'; break;
+        case '홈페이지 제작': category = 'homepage'; break;
+        case '인스타그램': category = 'instagram'; break;
+        case '로고디자인': category = 'logo'; break;
+        case '네이버 플레이스': category = 'naverplace'; break;
+        case '디지털 사이니지': category = 'signage'; break;
+        case '홍보영상 제작/편집': category = 'video'; break;
+        case '웹 배너': category = 'banner'; break;
+    }
+
+    try {
+        const subscribeInfoDocRef = doc(db, 'subscribes', userEmail);
+        const subscribeDocSnap = await getDoc(subscribeInfoDocRef);
+    
+        if(subscribeDocSnap.exists()) {
+            const info = subscribeDocSnap.data();
+            if(info[category] < 0) {
+                return res.status(402).json({ error: `무료 회분이 남아있지 않습니다.` });
+            } else {
+                await updateDoc(subscribeInfoDocRef, {
+                    [category] : info[category] - 1,
+                });
+    
+                return res.status(200).json({ msg: `결제 완료` });
+            }
+        }
+    } catch(e) {
+        return res.status(500).json({ error: e.message });
+    }
+}
+
 
 // 프로젝트 문의 등록
 export const commissionProject = async (req, res) => {
@@ -125,10 +162,6 @@ export const subscribeBasic = async (req, res) => {
         const data = await response.json();
         const redirectURL = data.next_redirect_pc_url;
         const tid = data.tid;
-        console.log("Response tid:", tid);
-        console.log("Response status:", response.status);
-        console.log("Response data:", data);
-        console.log("Response redirectURL:", data.next_redirect_pc_url);
 
         if(response.ok) {
             // 정기 결제 구독권 정보 업데이트

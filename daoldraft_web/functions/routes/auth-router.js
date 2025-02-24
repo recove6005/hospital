@@ -1,5 +1,5 @@
 import express from 'express';
-import { moveToLoginEmail, login, getCurrentUser, register, checkUserVerify, logout, checkAdmin, updatePassword } from "../contollers/auth-controller.js";
+import { moveToLoginEmail, login, getCurrentUser, register, logout, checkAdmin, updatePassword } from "../contollers/auth-controller.js";
 
 const router = express.Router();
 
@@ -7,7 +7,7 @@ router.get('/email', moveToLoginEmail);
 
 router.post('/login', login);
 
-router.post('/verify', checkUserVerify);
+// router.post('/verify', checkUserVerify);
 
 router.post('/current-user', getCurrentUser);
 

@@ -121,12 +121,12 @@ export const login = async (req, res) => {
             });
         });
     } catch (e) {
-        if(e.code === 'auth/user-not-found') {
+        if(e.code === 'auth/invalid-credential') {
             // 유저 없음
             return res.status(404).json({code: '0'});
         }
-        if(e.code === 'auth/invalid-credential') {
-            // 잘못된 비밀번호
+        if(e.code === 'auth/wrong-password') {
+            // 유저 없음 또는 잘못된 비밀번호
             console.log(`${e.code}: ${e.message}`);
             return res.status(404).json({code: '1'});
         }

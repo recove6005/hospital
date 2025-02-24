@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="kr">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/product-forcep.css" rel="stylesheet">
-    <title>Forcep</title>
+    <title>MEDIVICE</title>
 </head>
 <body>
     <header>
@@ -16,19 +16,36 @@
     </header>
 
     <main>
+        <div id="product-title">Medivice Forcep</div>
         <div id="recipe-wrapper">
             <div id="product-image">
-                <img src="" alt="제품이미지">
+                <img src="../images/main-forcep.png" alt="제품이미지">
             </div>
-    
-            <div id="product-options">
-                
-            </div>
+            <form id="product-options">
+                <input id="product-name" name="name" type="hidden" value="forcep">
+                <div class="product-option-wrapper">
+                    <div class="product-option-category">규격</div>
+                    <select name="standard" id="product-standard">
+                        <option value="option01">option 1</option>
+                        <option value="option02">option 2</option>
+                        <option value="option03">option 3</option>
+                        <option value="option04">option 4</option>
+                        <option value="option05">option 5</option>
+                    </select>
+                </div>
+
+                <div class="product-option-wrapper">
+                    <div class="product-option-category">수량</div>
+                    <input name="quantity" id="product-quantity" type="text">
+                </div>
+
+                <button>장바구니</button>
+            </form>
         </div>
-        
+        <img src="" alt="details">
     </main>
 
-    <a id="shopping-back" href="#">
+    <a id="shopping-back" href="../html/shoppingbag.html">
         <img src="../images/ic-shopping-back.gif" alt="장바구니">
     </a>
 </body>

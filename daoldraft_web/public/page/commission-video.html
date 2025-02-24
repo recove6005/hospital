@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/commission-video.css">
+    <title>ALIGO</title>
+</head>
+<body>
+<!-- topbar -->
+<header>
+    <div id="logo-container">
+        <a href="./home.html">
+            <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
+        </a>
+    </div>
+
+    <div id="user-container">
+        <div id="profile-photo" style="display:none;">
+            <a id="profile-link" href="#">
+                User
+            </a>
+            <div id="dropdown-menu" style="display: none;">
+                <ul>
+                    <li><a id="dropdown-mypage" href="../page/mypage.html">마이페이지</a></li>
+                    <li><a id="dropdown-logout" href="#">로그아웃</a></li>
+                    <li><a id="dropdown-management" href="../page/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="to-signin" style="display: none;">
+            <div><a href="../page/login-email.html">Login</a></div>
+        </div>
+    </div>
+</header>    
+
+<div class="divider"></div>
+
+<main>
+    <saction id="project-nav">
+        <div class="swipe-btn" id="swipe-prev-btn">
+            <a href="#"><img src="../images/commission_nav_btn.png" alt=""></a>
+        </div>
+        <ul>
+            <li id="commission-subscribe">
+                <a href="../page/buy-subscribe.html"><div>구독권 구매</div></a>
+            </li>
+            <li id="commission-homepage">
+                <a href="../page/commission-homepage.html"><div>홈페이지 제작</div></a>
+            </li>
+            <li id="commission-logo">
+                <a href="../page/commission-logo.html"><div>로고디자인</div></a>
+            </li>
+            <li id="commission-blog">
+                <a href="../page/commission-blog.html"><div>네이버 블로그</div></a>
+            </li>
+            <li id="commission-instagram">
+                <a href="../page/commission-instagram.html"><div>인스타그램</div></a>
+            </li>
+            <li id="commission-naverplace">
+                <a href="../page/commission-naverplace.html"><div>네이버 플레이스</div></a>
+            </li>
+            <li id="commission-draft">
+                <a href="../page/commission-draft.html"><div>원내시안</div></a>
+            </li>
+            <li id="commission-signage">
+                <a href="../page/commission-signage.html"><div>디지털 사이니지</div></a>
+            </li>
+            <li id="commission-banner">
+                <a href="../page/commission-webbanner.html"><div>웹 배너</div></a>
+            </li>
+            <li id="commission-video">
+                <a href="../page/commission-video.html"><div>홍보 영상</div></a>
+            </li>
+        </ul>
+        <div class="swipe-btn" id="swipe-next-btn">
+            <a href="#"><img src="../images/commission_nav_btn.png" alt=""></a>
+        </div>
+    </saction>
+    
+    <section id="contact-saction">
+        <div id="contact-display-wrapper">
+            <p>Portfolio</p>
+            <div>
+                <div class="display-box">
+                    <div id="display-box-0">
+                        <img id="display-img-0" src="" alt="#">
+                        <img id="display-img-1" src="" alt="#">
+                    </div>
+                    <div id="display-box-1">
+                        <img id="display-img-2" src="" alt="#">
+                        <img id="display-img-3" src="" alt="#">
+                    </div>
+                </div>
+                <div id="display-swipe-wrapper">
+                    <a href="#" id="display-swipe-prev-btn"><img src="../images/commission_prev_btn.png" alt="prev"></a>
+                    <p id="pagenation"> 1 / 2 </p>
+                    <a href="#" id="display-swipe-next-btn"><img src="../images/commission_next_btn.png" alt="next"></a>
+                </div>
+            </div>                    
+        </div>  
+        <div id="contact-form-wrapper">
+            <p>Contact us</p>
+            <form id="contact-form">
+                <input id="title" name="title" type="hidden" value="홍보영상 제작/편집">
+                <div class="input-form">
+                    <p>성함</p>
+                    <input class="contact-input" id="name" name="name" type="text" placeholder="성함" required>
+                </div>
+                <div class="input-form">
+                    <p>업체명</p>
+                    <input class="contact-input" id="organization" name="organization" type="text" placeholder="업체명" required>
+                </div>
+                <div class="input-form">
+                    <p>연락처</p>
+                    <input class="contact-input" id="call" name="call" type="text" placeholder="연락처" required>
+                </div>
+                <div class="input-form">
+                    <p>이메일</p>
+                    <input class="contact-input" id="email" name="email" type="text" placeholder="이메일">
+                </div>
+                <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요." required></textarea>
+                <button>문의하기</button>
+            </form>
+        </div>
+    </section>
+
+    <section id="display_section">
+        <img src="" alt="#">
+    </section>
+</main>
+</body>
+<script src="../javascript/commission-video.js" type="module" defer></script>
+</html>

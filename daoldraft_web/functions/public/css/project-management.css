@@ -1,0 +1,286 @@
+/* Global Styles */
+* {
+    margin: 0;
+    padding: 0; 
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+/* header */
+header {
+    width: 1200px;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* header: logo */
+#logo-container {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    width: 285px;
+    height: 100px;
+}
+
+/* header: user */
+#to-signin div {
+    width: 285px;
+    height: 100px;
+    text-align: center;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+#to-signin div a {
+    text-decoration: none;
+    color: #00a99d;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+#profile-photo {
+    width: 285px;
+    height: 100px;
+    text-align: center;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+#profile-photo a {
+    text-decoration: none;
+    color: #00a99d;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/* 프로필 드롭다운 메뉴 */
+#dropdown-menu ul {
+    position: absolute;
+    list-style: none;
+    z-index: 900;
+    background-color: white;
+    border-radius: 10px;
+    border: 3px solid #d4d4d4;
+}
+
+#dropdown-menu ul li {
+    margin: 20px;
+    font-size: 18px;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+
+#dropdown-menu ul li:last-child {
+    border-bottom: none; /* 마지막 아이템의 하단 테두리 제거 */
+}
+
+/* nav - 전체, 문의접수, 작업중, 작업완료, 결제완료 */
+nav {
+    padding: 10px 20px;
+    border-radius: 8px;
+    padding-top: 40px;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav ul {
+    width: 1200px;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid #00a99d;
+}
+
+nav ul li {
+    width: 150px;
+    padding-bottom: 5px;
+}
+
+nav ul li a {
+    width: 120px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #00a99d;
+    transition: all 0.2s ease;
+    border-radius: 10px;
+}
+
+nav ul li a:hover {
+    background-color: #00a99d;
+    color: #fff;    
+}
+
+nav ul li a:active {
+    background-color: #046d66; /* 눌렸을 때 더 어두운 색 */
+    color: #fff;
+    transform: scale(0.95); /* 살짝 작아지는 효과 */
+}
+
+/* main */
+main {
+    width: 1090px;
+}
+
+/* 리스트 */
+ul#project-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul#project-list li {
+    width: 1100px;
+}
+
+.project-item {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 10px;
+    transition-duration: 0.3s;
+}
+
+.project-item:hover {
+    background-color: #ddd;
+}
+
+/* 리스트 아이템 상단 정보 */
+#item-top {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;   
+    justify-content: space-between;
+    align-items: start;
+}
+
+#item-top div {
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+#item-top #title-notifier {
+    width: 13px;
+    height: 13px;
+    background-color: #00a99d;
+    margin-right: 10px;
+}
+
+#item-top #project-title {
+    font-size: 25px;
+}
+
+#item-top #project-progress {
+    display: block;
+    width: 70px;
+    height: 25px;
+    margin-left: 10px;
+    font-size: 12px;
+    color: white;
+    border-radius: 30px;
+    background-color: #00a99d;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 리스트 하단 정보 */
+#item-bottom {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    margin: 5px 0;
+    gap: 10px;
+    font-size: 20px;
+}
+
+#divider {
+    width: 1100px;
+    height: 1px;
+    background-color: #ccc;
+    margin: 5px 0;
+}
+
+@media (max-width: 1200px) {
+    header {
+        width: 100%;
+    }
+    
+    main {
+        width: 100%;
+    }
+
+    nav {
+        width: 90%;
+    }
+
+    nav ul {
+        width: 100%;
+    }
+
+    nav ul li {
+        width: 20%;
+    }
+
+    nav ul li a {
+        width: 100px;
+    }
+
+    ul#project-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+
+    ul#project-list li {
+        width: 90%;
+    }
+
+    #divider {
+        width: 100%;
+    }
+}

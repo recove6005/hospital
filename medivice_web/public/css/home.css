@@ -305,7 +305,8 @@ main {
     width: 80%;
     height: 600px;
     pointer-events: none;
-    margin-bottom: 150px;
+    margin-top: 100px;
+    margin-bottom: 50px;
 }
 
 #auto-vidseo iframe {
@@ -346,8 +347,10 @@ main {
 }
 
 #viewmore-arrow {
+    width: 30px;
+    height: 30px;
     animation: doubledown 1s infinite;  
-    margin-bottom: 150px; 
+    margin-bottom: 100px;
 }
 
 @keyframes doubledown {
@@ -364,7 +367,7 @@ main {
 
 /* 상품 색션 */
 #product {
-    margin-top: 150px;
+    margin-top: 30px;
 }
 
 #main-title-wrapper {
@@ -383,7 +386,7 @@ main {
 #products-wrapper {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 40px;
+    gap: 100px 50px;
 }
 
 .item {
@@ -395,7 +398,7 @@ main {
 
 .item img {
     width: 400px;
-    aspect-ratio: 1 / 1;
+    height: auto;
     cursor: pointer;
     transition-duration: 0.3s;
     border-radius: 10px;
@@ -410,10 +413,52 @@ main {
     font-size: 30px;
 }
 
+#main-product-wrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .main-product-detail {
+    width: 60%;
     display: flex;
     flex-direction: row;
-    
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 50px;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+.main-product-detail:hover {
+    transform: scale(1.02);
+}
+
+.main-product-image {
+    width: 40%;
+    margin-right: 20px;
+}   
+
+.main-product-content-wrapper {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-product-content-title {
+    font-size: 30px;
+    margin-bottom: 15px;
+}
+
+.main-product-content-description {
+    font-size: 20px;
+    font-weight: lighter;
+}
+
+.description-hignlight {
+    font-weight: bold;
 }
 
 /* 푸터 */

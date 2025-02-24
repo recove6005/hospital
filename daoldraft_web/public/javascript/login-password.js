@@ -34,7 +34,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                             
                     if(response.ok) {
                         alert(`어서오세요, ${email}님`);
-                        window.location.href = "/html/home.html";
+                        window.location.href = "/page/home.html";
                     } else {
                         alert(`error`);
                     }
@@ -47,7 +47,7 @@ document.getElementById("login-button").addEventListener("click", async (e) => {
                 
                 if(loginResponse.status === 200) {
                     alert(`어서오세요, ${loginResult.email}`);
-                    window.location.href = "../html/home.html";
+                    window.location.href = "../page/home.html";
                 } 
                 else {
                     alert(`이메일과 비밀번호를 확인해주세요.`);

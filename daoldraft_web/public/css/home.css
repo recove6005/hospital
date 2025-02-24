@@ -144,8 +144,8 @@ main {
 #about-container {
     position: relative;
     width: 100%;
-    height: fit-content;
     background-color: rgba(0, 0, 0, 0.5);
+    overflow: hidden;
 }
 
 #about-container video {
@@ -153,7 +153,6 @@ main {
     position: relative;
     top: 50%;
     left: 50%;
-    width: 102%;
     object-fit: contain;
     transform: translate(-50%, 0%);
     z-index: -1;

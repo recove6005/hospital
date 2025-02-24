@@ -1,25 +1,32 @@
-async function checkUserVerify() {
-    const response = await fetch('/login/verify', {
+// 로그인 체크
+async function checkLogin() {
+    const response = await fetch('/login/current-user', {
         method: 'POST',
         credentials: "include",
     });
 
-    const result = await response.json();
     if(response.ok) {
-        if(result.msg.includes("verify0")) {
-            window.location.reload();
-            alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
-        } 
-        else {
-            document.getElementById("profile-photo").style.visibility = 'visible';
-            document.getElementById("profile-photo").style.display = 'flex';
-            document.getElementById("profile-photo").style.flexDirection = 'raw';
-            document.getElementById("profile-photo").style.alignItems = 'center';            
-            document.getElementById("to-signin").style.display = 'none';
+        document.getElementById("profile-photo").style.visibility = 'visible';
+        document.getElementById("profile-photo").style.display = 'flex';
+        document.getElementById("profile-photo").style.flexDirection = 'raw';
+        document.getElementById("profile-photo").style.alignItems = 'center';            
+        document.getElementById("to-signin").style.display = 'none';
+
+        // 관리자 계정 체크
+        const response = await fetch('/login/check-admin', {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if(response.ok) {
+            document.getElementById('dropdown-management').style.display = 'flex';
         }
+
+    } else {
+        document.getElementById("to-signin").style.display = 'block';
     }
 }
-checkUserVerify();
+checkLogin();
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -63,7 +70,7 @@ document.addEventListener('click', function (e) {
 });
 
 document.getElementById("to-signin").addEventListener('click', () => {
-    window.location.href = "/html/login-email.html";
+    window.location.href = "/page/login-email.html";
 });
 
 // 드롭다운 메뉴 로그아웃
@@ -95,7 +102,7 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
 
-        window.location.href="../html/home.html";
+        window.location.href="../page/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");
@@ -181,7 +188,7 @@ async function getProjects(progress) {
 
             // 프로젝트 상세 페이지로 이동
             const projectId = projectLink.querySelector('#project-id').value;
-            window.location.href = `../html/project-management-details.html?projectid=${projectId}`;
+            window.location.href = `../page/project-management-details.html?projectid=${projectId}`;
         });
 
     

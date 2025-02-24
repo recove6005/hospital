@@ -1,0 +1,94 @@
+/* Global Styles */
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Pretendard-Regular';
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    width: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#logo {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: start;
+}
+
+
+/* Heading */
+#login-container p {
+    width: 600px;
+    font-size: 30px;
+    font-weight: bold;
+    margin: 20px auto;
+    color: black;
+    text-align: center;
+}
+
+/* Form */
+form {
+    width:  600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Input */
+input[type="email"] {
+    width: 300px;
+    height: 50px;
+    border: 1px solid #666;
+    border-radius: 5px; /* 양쪽 둥근 모서리 */
+    font-size: 20px; /* 글자 크기 */
+    color: #333;
+    background-color: #fff;
+    outline: none;
+    padding: 3px 10px;
+}
+
+input[type="email"]::placeholder {
+    color: #aaa;
+}
+
+/* Button */
+button {
+    width: 300px;
+    height: 50px;
+    border: none;
+    border-radius: 25px; /* 양쪽 둥근 모서리 */
+    background-color: #00a99d;
+    color: #fff;
+    font-size: 18px; /* 글자 크기 */
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin: 10px 0;
+}
+
+button:hover {
+    background-color: #116b65;
+}

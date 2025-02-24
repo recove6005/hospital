@@ -3,6 +3,10 @@
     padding: 0;
 }
 
+html {
+    font-size: 16px;
+}
+
 body {
     width: 100%;
     display: flex;
@@ -40,29 +44,45 @@ main {
     margin: 120px 0;
 }
 
+#product-title {
+    width: 70%;
+    text-align: end;
+    font-size: 3rem;
+    font-weight: lighter;
+    margin-bottom: 30px;
+}
+
 #recipe-wrapper {
-    width: 80%;
+    width: 70%;
     display: flex;
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    background-color: aqua;
 }
 
 /* 이미지 */
 #product-image {
     width: 50%;
     height: auto;
-    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#product-image img {
+    width: 95%;
+    height: auto;
 }
 
 /* 주문 옵션 */
 #product-options {
     width: 50%;
-    height: auto;
-    background-color: yellow;
 }
 
+#product-option-wrapper {
+    width: 95%;
+    height: auto;
+}
 
 
 /* shopping-back */
@@ -84,4 +104,36 @@ main {
     width: 50px;
     height: 50px;
     border-radius: 50px;
+}
+
+@media screen and (max-width: 1200px) {
+    #recipe-wrapper {
+        width: 90%;
+    }
+
+    #product-title {
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 756px) {
+    #recipe-wrapper {
+        width: 90%;
+        flex-direction: column;
+    }
+
+    #product-image {
+        width: 100%;
+        height: auto;
+    }
+    
+    /* 주문 옵션 */
+    #product-options {
+        width: 100%;
+    }
+
+    #product-title {
+        width: 90%;
+        text-align: center;
+    }
 }

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/login-email.css">
+    <script src="../javascript/login-email.js" defer></script>
+    <title>ALIGO</title>
+</head>
+<body>
+    <main id="login-container">
+        <div id="logo"><img src="../images/aligo_logo.png"></div>
+        <p>로그인 또는 회원가입할 이메일을 입력하세요.</p>
+        <form id="login-form" action="/login/password" method="GET">
+            <input type="email" name="email" id="email" placeholder="Email" required>
+            <button type="submit">다음</button>
+        </form>
+    </main>
+</body>
+</html>

@@ -8,6 +8,50 @@ import archiver from 'archiver';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// 프로젝트 결제 가격 가져오기 - 결제 확인된 내역만
+export const getPayedPrices = async (req, res) => {
+    let priceList = [];
+    if(req.session.user) {
+        const user = auth.currentUser;
+        const uid = user.uid;
+        let deposit = '-';
+        
+        const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
+        const snapshots = await getDocs(q);
+    
+        if(snapshots.empty) {
+            return res.status(500).json({error: `snapshot's empty.`});
+        } else {
+            try {
+                // if(paytype == '무통장 입금') {
+                //     const depositDocRef = doc(db, 'deposit', data.docId);
+                //     const depositSnap = await getDoc(depositDocRef);
+
+                //     deposit = depositSnap.owner
+                // } 
+
+                snapshots.forEach(doc => {
+                    const data = doc.data();
+                    priceList.push({
+                        title: data.title,
+                        price: data.price,
+                        date: data.date,
+                        paytype: data.paytype,
+                        deposit: deposit,
+                    });
+                });
+
+                return res.status(200).json({ priceList: priceList});
+            } catch(e) {
+                return res.status(500).json({error: e.message});
+            }
+        }
+    } else {
+        return res.status(401).json({error: `no session found`});
+    }
+};
+
+
 // 프로젝트 가져오기 - 전체
 export const getAllProjects = async (req, res) => {
     var projectList = [];
@@ -215,6 +259,11 @@ export const requestPayment = async (req, res) => {
         await setDoc(priceDocRef, {
             docId: docId,
             price: price,
+            payed: false,
+            date: Date.now(),
+            paytype: '-',
+            uid: docSnap.data().uid,
+            title: docSnap.data().title,
         });
 
         // 파일 업로드
@@ -289,7 +338,7 @@ export const getpayKakaopay = async (req, res) => {
 
 // 프로젝트 progress 업데이트 : 결제 완료 
 // 작업완료, 결제중(2) -> 결제완료(3)
-// 무통장 입금
+// 수동이체
 export const getpayDeposit = async (req, res) => {
     const { docId } = req.body;
     try {
@@ -301,13 +350,14 @@ export const getpayDeposit = async (req, res) => {
     }
 }
 
-// 무통장 입금 예금주 등록
+// 수동이체 예금주 등록
 export const uploadDepositOwner = async (req, res) => {
-    const { owner, docId } = req.body;
+    const { owner, docId, actNum } = req.body;
     try {
       await setDoc(doc(db, 'deposit', docId), {
         owner: owner,
         docId: docId,
+        actNum: actNum,
       });
 
       return res.status(200).send({msg: 'succes'});
@@ -316,7 +366,7 @@ export const uploadDepositOwner = async (req, res) => {
     }
 }
 
-// 무통장 입금 예금주 정보 가져오기
+// 수동이체 예금주 정보 가져오기
 export const downloadDepositOwner = async (req, res) => {
     const { docId } = req.body;
 
@@ -329,9 +379,10 @@ export const downloadDepositOwner = async (req, res) => {
         const docSnap = await getDoc(docRef);
 
         let owner = docSnap.data().owner;
+        let actNum = docSnap.data().actNum;
 
         if(docSnap.exists()) {
-            return res.status(200).json({ owner: `${owner}` });
+            return res.status(200).json({ owner: `${owner}`, actNum: `${actNum}` });
         }
 
         return res.status(404).json({ error: 'Document does not exist.'});
@@ -340,13 +391,48 @@ export const downloadDepositOwner = async (req, res) => {
     }
 }
 
-// 무통장 입금 확인
+// 수동 이체 확인
 export const checkDeposit = async (req, res) => {
-    const { docId } = req.body;
+    const { docId, price } = req.body;
 
     try {
+        // 프로젝트 진행 현황 업데이트
         const docRef = doc(db, 'projects', docId);
         await updateDoc(docRef, { progress: "3", });
+
+        // 가격 결제 정보 업데이트
+        const priceDocRef = doc(db, 'price', docId);
+        const updateData = {
+            payed: true,
+            date: Date.now(),
+            paytype: '수동 이체',
+        };
+        updateDoc(priceDocRef, updateData);
+
+        return res.status(200).send({msg: 'success'});
+    } catch(e) {
+        return res.status(500).send({error: e.message});
+    }
+}
+
+// 구독권 결제 확인
+export const checkSubscribePay = async (req, res) => {
+    const { docId, price } = req.body;
+
+    try {
+        // 프로젝트 진행 현황 업데이트
+        const docRef = doc(db, 'projects', docId);
+        await updateDoc(docRef, { progress: "3", });
+
+        // 가격 결제 정보 업데이트
+        const priceDocRef = doc(db, 'price', docId);
+        const updateData = {
+            payed: true,
+            date: Date.now(),
+            paytype: '구독권 결제',
+        };
+        updateDoc(priceDocRef, updateData);
+
         return res.status(200).send({msg: 'success'});
     } catch(e) {
         return res.status(500).send({error: e.message});

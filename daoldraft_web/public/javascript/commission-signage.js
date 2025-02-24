@@ -77,7 +77,7 @@ document.addEventListener('click', function (e) {
 });
 
 document.getElementById("to-signin").addEventListener('click', () => {
-    window.location.href = "/html/login-email.html";
+    window.location.href = "/page/login-email.html";
 });
 
 // 드롭다운 메뉴 로그아웃
@@ -110,7 +110,7 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
 
-        window.location.href="../html/home.html";
+        window.location.href="../page/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");
@@ -199,7 +199,7 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
             
             if(response.status == 200) {
                 alert('프로젝트가 접수됐습니다. 마이페이지에서 확인해 주세요.');
-                window.location.href = '../html/home.html';
+                window.location.href = '../page/home.html';
             } else {
                 console.log(result.error);
             }
@@ -208,7 +208,7 @@ document.getElementById('contact-form').addEventListener('submit', async (e) => 
             console.error("error: ", e);
         }
     } else {
-        window.location.href = '../html/login-email.html';
+        window.location.href = '../page/login-email.html';
     }
 });
 

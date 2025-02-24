@@ -2,7 +2,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { db, auth } from "../public/firebase-config.js";
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
-import { createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail, sendPasswordResetEmail, signInWithEmailAndPassword, signOut } from "firebase/auth";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,7 +13,7 @@ export const checkUserVerify = async (req, res) => {
         const user = auth.currentUser;
         if(!user.emailVerified) {
             try {
-                await sendEmailVerification(user);
+                // await sendEmailVerification(user);
                 req.session.destroy((err) => {
                     if (err) {
                         console.error("Failed to destroy session:", err);
@@ -75,6 +75,10 @@ export const checkUserVerify = async (req, res) => {
                         blog: 0,
                         homepage: 0,
                         discount: 0,
+                        instagram: 0,
+                        naverplace: 0,
+                        banner: 0,
+                        video: 0,
                     });
                 }
 
@@ -98,6 +102,7 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // 로그인 시도
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
         const user = userCredential.user;
 
@@ -109,32 +114,24 @@ export const login = async (req, res) => {
                 return res.status(500).json({ error: "Failed to save session" });
             }
 
-            res.status(200).json({
+            return res.status(200).json({
                 message: "User account successfully created.",
                 email: user.email,
                 uid: user.uid,
-             });
+            });
         });
     } catch (e) {
         if(e.code === 'auth/user-not-found') {
-            // 유저 정보가 없음
-            console.log(`${e.code}: ${e.message}`);
-            res.status(404).json({code: e.code});
+            // 유저 없음
+            return res.status(404).json({code: '0'});
         }
-        else if(e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential') {
+        if(e.code === 'auth/invalid-credential') {
             // 잘못된 비밀번호
             console.log(`${e.code}: ${e.message}`);
-            res.status(401).json({code: e.code});
+            return res.status(404).json({code: '1'});
         }
-        else if(e.code === 'auth/too-many-requests') {
-            // 여러 번의 로그인 실패로 요청이 차단됨
-            console.log(`${e.code}: ${e.message}`);
-            res.status(429).json({code: e.code});
-        }
-        else {
-            console.log(`${e.code}: ${e.message}`);
-            res.status(400).json({code: e.code});
-        }
+        console.log(`${e.code}: ${e.message}`);
+        return res.status(400).json({code: e.code});
     }
 };
 
@@ -145,7 +142,7 @@ export const register = async (req, res) => {
     await createUserWithEmailAndPassword(auth, email, password)
     .then(async (userCredential) => {
         const user = userCredential.user;
-        
+
         // 계정 데이터셋 생성
         await setDoc(doc(db, "users", email), {
             email: email,
@@ -154,6 +151,8 @@ export const register = async (req, res) => {
             subscribe: '0',
             admin: false,
         });
+
+        // await sendEmailVerification(user);
 
         req.session.user = { email } // 세션 저장
 

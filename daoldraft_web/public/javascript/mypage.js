@@ -1,6 +1,36 @@
 var subscribeType = '';
 var pjtIndex = 0;
 
+// 로그인 체크
+async function checkLogin() {
+    const response = await fetch('/login/current-user', {
+        method: 'POST',
+        credentials: "include",
+    });
+
+    if(response.ok) {
+        document.getElementById("profile-photo").style.visibility = 'visible';
+        document.getElementById("profile-photo").style.display = 'flex';
+        document.getElementById("profile-photo").style.flexDirection = 'raw';
+        document.getElementById("profile-photo").style.alignItems = 'center';            
+        document.getElementById("to-signin").style.display = 'none';
+
+        // 관리자 계정 체크
+        const response = await fetch('/login/check-admin', {
+            method: 'POST',
+            credentials: 'include',
+        });
+
+        if(response.ok) {
+            document.getElementById('dropdown-management').style.display = 'flex';
+        }
+
+    } else {
+        document.getElementById("to-signin").style.display = 'block';
+    }
+}
+checkLogin();
+
 async function getUserInitData() {
     // 구독권 타입
     const response = await fetch('/user/get-subscribe-type', {
@@ -113,7 +143,7 @@ document.addEventListener('click', function (e) {
 });
 
 document.getElementById("to-signin").addEventListener('click', () => {
-    window.location.href = "/html/login-email.html";
+    window.location.href = "/page/login-email.html";
 });
 
 // 드롭다운 메뉴 로그아웃
@@ -144,7 +174,7 @@ document.getElementById("dropdown-logout").addEventListener('click', async (e) =
         document.getElementById("to-signin").style.visibility = 'visible';
         document.getElementById("to-signin").style.display = 'block';
 
-        window.location.href="../html/home.html";
+        window.location.href="../page/home.html";
     } catch(e) {
         console.error("Unexpected error during logout:", error);
         alert("An unexpected error occurred. Please try again.");
@@ -308,7 +338,7 @@ async function displayProjectList() {
         `;
 
         itemA.addEventListener("click", () => {
-            window.location.href = `../html/project-info.html?docId=${docId}`;    
+            window.location.href = `../page/project-info.html?docId=${docId}`;    
         });
         
         itemLi.appendChild(itemA);
