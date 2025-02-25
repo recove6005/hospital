@@ -12,7 +12,6 @@ import 'package:aligo_app/tabs/pages/commission_naverplace.dart';
 import 'package:aligo_app/tabs/pages/commission_signage.dart';
 import 'package:aligo_app/tabs/pages/commission_video.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logger/logger.dart';
 
 import '../repo/user_repo.dart';
@@ -53,17 +52,6 @@ class _HomeTabState extends State<HomeTab> {
     });
   }
 
-  // 이메일 인증 확인
-  Future<void> _verifyEmailAuth() async {
-    bool isVerifyed = await AuthService.verifyEmail();
-    if(!isVerifyed) {
-      Fluttertoast.showToast(msg: '이메일 인증을 완료한 후 다시 로그인해 주세요.', toastLength: Toast.LENGTH_LONG);
-      AuthService.sendVeifyEmail();
-      AuthService.logout();
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
-    }
-  }
-
   // 로그아웃
   Future<void> _logout() async {
     await AuthService.logout();
@@ -75,7 +63,6 @@ class _HomeTabState extends State<HomeTab> {
       _isLoading = true;
     });
 
-    await _verifyEmailAuth();
     await _getUserInfo();
     await _checkAdmin();
 

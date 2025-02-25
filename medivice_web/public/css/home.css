@@ -327,6 +327,12 @@ footer a:hover {
     text-decoration: underline; /* 호버 시 밑줄 */
 }
 
+#shoppingbag {
+    width: 50px;
+    height: 50px;
+    background-color: whitesmoke;
+}
+
 
 @media (max-width: 1200px)  {
     header {

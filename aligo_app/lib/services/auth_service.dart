@@ -32,18 +32,6 @@ class AuthService  {
     String? email = _auth.currentUser?.email;
     return email ?? '';
   }
-  
-  // 이메일 인증된 사용자 확인
-  static Future<bool> verifyEmail() async {
-    bool? isVerifyed = _auth.currentUser?.emailVerified;
-    await UserRepo.updateEmailVerify(isVerifyed!);
-    return isVerifyed;
-  }
-
-  // 인증 이메일 전송
-  static Future<void> sendVeifyEmail() async {
-    await _auth.currentUser?.sendEmailVerification();
-  }
 
   // 로그인 회원가입
   static Future<int> login(email, password) async {
@@ -59,7 +47,6 @@ class AuthService  {
         try {
           await _auth.createUserWithEmailAndPassword(email: email, password: password);
           await UserRepo.addUser();
-          await sendVeifyEmail();
 
           // 계정 생성 시 구독 정보 초기화
           await SubscribeRepo.initSubscribe();

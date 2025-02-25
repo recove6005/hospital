@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/product-forcep.css">
+    <title>MEDIVICE</title>
+</head>
+<body>
+     <!-- topbar -->
+     <header>
+        <div id="logo-container">
+            <a href="./home.html">
+                <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
+            </a>
+        </div>
+        <a id="shoppingbag" href="../page/shoppingbag.html"><img src="" alt="shoppingbag"></a>
+    </header>
+
+    <main>
+        <saction id="project-nav">
+            <div class="swipe-btn" id="swipe-prev-btn">
+                <a href="#"><img src="" alt=""></a>
+            </div>
+            <ul>
+                <li id="commission-subscribe">
+                    <a href="../page/buy-subscribe.html"><div>구독권 구매</div></a>
+                </li>
+                <li id="commission-homepage">
+                    <a href="../page/commission-homepage.html"><div>홈페이지 제작</div></a>
+                </li>
+                <li id="commission-logo">
+                    <a href="../page/commission-logo.html"><div>로고디자인</div></a>
+                </li>
+                <li id="commission-blog">
+                    <a href="../page/commission-blog.html"><div>네이버 블로그</div></a>
+                </li>
+                <li id="commission-instagram">
+                    <a href="../page/commission-instagram.html"><div>인스타그램</div></a>
+                </li>
+                <li id="commission-naverplace">
+                    <a href="../page/commission-naverplace.html"><div>네이버 플레이스</div></a>
+                </li>
+                <li id="commission-draft">
+                    <a href="../page/commission-draft.html"><div>원내시안</div></a>
+                </li>
+                <li id="commission-signage">
+                    <a href="../page/commission-signage.html"><div>디지털 사이니지</div></a>
+                </li>
+                <li id="commission-banner">
+                    <a href="../page/commission-webbanner.html"><div>웹 배너</div></a>
+                </li>
+                <li id="commission-video">
+                    <a href="../page/commission-video.html"><div>홍보 영상</div></a>
+                </li>
+            </ul>
+            <div class="swipe-btn" id="swipe-next-btn">
+                <a href="#"><img src="" alt=""></a>
+            </div>
+        </saction>
+        
+        <section id="contact-saction">
+            <div id="contact-display-wrapper">
+                <p>Product</p>
+                <div>
+                    <div class="display-box">
+                        <div id="display-box-0">
+                            <img id="display-img-0" src="" alt="#">
+                            <img id="display-img-1" src="" alt="#">
+                        </div>
+                        <div id="display-box-1">
+                            <img id="display-img-2" src="" alt="#">
+                        </div>
+                    </div>
+                </div>                    
+            </div>  
+            <div id="contact-form-wrapper">
+                    <p>Contact us</p>
+                    <form id="contact-form">
+                        <input id="prodName" name="prodName" type="hidden" value="injector">
+                        <div class="input-form">
+                            <p>병원명</p>
+                            <input class="contact-input" id="hospName" name="hospName" type="text" placeholder="병원명" required>
+                        </div>
+                        <div class="input-form">
+                            <p>연락처</p>
+                            <input class="contact-input" id="call" name="call" type="text" placeholder="연락처" required>
+                        </div>
+                        <div class="input-form">
+                            <p>이메일</p>
+                            <input class="contact-input" id="email" name="email" type="text" placeholder="이메일">
+                        </div>
+                        <div class="input-form">
+                            <p>규격</p>
+                            <select class="contact-input" name="standard" id="standard" required>
+                                <option value="option01">option 1</option>
+                                <option value="option02">option 2</option>
+                                <option value="option03">option 3</option>
+                                <option value="option04">option 4</option>
+                                <option value="option05">option 5</option>
+                            </select>
+                        </div>
+                        <div class="input-form">
+                            <p>수량</p>
+                            <input class="contact-input" id="quantity" name="quantity" type="text" placeholder="수량" required>
+                        </div>
+                        <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요." required></textarea>
+                        <div class="button-wrapper">
+                            <button id="shoppingbag-btn">장바구니 담기</button>
+                            <button id="order-btn">문의하기</button>
+                        </div>
+                    </form>
+            </div>
+        </section>
+
+        <section id="display_section">
+            <img src="" alt="#">
+        </section>
+    </main>
+</body>
+<script src="../javascript/product-injector.js" type="module" defer></script>
+</html>

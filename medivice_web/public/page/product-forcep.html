@@ -4,42 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/product-forcep.css">
-    <title>ALIGO</title>
+    <title>MEDIVICE</title>
 </head>
 <body>
      <!-- topbar -->
-    <header>
+     <header>
         <div id="logo-container">
             <a href="./home.html">
                 <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
             </a>
         </div>
-
-        <div id="user-container">
-            <div id="profile-photo" style="display:none;">
-                <a id="profile-link" href="#">
-                    User
-                </a>
-                <div id="dropdown-menu" style="display: none;">
-                    <ul>
-                        <li><a id="dropdown-mypage" href="../page/mypage.html">마이페이지</a></li>
-                        <li><a id="dropdown-logout" href="#">로그아웃</a></li>
-                        <li><a id="dropdown-management" href="../page/poroject-management.html" style="display: none;">프로젝트 관리</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div id="to-signin" style="display: none;">
-                <div><a href="../page/login-email.html">Login</a></div>
-            </div>
-        </div>
-    </header>    
-
-    <div class="divider"></div>
+        <a id="shoppingbag" href="../page/shoppingbag.html"><img src="" alt="shoppingbag"></a>
+    </header>
 
     <main>
         <saction id="project-nav">
             <div class="swipe-btn" id="swipe-prev-btn">
-                <a href="#"><img src="../images/commission_nav_btn.png" alt=""></a>
+                <a href="#"><img src="" alt=""></a>
             </div>
             <ul>
                 <li id="commission-subscribe">
@@ -74,7 +55,7 @@
                 </li>
             </ul>
             <div class="swipe-btn" id="swipe-next-btn">
-                <a href="#"><img src="../images/commission_nav_btn.png" alt=""></a>
+                <a href="#"><img src="" alt=""></a>
             </div>
         </saction>
         
@@ -84,22 +65,22 @@
                 <div>
                     <div class="display-box">
                         <div id="display-box-0">
-                            <img id="display-img-0" src="../images/commission_blog_display_0.png" alt="#">
-                            <img id="display-img-1" src="../images/commission_blog_display_1.png" alt="#">
+                            <img id="display-img-0" src="" alt="#">
+                            <img id="display-img-1" src="" alt="#">
                         </div>
                         <div id="display-box-1">
-                            <img id="display-img-2" src="../images/commission_blog_display_2.png" alt="#">
+                            <img id="display-img-2" src="" alt="#">
                         </div>
                     </div>
                 </div>                    
             </div>  
             <div id="contact-form-wrapper">
-                <p>Contact us</p>
+                    <p>Contact us</p>
                     <form id="contact-form">
-                        <input id="title" name="title" type="hidden" value="네이버 블로그">
+                        <input id="prodName" name="prodName" type="hidden" value="forcep">
                         <div class="input-form">
                             <p>병원명</p>
-                            <input class="contact-input" id="organization" name="organization" type="text" placeholder="업체명" required>
+                            <input class="contact-input" id="hospName" name="hospName" type="text" placeholder="병원명" required>
                         </div>
                         <div class="input-form">
                             <p>연락처</p>
@@ -111,7 +92,7 @@
                         </div>
                         <div class="input-form">
                             <p>규격</p>
-                            <select class="contact-input" name="product-standard" id="standard" required>
+                            <select class="contact-input" name="standard" id="standard" required>
                                 <option value="option01">option 1</option>
                                 <option value="option02">option 2</option>
                                 <option value="option03">option 3</option>
@@ -123,14 +104,17 @@
                             <p>수량</p>
                             <input class="contact-input" id="quantity" name="quantity" type="text" placeholder="수량" required>
                         </div>
-                    <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요." required></textarea>
-                    <button>문의하기</button>
-                </form>
+                        <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요." required></textarea>
+                        <div class="button-wrapper">
+                            <button id="shoppingbag-btn">장바구니 담기</button>
+                            <button id="order-btn">문의하기</button>
+                        </div>
+                    </form>
             </div>
         </section>
 
         <section id="display_section">
-            <img src="../images/commission_blog_details.jpg" alt="#">
+            <img src="" alt="#">
         </section>
     </main>
 </body>
