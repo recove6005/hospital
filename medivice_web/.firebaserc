@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "medivice-564b0"
-  }
+    "default": "medivice-order",
+    "medivice-web": "medivice-order"
+  },
+  "targets": {},
+  "etags": {}
 }

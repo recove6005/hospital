@@ -16,14 +16,14 @@ function setCart(cart) {
 
 
 // 장바구니 담기
-document.getElementById('product-options').addEventListener('submit', (e) => {
-    const name = document.getElementById('product-name');
-    const standard = document.getElementById('product-standard');
-    const quantity = document.getElementById('product-quantity');
-    console.log(`name: ${name.value}, standart: ${standard.value}, quentity: ${quantity.value}`);
-    addCart(name.value, standard.value, quantity.value);
-    displayCart();
-});
+// document.getElementById('product-options').addEventListener('submit', (e) => {
+//     const name = document.getElementById('product-name');
+//     const standard = document.getElementById('product-standard');
+//     const quantity = document.getElementById('product-quantity');
+//     console.log(`name: ${name.value}, standart: ${standard.value}, quentity: ${quantity.value}`);
+//     addCart(name.value, standard.value, quantity.value);
+//     displayCart();
+// });
 
 
 function displayCart() {
@@ -40,7 +40,14 @@ function displayCart() {
 
         console.log(`cart: ${cart[product]}-${cart[product].name}-${cart[product].standart}-${cart[product].quantity}`);
     }
-    
 }
 
-displayCart();
+
+// 수량 input 마이너스값 제한
+document.getElementById('quantity').addEventListener('input', (e) => {
+    var regex = /^\d+$/;
+    if (!regex.test(e.target.value)) { 
+        e.target.value = '';
+    }
+});
+
