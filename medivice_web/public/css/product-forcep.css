@@ -21,6 +21,11 @@ html, body {
     overflow-x: auto;
 }
 
+a {
+    text-decoration: none;
+    color: black;
+}
+
 /* header */
 header {
     width: 1090px;
@@ -34,9 +39,22 @@ header {
 }
 
 #shoppingbag {
-    width: 50px;
-    height: 50px;
-    background-color: whitesmoke;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#shoppingbag img {
+    width: 40px;
+    height: 40px;
+}
+
+#shoppingbag p {
+    color: black;
+    font-size: 12px;
 }
 
 /* 상품 네비게이션 */
@@ -144,12 +162,6 @@ main {
 #swipe-next-btn {
     bottom: 28px;
     right: 5px;
-}
-
-#shoppingbag {
-    width: 50px;
-    height: 50px;
-    background-color: whitesmoke;
 }
 
 /* 폼 입력 섹션 */

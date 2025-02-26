@@ -57,7 +57,7 @@ document.getElementById('order-btn').addEventListener('click', (e) => {
         call.value != '' &&
         email.value != '' &&
         details.value != ''
-    )  {
+    ) {
         
     }
 });
