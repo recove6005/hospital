@@ -1,6 +1,6 @@
 class DangerCheck {
   static bool purseShrinkDangerCheck(int shrink) {
-    if(shrink >= 200) {
+    if(shrink >= 150) {
       return true;
     } else {
       return false;
@@ -8,7 +8,7 @@ class DangerCheck {
   }
 
   static bool purseRelaxDangerCheck(int relax) {
-    if(relax >= 200) {
+    if(relax >= 100) {
       return true;
     } else {
       return false;

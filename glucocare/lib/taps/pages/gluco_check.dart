@@ -14,7 +14,6 @@ import 'package:glucocare/services/auth_service.dart';
 import 'package:glucocare/services/fcm_service.dart';
 import 'package:intl/intl.dart';
 import 'package:logger/logger.dart';
-
 import '../../repositories/gluco_colname_repository.dart';
 
 class GlucoCheckPage extends StatelessWidget {
@@ -62,7 +61,6 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
 
   int _checkTimeValue = 0;
   bool _btnToggle = true;
-
   bool _isSaving = false;
 
   String _checkTimeName = '식전';
@@ -147,7 +145,6 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
         _diagnosisValue = -1;
       });
     }
-
 
   void _setState() {
     _value = int.parse(_valueController.text);

@@ -381,8 +381,6 @@ class _PurseCheckFormState extends State<PurseCheckForm> {
     _shrink = int.parse(textShrink);
     _relax = int.parse(textRelex);
 
-    logger.d('glucocare_log ${_shrink}, ${_relax}');
-
     // 고혈압 3
     // 고혈압 주의2단계 2
     // 고혈압 주의1단계 1

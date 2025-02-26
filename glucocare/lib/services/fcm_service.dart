@@ -19,7 +19,8 @@ class FCMService {
 
   static Future<void> sendPushNotification(String name, String type, String value) async {
     List<String> tokens = await TokenRepository.selectAdminTokens();
-
+    String checkDate = '';
+    String checkTime = '';
 
     const url = "https://us-central1-glucocare-7820b.cloudfunctions.net/sendPushNotification";
 
@@ -34,6 +35,8 @@ class FCMService {
           "name": name,
           "type": type,
           "value": value,
+          "checkDate": checkDate,
+          "checkTime": checkTime,
         }),
       );
 

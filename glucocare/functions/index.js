@@ -5,7 +5,7 @@ admin.initializeApp();
 
 exports.sendPushNotification = functions.https.onRequest(async (req, res) => {
     try {
-        const { tokens, name, type, value } = req.body;
+        const { tokens, name, type, value, checkDate, checkTime } = req.body;
         console.log(req.body);
 
         if (req.method !== "POST") {

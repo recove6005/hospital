@@ -180,6 +180,11 @@ class _PatientSearchFormState extends State<PatientSearchForm> {
             ),
           ),
           const SizedBox(height: 10,),
+          SizedBox(
+            width: MediaQuery.of(context).size.width - 50,
+            child: Text('검색 결과: ${_searchModels.length}명', textAlign: TextAlign.start,),
+          ),
+          const SizedBox(height: 10,),
           Align(
             alignment: Alignment.center,
             child: Container(
