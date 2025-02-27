@@ -52,6 +52,13 @@ header {
     height: 100px;
 }
 
+#header-right-container {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}   
+
 /* header: nav */
 nav ul {
     display: flex;
@@ -195,7 +202,7 @@ main {
 }
 
 #service h1 {
-    color: #00a99d;
+    color: rgb(0, 66, 129);
     font-size: 38px;
     font-weight: 600;
     margin-top: 150px;

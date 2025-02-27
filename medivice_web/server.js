@@ -2,7 +2,6 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 import cors from "cors";
-import mysql from "mysql2";
 
 const app = express();
 const PORT = 3000;
@@ -25,26 +24,13 @@ app.use(express.static('public'));
 // node_modules를 정적 파일로 제공
 app.use("/node_modules", express.static(path.join(__dirname, "node_modules"))); 
 
-// mysql 연결
-const db = mysql.createConnection({
-	host: "localhost",
-	user: "root",
-	password: "",
-	database: "medivice",
-	port: 3306, 
-});
-
-db.connect((err) => {
-	if(err) {
-		console.error("MySQL connection failed.", err);
-	} else {
-		console.error("MySQL connection successful.");
-	}
-});
 
 // 라우터 등록
-// import homeRouter from './routers/home_router.js';
-// app.use('/', homeRouter);
+import productRouter from './routes/product-router.js';
+app.use('/api', productRouter);
+
+import entryRouter from './routes/entry-router.js';
+app.use('/api', entryRouter);
 
 // 서버 실행
 app.listen(PORT, () => {

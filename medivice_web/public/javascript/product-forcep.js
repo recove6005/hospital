@@ -9,7 +9,6 @@ const details = document.getElementById('details');
 // 장바구니 로직
 function addCart(prodName, standard, quantity, hospName, call, email, details) {
     var cart = getCart();
-    console.log(`shop.`);
     cart[prodName] = { 
         prodName: prodName, 
         standard: standard, 
@@ -50,7 +49,8 @@ function addToShoppingBag() {
 }
 
 // order-btn
-document.getElementById('order-btn').addEventListener('click', (e) => {
+document.getElementById('order-btn').addEventListener('click', async (e) => {
+    e.preventDefault();
     if(
         quantity.value != '' &&
         hospName.value != '' &&
@@ -58,13 +58,32 @@ document.getElementById('order-btn').addEventListener('click', (e) => {
         email.value != '' &&
         details.value != ''
     ) {
-        
+        submitInquiry();
     }
 });
 
 // order form 로직
-function submitInquiry() {
+async function submitInquiry() {
+    const orderResponse = await fetch('/api/product/order', {
+        method:'POST',
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({  
+            product_name: prodName.value,
+            standard: standard.value,
+            quantity: parseInt(quantity.value),
+            hospital_name: hospName.value,
+            call_num: call.value,
+            email: email.value,
+            details: details.value,
+        }),
+    });
 
+    if(orderResponse.ok) {
+        window.location.reload();
+    } else {
+        const orderResult = await orderResponse.json();
+        console.log(`order error: ${orderResult.error}`);
+    }
 }
 
 // 수량 input 마이너스값 제한
