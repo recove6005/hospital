@@ -5,6 +5,7 @@ import { db } from "../public/config/database-config.js";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// entry 키 검증
 export const validateKey = async (req, res) => {
     const { key } = req.body;
     const entry_name = 'orders';
@@ -21,3 +22,4 @@ export const validateKey = async (req, res) => {
         }
     });
 }
+

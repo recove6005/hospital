@@ -71,6 +71,14 @@ body {
     list-style: none;
 }
 
+#search-result-empty {
+    width: 100%;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 400;
+}
+
 #entry-success-container li {
     width: 100%;
     display: flex;
