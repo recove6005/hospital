@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    checkLogin();
+});
+
 // 로그인 체크
 async function checkLogin() {
     const response = await fetch('/login/current-user', {
@@ -15,33 +19,6 @@ async function checkLogin() {
         document.getElementById("to-signin").style.display = 'block';
     }
 }
-checkLogin();
-
-// async function checkUserVerify() {
-//     const response = await fetch('/login/verify', {
-//         method: 'POST',
-//         credentials: "include",
-//     });
-
-//     const result = await response.json();
-
-//     if(response.ok) {
-//         if(result.msg.includes("verify0")) {
-//             window.location.reload();
-
-//             alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
-//             document.getElementById("to-signin").style.display = 'block';
-//         } 
-//         else {
-//             document.getElementById("profile-photo").style.visibility = 'visible';
-//             document.getElementById("profile-photo").style.display = 'flex';
-//             document.getElementById("profile-photo").style.flexDirection = 'raw';
-//             document.getElementById("profile-photo").style.alignItems = 'center';            
-//             document.getElementById("to-signin").style.display = 'none';
-//         }
-//     }
-// }
-// checkUserVerify();
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {

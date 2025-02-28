@@ -5,20 +5,27 @@
   },
   "hosting": {
     "public": "public",
+    "rewrites": [
+      {
+        "source": "/login/**",
+        "function": "api"
+      },
+      {
+        "source": "/user/**",
+        "function": "api"
+      },
+      {
+        "source": "/project/**",
+        "function": "api"
+      }
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   },
-  "functions": [
-    {
+  "functions": {
       "source": "functions",
       "codebase": "default",
       "ignore": [
@@ -28,6 +35,5 @@
         "firebase-debug.*.log",
         "*.local"
       ]
-    }
-  ]
+  }
 }
