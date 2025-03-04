@@ -1,11 +1,9 @@
 import express from "express";
-import bodyParser from "body-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
-
 import homeRouter from './routes/home-router.js';
 import loginRouter from './routes/auth-router.js';
 import userRouter from './routes/user-router.js';
@@ -22,8 +20,8 @@ const __dirname = path.dirname(__filename);
 
 // middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use(bodyParser.json());
 app.use(
     session({
         secret: process.env.SESSION_SECRET,
@@ -36,6 +34,7 @@ app.use(
         },
     })
 );
+
 // 서버 요청 크기 늘리기
 app.use(express.json( { limit: '50mb'}));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));

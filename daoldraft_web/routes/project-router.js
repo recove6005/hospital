@@ -1,5 +1,5 @@
 import express from 'express';
-import multer from "multer";
+import multer from 'multer';
 import { acceptProject, checkDeposit, checkSubscribePay, dismissProject, downloadDepositOwner, getAllProjects, getDownload, getpayDeposit, getPayedPrices, getpayKakaopay, getPriceValue, getProjectByDocId, getProjectsBy0, getProjectsBy1, getProjectsBy2, getProjectsBy3, getProjectsByUid, requestPayment, uploadDepositOwner } from '../contollers/project-controller.js';
 
 const router = express.Router();
@@ -15,7 +15,8 @@ router.post('/dismiss-project', dismissProject);
 
 router.post('/get-project-by-id', getProjectByDocId);
 
-const upload = multer();
+const storage = multer.memoryStorage();
+const upload = multer({ storage });
 router.post('/request-payment', upload.array('files'), requestPayment);
 
 router.post('/get-projects-by-uid', getProjectsByUid);

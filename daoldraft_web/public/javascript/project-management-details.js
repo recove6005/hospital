@@ -330,7 +330,7 @@ priceInput.addEventListener("input", (e) => {
     e.target.value = formattedValue ? `${formattedValue}` : "";
 });
 
-
+// 결제요청
 document.getElementById('pay-request-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const price = rawPrice;
@@ -342,7 +342,7 @@ document.getElementById('pay-request-form').addEventListener('submit', async (e)
     formData.append("price", price);
 
     for(let index = 0; index < files.length; index++) {
-        formData.append(`files`, files[index]);
+        formData.append("files", files[index]);
     }
 
     Swal.fire({

@@ -51,7 +51,6 @@ async function getSubscribeInfos() {
     await getUserInitData();
 
     const subscribeWrapper = document.querySelector('.subscribe-details-wrapper');
-    console.log(`type: ${subscribeType}`);
     if(subscribeType == '0') {
         // 구독권 없음
         subscribeWrapper.innerHTML = `<p>구독 내역이 없습니다.</p>`;
@@ -65,7 +64,7 @@ async function getSubscribeInfos() {
         if(response.ok) {
             subscribeWrapper.innerHTML = `
                 <p>
-                    짜라리
+                    -- 구독 정보 --
                 </p>
             `;
         } else {

@@ -177,12 +177,22 @@ class _DraftCommissionPageState extends State<DraftCommissionPage> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   height: 200,
-                  child: Image.asset('assets/images/commission_homepage_display_0.png'),
+                  child: Image.asset('assets/images/commission_draft_display_0.png'),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   height: 200,
-                  child: Image.asset('assets/images/commission_homepage_display_1.png'),
+                  child: Image.asset('assets/images/commission_draft_display_1.png'),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  height: 200,
+                  child: Image.asset('assets/images/commission_draft_display_2.png'),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width - 50,
+                  height: 200,
+                  child: Image.asset('assets/images/commission_draft_display_3.png'),
                 ),
               ],
             ),

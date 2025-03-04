@@ -1,8 +1,8 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { db, auth, storage } from "../public/firebase-config.js";
-import { collection, doc, getDocs, orderBy, setDoc, getDoc, addDoc, query, deleteDoc, where, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL, getMetadata } from "firebase/storage";
+import { db, auth, storage } from "../config/firebase-config.js";
+import { collection, doc, getDocs, orderBy, setDoc, getDoc, query, deleteDoc, where, updateDoc } from "firebase/firestore";
+import { ref, getDownloadURL, getMetadata, uploadBytes } from "firebase/storage";
 import archiver from 'archiver';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -226,14 +226,10 @@ export const acceptProject = async (req, res) => {
 };
 
 // 프로젝트 progress 업데이트 : 결제 요청
-// 작업 중 (1) -> 작업완료, 결재중(2)
+// 작업 중 (1) -> 작업완료, 결제중(2)
 export const requestPayment = async (req, res) => {
     const { docId, price } = req.body;
     const files = req.files;
-
-    if (!docId) {
-        return res.status(400).json({ error: 'docId is required' });
-    }
 
     try {
         // 상태 업데이트
@@ -253,7 +249,8 @@ export const requestPayment = async (req, res) => {
                 userEmail: docSnap.data().userEmail,
             });
         }
-
+        console.log(`Project progress update success.`);
+        
         // 가격 업로드
         const priceDocRef = doc(db, 'price', docId);
         await setDoc(priceDocRef, {
@@ -265,21 +262,24 @@ export const requestPayment = async (req, res) => {
             uid: docSnap.data().uid,
             title: docSnap.data().title,
         });
+        console.log(`Price upload success.`);
 
         // 파일 업로드
         if(files.length > 0) {
             try {
+                console.log(`File upload start.`);
                 for(let index = 0; index < files.length; index++) {
                     const file = files[index];
                     const fileName = `${docSnap.data().uid}_${docId}_${index}.png`;
                     const stroageRef = ref(storage, fileName);
                     await uploadBytes(stroageRef, file.buffer);
                 };
+                console.log(`File upload success.`);
             } catch(e) {
                 return res.status(500).send({ error: e.message });
             }
         } 
-        
+
         return res.status(200).send({msg: "A payment request was sented."});
     } catch(e) {
         return res.status(500).send({ error: e.message });
@@ -531,6 +531,6 @@ export const getDownload = async (req, res) => {
 
         archive.finalize();
     } else {
-        res.status(404).send({ error: e.message });
+        return res.status(404).send({ error: e.message });
     }
 };

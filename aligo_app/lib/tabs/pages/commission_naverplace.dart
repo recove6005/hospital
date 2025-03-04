@@ -177,12 +177,12 @@ class _NaverplaceCommissionPageState extends State<NaverplaceCommissionPage> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   height: 200,
-                  child: Image.asset('assets/images/commission_homepage_display_0.png'),
+                  child: Image.asset('assets/images/commission_naverplace_display_0.png'),
                 ),
                 SizedBox(
                   width: MediaQuery.of(context).size.width - 50,
                   height: 200,
-                  child: Image.asset('assets/images/commission_homepage_display_1.png'),
+                  child: Image.asset('assets/images/commission_naverplace_display_1.png'),
                 ),
               ],
             ),

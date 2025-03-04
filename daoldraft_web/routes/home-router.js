@@ -1,4 +1,5 @@
 import express from "express";
+import { getHomePage } from "../contollers/home-contoller.js";
 
 const router = express.Router();
 
