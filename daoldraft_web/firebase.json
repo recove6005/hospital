@@ -28,6 +28,10 @@
   "functions": {
     "source": "functions",
     "codebase": "default",
+    "timeoutSeconds": 60,
+    "memory": "512MB",
+    "runtime": "nodejs20",
+    "maxInstances": 10,
     "ignore": [
       "node_modules",
       ".git",

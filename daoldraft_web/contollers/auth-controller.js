@@ -193,3 +193,16 @@ export const updatePassword = async (req, res) => {
         }
     }
 }
+
+// password 찾기
+export const findPassword = async (req, res) => {
+    const { email } = req.body;
+
+    await sendPasswordResetEmail(auth, email)
+    .then(() => {
+        return res.status(200).end();
+    })
+    .catch((error) => {
+        return res.status(500).json({ error: error.message });
+    });
+}

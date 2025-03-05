@@ -4,6 +4,7 @@ import { db, auth, storage } from "../config/firebase-config.js";
 import { collection, doc, getDocs, orderBy, setDoc, getDoc, query, deleteDoc, where, updateDoc } from "firebase/firestore";
 import { ref, getDownloadURL, getMetadata, uploadBytes } from "firebase/storage";
 import archiver from 'archiver';
+import { parseFormData } from "../config/busboy-config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -228,10 +229,20 @@ export const acceptProject = async (req, res) => {
 // 프로젝트 progress 업데이트 : 결제 요청
 // 작업 중 (1) -> 작업완료, 결제중(2)
 export const requestPayment = async (req, res) => {
-    const { docId, price } = req.body;
-    const files = req.files;
-
+    // const { docId, price } = req.body;
+    // const files = req.files || [];
     try {
+        const {fields, files} = await parseFormData(req);
+        const {docId, price} = fields;
+
+        if(!docId || !price) {
+            return res.status(400).send({error: `Missing required fields docId ${docId}, price ${price}`});
+        }
+
+        if(files.length === 0) {
+            console.log(`error: Missing required files`);
+        }
+
         // 상태 업데이트
         const docRef = doc(db, 'projects', docId);
         const docSnap = await getDoc(docRef);
@@ -264,25 +275,38 @@ export const requestPayment = async (req, res) => {
         });
         console.log(`Price upload success.`);
 
-        // 파일 업로드
+        // 파일 업로드 - multer
+        // if(files.length > 0) {
+        //     try {
+        //         for(let index = 0; index < files.length; index++) {
+        //             const file = files[index];
+        //             const fileName = `${docSnap.data().uid}_${docId}_${index}.png`;
+        //             const storageRef = ref(storage, fileName);
+        //             await uploadBytes(storageRef, file.buffer);
+        //         };
+        //     } catch(e) {
+        //         return res.status(500).send({ error: e.message });
+        //     }
+        // } 
+
+        // 파일 업로드 - busboy
         if(files.length > 0) {
             try {
-                console.log(`File upload start.`);
                 for(let index = 0; index < files.length; index++) {
                     const file = files[index];
                     const fileName = `${docSnap.data().uid}_${docId}_${index}.png`;
-                    const stroageRef = ref(storage, fileName);
-                    await uploadBytes(stroageRef, file.buffer);
-                };
+                    const storageRef = ref(storage, fileName);
+                    await uploadBytes(storageRef, file.buffer);
+                }
                 console.log(`File upload success.`);
             } catch(e) {
-                return res.status(500).send({ error: e.message });
+                return res.status(500).send({error: `File upload error: ${e.message}`});
             }
-        } 
+        }
 
         return res.status(200).send({msg: "A payment request was sented."});
     } catch(e) {
-        return res.status(500).send({ error: e.message });
+        return res.status(500).send({ error: e.message});
     }
 };
 

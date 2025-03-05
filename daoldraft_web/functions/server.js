@@ -1,7 +1,5 @@
 import express from "express";
-import bodyParser from "body-parser";
 import cors from "cors";
-import dotenv from "dotenv";
 import session from "express-session";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -9,8 +7,6 @@ import homeRouter from './routes/home-router.js';
 import loginRouter from './routes/auth-router.js';
 import userRouter from './routes/user-router.js';
 import projectRouter from './routes/project-router.js';
-
-dotenv.config();
 
 const app = express();
 const PORT = 3000;
@@ -20,10 +16,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors({ origin: true }));
+app.use('/project', projectRouter);
+
+// 서버 요청 크기 늘리기
+app.use(express.json( { limit: '100mb'}));
+
 app.use(
     session({
         secret: '**daol2558**',
@@ -37,9 +35,7 @@ app.use(
     })
 );
 
-// 서버 요청 크기 늘리기
-app.use(express.json( { limit: '50mb'}));
-app.use(express.urlencoded({ limit: '50mb', extended: true }));
+
 
 // 정적 파일 제공
 app.use(express.static('public'));
@@ -49,10 +45,10 @@ app.use(
 );
 
 // 라우터 등록
+// multer를 express.json() 앞에 사용
 app.use('/', homeRouter);
 app.use('/login', loginRouter);
 app.use('/user', userRouter);
-app.use('/project', projectRouter);
 
 // app.use((req, res, next) => {
 //     console.log(`🔥 [REQUEST] ${req.method} ${req.url}`);

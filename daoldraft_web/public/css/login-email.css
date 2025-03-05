@@ -18,9 +18,15 @@ html {
 body {
     font-family: 'Pretendard-Regular';
     height: 100vh;
+    overflow: hidden;
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+body .swal-open {
+    overflow: hidden;
+    height: 100vh;
 }
 
 main {
@@ -29,6 +35,15 @@ main {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+a {
+    text-decoration: underline;
+    color: black;
 }
 
 #logo {
@@ -36,7 +51,6 @@ main {
     display: flex;
     align-items: start;
 }
-
 
 /* Heading */
 #login-container p {
@@ -91,6 +105,16 @@ button {
 
 button:hover {
     background-color: #116b65;
+}
+
+.swal-confirm-btn {
+    background-color: #00a99d !important;  /* 초록색 */
+    color: white !important;
+}
+
+.swal-cancel-btn {
+    background-color: #00a99d !important;  /* 빨간색 */
+    color: white !important;
 }
 
 @media screen and (max-width: 768px) {

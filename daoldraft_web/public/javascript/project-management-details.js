@@ -210,7 +210,6 @@ async function buttonDisplay() {
     const progressTitle = document.getElementById('progress');
 
     const progress = await getProgress();
-    console.log(progress);
 
     if(progress === '0') {
         progressTitle.innerText = '문의 접수';
@@ -337,12 +336,16 @@ document.getElementById('pay-request-form').addEventListener('submit', async (e)
     const files = filesInput.files;
     const docId = getDocId();
 
+    console.log(`price: ${price}, files: ${files}, docId: ${docId}`);
+
     const formData = new FormData();
     formData.append("docId", docId);
     formData.append("price", price);
 
-    for(let index = 0; index < files.length; index++) {
-        formData.append("files", files[index]);
+    if(files && files.length > 0) {
+        for(let index = 0; index < files.length; index++) {
+            formData.append("files", files[index]);
+        }
     }
 
     Swal.fire({
@@ -365,6 +368,7 @@ document.getElementById('pay-request-form').addEventListener('submit', async (e)
             });
 
             const result = await response.json();
+
             if(response.ok) {
                 Swal.fire({
                     icon: 'success',
