@@ -64,7 +64,7 @@ document.getElementById('order-btn').addEventListener('click', async (e) => {
 
 // order form 로직
 async function submitInquiry() {
-    const orderResponse = await fetch('/api/product/order', {
+    const orderResponse = await fetch('/api/product/store-order', {
         method:'POST',
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify({  

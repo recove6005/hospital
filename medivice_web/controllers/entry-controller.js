@@ -1,12 +1,14 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { db } from "../public/config/database-config.js";
+import { db } from "../config/database-config.js";
+import { collection, doc, getDoc } from "firebase/firestore";
+import { store } from "../config/firebase-config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// entry 키 검증
-export const validateKey = async (req, res) => {
+// entry 키 검증 - mysql
+export const dbValidateKey = async (req, res) => {
     const { key } = req.body;
     const entry_name = 'orders';
     const sql = "SELECT * FROM entryKeys WHERE entry_name = ?;";
@@ -23,3 +25,18 @@ export const validateKey = async (req, res) => {
     });
 }
 
+// entry 키 검증 - firestore
+export const storeValidateKey = async (req, res) => {
+    const { key } = req.body;
+    const entry_name = 'orders';
+    const entryRef = doc(collection(store, 'entryKeys'), entry_name);
+    const snapshot = await getDoc(entryRef);
+
+    if(!snapshot.exists) {
+        return res.sendStatus(404);
+    }
+    if(snapshot.data().key === key) {
+        return res.sendStatus(200);
+    }
+    return res.sendStatus(401);
+}

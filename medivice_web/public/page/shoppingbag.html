@@ -15,19 +15,27 @@
         </div>    
     </header>    
     <main>
-        <ul id="shoppingbag-list">
-            <li>
-                <input class="checkbox" type="checkbox">
-                <img id="product-image" src="../images/main-forcep.png" alt="">
-                <div id="product-details">
-                    <div id="product-name">name</div>
-                    <div id="product-standard">standard</div>
-                    <div id="product-quantity">0</div>
-                </div>
-            </li>
-        </ul>
-        <button id="order-btn">order</button>
-        <button id="delete-btn">delete</button>
+        <h2>Wishlist</h2>
+        <div id="shoppingbag-title">
+            <div id="product-select">선택</div>
+            <div id="product-image"> </div>
+            <div id="product-name">제품명</div>
+            <div id="product-standard">규격</div>
+            <div id="product-quantity">수량</div>
+        </div>
+        <div id="shoppingbag-list">
+            <div id="product-container">
+                <div id="product-select"><input class="checkbox" type="checkbox"></div>
+                <div id="product-image"><img id="product-image" src="../images/main-forcep.png" alt=""></div>
+                <div id="product-name">name</div>
+                <div id="product-standard">standard</div>
+                <div id="product-quantity">0</div>
+            </div>
+        </div>
+        <div id="button-container">
+            <button id="order-btn">order</button>
+            <button id="delete-btn">delete</button>
+        </div>
     </main> 
 </body>
 <script src="../javascript/shoppingbag.js" type="module" defer></script>

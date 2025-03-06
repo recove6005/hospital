@@ -2,7 +2,7 @@ var orders = [];
 
 document.getElementById('entry-btn').addEventListener('click', async () =>{
     const key = document.getElementById('entry-key').value;
-    const keyCheckResponse = await fetch('/api/entry/validate', {
+    const keyCheckResponse = await fetch('/api/entry/store-validate', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -12,7 +12,7 @@ document.getElementById('entry-btn').addEventListener('click', async () =>{
 
     if(keyCheckResponse.ok) {
         // 초기 진입 시 전체 데이터 표시
-        const getOrdersResponse = await fetch('/api/product/get-all-orders');
+        const getOrdersResponse = await fetch('/api/product/store-get-all-orders');
         if(getOrdersResponse.ok) {
             const entryInputContainer = document.getElementById('entry-container');
             entryInputContainer.style.display = 'none';
@@ -47,7 +47,8 @@ document.getElementById('entry-btn').addEventListener('click', async () =>{
                 ulElement.appendChild(liElement);
             });
         }
-        
+    } else {
+        console.log(keyCheckResponse.status);
     }
 });
 
@@ -70,8 +71,6 @@ document.getElementById('search-btn').addEventListener('click', async () => {
     const startDate = document.getElementById('search-start-date').value;
     const endDate = document.getElementById('search-end-date').value;
 
-    console.log(startDate, endDate);
-
     if(startDate === '' || endDate === '') {
         alert('날짜를 선택해주세요.');
         return;
@@ -87,7 +86,7 @@ document.getElementById('search-btn').addEventListener('click', async () => {
         return;
     }
 
-    const searchResponse = await fetch('/api/product/get-scoped-orders', {
+    const searchResponse = await fetch('/api/product/store-get-scoped-orders', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -103,6 +102,7 @@ document.getElementById('search-btn').addEventListener('click', async () => {
         ulElement.innerHTML = '';
 
         orders = await searchResponse.json();
+        console.log(orders);
 
         orders.forEach(order => {
             const orderDate = order.order_date.substring(0, 10);
@@ -150,7 +150,7 @@ document.getElementById('download-btn').addEventListener('click', async () => {
     XLSX.writeFile(workbook, 'order-list.xlsx');
 });
 
-// 주문 삭제
+// 주문 삭제 - mysql
 document.getElementById('delete-btn').addEventListener('click', async () => {
     const orderCheckboxes = document.querySelectorAll('#order-checkbox');
     const ids = [];
@@ -165,7 +165,38 @@ document.getElementById('delete-btn').addEventListener('click', async () => {
         alert('삭제할 주문을 선택해주세요.');
         return;
     } else {
-        const deleteResponse = await fetch('/api/product/delete-orders', {
+        const deleteResponse = await fetch('/api/product/db-delete-orders', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify(ids),
+        });
+
+        if(deleteResponse.ok) {
+            alert('주문이 삭제되었습니다.');
+            window.location.reload();
+        } else {
+            const deleteResult = await deleteResponse.json();
+            console.log(deleteResult.error);
+        }
+    }
+});
+
+// 주문 삭제 - firestore
+document.getElementById('delete-btn').addEventListener('click', async () => {
+    const orderCheckboxes = document.querySelectorAll('#order-checkbox');
+    const ids = [];
+
+    for(const checkbox of orderCheckboxes) {
+        if(checkbox.checked) {
+            ids.push({order_id: checkbox.value});
+        }
+    }
+
+    if(ids.length === 0) {
+        alert('삭제할 주문을 선택해주세요.');
+        return;
+    } else {
+        const deleteResponse = await fetch('/api/product/store-delete-orders', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify(ids),

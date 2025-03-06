@@ -1,7 +1,7 @@
 {
   "projects": {
-    "default": "medivice-order",
-    "medivice-web": "medivice-order"
+    "default": "mediviceorder",
+    "medivice-order": "mediviceorder"
   },
   "targets": {},
   "etags": {}

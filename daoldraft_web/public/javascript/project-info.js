@@ -3,6 +3,30 @@ var docId = '';
 var project;
 var price = '';
 
+async function initializePage() {
+    try {
+        // 로딩 인디케이터 표시
+        document.body.style.opacity = '0.5';
+        document.body.style.pointerEvents = 'none';
+
+        await checkLogin();
+        await getSubscribeInfos();
+        await checkUserAdminAndDisplay();
+        await initProjectInfo();
+
+        // 모든 데이터 로딩이 완료되면 페이지 표시
+        document.body.style.opacity = '1';
+        document.body.style.pointerEvents = 'auto';
+    } catch(e) {
+        console.error('페이지 초기화 중 오류 발생:', error);
+        // 에러 발생 시 사용자에게 알림
+        Swal.fire('오류', '데이터를 불러오는 중 문제가 발생했습니다.', 'error');
+    }
+
+}
+initializePage();
+
+
 // 로그인 체크
 async function checkLogin() {
     const response = await fetch('/login/current-user', {
@@ -31,7 +55,6 @@ async function checkLogin() {
         document.getElementById("to-signin").style.display = 'block';
     }
 }
-checkLogin();
 
 // 프로젝트 ID
 function getDocId() {
@@ -108,33 +131,6 @@ async function getSubscribeInfos() {
         }
     }
 }
-getSubscribeInfos();
-
-async function checkUserVerify() {
-    const response = await fetch('/login/verify', {
-        method: 'POST',
-        credentials: "include",
-    });
-
-    const result = await response.json();
-    if(response.ok) {
-        if(result.msg.includes("verify0")) {
-            window.location.reload();
-            alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
-        } 
-        else {
-            document.getElementById("profile-photo").style.visibility = 'visible';
-            document.getElementById("profile-photo").style.display = 'flex';
-            document.getElementById("profile-photo").style.flexDirection = 'raw';
-            document.getElementById("profile-photo").style.alignItems = 'center';
-
-            document.getElementById("user-email").innerText = result.msg;
-            
-            document.getElementById("to-signin").style.display = 'none';
-        }
-    }
-}
-checkUserVerify();
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -152,7 +148,6 @@ async function checkUserAdminAndDisplay() {
         console.log(`error: ${result.error}`);
     }
 }
-checkUserAdminAndDisplay();
 
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
@@ -359,7 +354,6 @@ async function initProjectInfo() {
     await getProgressUI();
 }
 
-initProjectInfo();
 
 // 결제 모달창
 document.getElementById("request-payment").addEventListener('click', () => {

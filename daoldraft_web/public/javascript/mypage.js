@@ -1,6 +1,31 @@
 var subscribeType = '';
 var pjtIndex = 0;
 
+async function initializePage() {
+    try {
+        // 로딩 인디케이터 표시
+        document.body.style.opacity = '0.5';
+        document.body.style.pointerEvents = 'none';
+
+        await checkLogin();
+        await getSubscribeInfos();
+        await checkUserAdminAndDisplay();
+        await initProjectInfo();
+        await initPaymentInfo();
+
+        // 모든 데이터 로딩이 완료되면 페이지 표시
+        document.body.style.opacity = '1';
+        document.body.style.pointerEvents = 'auto';
+    } catch(e) {
+        console.error('페이지 초기화 중 오류 발생:', error);
+        // 에러 발생 시 사용자에게 알림
+        Swal.fire('오류', '데이터를 불러오는 중 문제가 발생했습니다.', 'error');
+    }
+
+}
+
+initializePage();
+
 // 로그인 체크
 async function checkLogin() {
     const response = await fetch('/login/current-user', {
@@ -29,7 +54,6 @@ async function checkLogin() {
         document.getElementById("to-signin").style.display = 'block';
     }
 }
-checkLogin();
 
 async function getUserInitData() {
     // 구독권 타입
@@ -72,33 +96,6 @@ async function getSubscribeInfos() {
         }
     }
 }
-getSubscribeInfos();
-
-async function checkUserVerify() {
-    const response = await fetch('/login/verify', {
-        method: 'POST',
-        credentials: "include",
-    });
-
-    const result = await response.json();
-    if(response.ok) {
-        if(result.msg.includes("verify0")) {
-            window.location.reload();
-            alert('인증 이메일이 전송되었습니다. 인증 완료 후 다시 로그인해 주세요.');
-        } 
-        else {
-            document.getElementById("profile-photo").style.visibility = 'visible';
-            document.getElementById("profile-photo").style.display = 'flex';
-            document.getElementById("profile-photo").style.flexDirection = 'raw';
-            document.getElementById("profile-photo").style.alignItems = 'center';
-
-            document.getElementById("user-email").innerText = result.msg;
-            
-            document.getElementById("to-signin").style.display = 'none';
-        }
-    }
-}
-checkUserVerify();
 
 // 드롭다운 관리자 계정 전용 링크 설정
 async function checkUserAdminAndDisplay() {
@@ -116,7 +113,6 @@ async function checkUserAdminAndDisplay() {
         console.log(`error: ${result.error}`);
     }
 }
-checkUserAdminAndDisplay();
 
 // Profile link 클릭 시 드롭다운 토글
 document.getElementById('profile-link').addEventListener('click', function (e) {
@@ -260,18 +256,21 @@ async function setProjectIndexes() {
 }
 
 // 페이저 인덱스 버튼 클릭 이벤트 리스너
+let isDisplayed = false;
 async function setProjectIndexEventListener() {
     pagedProjects = [];
-
     for(let i = 0; i < 5; i++) {
         const indexBtn = document.getElementById(`project-index-${i}`);
         
-        indexBtn.addEventListener('click', (e) => {
+        indexBtn.addEventListener('click', async (e) => {
             e.preventDefault();
     
+            if(isDisplayed) return;
+            isDisplayed = true;
             const listwrapper = document.querySelector('.project-list ul');
+            listwrapper.innerHTML = ``;
             pagedProjects = [];
-    
+            
             indexBtn.innerText = `${page+i+1}`;
             const eventIndexStart = (parseInt(indexBtn.innerText, 10)-1)*5;
 
@@ -282,8 +281,8 @@ async function setProjectIndexEventListener() {
                 else break;
             }
 
-            listwrapper.innerHTML = ``;
-            displayProjectList();
+            await displayProjectList();
+            isDisplayed = false;
         }); 
     }
 }
@@ -305,7 +304,9 @@ document.getElementById('project-pager-next-btn').addEventListener('click', (e) 
 async function displayProjectList() {
     const projectList = document.querySelector('.project-list ul');
     const emptyCount = 5 - pagedProjects.length;
-    
+
+    console.log(`list1: ${projectList.innerHTML.toString()}`);
+
     for (let pjt of pagedProjects) {    
         // 문의 일자
         const date = new Date(pjt.date);
@@ -343,6 +344,7 @@ async function displayProjectList() {
         itemLi.appendChild(itemA);
         projectList.appendChild(itemLi);
     };
+    console.log(`list2: ${projectList.innerHTML.toString()}`);
 
     for(let i = 0; i < emptyCount; i++) {
         const itemLi = document.createElement('li');
@@ -358,6 +360,9 @@ async function displayProjectList() {
         itemLi.appendChild(itemA);
         projectList.appendChild(itemLi);
     }
+
+    console.log(`list3: ${projectList.innerHTML.toString()}`);
+
 }
 
 
@@ -439,12 +444,11 @@ async function setPaymentIndexes() {
 
 async function setPaymentIndexEventListener() {
     pagedPrices = [];
-    console.log(`page: ${paymentPage}`);
 
     for(let i = 0; i < 5; i++) {
         const indexBtn = document.getElementById(`payment-index-${i}`);
         
-        indexBtn.addEventListener('click', (e) => {
+        indexBtn.addEventListener('click', async (e) => {
             e.preventDefault();
     
             const listwrapper = document.querySelector('.payment-details-wrapper ul');
@@ -473,23 +477,22 @@ async function initProjectInfo() {
 
     // 프로젝트 내역 페이징
     await setProjectIndexes();
-    setProjectIndexEventListener();
+    await setProjectIndexEventListener();
 
     document.getElementById('project-index-0').click();    
 }
-initProjectInfo();
+
 
 async function initPaymentInfo() {
     // 결제내역 페이징
     await getPayedPrices();
 
     await setPaymentIndexes();
-    setPaymentIndexEventListener();
+    await setPaymentIndexEventListener();
 
     document.getElementById('payment-index-0').click();
 }
 
-initPaymentInfo();
 
 // 1200px 이하 유저 메뉴 리스트 열기
 document.getElementById('menu-display-btn').addEventListener('click', (e) => {

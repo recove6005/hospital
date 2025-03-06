@@ -12,44 +12,44 @@ const __dirname = path.dirname(__filename);
 // 프로젝트 결제 가격 가져오기 - 결제 확인된 내역만
 export const getPayedPrices = async (req, res) => {
     let priceList = [];
-    if(req.session.user) {
-        const user = auth.currentUser;
+    const user = auth.currentUser;
         const uid = user.uid;
         let deposit = '-';
         
-        const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
-        const snapshots = await getDocs(q);
+        try {
+            const q = query(collection(db, 'price'), where('uid', '==', uid), where('payed', '==', true), orderBy('date', 'desc'));
+            const snapshots = await getDocs(q);
+        
+            if(snapshots.empty) {
+                return res.status(500).json({error: `snapshot's empty.`});
+            } else {
+                try {
+                    // if(paytype == '무통장 입금') {
+                    //     const depositDocRef = doc(db, 'deposit', data.docId);
+                    //     const depositSnap = await getDoc(depositDocRef);
     
-        if(snapshots.empty) {
-            return res.status(500).json({error: `snapshot's empty.`});
-        } else {
-            try {
-                // if(paytype == '무통장 입금') {
-                //     const depositDocRef = doc(db, 'deposit', data.docId);
-                //     const depositSnap = await getDoc(depositDocRef);
-
-                //     deposit = depositSnap.owner
-                // } 
-
-                snapshots.forEach(doc => {
-                    const data = doc.data();
-                    priceList.push({
-                        title: data.title,
-                        price: data.price,
-                        date: data.date,
-                        paytype: data.paytype,
-                        deposit: deposit,
+                    //     deposit = depositSnap.owner
+                    // } 
+    
+                    snapshots.forEach(doc => {
+                        const data = doc.data();
+                        priceList.push({
+                            title: data.title,
+                            price: data.price,
+                            date: data.date,
+                            paytype: data.paytype,
+                            deposit: deposit,
+                        });
                     });
-                });
-
-                return res.status(200).json({ priceList: priceList});
-            } catch(e) {
-                return res.status(500).json({error: e.message});
+    
+                    return res.status(200).json({ priceList: priceList});
+                } catch(e) {
+                    return res.status(500).json({error: e.message});
+                }
             }
+        } catch(e) {
+            return res.status(500).json({error: e.message});
         }
-    } else {
-        return res.status(401).json({error: `no session found`});
-    }
 };
 
 
@@ -232,8 +232,13 @@ export const requestPayment = async (req, res) => {
     // const { docId, price } = req.body;
     // const files = req.files || [];
     try {
+        if(!req.rawBody) {
+            return res.status(400).send({error: `Missing required fields docId ${docId}, price ${price}`});
+        }
+
         const {fields, files} = await parseFormData(req);
         const {docId, price} = fields;
+
 
         if(!docId || !price) {
             return res.status(400).send({error: `Missing required fields docId ${docId}, price ${price}`});
