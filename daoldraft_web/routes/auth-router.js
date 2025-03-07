@@ -7,8 +7,6 @@ router.get('/email', moveToLoginEmail);
 
 router.post('/login', login);
 
-// router.post('/verify', checkUserVerify);
-
 router.post('/current-user', getCurrentUser);
 
 router.post('/register', register);

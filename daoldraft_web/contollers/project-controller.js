@@ -85,6 +85,7 @@ export const getProjectByDocId = async (req, res) => {
         if(snapshot.exists()) {
             return res.status(200).json({
                 title: snapshot.data().title,
+                size: snapshot.data().size,
                 date: snapshot.data().date,
                 organization: snapshot.data().organization,
                 name: snapshot.data().name,
@@ -214,6 +215,7 @@ export const acceptProject = async (req, res) => {
                 organization: docSnap.data().organization,
                 call: docSnap.data().call,
                 progress: "1",
+                size: docSnap.data().size,
                 title: docSnap.data().title,
                 uid: docSnap.data().uid,
                 userEmail: docSnap.data().userEmail,
@@ -229,24 +231,23 @@ export const acceptProject = async (req, res) => {
 // 프로젝트 progress 업데이트 : 결제 요청
 // 작업 중 (1) -> 작업완료, 결제중(2)
 export const requestPayment = async (req, res) => {
-    // const { docId, price } = req.body;
-    // const files = req.files || [];
+    const { docId, price } = req.body;
+    const files = req.files || [];
     try {
-        if(!req.rawBody) {
-            return res.status(400).send({error: `Missing required fields docId ${docId}, price ${price}`});
-        }
-
-        const {fields, files} = await parseFormData(req);
-        const {docId, price} = fields;
-
+        // const {fields, files} = await parseFormData(req);
+        // const {docId, price} = fields;
+        
+        // if(!req.rawBody) {
+        //     return res.status(400).send({error: `Missing required fields docId ${docId}, price ${price}`});
+        // }
 
         if(!docId || !price) {
             return res.status(400).send({error: `Missing required fields docId ${docId}, price ${price}`});
         }
 
-        if(files.length === 0) {
-            console.log(`error: Missing required files`);
-        }
+        // if(files.length === 0) {
+        //     console.log(`error: Missing required files`);
+        // }
 
         // 상태 업데이트
         const docRef = doc(db, 'projects', docId);
@@ -260,6 +261,7 @@ export const requestPayment = async (req, res) => {
                 organization: docSnap.data().organization,
                 call: docSnap.data().call,
                 progress: "2",
+                size: docSnap.data().size,
                 title: docSnap.data().title,
                 uid: docSnap.data().uid,
                 userEmail: docSnap.data().userEmail,
@@ -281,20 +283,6 @@ export const requestPayment = async (req, res) => {
         console.log(`Price upload success.`);
 
         // 파일 업로드 - multer
-        // if(files.length > 0) {
-        //     try {
-        //         for(let index = 0; index < files.length; index++) {
-        //             const file = files[index];
-        //             const fileName = `${docSnap.data().uid}_${docId}_${index}.png`;
-        //             const storageRef = ref(storage, fileName);
-        //             await uploadBytes(storageRef, file.buffer);
-        //         };
-        //     } catch(e) {
-        //         return res.status(500).send({ error: e.message });
-        //     }
-        // } 
-
-        // 파일 업로드 - busboy
         if(files.length > 0) {
             try {
                 for(let index = 0; index < files.length; index++) {
@@ -302,12 +290,26 @@ export const requestPayment = async (req, res) => {
                     const fileName = `${docSnap.data().uid}_${docId}_${index}.png`;
                     const storageRef = ref(storage, fileName);
                     await uploadBytes(storageRef, file.buffer);
-                }
-                console.log(`File upload success.`);
+                };
             } catch(e) {
-                return res.status(500).send({error: `File upload error: ${e.message}`});
+                return res.status(500).send({ error: e.message });
             }
-        }
+        } 
+
+        // 파일 업로드 - busboy
+        // if(files.length > 0) {
+        //     try {
+        //         for(let index = 0; index < files.length; index++) {
+        //             const file = files[index];
+        //             const fileName = `${docSnap.data().uid}_${docId}_${index}.png`;
+        //             const storageRef = ref(storage, fileName);
+        //             await uploadBytes(storageRef, file.buffer);
+        //         }
+        //         console.log(`File upload success.`);
+        //     } catch(e) {
+        //         return res.status(500).send({error: `File upload error: ${e.message}`});
+        //     }
+        // }
 
         return res.status(200).send({msg: "A payment request was sented."});
     } catch(e) {

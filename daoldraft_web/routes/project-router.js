@@ -15,7 +15,8 @@ router.post('/dismiss-project', dismissProject);
 
 router.post('/get-project-by-id', getProjectByDocId);
 
-router.post('/request-payment', requestPayment);
+const upload = multer();
+router.post('/request-payment', upload.array('files'), requestPayment);
 
 router.post('/get-projects-by-uid', getProjectsByUid);
 

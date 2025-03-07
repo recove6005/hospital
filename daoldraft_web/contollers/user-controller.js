@@ -97,7 +97,7 @@ export const getPayWithSubscribe = async (req, res) => {
 // 프로젝트 문의 등록
 export const commissionProject = async (req, res) => {
     const formData = req.body;
-    const { title, call, organization, name, email, details } = formData;
+    const { title, call, organization, name, email, details, size } = formData;
     const user = auth.currentUser;
     
     if(user) {
@@ -118,6 +118,7 @@ export const commissionProject = async (req, res) => {
                 email: email,
                 details: details,
                 progress: '0',
+                size: size,
             });
         
             res.status(200).json({ msg: "Project inserted successfully", receivedData: formData });

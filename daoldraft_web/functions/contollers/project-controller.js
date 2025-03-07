@@ -85,6 +85,7 @@ export const getProjectByDocId = async (req, res) => {
         if(snapshot.exists()) {
             return res.status(200).json({
                 title: snapshot.data().title,
+                size: snapshot.data().size,
                 date: snapshot.data().date,
                 organization: snapshot.data().organization,
                 name: snapshot.data().name,
@@ -214,6 +215,7 @@ export const acceptProject = async (req, res) => {
                 organization: docSnap.data().organization,
                 call: docSnap.data().call,
                 progress: "1",
+                size: docSnap.data().size,
                 title: docSnap.data().title,
                 uid: docSnap.data().uid,
                 userEmail: docSnap.data().userEmail,
@@ -260,6 +262,7 @@ export const requestPayment = async (req, res) => {
                 organization: docSnap.data().organization,
                 call: docSnap.data().call,
                 progress: "2",
+                size: docSnap.data().size,
                 title: docSnap.data().title,
                 uid: docSnap.data().uid,
                 userEmail: docSnap.data().userEmail,

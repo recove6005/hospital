@@ -7,44 +7,58 @@ import Busboy from 'busboy';
 
 export const parseFormData = (req) => {
     return new Promise((resolve, reject) => {
-        const busboy = new Busboy({ headers: req.headers });
-
-        const files = [];
-        const fields = {};
-        
-        busboy.on("field", (filedname, value) => {
-            fields[filedname] = value;
+        // 로컬 환경 rawBody 생성
+        let requestBodyBuffer = [];
+        req.on('data', (chunk) => {
+            requestBodyBuffer.push(chunk);
         });
 
-        busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
-            let fileBuffer = [];
+        req.on('end', () => {
+            const finalBuffer = Buffer.concat(requestBodyBuffer);
 
-            file.on("data", (chunk) => {
-                fileBuffer.push(chunk);
+            const busboy = new Busboy({
+                headers: req.headers,
+                defParamCharset: 'utf8', // 인코딩 문제 방지
+                limits: { fileSize: 10 * 1024 * 1024 }, // 10MB 제한
             });
 
-            file.on("end", () => {
-                files.push({
-                    fieldname,
-                    filename,
-                    buffer: Buffer.concat(fileBuffer),
-                    mimetype,
+            const files = [];
+            const fields = {};
+
+            busboy.on("field", (filedname, value) => {
+                fields[filedname] = value;
+            });
+    
+            busboy.on("file", (fieldname, file, filename, encoding, mimetype) => {
+                let fileBuffer = [];
+    
+                file.on("data", (chunk) => {
+                    fileBuffer.push(chunk);
+                });
+    
+                file.on("end", () => {
+                    files.push({
+                        fieldname,
+                        filename,
+                        buffer: Buffer.concat(fileBuffer),
+                        mimetype,
+                    });
                 });
             });
+
+            busboy.on("finish", () => {
+                resolve({ files, fields });
+            });
+    
+            busboy.on("error", (error) => {
+                reject(error);
+            });
+
+            busboy.end(req.rawBody || finalBuffer);
         });
 
-        busboy.on("finish", () => {
-            resolve({ files, fields });
-        });
-
-        busboy.on("error", (error) => {
+        req.on("error", (error) => {
             reject(error);
         });
-
-        if(req.rawBody) {
-            busboy.end(req.rawBody);
-        } else {
-            reject(new Error("Missing rawBody in request."));
-        }
     });
 }
