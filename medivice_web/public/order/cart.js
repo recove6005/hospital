@@ -14,7 +14,6 @@ function displayCart() {
     
     for(var product in cart) {
         var prodName = '-';
-        
         if(cart[product].prodName === 'delete') continue;
         if(cart[product].prodName === 'forcep') prodName = 'forcep';
         if(cart[product].prodName === 'snare') prodName = 'snare';
@@ -40,24 +39,13 @@ displayCart();
 document.getElementById('order-btn').addEventListener('click', async (e) => {
     var cart = getCart();
 
-    const orderAllResponse = await fetch('/api/product/store-order-all', {
-        method:'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(cart),
-    });
-
-    if(orderAllResponse.ok) {
-        Object.keys(cart).forEach(product => {
-            delete cart[product];
-        });
-        setCart(cart);
-        window.location.reload();
-    } 
+    const encodedProducts = encodeURIComponent(JSON.stringify(cart));
+    const url = '../order/orderform.html?products='+encodedProducts;
+    window.location.href = url;
 });
 
 document.getElementById('delete-btn').addEventListener('click', (e) => {
     var cart = getCart();
-
     Object.keys(cart).forEach(product => {
         const target = document.getElementById(product);
         if(target?.checked) {

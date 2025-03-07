@@ -83,15 +83,8 @@ export const dbOrderAll = async (req, res) => {
 
 // 위시리스트 주문 - firestore
 export const storeOrderAll = async (req, res) => {
-    var cart = req.body;
-    for(var product in cart) {
-        const product_name = cart[product].prodName;
-        const standard = cart[product].standard;
-        const quantity = cart[product].quantity;
-        const hospital_name = cart[product].hospName;
-        const call_num = cart[product].call;
-        const email = cart[product].email;
-        const details = cart[product].details;
+    const { products, hospName, call, email, address } = req.body;  
+    for(var product in products) {
         const date = new Date();
         const order_date = date.getFullYear() + '-' + String(date.getMonth() + 1).padStart(2, '0') + '-' + String(date.getDate()).padStart(2, '0');
         const order_timestamp = date.getTime();
@@ -100,13 +93,13 @@ export const storeOrderAll = async (req, res) => {
             await setDoc(orderRef, {
                 order_date: order_date,
                 order_timestamp: order_timestamp,
-                product_name: product_name,
-                standard: standard,
-                quantity: quantity,
-                hospital_name: hospital_name,
-                call_num: call_num,
+                product_name: products[product].prodName,
+                standard: products[product].standard,
+                quantity: products[product].quantity,
+                hospital_name: hospName,
+                call_num: call,
                 email: email,
-                details: details,
+                address: address,
                 order_id: orderRef.id
             });
         } catch(e) {

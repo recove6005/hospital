@@ -7,16 +7,12 @@ const email = document.getElementById('email');
 const details = document.getElementById('details');
 
 // 장바구니 로직
-function addCart(prodName, standard, quantity, hospName, call, email, details) {
+function addCart(prodName, standard, quantity) {
     var cart = getCart();
     cart[prodName] = { 
         prodName: prodName, 
         standard: standard, 
         quantity: quantity, 
-        hospName: hospName, 
-        call: call, 
-        email: email, 
-        details: details
     };
     setCart(cart);
 }
@@ -38,13 +34,9 @@ document.getElementById('shoppingbag-btn').addEventListener('click', (e) => {
 // shoppingbag form 로직
 function addToShoppingBag() {
     if(
-        quantity.value != '' &&
-        hospName.value != '' &&
-        call.value != '' &&
-        email.value != '' &&
-        details.value != ''
+        quantity.value != ''
     )  {
-        addCart(prodName.value, standard.value, quantity.value, hospName.value, call.value, email.value, details.value);
+        addCart(prodName.value, standard.value, quantity.value);
     }
 }
 
@@ -52,38 +44,23 @@ function addToShoppingBag() {
 document.getElementById('order-btn').addEventListener('click', async (e) => {
     e.preventDefault();
     if(
-        quantity.value != '' &&
-        hospName.value != '' &&
-        call.value != '' &&
-        email.value != '' &&
-        details.value != ''
+        quantity.value != ''
     ) {
-        submitInquiry();
+        order();
     }
 });
 
-// order form 로직
-async function submitInquiry() {
-    const orderResponse = await fetch('/api/product/store-order', {
-        method:'POST',
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({  
-            product_name: prodName.value,
-            standard: standard.value,
-            quantity: parseInt(quantity.value),
-            hospital_name: hospName.value,
-            call_num: call.value,
-            email: email.value,
-            details: details.value,
-        }),
-    });
 
-    if(orderResponse.ok) {
-        window.location.reload();
-    } else {
-        const orderResult = await orderResponse.json();
-        console.log(`order error: ${orderResult.error}`);
+async function order() {
+    const products = {
+        prodName: prodName.value,
+        standard: standard.value,
+        quantity: quantity.value,
     }
+
+    const encodedProducts = encodeURIComponent(JSON.stringify(products));
+    const url = '../order/orderform.html?products='+encodedProducts;
+    window.location.href = url;
 }
 
 // 수량 input 마이너스값 제한
