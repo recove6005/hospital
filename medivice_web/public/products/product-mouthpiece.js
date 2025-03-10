@@ -1,18 +1,23 @@
+import { MOUTHPIECE } from '../constants.js';
+
 const prodName = document.getElementById('prodName');
 const standard = document.getElementById('standard');
 const quantity = document.getElementById('quantity');
-const hospName = document.getElementById('hospName');
-const call = document.getElementById('call');
-const email = document.getElementById('email');
-const details = document.getElementById('details');
+const price = document.getElementById('price');
+
+// 초기화
+document.addEventListener('DOMContentLoaded', () => {
+    price.value = MOUTHPIECE;
+});
 
 // 장바구니 로직
-function addCart(prodName, standard, quantity) {
-    var cart = getCart();
+function addCart(prodName, standard, quantity, price) {
+    var cart = getCart();   
     cart[prodName] = { 
         prodName: prodName, 
         standard: standard, 
         quantity: quantity, 
+        price: price,
     };
     setCart(cart);
 }
@@ -28,34 +33,38 @@ function setCart(cart) {
 
 // shoppingbag-btn
 document.getElementById('shoppingbag-btn').addEventListener('click', (e) => {
+    e.preventDefault();
     addToShoppingBag();
 });
 
 // shoppingbag form 로직
 function addToShoppingBag() {
-    if(
-        quantity.value != ''
-    )  {
-        addCart(prodName.value, standard.value, quantity.value);
+    if(quantity.value === '') {
+        quantity.value = 1;
     }
+    addCart(prodName.value, standard.value, quantity.value, price.value);
 }
 
 // order-btn
 document.getElementById('order-btn').addEventListener('click', async (e) => {
     e.preventDefault();
-    if(
-        quantity.value != ''
-    ) {
-        order();
+    if(quantity.value === '') {
+        quantity.value = 1;
     }
+    order();
 });
 
 // order form 로직
 async function order() {
+    if(quantity.value === '') {
+        quantity.value = 1;
+    }
+    
     const products = {
         prodName: prodName.value,
         standard: standard.value,
         quantity: quantity.value,
+        price: price.value,
     }
 
     const encodedProducts = encodeURIComponent(JSON.stringify(products));
@@ -66,8 +75,19 @@ async function order() {
 // 수량 input 마이너스값 제한
 document.getElementById('quantity').addEventListener('input', (e) => {
     var regex = /^\d+$/;
-    if (!regex.test(e.target.value)) { 
+    if (!regex.test(e.target.value) || e.target.value <= 0) { 
         e.target.value = '';
     }
+});
+
+// 수량 변경 시 가격 변경
+quantity.addEventListener('input', (e) => {
+    var quantityValue = quantity.value;
+    if(quantityValue === '') {
+        quantityValue = 1;
+    }
+
+    price.value = MOUTHPIECE;
+    price.value = MOUTHPIECE*quantityValue;
 });
 
