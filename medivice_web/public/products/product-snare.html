@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="product-snare.css">
-    <title>MEDIVICE</title>
+    <link rel="stylesheet" href="product-pages.css">
+    <title>MEDIVICE ORDER</title>
 </head>
 <body>
      <!-- topbar -->
@@ -14,12 +14,21 @@
                 <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
             </a>
         </div>
-        <a id="shoppingbag" href="../order/cart.html">
-            <img src="../images/ic-temp-shopping-cart.png" alt="shoppingbag">
-            <p>wish</p>
-        </a>
-    </header>
-
+        <div id="header-center-container">
+            <a class="menu-item" href="#">
+                <p>주문 조회</p>
+            </a>
+            <a class="menu-item" href="/manage/entry.html">
+                <p>주문 관리</p>
+            </a>
+        </div>
+        <div id="header-right-container">
+            <a id="shoppingbag" href="/order/cart.html">
+                <div id="shoppingbag-img"></div>
+                <p>cart</p>
+            </a>
+        </div>
+    </header>   
     <main>
         <saction id="project-nav">
             <div class="swipe-btn" id="swipe-prev-btn">
@@ -56,17 +65,20 @@
                 <li class="nav-menu" id="sponge">
                     <a href="product-sponge.html"><div>내시경 세척스펀지</div></a>
                 </li>
+                <li class="nav-menu" id="gown-top">
+                    <a href="product-gown-top.html"><div>일회용 검진복 상의</div></a>
+                </li>
                 <li class="nav-menu" id="gown-set">
-                    <a href="product-gown-set.html"><div>1회용 검진복 상하의 세트</div></a>
+                    <a href="product-gown-set.html"><div>일회용 검진복 상하의 세트</div></a>
                 </li>
                 <li class="nav-menu" id="gown-pants">
-                    <a href="product-gown-pants.html"><div>1회용 대장 바지</div></a>
+                    <a href="product-gown-pants.html"><div>일회용 대장 바지</div></a>
                 </li>
                 <li class="nav-menu" id="gown-skirt">
-                    <a href="product-gown-skirt.html"><div>1회용 검진 치마</div></a>
+                    <a href="product-gown-skirt.html"><div>일회용 검진 치마</div></a>
                 </li>
                 <li class="nav-menu" id="inner-gown">
-                    <a href="product-gown-inner.html"><div>1회용 내시경 가운</div></a>
+                    <a href="product-gown-inner.html"><div>일회용 내시경 가운</div></a>
                 </li>
                 <li class="nav-menu" id="breast-gown">
                     <a href="product-gown-breast.html"><div>유방 검사용 가운</div></a>
@@ -81,7 +93,7 @@
                     <a href="product-pillow-cover-bag.html"><div>베개 커버 파우치형</div></a>
                 </li>
                 <li class="nav-menu" id="hospital-gown">
-                    <a href="product-hospital-gown.html"><div>1회용 입원복</div></a>
+                    <a href="product-hospital-gown.html"><div>일회용 입원복</div></a>
                 </li>
             </ul>
             <div class="swipe-btn" id="swipe-next-btn">
@@ -118,7 +130,7 @@
                         </div>
                         <div class="button-wrapper">
                             <button id="shoppingbag-btn">Add to Cart</button>
-                            <button id="order-btn" onclick="window.location.href='../order/orderform.html'">Order</button>
+                            <button id="order-btn">Order</button>
                         </div>
                     </form>
             </div>

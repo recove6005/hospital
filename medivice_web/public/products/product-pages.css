@@ -28,29 +28,107 @@ a {
 
 /* header */
 header {
-    width: 50%;
-    height: 100px;
-    display: flex;
-    color: #00a99d;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    width: 60%;
     position: fixed;
     top: 0;
+    height: 100px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    z-index: 9999;
 }
 
-#shoppingbag {
+/* header: logo */
+#logo-container {
+    width: 20%;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    width: 285px;
+    height: 100px;
+}
+
+#header-center-container {
+    width: 60%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-item {
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+    color: black;
+    font-size: 23px;
+    font-weight: 400;
+    width: 20%;
+    transition-duration: 0.3s;
+    position: relative; /* pseudo-element 위치 기준점 */
+}
+
+.menu-item::after {
+    content: '';
+    position: absolute;
+    bottom: -5px; /* 텍스트와의 간격 조절 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #004281, #0066cc);
+    transition: width 0.3s ease;
+}
+
+.menu-item:hover::after {
+    width: 80%; /* 밑줄의 최대 너비 */
+}
+
+.menu-item:hover {
+    color: #002952;
+}
+
+#header-right-container {
+    width: 25%;
+    display: flex;
+    flex-shrink: 0;
+    justify-content: center;
+    align-items: center;
+}   
+
+#menu-cart {
+    display: none;
+}
+
+#shoppingbag{
     width: 60px;
     height: 60px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition-duration: 0.3s;
 }
 
-#shoppingbag img {
-    width: 40px;
-    height: 40px;
+#shoppingbag:hover {
+    color: #004281;
+}
+
+#shoppingbag-img {
+    width: 35px;
+    height: 35px;
+    background-image: url('../images/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: background-image 0.3s;
+}
+
+#shoppingbag:hover #shoppingbag-img {
+    background-image: url('../images/ic-cart-move.gif');
 }
 
 #shoppingbag p {
@@ -78,24 +156,60 @@ main {
 }
 
 #project-nav ul {
-    width: 50%;
     list-style: none;
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    overflow: hidden;
 }
 
 .nav-menu {
-    width: max-content;
+    width:  100%;
     height: max-content;
     display: flex;
-    font-size: 16px;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
     text-align: center;
 }
 
-.nav-menu a:hover {
-    color: #00a99d;
+.nav-menu a {
+    width: 200px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition-duration: 0.3s;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    text-decoration: none; /* 기본 밑줄 제거 */
 }
+
+.nav-menu a::before,
+.nav-menu a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 0;
+    height: 1px;
+    background-color: #004281;
+    transition: width 0.3s ease;
+}
+
+.nav-menu a::before {
+    left: 50%;
+}
+
+.nav-menu a::after {
+    right: 50%;
+}
+
+.nav-menu a:hover::before,
+.nav-menu a:hover::after {
+    width: 50%;
+}
+
+
 
 /* 폼 입력 섹션 */
 #contact-saction {
@@ -120,13 +234,13 @@ main {
     height: 50px;
     font-size: 38px;
     font-weight: 600;
-    color: #00a99d;
+    color: #004281;
 }
 
 #contact-display-wrapper > div {
     width: 410px;
     height: 500px;
-    border: 1px solid #00a99d;
+    border: 1px solid #004281;
     border-radius: 30px;
     display: flex;
     flex-direction: column;
@@ -190,7 +304,7 @@ main {
     height: 50px;
     font-size: 38px;
     font-weight: 600;
-    color: #00a99d;
+    color: #004281;
 }
 
 #contact-form-wrapper form {
@@ -217,9 +331,9 @@ main {
 }
 
 #contact-form-wrapper form p {
-    width: 80px;
+    width: 200px;
     display: flex;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     width: 120px;
     height: 45px;
@@ -228,9 +342,10 @@ main {
     color: #232323;
 }
 
-#contact-form-wrapper .contact-input {
-    width: 450px;
+.contact-input {
+    width: 350px;
     height: 45px;
+    display: block;
     font-size: 20px;
     font-weight: 400;
     border-radius: 0 30px 30px 0;
@@ -279,7 +394,7 @@ main {
     height: 45px;
     border: none;
     border-radius: 30px;
-    background-color: #00a99d;
+    background-color: #004281;
     color: white;
     font-size: 20px;
     font-weight: 600;
@@ -288,7 +403,7 @@ main {
 }
 
 #contact-form button:hover {
-    background-color: #02776f;
+    background-color: #002952;
 }
 
 .product-title {
@@ -301,14 +416,71 @@ main {
     text-align: center;
 }
 
-#quantity {
-    padding-right: 30px;
-}
-
 /* 설명 섹션 */
 #display_section {
     width: 1090px;
     display: flex;
     justify-content: center;
     margin-top: 150px;
+}
+
+
+@media screen and (max-width: 1090px) {
+    header {
+        position: absolute;
+        width: 100%;
+        height: 300px;
+        flex-direction: column;
+    }
+
+    #header-center-container {
+        width: 100%;
+        height: 100px;
+        margin: 5px 0;
+        flex-direction: column;
+    }
+
+    #menu-cart {
+        display: block;
+        width: 100%;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #shoppingbag {
+        display: none;
+    }
+
+    .menu-item {
+        width: 100%;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .menu-item:hover {
+        color: #004281;
+    }
+
+    main {
+        margin-top: 300px;
+    }
+
+    #project-nav ul {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #contact-saction {
+        width: 100%;
+        flex-direction: column;
+        margin-top: 50px;
+    }
+
+    #contact-display-wrapper {
+        margin-right: 0;
+    }
 }

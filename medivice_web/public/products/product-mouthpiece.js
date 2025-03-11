@@ -33,7 +33,6 @@ function setCart(cart) {
 
 // shoppingbag-btn
 document.getElementById('shoppingbag-btn').addEventListener('click', (e) => {
-    e.preventDefault();
     addToShoppingBag();
 });
 
@@ -42,7 +41,8 @@ function addToShoppingBag() {
     if(quantity.value === '') {
         quantity.value = 1;
     }
-    addCart(prodName.value, standard.value, quantity.value, price.value);
+    addCart(prodName.value, '', quantity.value, price.value);
+    alert('카트에 상품이 추가되었습니다.');
 }
 
 // order-btn
@@ -62,13 +62,13 @@ async function order() {
     
     const products = {
         prodName: prodName.value,
-        standard: standard.value,
+        standard: '-',
         quantity: quantity.value,
         price: price.value,
     }
-
+    
     const encodedProducts = encodeURIComponent(JSON.stringify(products));
-    const url = '../order/orderform.html?products='+encodedProducts;
+    const url = '/order/orderform.html?products='+encodedProducts;
     window.location.href = url;
 }
 

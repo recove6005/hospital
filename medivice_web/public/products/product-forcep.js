@@ -42,6 +42,7 @@ function addToShoppingBag() {
         quantity.value = 1;
     }
     addCart(prodName.value, standard.value, quantity.value, price.value);
+    alert('카트에 상품이 추가되었습니다.');
 }
 
 // 수량 input 마이너스값 제한
@@ -63,14 +64,14 @@ standard.addEventListener('change', (e) => {
         case '위 1.8':
             price.value = FORCEP.FORCEP_STOMATCH_18*quantityValue;
             break;
-        case '위 1.3':
-            price.value = FORCEP.FORCEP_STOMATCH_13*quantityValue;
+        case '위 2.3':
+            price.value = FORCEP.FORCEP_STOMATCH_23*quantityValue;
             break;
         case '대장 1.8':
             price.value = FORCEP.FORCEP_COLON_18*quantityValue;
             break;
-        case '대장 1.3':
-            price.value = FORCEP.FORCEP_COLON_13*quantityValue;
+        case '대장 2.3':
+            price.value = FORCEP.FORCEP_COLON_23*quantityValue;
             break;  
     }
 });
@@ -86,14 +87,14 @@ quantity.addEventListener('input', (e) => {
         case '위 1.8':
             price.value = FORCEP.FORCEP_STOMATCH_18;
             break;
-        case '위 1.3':
-            price.value = FORCEP.FORCEP_STOMATCH_13;
+        case '위 2.3':
+            price.value = FORCEP.FORCEP_STOMATCH_23;
             break;
         case '대장 1.8':
             price.value = FORCEP.FORCEP_COLON_18;
             break;
-        case '대장 1.3':
-            price.value = FORCEP.FORCEP_COLON_13;
+        case '대장 2.3':
+            price.value = FORCEP.FORCEP_COLON_23;
             break;
     }
 
@@ -122,6 +123,6 @@ async function order() {
     }
 
     const encodedProducts = encodeURIComponent(JSON.stringify(products));
-    const url = '../order/orderform.html?products='+encodedProducts;
+    const url = '/order/orderform.html?products='+encodedProducts;
     window.location.href = url;
 }

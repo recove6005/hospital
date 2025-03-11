@@ -7,25 +7,28 @@
     <title>MEDIVICE ORDER</title>
 </head>
 <body>
-    <!-- topbar -->
+    <!-- header -->
     <header>
         <div id="logo-container">
             <a href="./index.html">
                 <img id="logo" src="../images/aligo_logo.png" alt="Company Logo">
             </a>
         </div>
-        <div id="header-right-container">
-            <a id="orderlist" href="./manage/entry.html">
-                <img src="../images/ic-order-list.png" alt="orderlist">
-                <p>orders</p>
+        <div id="header-center-container">
+            <a class="menu-item" href="#">
+                <p>주문 조회</p>
             </a>
+            <a class="menu-item" href="./manage/entry.html">
+                <p>주문 관리</p>
+            </a>
+        </div>
+        <div id="header-right-container">
             <a id="shoppingbag" href="./order/cart.html">
-                <img src="../images/ic-temp-shopping-cart.png" alt="shoppingbag">
+                <div id="shoppingbag-img"></div>
                 <p>cart</p>
             </a>
         </div>
-    </header>
-
+    </header>    
     <!-- home -->
     <main>
         <!-- Portfolio Section -->
@@ -96,25 +99,31 @@
                         <a href="#">
                             <img src="../images/main-forcep.png" alt="service9">
                         </a>
-                        <p>1회용 검진복 상하의 세트</p>
+                        <p>일회용 검진복 상의</p>
                     </div>
                     <div class="service_box">
                         <a href="#">
                             <img src="../images/main-forcep.png" alt="service9">
                         </a>
-                        <p>1회용 대장바지</p>
+                        <p>일회용 검진복 상하의 세트</p>
                     </div>
                     <div class="service_box">
                         <a href="#">
                             <img src="../images/main-forcep.png" alt="service9">
                         </a>
-                        <p>1회용 검진치마</p>
+                        <p>일회용 대장바지</p>
                     </div>
                     <div class="service_box">
                         <a href="#">
                             <img src="../images/main-forcep.png" alt="service9">
                         </a>
-                        <p>1회경 내시경가운</p>
+                        <p>일회용 검진치마</p>
+                    </div>
+                    <div class="service_box">
+                        <a href="#">
+                            <img src="../images/main-forcep.png" alt="service9">
+                        </a>
+                        <p>일회용 내시경가운</p>
                     </div>
                     <div class="service_box">
                         <a href="#">
@@ -144,7 +153,7 @@
                         <a href="#">
                             <img src="../images/main-forcep.png" alt="service9">
                         </a>
-                        <p>1회용 입원복</p>
+                        <p>일회용 입원복</p>
                     </div>
                 </div>
             </div>
@@ -165,5 +174,5 @@
 </body>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script type="text/javascript" src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hc22vjtx1o"></script>
-<script src="./intro/index.js" type="module" defer></script>
+<script src="/intro/index.js" type="module" defer></script>
 </html>

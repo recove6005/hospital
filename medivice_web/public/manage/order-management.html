@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="order-management.css">
+    <title>MEDIVICE ORDER</title>
+</head>
+<body>
+    <div id="entry-success-container">
+        <h1>주문 관리</h1>
+        <div id="search-container">
+            <input type="date" id="search-start-date" placeholder="Start Date">
+            <span>-</span>
+            <input type="date" id="search-end-date" placeholder="End Date">
+            <button id="search-btn">Search</button>
+            <button id="download-btn">Download</button>
+            <button id="delete-btn">Delete</button>
+        </div>
+
+        <div class="list-container">
+            <div class="list-row" id="list-title">
+                <p class="list-select"><input type="checkbox" id="select-all-input"></p>
+                <p class="list-date">주문일자</p>
+                <div class="order-content">
+                    <p>주문 내용</p>
+                </div>
+                <p class="list-hosp">병원명</p>
+                <p class="list-tel">연락처</p>
+                <p class="list-email">이메일</p>
+            </div>
+        </div>   
+        <div id="entry-success-list">
+            
+        </div>
+    </div>
+</body>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+<script src="order-management.js" type="module" defer></script>
+</html>

@@ -26,8 +26,8 @@ app.use("/node_modules", express.static(path.join(__dirname, "node_modules")));
 
 
 // 라우터 등록
-import productRouter from './routes/product-router.js';
-app.use('/api', productRouter);
+import orderRouter from './routes/order-router.js';
+app.use('/api', orderRouter);
 
 import entryRouter from './routes/entry-router.js';
 app.use('/api', entryRouter);

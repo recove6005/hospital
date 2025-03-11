@@ -11,6 +11,10 @@ body {
     align-items: center;
 }
 
+#entry-logo {
+    height: 80px;
+}
+
 #entry-container {
     height: 100vh;
     display: flex;
@@ -37,17 +41,18 @@ body {
     border: 1px solid #ccc;
     padding: 0 10px;
     font-size: 16px;
-    background-color: #333;
+    background-color: #004281;
     color: #fff;
     cursor: pointer;
+    transition-duration: 0.3s;
 }
 
 #entry-btn:hover {
-    background-color: #555;
+    background-color: #002952;
 }
 
 #entry-btn:active {
-    background-color: #333;
+    background-color: #002952;
 }
 
 #entry-btn:focus {
@@ -79,49 +84,3 @@ body {
     font-weight: 400;
 }
 
-#entry-success-container li {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    text-align: center;
-    margin: 10px;
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-}
-
-.list-tile {
-    width: 13%;
-    height: 30px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-#order-checkbox {
-    width: 20px;
-    height: 20px;
-}
-
-.order-details {
-    width: 40%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: start;
-    text-align: justify;
-}
-
-#check-tile {
-    width: 5%;
-}
-
-#list-title {
-    background-color: #ccc;
-}
-
-#list-title p {
-    font-weight: 600;
-    height: 50px;
-    margin: 0;
-}

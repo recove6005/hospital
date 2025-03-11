@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* search */
+#search-container {
+    width: 100%;
+    justify-content: start;
+    padding: 10px;
+}
+
+#search-container input,
+#search-container button {
+    height: 30px;
+    padding: 5px;
+}
+
+#entry-success-container {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#entry-success-container ul {
+    width: 100%;
+}
+
+#entry-success-container li {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+    margin: 10px;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+/* order list */
+/* list title */
+.list-container {
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ccc;
+    text-align: center;
+}
+
+#entry-success-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.list-row {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+#select-all-input {
+    width: 20px;
+    height: 20px;
+}
+
+.list-select {
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.list-select input {
+    width: 20px;
+    height: 20px;
+}
+
+.list-date {
+    width: 10%;
+}   
+
+.order-content {
+    width: 30%;
+}
+
+.list-hosp {
+    width: 15%;
+}
+
+.list-tel {
+    width: 10%;
+}
+
+.list-email {
+    width: 15%;
+}   

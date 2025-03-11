@@ -42,6 +42,7 @@ function addToShoppingBag() {
         quantity.value  = 1;
     }
     addCart(prodName.value, standard.value, quantity.value, price.value);
+    alert('카트에 상품이 추가되었습니다.');
 }
 
 // order-btn
@@ -66,7 +67,7 @@ async function order() {
     }
 
     const encodedProducts = encodeURIComponent(JSON.stringify(products));
-    const url = '../order/orderform.html?products='+encodedProducts;
+    const url = '/order/orderform.html?products='+encodedProducts;
     window.location.href = url;
 }
 
@@ -86,10 +87,10 @@ standard.addEventListener('change', (e) => {
     }
 
     switch(e.target.value) {
-        case '23g':
+        case '23G':
             price.value = INJECTOR.INJECTOR_23G*quantityValue;
             break;
-        case '25g':
+        case '25G':
             price.value = INJECTOR.INJECTOR_25G*quantityValue;
             break;
     }
@@ -103,10 +104,10 @@ quantity.addEventListener('input', (e) => {
     }
 
     switch(standard.value) {
-        case '23g':
+        case '23G':
             price.value = INJECTOR.INJECTOR_23G;
             break;
-        case '25g':
+        case '25G':
             price.value = INJECTOR.INJECTOR_25G;
             break;
     }
