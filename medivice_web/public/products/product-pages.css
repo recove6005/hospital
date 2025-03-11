@@ -72,25 +72,6 @@ header {
     position: relative; /* pseudo-element 위치 기준점 */
 }
 
-.menu-item::after {
-    content: '';
-    position: absolute;
-    bottom: -5px; /* 텍스트와의 간격 조절 */
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 2px;
-    background: linear-gradient(to right, #004281, #0066cc);
-    transition: width 0.3s ease;
-}
-
-.menu-item:hover::after {
-    width: 80%; /* 밑줄의 최대 너비 */
-}
-
-.menu-item:hover {
-    color: #002952;
-}
 
 #header-right-container {
     width: 25%;
