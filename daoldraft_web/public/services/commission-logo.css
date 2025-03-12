@@ -139,6 +139,7 @@ main {
 #commission-subscribe, #commission-homepage, 
 #commission-blog, #commission-instagram, 
 #commission-naverplace, #commission-draft, 
+#commission-namecard, #commission-pamphlet,
 #commission-signage, #commission-banner,
 #commission-video {
     display: flex;
@@ -169,6 +170,7 @@ main {
 #commission-subscribe a, #commission-homepage a, 
 #commission-blog a, #commission-instagram a, 
 #commission-naverplace a, #commission-draft a, 
+#commission-namecard a, #commission-pamphlet a,
 #commission-signage a, #commission-banner a,
 #commission-video a {
     color: #232323;

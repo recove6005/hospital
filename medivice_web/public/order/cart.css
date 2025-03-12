@@ -117,14 +117,15 @@ h2 {
     border: 1px solid #ccc;
     padding: 0 10px;
     font-size: 16px;
-    background-color: #333;
+    background-color: #004281;
     color: #fff;
     cursor: pointer;
     margin: 0 10px;
+    transition: 0.3s;
 }
 
 #button-container button:hover {
-    background-color: #555;
+    opacity: 0.8;
 }
 
 

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../init.css"/>
     <link rel="stylesheet" href="product-pages.css">
     <title>MEDIVICE ORDER</title>
 </head>
@@ -14,7 +15,7 @@
             </a>
         </div>
         <div id="header-center-container">
-            <a class="menu-item" href="#">
+            <a class="menu-item" href="/order/order-ref.html">
                 <p>주문 조회</p>
             </a>
             <a class="menu-item" href="/manage/entry.html">
@@ -34,9 +35,6 @@
 
     <main>
         <saction id="project-nav">
-            <div class="swipe-btn" id="swipe-prev-btn">
-                <a href="#"><img src="" alt=""></a>
-            </div>
             <ul>
                 <li class="nav-menu" id="forcep">
                     <a href="product-forcep.html"><div>포셉</div></a>
@@ -99,29 +97,27 @@
                     <a href="product-hospital-gown.html"><div>일회용 입원복</div></a>
                 </li>
             </ul>
-            <div class="swipe-btn" id="swipe-next-btn">
-                <a href="#"><img src="" alt=""></a>
-            </div>
         </saction>
         
         <section id="contact-saction">
             <div id="contact-display-wrapper">
                 <div class="display-box">
-                    <img id="display-img" src="" alt="#">
+                    <img id="display-img" src="../images/temp-product-img.jpg" alt="#">
                 </div>             
             </div>  
             <div id="contact-form-wrapper">
-                    <form id="contact-form">
+                <form id="contact-form">
+                    <div id="set-form">
                         <input id="prodName" name="prodName" type="hidden" value="forcep">
                         <div class="product-title"><h1>포셉</h1></div>
                         <div class="input-form">
-                            <p>규격</p>
-                            <select class="contact-input" name="standard" id="standard" required>
-                                <option value="위 1.8">위 1.8</option>
-                                <option value="위 2.3">위 2.3</option>
-                                <option value="대장 1.8">대장 1.8</option>
-                                <option value="대장 2.3">대장 2.3</option>
-                            </select>
+                        <p>규격</p>
+                        <select class="contact-input" name="standard" id="standard" required>
+                            <option value="위 1.8">위 1.8</option>
+                            <option value="위 2.3">위 2.3</option>
+                            <option value="대장 1.8">대장 1.8</option>
+                            <option value="대장 2.3">대장 2.3</option>
+                        </select>
                         </div>
                         <div class="input-form">
                             <p>수량</p>
@@ -131,10 +127,11 @@
                             <p>가격</p>
                             <input class="contact-input" id="price" name="price" type="text" value="" disabled>
                         </div>
-                        <div class="button-wrapper">
-                            <button id="shoppingbag-btn">Add to Cart</button>
-                            <button id="order-btn" onclick="window.location.href='../order/orderform.html'">Order</button>
-                        </div>
+                    </div>
+                    <div class="button-wrapper">
+                        <button id="shoppingbag-btn">Add to Cart</button>
+                        <button id="order-btn" onclick="window.location.href='../order/orderform.html'">Order</button>
+                    </div>
                 </form>
             </div>
         </section>

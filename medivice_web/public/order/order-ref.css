@@ -1,0 +1,86 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#search-logo {
+    height: 80px;
+}
+
+#search-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#order-id, #email {
+    width: 300px;
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+#search-btn {
+    width: 300px;
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+    font-size: 16px;
+    background-color: #004281;
+    color: #fff;
+    cursor: pointer;
+    transition-duration: 0.3s;
+}
+
+#search-btn:hover {
+    background-color: #002952;
+}
+
+#search-btn:active {
+    background-color: #002952;
+}
+
+#search-btn:focus {
+    outline: none;
+}   
+
+#search-result-container {
+    width: 100%;
+    display: flex   ;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#search-result-container h1 {
+    text-align: center;
+}
+
+#search-result-container {
+    width: 80%;
+    list-style: none;
+}
+
+#search-result-empty {
+    width: 100%;
+    display: block;
+    text-align: center;
+    font-size: 20px;
+    font-weight: 400;
+}
+

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../init.css">
+    <link rel="stylesheet" href="ref-result.css">
+    <title>MEDIVICE ORDER</title>
+</head>
+<body>
+    <div id="logo">
+        <a href="../index.html">
+            <img src="../images/aligo_logo.png" alt="logo">
+        </a>
+    </div>
+
+    <div id="ref-result-container">
+        <div id="ref-result-header">
+            <h1>주문 내역</h1>
+            <p>주문번호 : <span id="order-id"></span></p>
+            <p>이메일 : <span id="email"></span></p>
+            <p>병원명 : <span id="hosp-name"></span></p>
+            <p>연락처 : <span id="call"></span></p>
+            <p>배송 주소: <span id="address"></span></p>
+            <p>총 금액 : <span id="price"></span></p>
+        </div>
+
+        <p>주문 상품</p>
+        <div id="ref-result-body">
+            <ul id="products-list">
+                
+            </ul>
+        </div>
+    </div>
+    <a id="home-btn" href="../index.html">확인</a>
+</body>
+<script src="ref-result.js" type="module" defer></script>
+</html>

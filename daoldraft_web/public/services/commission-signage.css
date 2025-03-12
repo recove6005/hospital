@@ -140,6 +140,7 @@ main {
 #commission-blog, #commission-instagram, 
 #commission-naverplace, #commission-homepage, 
 #commission-draft, #commission-banner,
+#commission-namecard, #commission-pamphlet,
 #commission-video {
     display: flex;
     flex-direction: column;
@@ -169,6 +170,7 @@ main {
 #commission-blog a, #commission-instagram a, 
 #commission-naverplace a, #commission-homepage a, 
 #commission-draft a, #commission-banner a,
+#commission-namecard a, #commission-pamphlet a,
 #commission-video a {
     color: #232323;
     text-decoration: none;

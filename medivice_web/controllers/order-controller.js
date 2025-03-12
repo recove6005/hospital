@@ -5,7 +5,7 @@ import { collection, doc, getDoc, setDoc, getDocs, orderBy, deleteDoc, where, qu
 import { store } from "../config/firebase-config.js";
 import nodemailer from 'nodemailer';
 import { prodNameExchange } from './prodname-exchange.js';    
-
+import { googleEmail, googlePassword } from './keys.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -34,7 +34,7 @@ export const order = async (req, res) => {
 
         sendOrderMail(products, email, order_id, price);
 
-        return res.sendStatus(201);
+        return res.redirect(`/order/ref-result.html?order_id=${order_id}&email=${email}&products=${JSON.stringify(products)}&hospName=${hospName}&call=${call}&address=${address}`);
     } catch(e) {
         console.log(e.message);
         return res.status(500).json({ error: e.message });
@@ -47,13 +47,13 @@ const sendOrderMail = async (products, email, order_id, price) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'medivicekorea@gmail.com',
-        pass: '-' // google 앱 비밀번호
+        user: googleEmail,
+        pass: googlePassword
     }
 });
 
 const mailOptions = {
-    from: 'medivicekorea@gmail.com',
+    from: googleEmail,
     to: email,
     subject: '[MEDIVICE] 주문서',
     text: `
@@ -280,4 +280,17 @@ export const storeDeleteOrders = async (req, res) => {
         await deleteDoc(orderRef);
     });
     return res.sendStatus(200);
+}
+
+// 주문 조회 - firestore
+export const storeOrderRef = async (req, res) => {
+    const { order_id, email } = req.body;
+    const orderRef = query(collection(store, 'orders'), where('order_id', '==', order_id), where('email', '==', email));
+    const snapshot = await getDocs(orderRef);
+    if(snapshot.empty) {
+        return res.status(404).json({ error: '해당 주문 내역을 찾을 수 없습니다. 주문번호와 이메일을 확인해 주세요.' });
+    }
+
+    const orderData = snapshot.docs[0].data();
+    return res.redirect(`/order/ref-result.html?order_id=${order_id}&email=${email}&products=${JSON.stringify(orderData.products)}&hospName=${orderData.hospital_name}&call=${orderData.call}&address=${orderData.address}`);
 }

@@ -28,22 +28,18 @@ header {
     justify-content: space-between;
     align-items: center;
     background-color: white;
-    z-index: 1000;
+    z-index: 9999;
 }
 
 /* header: logo */
 #logo-container {
-    width: 20%;
     display: flex;
-    flex-shrink: 0;
     justify-content: center;
     align-items: center;
-    width: 285px;
-    height: 100px;
 }
 
 #header-center-container {
-    width: 60%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -56,20 +52,24 @@ header {
     justify-content: center;
     align-items: center;
     color: black;
-    font-size: 23px;
+    font-size: 22px;
     font-weight: 400;
-    width: 20%;
+    width: 150px;
     transition-duration: 0.3s;
     position: relative; /* pseudo-element 위치 기준점 */
 }
 
+
 #header-right-container {
-    width: 25%;
     display: flex;
     flex-shrink: 0;
     justify-content: center;
     align-items: center;
-}   
+}
+
+#menu-cart {
+    display: none;
+}
 
 #shoppingbag{
     width: 60px;
@@ -226,11 +226,131 @@ main {
     background-color: #004281;
     color: #fff;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    transition: 0.3s;
 }
 
 #order-form button:hover {
-    background-color: #002952;
+    opacity: 0.8;
+}
+
+@media screen and (max-width: 1090px) {
+    header {
+        position: absolute;
+        width: 100%;
+        height: 300px;
+        flex-direction: column;
+    }
+
+    #header-center-container {
+        width: 100%;
+        height: 100px;
+        margin: 5px 0;
+        flex-direction: column;
+    }
+
+    #menu-cart {
+        display: block;
+        width: 100%;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #shoppingbag {
+        display: none;
+    }
+
+    .menu-item {
+        width: 100%;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .menu-item:hover {
+        color: #004281;
+    }
+
+    main {
+        margin-top: 300px;
+    }
+
+    #project-nav ul {
+        width: 90%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    #contact-saction {
+        width: 100%;
+        flex-direction: column;
+        margin-top: 50px;
+    }
+
+    #contact-display-wrapper {
+        margin: 0;
+        width: 100%;
+        height: auto;
+    }
+
+    .display-box {
+        width: 90%;
+        height: auto;
+        padding: 30px 0;
+        border: none;
+    }
+
+    #contact-form-wrapper {
+        width: 90%;
+        height: auto;
+        margin: 30px 0;
+    }
+
+    #set-form {
+        width: 100%;
+    }
+
+    .input-form {
+        width: 90%;
+    }
+
+    #contact-form-wrapper form p {
+        width: 120px;
+    }
+
+    .contact-input {
+        width: 250px;
+    }
+
+    .button-wrapper {
+        width: 90%;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .button-wrapper button {
+        width: 100%;
+        margin: 5px 0;
+    }
+
+    #menu-cart {
+        display: block;
+        width: 100%;
+        height: 45px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #shoppingbag {
+        display: none;
+    }
 }
 
 
+@media screen and (max-width: 500px) {
+    #project-nav ul {
+        grid-template-columns: repeat(1, 1fr);
+    }
+}

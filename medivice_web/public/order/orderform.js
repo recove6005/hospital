@@ -10,6 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
     displayProducts();
 });
 
+// 연락처 input 문자열 처리
+call.addEventListener('input', (e) => {
+    let input = e.target.value;
+
+    input = input.replace(/[^0-9]/g, "");
+
+    if(input.length > 11) {
+        input = input.substring(0, 11);
+    }
+
+    if (input.length <= 3) {
+        e.target.value = input; 
+    } else if (input.length <= 7) {
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3); // 3-4 형식
+    }
+    else if(input.length <= 10) { 
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 6) + "-" + input.slice(6);
+    }
+    else if(input.length > 10) { 
+        e.target.value = input.slice(0, 3) + "-" + input.slice(3, 7) + "-" + input.slice(7);
+    }
+});
+
 // order list 표시
 async function displayProducts() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -39,7 +62,6 @@ async function displayProducts() {
             <div>
         `;
     });
-
     document.getElementById('total-price').value = totalPrice;
 }
 
@@ -48,6 +70,11 @@ async function submitInquiry() {
     const urlParams = new URLSearchParams(window.location.search);
     const products = JSON.parse(decodeURIComponent(urlParams.get('products')));
     const productsArray = Array.isArray(products) ? products : [products];
+
+    if(!email.value.includes('@') || !email.value.includes('.')) {
+        alert('이메일 형식이 올바르지 않습니다.');
+        return;
+    }
 
     const orderResponse = await fetch('/api/order/order', {
         method:'POST',
@@ -62,8 +89,9 @@ async function submitInquiry() {
         }),
     });
 
-    if(orderResponse.ok) {
-        window.location.reload();
+    if(orderResponse.redirected) {
+        document.cookie = "cart=;max-age=0;path=/";
+        window.location.href = orderResponse.url;
     } else {
         const orderResult = await orderResponse.json();
         console.log(`order error: ${orderResult.error}`);

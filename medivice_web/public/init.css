@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Custom-Font';
+    src: url('../fonts/42dotSans-VariableFont_wght.ttf') format('truetype');
+    font-display: swap;
+    font-weight: lighter;
+    font-style: normal;
+}
+
+html, body {
+    font-family: 'Custom-Font', sans-serif !important; 
+}

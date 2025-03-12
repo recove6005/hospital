@@ -1,5 +1,5 @@
 document.getElementById('entry-btn').addEventListener('click', async () =>{
-    const key = document.getElementById('entry-key').value;
+    const key = document.getElementById('entry-key').value.trim();
     const keyCheckResponse = await fetch('/api/entry/store-validate', {
         method: 'POST',
         headers: {
