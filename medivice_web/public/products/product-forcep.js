@@ -7,7 +7,7 @@ const price = document.getElementById('price');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = FORCEP.FORCEP_STOMATCH_18;
+    price.value = (FORCEP.FORCEP_STOMATCH_18).toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -62,16 +62,16 @@ standard.addEventListener('change', (e) => {
 
     switch(e.target.value) {
         case '위 1.8':
-            price.value = FORCEP.FORCEP_STOMATCH_18*quantityValue;
+            price.value = (FORCEP.FORCEP_STOMATCH_18*quantityValue).toLocaleString('ko-KR');
             break;
         case '위 2.3':
-            price.value = FORCEP.FORCEP_STOMATCH_23*quantityValue;
+            price.value = (FORCEP.FORCEP_STOMATCH_23*quantityValue).toLocaleString('ko-KR');
             break;
         case '대장 1.8':
-            price.value = FORCEP.FORCEP_COLON_18*quantityValue;
+            price.value = (FORCEP.FORCEP_COLON_18*quantityValue).toLocaleString('ko-KR');
             break;
         case '대장 2.3':
-            price.value = FORCEP.FORCEP_COLON_23*quantityValue;
+            price.value = (FORCEP.FORCEP_COLON_23*quantityValue).toLocaleString('ko-KR');
             break;  
     }
 });
@@ -98,7 +98,7 @@ quantity.addEventListener('input', (e) => {
             break;
     }
 
-    price.value = price.value * quantityValue;
+    price.value = (price.value * quantityValue).toLocaleString('ko-KR');
 });
 
 // order-btn

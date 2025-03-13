@@ -7,7 +7,7 @@ const price = document.getElementById('price');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = INJECTOR.INJECTOR_23G;
+    price.value = (INJECTOR.INJECTOR_23G).toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -88,10 +88,10 @@ standard.addEventListener('change', (e) => {
 
     switch(e.target.value) {
         case '23G':
-            price.value = INJECTOR.INJECTOR_23G*quantityValue;
+            price.value = (INJECTOR.INJECTOR_23G*quantityValue).toLocaleString('ko-KR');
             break;
         case '25G':
-            price.value = INJECTOR.INJECTOR_25G*quantityValue;
+            price.value = (INJECTOR.INJECTOR_25G*quantityValue).toLocaleString('ko-KR');
             break;
     }
 });
@@ -112,6 +112,6 @@ quantity.addEventListener('input', (e) => {
             break;
     }
 
-    price.value = price.value * quantityValue;
+    price.value = (price.value * quantityValue).toLocaleString('ko-KR');
 });
 

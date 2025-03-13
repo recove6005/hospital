@@ -71,7 +71,7 @@ const mailOptions = {
         }
         
 
-        주문 금액: ${price}
+        주문 금액: ${price} 원
     `,
 };
 

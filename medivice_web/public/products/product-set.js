@@ -13,7 +13,7 @@ const price = document.getElementById('price');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = forcepPrice + snarePrice + injectorPrice;
+    price.value = (forcepPrice + snarePrice + injectorPrice).toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -99,17 +99,17 @@ forcepStandard.addEventListener('change', (e) => {
         case '위 1.8':
             forcepPrice = FORCEP.FORCEP_STOMATCH_18;
             break;
-        case '위 1.3':
-            forcepPrice = FORCEP.FORCEP_STOMATCH_13;
+        case '위 2.3':
+            forcepPrice = FORCEP.FORCEP_STOMATCH_23;
             break;
         case '대장 1.8':
             forcepPrice = FORCEP.FORCEP_COLON_18;
             break;
-        case '대장 1.3':
-            forcepPrice = FORCEP.FORCEP_COLON_13;
+        case '대장 2.3':
+            forcepPrice = FORCEP.FORCEP_COLON_23;
             break;
     }
-    price.value = (forcepPrice + snarePrice + injectorPrice) * quantityValue;
+    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
 });
 
 snareStandard.addEventListener('change', (e) => {
@@ -132,7 +132,7 @@ snareStandard.addEventListener('change', (e) => {
             snarePrice = SNARE.SNARE_15M;
             break;
     }       
-    price.value = (forcepPrice + snarePrice + injectorPrice) * quantityValue;
+    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
 });
 
 injectorStandard.addEventListener('change', (e) => {
@@ -142,14 +142,14 @@ injectorStandard.addEventListener('change', (e) => {
     }
    
     switch(e.target.value) {
-        case '23g':
+        case '23G':
             injectorPrice = INJECTOR.INJECTOR_23G;
             break;
-        case '25g':
+        case '25G':
             injectorPrice = INJECTOR.INJECTOR_25G;
             break;
     }
-    price.value = (forcepPrice + snarePrice + injectorPrice) * quantityValue;
+    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
 });
 
 // 수량 변경 시 가격 변경
@@ -158,5 +158,5 @@ quantity.addEventListener('input', (e) => {
     if(quantityValue === '') {
         quantityValue = 1;
     }
-    price.value = (forcepPrice + snarePrice + injectorPrice) * quantityValue;
+    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
 });

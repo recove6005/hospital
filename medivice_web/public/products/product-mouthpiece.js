@@ -7,7 +7,7 @@ const price = document.getElementById('price');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = MOUTHPIECE;
+    price.value = MOUTHPIECE.toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -87,7 +87,6 @@ quantity.addEventListener('input', (e) => {
         quantityValue = 1;
     }
 
-    price.value = MOUTHPIECE;
-    price.value = MOUTHPIECE*quantityValue;
+    price.value = (MOUTHPIECE*quantityValue).toLocaleString('ko-KR');
 });
 

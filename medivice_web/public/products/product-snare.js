@@ -3,16 +3,11 @@ import { SNARE } from '../constants.js';
 const prodName = document.getElementById('prodName');
 const standard = document.getElementById('standard');
 const quantity = document.getElementById('quantity');
-const hospName = document.getElementById('hospName');
-const call = document.getElementById('call');
-const email = document.getElementById('email');
-const details = document.getElementById('details');
 const price = document.getElementById('price');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = SNARE.SNARE_5M;
-    
+    price.value = SNARE.SNARE_5M.toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -90,16 +85,16 @@ standard.addEventListener('change', (e) => {
     
     switch(e.target.value) {
         case '5m':
-            price.value = SNARE.SNARE_5M*quantityValue;
+            price.value = (SNARE.SNARE_5M*quantityValue).toLocaleString('ko-KR');
             break;
         case '7m':
-            price.value = SNARE.SNARE_10M*quantityValue;
+            price.value = (SNARE.SNARE_7M*quantityValue).toLocaleString('ko-KR');
             break;
         case '10m': 
-            price.value = SNARE.SNARE_10M*quantityValue;
+            price.value = (SNARE.SNARE_10M*quantityValue).toLocaleString('ko-KR');
             break;
         case '15m':
-            price.value = SNARE.SNARE_15M*quantityValue;
+            price.value = (SNARE.SNARE_15M*quantityValue).toLocaleString('ko-KR');
             break;
     }
 });
@@ -126,5 +121,5 @@ quantity.addEventListener('input', (e) => {
             break;
     }
 
-    price.value = price.value * quantityValue;
+    price.value = (price.value * quantityValue).toLocaleString('ko-KR');
 });

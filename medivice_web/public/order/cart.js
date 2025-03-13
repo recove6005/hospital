@@ -26,7 +26,7 @@ function displayCart() {
                 <input class="checkbox" id="${product}" type="checkbox" name="product" value="${product}">
             </div>
             <div id="product-image">
-                <img id="product-image" src="../images/main-${prodName}.png" alt="">
+                <img id="product-image" src="../images/main-${prodName}.png" alt="제품 이미지 준비 중">
             </div>
             <div id="product-name">${prodName}</div>
             <div id="product-standard">${cart[product].standard}</div>
@@ -76,4 +76,17 @@ document.getElementById('delete-btn').addEventListener('click', (e) => {
     });
     setCart(cart);
     window.location.reload();
+});
+
+// select all
+document.getElementById('select-all').addEventListener('click', (e) => {
+    var cart = getCart();
+    const selectAllCheckbox = e.target;
+
+    Object.keys(cart).forEach(product => {
+        const target = document.getElementById(product);
+        if(target) {
+            target.checked = selectAllCheckbox.checked;
+        }
+    });
 });

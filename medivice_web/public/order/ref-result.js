@@ -15,8 +15,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('call').textContent = call;
     document.getElementById('address').textContent = address;
 
-    const totalPrice = products.reduce((acc, product) => acc + product.price * product.quantity, 0);
-    document.getElementById('price').textContent = totalPrice;
+    let totalPrice = 0;
+    products.forEach(product => {
+        const total = parseInt(product.price.replace(/,/g, ''));
+        totalPrice += total;
+    });
+
+    document.getElementById('price').textContent = totalPrice.toLocaleString('ko-KR') + '원';
 
     products.forEach(product => {
         const li = document.createElement('li');

@@ -22,6 +22,9 @@
             <a class="menu-item" href="/manage/entry.html">
                 <p>주문 관리</p>
             </a>
+            <a class="menu-item" id="menu-cart" href="/order/cart.html">
+                <p>CART</p>
+            </a>
         </div>
         <div id="header-right-container">
             <a id="shoppingbag" href="/order/cart.html">
@@ -100,7 +103,7 @@
         <section id="contact-saction">
             <div id="contact-display-wrapper">
                 <div class="display-box">
-                    <img id="display-img" src="../images/temp-product-img.jpg" alt="#">
+                    <img id="display-img" src="" alt="제품 이미지 준비 중">
                 </div>                  
             </div>  
             <div id="contact-form-wrapper">
@@ -114,7 +117,7 @@
                                     <option value="위 1.8">위 1.8</option>
                                     <option value="위 2.3">위 2.3</option>
                                     <option value="대장 1.8">대장 1.8</option>
-                                    <option value="위 2.3">대장 2.3</option>
+                                    <option value="대장 2.3">대장 2.3</option>
                                 </select>
                             </div>
                             <div class="input-form">
@@ -139,7 +142,10 @@
                             </div>
                             <div class="input-form">
                                 <p>가격</p>
-                                <input class="contact-input" id="price" name="price" type="text" value="" disabled>
+                                <div class="contact-input">
+                                    <input id="price" name="price" type="text" value="" disabled>
+                                    <p>원</p>
+                                </div>
                             </div>
                         </div>
                         <div class="button-wrapper">

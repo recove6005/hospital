@@ -36,7 +36,6 @@ export const storeValidateKey = async (req, res) => {
         return res.sendStatus(404);
     }
     if(snapshot.data().key === key) {
-        console.log('key 검증 성공');
         return res.redirect(`/manage/order-management.html?key=${key}`);
     }
     return res.sendStatus(401);

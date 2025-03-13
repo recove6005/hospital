@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             })}
                             </p>
                         </div>
+                        <p class='list-price'>${order.price}</p>
                         <p class='list-hosp'>${order.hospital_name}</p>
                         <p class='list-tel'>${order.call}</p>
                         <p class='list-email'>${order.email}</p>
@@ -153,6 +154,7 @@ document.getElementById('download-btn').addEventListener('click', async () => {
         return {
             '주문일자': order.order_date.substring(0, 10),
             '주문 내용': order.products.map(product => `${prodNameExchange(product.prodName)} ${product.standard} ${product.quantity}개`).join(' / \n'),
+            '합계': order.price,
             '병원명': order.hospital_name,
             '연락처': order.call,
             '이메일': order.email,

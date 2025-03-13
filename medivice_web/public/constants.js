@@ -1,20 +1,20 @@
 export const FORCEP = {
-    "FORCEP_STOMATCH_18": 10000,
-    "FORCEP_STOMATCH_23": 10001,
-    "FORCEP_COLON_18": 10002,
-    "FORCEP_COLON_23": 10003
+    "FORCEP_STOMATCH_18": 10010,
+    "FORCEP_STOMATCH_23": 10020,
+    "FORCEP_COLON_18": 10030,
+    "FORCEP_COLON_23": 10040
 }
 
 export const SNARE = {
-    "SNARE_5M": 10000,
-    "SNARE_7M": 10001,
-    "SNARE_10M": 10002,
-    "SNARE_15M": 10003
+    "SNARE_5M": 10100,
+    "SNARE_7M": 10200,
+    "SNARE_10M": 10300,
+    "SNARE_15M": 10400
 }
 
 export const INJECTOR = {
-    "INJECTOR_23G": 10001,
-    "INJECTOR_25G": 10002
+    "INJECTOR_23G": 11000,
+    "INJECTOR_25G": 12000
 }
 
 export const SET = 11000; // 포스니 세트

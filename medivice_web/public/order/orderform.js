@@ -44,7 +44,7 @@ async function displayProducts() {
     const formElement = document.getElementById('form-body');
     formElement.innerHTML = '';
     productsArray.map((product) =>{
-        totalPrice += parseInt(product.price);
+        totalPrice += parseInt(product.price.replace(/,/g, ''));
         formElement.innerHTML += `
             <div class="form-body-item">
                 <div class="order-item" id="product-name">
@@ -62,7 +62,7 @@ async function displayProducts() {
             <div>
         `;
     });
-    document.getElementById('total-price').value = totalPrice;
+    document.getElementById('total-price').value = totalPrice.toLocaleString('ko-KR');
 }
 
 // order form 로직
@@ -85,7 +85,7 @@ async function submitInquiry() {
             call: call.value,
             email: email.value,
             address: address.value,
-            price: totalPrice,
+            price: totalPrice.toLocaleString('ko-KR'),
         }),
     });
 

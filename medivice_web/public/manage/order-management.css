@@ -12,6 +12,11 @@ body {
     align-items: center;
 }
 
+#logo {
+    margin: 20px;
+}
+
+
 /* search */
 #search-container {
     width: 100%;
@@ -112,3 +117,7 @@ body {
 .list-email {
     width: 15%;
 }   
+
+.list-price {
+    width: 10%;
+}
