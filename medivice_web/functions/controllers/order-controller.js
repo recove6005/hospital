@@ -5,7 +5,6 @@ import { collection, doc, getDoc, setDoc, getDocs, orderBy, deleteDoc, where, qu
 import { store } from "../config/firebase-config.js";
 import nodemailer from 'nodemailer';
 import { prodNameExchange } from './constants.js';    
-import { googleEmail, googlePassword } from './keys.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -47,13 +46,13 @@ const sendOrderMail = async (products, email, order_id, price) => {
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: googleEmail,
-        pass: googlePassword
+        user: process.env.EMAIL,
+        pass: process.env.APP_PW
     }
 });
 
 const mailOptions = {
-    from: googleEmail,
+    from: process.env.EMAIL,
     to: email,
     subject: '[MEDIVICE] 주문서',
     text: `

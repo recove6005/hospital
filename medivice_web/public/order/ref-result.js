@@ -1,4 +1,4 @@
-import { prodNameExchange } from '../prodname-exchange.js';
+import { prodNameExchange } from '../constants.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     const urlParams = new URLSearchParams(window.location.search);

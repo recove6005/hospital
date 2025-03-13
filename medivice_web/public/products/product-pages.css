@@ -10,15 +10,20 @@
     padding: 0; 
 }
 
-html, body {
-    width: 100%;
+html {
     scroll-behavior: smooth;
+}
+
+body {
     font-family: 'Pretendard-Regular';
     display: flex;
+    flex-shrink: 0;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    overflow-x: auto;
+}
+
+ul, li {
+    list-style: none;
 }
 
 a {
@@ -26,22 +31,34 @@ a {
     color: black;
 }
 
+img {
+    color: black;
+}
+
 /* header */
 header {
-    width: 60%;
+    width: 100%;
+    background-color: white;
     position: fixed;
     top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+}
+
+#header-wrapper {
+    width: 60%;
     height: 100px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    background-color: white;
-    z-index: 9999;
 }
 
 /* header: logo */
 #logo-container {
+    width: 250px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -68,18 +85,16 @@ header {
     position: relative; /* pseudo-element 위치 기준점 */
 }
 
-
 #header-right-container {
+    width: 250px;
+    height: 40px;
     display: flex;
-    flex-shrink: 0;
-    justify-content: center;
+    justify-content: right;
     align-items: center;
+
 }
 
-#menu-cart {
-    display: none;
-}
-
+/* shoppingbag */
 #shoppingbag{
     width: 60px;
     height: 60px;
@@ -110,6 +125,10 @@ header {
 #shoppingbag p {
     color: black;
     font-size: 12px;
+}
+
+#menu-cart {
+    display: none;
 }
 
 /* 상품 네비게이션 */
@@ -259,20 +278,7 @@ main {
     align-items: center;
 }
 
-.input-form {
-    width: 550px;
-    height: 45px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: start;
-    border-radius: 30px;
-    background-color: white;
-    margin-bottom: 17px;
-}
-
-#contact-form-wrapper form p {
-    width: 120px;
+#contact-form p {
     height: 45px;
     display: flex;
     justify-content: start;
@@ -282,11 +288,33 @@ main {
     color: #232323;
 }
 
-.contact-input {
-    width: 350px;
+.input-form {
+    width: 550px;
     height: 45px;
     display: flex;
     flex-direction: row;
+    justify-content: start;
+    align-items: start;
+    border-radius: 30px;
+    background-color: white;
+    margin-bottom: 17px;
+}
+
+.input-form p {
+    width: 20%;
+    height: 45px;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    margin-left: 50px;
+}
+
+.contact-input {
+    width: 60%;
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
     font-size: 20px;
     font-weight: 400;
     border-radius: 0 30px 30px 0;
@@ -298,18 +326,18 @@ main {
     width: 100%;
     border: none;
     outline: none;
-    background-color: transparent;
     font-size: 20px;
     font-weight: 500;
     color: black;
     overflow: visible;
 }
 
-
-#contact-form-wrapper form input:focus {
+.contact-input input:focus {
     outline: none;
     box-shadow: none;
+    background-color: white;
 } 
+
 
 .button-wrapper {
     width: 550px;

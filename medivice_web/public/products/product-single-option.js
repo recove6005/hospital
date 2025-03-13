@@ -1,13 +1,20 @@
-import { MOUTHPIECE } from '../constants.js';
+import { getProdName, prodNameExchange } from '../constants.js';
 
-const prodName = document.getElementById('prodName');
-const standard = document.getElementById('standard');
+let prodName;
+let PRODNAME;
 const quantity = document.getElementById('quantity');
 const price = document.getElementById('price');
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = MOUTHPIECE.toLocaleString('ko-KR');
+    const urlParams = new URLSearchParams(window.location.search);
+    prodName = urlParams.get('prodName');
+    PRODNAME = getProdName(prodName);
+
+    const nameTitle = document.getElementById('product-name');
+    nameTitle.innerText = prodNameExchange(prodName);
+    
+    price.value = PRODNAME.toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -33,7 +40,9 @@ function setCart(cart) {
 
 // shoppingbag-btn
 document.getElementById('shoppingbag-btn').addEventListener('click', (e) => {
+    e.preventDefault();
     addToShoppingBag();
+    window.location.reload();
 });
 
 // shoppingbag form 로직
@@ -41,7 +50,7 @@ function addToShoppingBag() {
     if(quantity.value === '') {
         quantity.value = 1;
     }
-    addCart(prodName.value, '', quantity.value, price.value);
+    addCart(prodName, '', quantity.value, price.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -61,8 +70,8 @@ async function order() {
     }
     
     const products = {
-        prodName: prodName.value,
-        standard: '-',
+        prodName: prodName,
+        standard: '',
         quantity: quantity.value,
         price: price.value,
     }
@@ -87,6 +96,6 @@ quantity.addEventListener('input', (e) => {
         quantityValue = 1;
     }
 
-    price.value = (MOUTHPIECE*quantityValue).toLocaleString('ko-KR');
+    price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
 });
 

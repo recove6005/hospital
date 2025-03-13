@@ -31,6 +31,10 @@ a {
     color: white;
 }
 
+img {
+    color: black;
+}
+
 /* header */
 header {
     width: 100%;
@@ -53,6 +57,8 @@ header {
 
 /* header: logo */
 #logo-container {
+    width: 250px;
+    height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -80,10 +86,45 @@ header {
 }
 
 #header-right-container {
+    width: 250px;
+    height: 40px;
     display: flex;
-    flex-shrink: 0;
+    justify-content: right;
+    align-items: center;
+
+}
+
+/* shoppingbag */
+#shoppingbag{
+    width: 60px;
+    height: 60px;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    transition-duration: 0.3s;
+}
+
+#shoppingbag:hover {
+    color: #004281;
+}
+
+#shoppingbag-img {
+    width: 35px;
+    height: 35px;
+    background-image: url('../images/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: background-image 0.3s;
+}
+
+#shoppingbag:hover #shoppingbag-img {
+    background-image: url('../images/ic-cart-move.gif');
+}
+
+#shoppingbag p {
+    color: black;
+    font-size: 12px;
 }
 
 #menu-cart {
@@ -226,39 +267,6 @@ footer {
     border-top: 1px solid #eee;
 }
 
-/* shoppingbag */
-#shoppingbag{
-    width: 60px;
-    height: 60px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition-duration: 0.3s;
-}
-
-#shoppingbag:hover {
-    color: #004281;
-}
-
-#shoppingbag-img {
-    width: 35px;
-    height: 35px;
-    background-image: url('../images/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
-    background-size: contain;
-    background-repeat: no-repeat;
-    transition: background-image 0.3s;
-}
-
-#shoppingbag:hover #shoppingbag-img {
-    background-image: url('../images/ic-cart-move.gif');
-}
-
-#shoppingbag p {
-    color: black;
-    font-size: 12px;
-}
-
 
 @media (max-width: 1200px)  {
     header {
@@ -336,11 +344,8 @@ footer {
     }
 
     #footer-content-wrapper {
+        width: 60%;
         flex-direction: column;
-    }
-
-    #footer-wrapper {
-        width: 90%;
     }
 
     #footer-wrapper span {

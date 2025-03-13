@@ -1,4 +1,4 @@
-import { prodNameExchange } from '../prodname-exchange.js';
+import { prodNameExchange } from '../constants.js';
 
 function getCart() {
     var cartCookie = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*\=\s*([^;]*).*$)|^.*$/, "$1");

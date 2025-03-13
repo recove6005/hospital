@@ -1,4 +1,4 @@
-import { prodNameExchange } from '../prodname-exchange.js';
+import { prodNameExchange } from '../constants.js';
 var orders = [];
 var selectedOrders = [];
 

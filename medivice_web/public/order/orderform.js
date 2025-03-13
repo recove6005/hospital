@@ -1,4 +1,4 @@
-import { prodNameExchange } from '../prodname-exchange.js';
+import { prodNameExchange } from '../constants.js';
 
 const hospName = document.getElementById('hospName');
 const call = document.getElementById('call');
