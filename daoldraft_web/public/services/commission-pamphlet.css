@@ -339,7 +339,7 @@ main {
     display: flex;
     flex-direction: row;
     flex-shrink: 0;
-    justify-content: center;
+    justify-content: start;
     align-items: start;
     border-radius: 30px;
     background-color: white;
@@ -365,6 +365,14 @@ main {
     border-radius: 0 30px 30px 0;
     border: none;
     outline: none;
+}
+
+#size {
+    width: 400px !important;
+}
+
+#size {
+    width: 400px !important;
 }
 
 #contact-form-wrapper form input:focus {

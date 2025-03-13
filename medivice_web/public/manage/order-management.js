@@ -78,7 +78,14 @@ document.getElementById('select-all-input').addEventListener('click', () => {
 });
 
 // 주문 검색 - 기간별
-document.getElementById('search-btn').addEventListener('click', async () => {
+document.getElementById('search-btn').addEventListener('click', async (e) => {
+    const selectAllCheckbox = document.querySelector('#select-all-input');
+    selectAllCheckbox.checked = false;
+    const orderCheckboxes = document.querySelectorAll('#order-checkbox');
+    for(const checkbox of orderCheckboxes) {
+        checkbox.checked = false;
+    }
+
     const startDate = document.getElementById('search-start-date').value;
     const endDate = document.getElementById('search-end-date').value;
 
@@ -111,25 +118,37 @@ document.getElementById('search-btn').addEventListener('click', async () => {
     if(searchResponse.ok) {
         const ulElement = document.getElementById('entry-success-list');
         ulElement.innerHTML = '';
-
         orders = await searchResponse.json();
-        console.log(orders);
+
+        if(orders.length === 0) {
+            ulElement.innerHTML = `<p id='search-result-empty'>요청된 주문이 없습니다.</p>`;
+            return;
+        }
 
         orders.forEach(order => {
             const orderDate = order.order_date.substring(0, 10);
             const liElement = document.createElement('li');
             liElement.innerHTML = `
-                <div class='list-tile' id="check-tile">
-                <input type='checkbox' id='order-checkbox' value='${order.order_id}'>
+                <div class="list-row">
+                    <div class='list-select'>
+                        <input type='checkbox' id='order-checkbox' value='${order.order_id}'>
+                    </div>
+                    <p class='list-date'>${orderDate}</p>
+                    <div class="order-content">
+                        <p>
+                        ${order.products.map((product) => {
+                            return `
+                                ${prodNameExchange(product.prodName)} / ${product.standard} / ${product.quantity}개 <br>
+                            `;
+                        })}
+                        </p>
+                    </div>
+                    <p class='list-price'>${order.price}</p>
+                    <p class='list-hosp'>${order.hospital_name}</p>
+                    <p class='list-tel'>${order.call}</p>
+                    <p class='list-email'>${order.email}</p>
                 </div>
-                <p class='list-tile'>${orderDate}</p>
-                <p class='list-tile'>${order.product_name}</p>
-                <p class='list-tile'>${order.quantity}</p>
-                <p class='list-tile'>${order.standard}</p>
-                <p class='list-tile'>${order.hospital_name}</p>
-                <p class='list-tile'>${order.call_num}</p>
-                <p class='list-tile'>${order.email}</p>
-            `;
+            `;  
             ulElement.appendChild(liElement);
         });
     } else {
