@@ -10,7 +10,7 @@
     <!-- topbar -->
     <header>
         <div id="menu-display-btn" style="display: none;">
-            <img src="../images/icon/ic_dropdown_menu_btn.png" alt=".">
+            <img id="menu-display-btn-img" src="../images/icon/ic_dropdown_menu_btn.png" alt=".">
         </div>
         <div id="logo-container">
             <a href="home.html">
@@ -20,7 +20,7 @@
 
         <nav>
             <ul class="nav-container">
-                <li><a href="#about">About</a></li>
+                <li id="about-nav"><a href="#about">About</a></li>
                 <li><a href="../services/commission-homepage.html">Service</a></li>
                 <li><a href="#">Subscription</a></li>
             </ul>
@@ -35,8 +35,9 @@
                 <div id="dropdown-menu" style="display: none;">
                     <ul>
                         <li><a id="dropdown-mypage" href="../user/mypage.html">마이페이지</a></li>
-                        <li><a id="dropdown-logout" href="#">로그아웃</a></li>
                         <li><a id="dropdown-management" href="../manage/project-management.html" style="display: none;">프로젝트 관리</a></li>
+                        <li><a id="dropdown-logout" href="#">로그아웃</a></li>
+
                     </ul>
                 </div>
             </div>
@@ -156,7 +157,7 @@
                 <img src="../images/portfolio_7.png">
                 <img src="../images/portfolio_8.png">
             </div>
-            <a id="portfolio-moreview-btn" href="#">
+            <a id="portfolio-moreview-btn" href="#portfolio">
                 <img src="../images/icon/ic_home_moreview.png" alt="">
             </a>
         </section>
@@ -167,7 +168,7 @@
         <div id="footer-wrapper">
             <img src="../images/aligo_logo.png" alt="#">
             <p><span>회사명: </span>(주)알리고</p>
-            <p><span>주소: </span>대구 수성구 범안로 56 4층</p>
+            <p><span>주소: </span>대구 수성구 범안로 56, 4층</p>
             <p><span>이메일: </span>mesco_mshop@naver.com</p>
             <p><span>전화: </span>053-784-6901</p>
             <p><span>사업자등록번호: </span>789-81-03604</p>

@@ -452,12 +452,34 @@ main {
         width: 100%;
     }
 
+    .description {
+        flex-direction: column;
+    }
+
     .description-title {
         width: 30%;
     }
 
     .description-content {
         width: 70%;
+    }
+
+    #progress-tracker {
+        width: 100%;
+    }
+
+    .line {
+        width: 30px;
+    }
+
+    .step {
+        width: 30px;
+        height: 30px;
+    }
+
+    .sub {
+        width: 70px;
+        font-size: 12px;
     }
 
     /* 유저 정보 */
@@ -551,4 +573,26 @@ main {
         width: 40px;
         height: 40px;
     }
+
+    #modal-container {
+        width: 80%;
+        height: fit-content;
+    }
+
+    .modal-inner-box {
+        width: 100%;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        margin-bottom: 80px;
+    }
+
+    .modal-inner-box p {
+        margin: 5px 0;
+    }
+
+    .pay-form {
+        width: 100%;
+    }
+    
 }
