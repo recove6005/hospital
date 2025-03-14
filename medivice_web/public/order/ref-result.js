@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const priceDiv = document.createElement('p');
 
         prodNameDiv.textContent = `상품명: ${prodNameExchange(product.prodName)}`;
-        quantityDiv.textContent = `수량: ${product.quantity}개`;
+        quantityDiv.textContent = `수량: ${product.quantity}`;
         standardDiv.textContent = `규격: ${product.standard}`;
         priceDiv.textContent = `가격: ${product.price}원`;
 

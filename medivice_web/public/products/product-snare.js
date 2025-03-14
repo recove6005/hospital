@@ -41,7 +41,7 @@ function addToShoppingBag() {
     if(quantity.value === '') {
         quantity.value = 1;
     }
-    addCart(prodName.value, standard.value, quantity.value, price.value);
+    addCart(prodName.value, standard.value, quantity.value + 'ea', price.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -59,7 +59,7 @@ async function order() {
     const products = {
         prodName: prodName.value,
         standard: standard.value,
-        quantity: quantity.value,
+        quantity: quantity.value + 'ea',
         price: price.value,
     }
 

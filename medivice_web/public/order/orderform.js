@@ -3,7 +3,8 @@ import { prodNameExchange } from '../constants.js';
 const hospName = document.getElementById('hospName');
 const call = document.getElementById('call');
 const email = document.getElementById('email');
-const address = document.getElementById('address');
+const addressMain = document.getElementById('address');
+const addressDetail = document.getElementById('address-detail');
 let totalPrice = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -57,12 +58,12 @@ async function displayProducts() {
                     <p>${product.quantity}</p>
                 </div>
                 <div class="order-item" id="product-price">
-                    <p>${product.price}</p>
+                    <p>${product.price} 원</p>
                 </div>
             <div>
         `;
     });
-    document.getElementById('total-price').value = totalPrice.toLocaleString('ko-KR');
+    document.getElementById('total-price').value = totalPrice.toLocaleString('ko-KR') + '원';
 }
 
 // order form 로직
@@ -76,6 +77,11 @@ async function submitInquiry() {
         return;
     }
 
+    if(addressMain.value === '' || addressDetail.value === '') {
+        alert('주소를 모두 입력해 주세요.');
+        return;
+    }
+
     const orderResponse = await fetch('/api/order/order', {
         method:'POST',
         headers: {"Content-Type":"application/json"},
@@ -84,7 +90,7 @@ async function submitInquiry() {
             hospName: hospName.value,
             call: call.value,
             email: email.value,
-            address: address.value,
+            address: `${addressMain.value} ${addressDetail.value}`,
             price: totalPrice.toLocaleString('ko-KR'),
         }),
     });
@@ -102,3 +108,17 @@ document.getElementById('order-form').addEventListener('submit', (e) => {
     e.preventDefault();
     submitInquiry();
 });
+
+
+// 배송지 주소 검색
+document.getElementById('search-address-btn').addEventListener('click', (e) => {
+    searchAddress();
+});
+
+async function searchAddress() {
+    new daum.Postcode({
+        oncomplete: function(data) {
+            document.getElementById('address').value = data.address;
+        }
+    }).open();
+}

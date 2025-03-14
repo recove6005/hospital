@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <p class='list-hosp'>${order.hospital_name}</p>
                         <p class='list-tel'>${order.call}</p>
                         <p class='list-email'>${order.email}</p>
+                        <p class='list-address'>${order.address}</p>
                     </div>
                 `;  
                 ulElement.appendChild(liElement);
@@ -130,10 +131,10 @@ document.getElementById('search-btn').addEventListener('click', async (e) => {
             const liElement = document.createElement('li');
             liElement.innerHTML = `
                 <div class="list-row">
-                    <div class='list-select'>
+                    <div class='list-select category'>
                         <input type='checkbox' id='order-checkbox' value='${order.order_id}'>
                     </div>
-                    <p class='list-date'>${orderDate}</p>
+                    <p class='list-date category'>${orderDate}</p>
                     <div class="order-content">
                         <p>
                         ${order.products.map((product) => {
@@ -147,6 +148,7 @@ document.getElementById('search-btn').addEventListener('click', async (e) => {
                     <p class='list-hosp'>${order.hospital_name}</p>
                     <p class='list-tel'>${order.call}</p>
                     <p class='list-email'>${order.email}</p>
+                    <p class='list-address'>${order.address}</p>
                 </div>
             `;  
             ulElement.appendChild(liElement);
@@ -177,6 +179,7 @@ document.getElementById('download-btn').addEventListener('click', async () => {
             '병원명': order.hospital_name,
             '연락처': order.call,
             '이메일': order.email,
+            '배송지': order.address
         }
     });
     const worksheet = XLSX.utils.json_to_sheet(datas);

@@ -4,7 +4,6 @@ import { db, auth, storage } from "../config/firebase-config.js";
 import { collection, doc, getDocs, orderBy, setDoc, getDoc, query, deleteDoc, where, updateDoc } from "firebase/firestore";
 import { ref, getDownloadURL, getMetadata, uploadBytes } from "firebase/storage";
 import archiver from 'archiver';
-import { parseFormData } from "../config/busboy-config.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

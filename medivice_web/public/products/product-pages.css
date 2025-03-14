@@ -205,7 +205,7 @@ main {
 }
 
 /* 폼 입력 섹션 */
-#contact-saction {
+#contact-saction {  
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -368,11 +368,17 @@ main {
 }
 
 .product-title {
-    height: 80px;
     font-size: 20px;
     font-weight: 400;
     color: #232323;
     text-align: center;
+    margin: 5px 0;
+}
+
+.product-subtitle h2 {
+    font-weight: lighter !important;
+    font-size: 20px;
+    margin-bottom: 30px;
 }
 
 

@@ -1,19 +1,17 @@
-import { FORCEP, SNARE, INJECTOR } from '../constants.js';
+import { SET } from '../constants.js';
 
 const prodName = document.getElementById('prodName');
 const forcepStandard = document.getElementById('forcep-standard');
 const snareStandard = document.getElementById('snare-standard');
 const injectorStandard = document.getElementById('injector-standard');
 const quantity = document.getElementById('quantity');
-var forcepPrice = FORCEP.FORCEP_STOMATCH_18;
-var snarePrice = SNARE.SNARE_5M;
-var injectorPrice = INJECTOR.INJECTOR_23G;
 const price = document.getElementById('price');
 
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    price.value = (forcepPrice + snarePrice + injectorPrice).toLocaleString('ko-KR');
+    console.log(SET);
+    price.value = SET.toLocaleString('ko-KR');
 });
 
 // 장바구니 로직
@@ -48,7 +46,7 @@ function addToShoppingBag() {
         quantity.value = 1;
     }
     const setStandard = `포스니 세트 (포셉 ${forcepStandard.value} / 스네어 ${snareStandard.value} / 인젝터 ${injectorStandard.value})`;
-    addCart(prodName.value, setStandard, quantity.value, price.value);
+    addCart(prodName.value, setStandard, quantity.value + 'set', price.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -71,7 +69,7 @@ async function order() {
     const products = {
         prodName: prodName.value,
         standard: setStandard,
-        quantity: quantity.value,
+        quantity: quantity.value + 'set',
         price: price.value,
     }
 
@@ -89,68 +87,68 @@ document.getElementById('quantity').addEventListener('input', (e) => {
 });
 
 // 옵션 변경 시 가격 변경
-forcepStandard.addEventListener('change', (e) => {
-    var quantityValue = quantity.value;
-    if(quantityValue === '') {
-        quantityValue = 1;
-    }
+// forcepStandard.addEventListener('change', (e) => {
+//     var quantityValue = quantity.value;
+//     if(quantityValue === '') {
+//         quantityValue = 1;
+//     }
 
-    switch(e.target.value) {
-        case '위 1.8':
-            forcepPrice = FORCEP.FORCEP_STOMATCH_18;
-            break;
-        case '위 2.3':
-            forcepPrice = FORCEP.FORCEP_STOMATCH_23;
-            break;
-        case '대장 1.8':
-            forcepPrice = FORCEP.FORCEP_COLON_18;
-            break;
-        case '대장 2.3':
-            forcepPrice = FORCEP.FORCEP_COLON_23;
-            break;
-    }
-    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
-});
+//     switch(e.target.value) {
+//         case '위 1.8':
+//             forcepPrice = FORCEP.FORCEP_STOMATCH_18;
+//             break;
+//         case '위 2.3':
+//             forcepPrice = FORCEP.FORCEP_STOMATCH_23;
+//             break;
+//         case '대장 1.8':
+//             forcepPrice = FORCEP.FORCEP_COLON_18;
+//             break;
+//         case '대장 2.3':
+//             forcepPrice = FORCEP.FORCEP_COLON_23;
+//             break;
+//     }
+//     price.value = (SET * quantityValue).toLocaleString('ko-KR');
+// });
 
-snareStandard.addEventListener('change', (e) => {
-    var quantityValue = quantity.value;
-    if(quantityValue === '') {
-        quantityValue = 1;
-    }
+// snareStandard.addEventListener('change', (e) => {
+//     var quantityValue = quantity.value;
+//     if(quantityValue === '') {
+//         quantityValue = 1;
+//     }
    
-    switch(e.target.value) {
-        case '5m':
-            snarePrice = SNARE.SNARE_5M;
-            break;
-        case '7m':
-            snarePrice = SNARE.SNARE_7M;
-            break;
-        case '10m':
-            snarePrice = SNARE.SNARE_10M;
-            break;
-        case '15m':
-            snarePrice = SNARE.SNARE_15M;
-            break;
-    }       
-    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
-});
+//     switch(e.target.value) {
+//         case '5m':
+//             snarePrice = SNARE.SNARE_5M;
+//             break;
+//         case '7m':
+//             snarePrice = SNARE.SNARE_7M;
+//             break;
+//         case '10m':
+//             snarePrice = SNARE.SNARE_10M;
+//             break;
+//         case '15m':
+//             snarePrice = SNARE.SNARE_15M;
+//             break;
+//     }       
+//     price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
+// });
 
-injectorStandard.addEventListener('change', (e) => {
-    var quantityValue = quantity.value;
-    if(quantityValue === '') {
-        quantityValue = 1;
-    }
+// injectorStandard.addEventListener('change', (e) => {
+//     var quantityValue = quantity.value;
+//     if(quantityValue === '') {
+//         quantityValue = 1;
+//     }
    
-    switch(e.target.value) {
-        case '23G':
-            injectorPrice = INJECTOR.INJECTOR_23G;
-            break;
-        case '25G':
-            injectorPrice = INJECTOR.INJECTOR_25G;
-            break;
-    }
-    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
-});
+//     switch(e.target.value) {
+//         case '23G':
+//             injectorPrice = INJECTOR.INJECTOR_23G;
+//             break;
+//         case '25G':
+//             injectorPrice = INJECTOR.INJECTOR_25G;
+//             break;
+//     }
+//     price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
+// });
 
 // 수량 변경 시 가격 변경
 quantity.addEventListener('input', (e) => {
@@ -158,5 +156,5 @@ quantity.addEventListener('input', (e) => {
     if(quantityValue === '') {
         quantityValue = 1;
     }
-    price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
+    price.value = (SET * quantityValue).toLocaleString('ko-KR');
 });

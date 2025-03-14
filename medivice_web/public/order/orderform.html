@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <link rel="stylesheet" href="../init.css">
     <link rel="stylesheet" href="orderform.css">
     <title>MEDIVICE ORDER</title>
@@ -53,14 +54,6 @@
             
             </div>
         </div>
-            <!-- <div class="order-item-form" id="form-footer">
-                <div class="order-item">
-                    <p>합계</p>
-                </div>
-                <div class="order-item" id="total-price">
-                    <p>10000</p>
-                </div>
-            </div> -->
         </div>
 
         <form id="order-form">
@@ -79,7 +72,11 @@
             </div>
             <div class="input-form">
                 <p>배송지</p>
-                <input class="contact-input" id="address" name="address" type="text" placeholder="배송지" required>
+                <div class="address-input">
+                    <input id="address" name="address" type="text" placeholder="" disabled required>
+                    <input id="address-detail" name="address" type="text" placeholder="상세 주소" required>
+                    <a href="#" id="search-address-btn"><img src="/images/ic-search-address.png" alt="search"></a>
+                </div>
             </div>
             <div class="input-form">
                 <p>합계</p>

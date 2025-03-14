@@ -63,9 +63,9 @@
                 <li class="nav-menu" id="cleaning">
                     <a href="product-single-option.html?prodName=cleaning"><div>내시경 세척액</div></a>
                 </li>
-                <li class="nav-menu"id="pad">
+                <!-- <li class="nav-menu"id="pad">
                     <a href="product-single-option.html?prodName=pad"><div>내시경 패드</div></a>
-                </li>
+                </li> -->
                 <li class="nav-menu" id="sponge">
                     <a href="product-single-option.html?prodName=sponge"><div>내시경 세척스펀지</div></a>
                 </li>
@@ -113,6 +113,7 @@
                         <div id="set-form">
                             <input id="prodName" name="prodName" type="hidden" value="set">
                             <div class="product-title"><h1>포스니 세트</h1></div>
+                            <div class="product-subtitle"><h2 id="product-subtitle">(포셉1ea+스네어1ea+니들1ea)</h2></div>
                             <div class="input-form">
                                 <p>규격 (포셉)</p>
                                 <select class="contact-input" name="standard" id="forcep-standard" required>
@@ -140,7 +141,10 @@
                             </div>
                             <div class="input-form">
                                 <p>수량</p>
-                                <input class="contact-input" id="quantity" name="quantity" type="text" placeholder="수량" required>
+                                <div class="contact-input">
+                                    <input type="text" id="quantity" name="quantity" type="quantity" placeholder="set" required>
+                                    <p>세트</p>
+                                </div>
                             </div>
                             <div class="input-form">
                                 <p>가격</p>

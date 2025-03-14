@@ -1,8 +1,9 @@
-import { getProdName, prodNameExchange } from '../constants.js';
+import { getProdName, prodNameExchange, prodNameSubTitle, prodQuantityType } from '../constants.js';
 
 let prodName;
 let PRODNAME;
-const quantity = document.getElementById('quantity');
+let quantity;
+
 const price = document.getElementById('price');
 
 // 초기화
@@ -13,9 +14,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const nameTitle = document.getElementById('product-name');
     nameTitle.innerText = prodNameExchange(prodName);
+    const subTitle = document.getElementById('product-subtitle')
+    subTitle.innerText = prodNameSubTitle(prodName);
     
     price.value = PRODNAME.toLocaleString('ko-KR');
-});
+
+    if(prodQuantityType(prodName) === 'box') {        
+        document.getElementById('quantity-ea').style.display = 'none';
+        document.getElementById('quantity-box').style.display = 'flex';
+        quantity = document.getElementById('quantity-input-box');
+    } else {
+        document.getElementById('quantity-ea').style.display = 'flex';
+        document.getElementById('quantity-box').style.display = 'none';
+        quantity = document.getElementById('quantity-input-ea');
+    }
+
+    
 
 // 장바구니 로직
 function addCart(prodName, standard, quantity, price) {
@@ -50,7 +64,7 @@ function addToShoppingBag() {
     if(quantity.value === '') {
         quantity.value = 1;
     }
-    addCart(prodName, '', quantity.value, price.value);
+    addCart(prodName, document.getElementById('product-subtitle').innerText, quantity.value + prodQuantityType(prodName), price.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -63,6 +77,22 @@ document.getElementById('order-btn').addEventListener('click', async (e) => {
     order();
 });
 
+// 수량 input 마이너스값 제한, 문자열 처리
+quantity.addEventListener('input', (e) => {
+    var regex = /^\d+$/;
+    if (!regex.test(e.target.value) || e.target.value <= 0) { 
+        e.target.value = '';
+    }
+
+    var quantityValue = e.target.value;
+    if(quantityValue === '') {
+        quantityValue = 1;
+    }
+
+    price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
+    });
+});
+
 // order form 로직
 async function order() {
     if(quantity.value === '') {
@@ -71,8 +101,8 @@ async function order() {
     
     const products = {
         prodName: prodName,
-        standard: '',
-        quantity: quantity.value,
+        standard: document.getElementById('product-subtitle').innerText,
+        quantity: quantity.value + prodQuantityType(prodName),
         price: price.value,
     }
     
@@ -80,22 +110,3 @@ async function order() {
     const url = '/order/orderform.html?products='+encodedProducts;
     window.location.href = url;
 }
-
-// 수량 input 마이너스값 제한
-document.getElementById('quantity').addEventListener('input', (e) => {
-    var regex = /^\d+$/;
-    if (!regex.test(e.target.value) || e.target.value <= 0) { 
-        e.target.value = '';
-    }
-});
-
-// 수량 변경 시 가격 변경
-quantity.addEventListener('input', (e) => {
-    var quantityValue = quantity.value;
-    if(quantityValue === '') {
-        quantityValue = 1;
-    }
-
-    price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
-});
-

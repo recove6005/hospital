@@ -116,6 +116,7 @@ main {
 /* order list */
 #order-list {
     width: 50%;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -169,6 +170,7 @@ main {
 /* order form */
 #order-form {
     width: 50%;
+    min-width: 300px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -211,6 +213,20 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 0;
+}
+
+.address-input {
+    width: 80%;
+    display: flex;
+    flex-direction: row;
+    border-radius: 0;
+}
+
+#search-address-btn img {
+    width: 30px;
+    height: 30px;
+    margin: 0 10px;
 }
 
 .input-form input:focus {
@@ -313,6 +329,8 @@ main {
 
     .input-form {
         width: 90%;
+        flex-direction: column;
+        align-items: start;
     }
 
     #contact-form-wrapper form p {
@@ -321,6 +339,20 @@ main {
 
     .contact-input {
         width: 250px;
+        
+    }
+
+    .address-input {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    #address {
+        width: 100%;
+    }
+
+    #address-detail {
+        height: 50px;
     }
 
     .button-wrapper {

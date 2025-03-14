@@ -16,7 +16,6 @@ body {
     margin: 20px;
 }
 
-
 /* search */
 #search-container {
     width: 100%;
@@ -31,7 +30,7 @@ body {
 }
 
 #entry-success-container {
-    width: 80%;
+    width: 98%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -87,7 +86,7 @@ body {
 }
 
 .list-select {
-    width: 10%;
+    width: 5%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -96,6 +95,12 @@ body {
 .list-select input {
     width: 20px;
     height: 20px;
+}
+
+.list-select, .list-date, .order-content, 
+.list-price, .list-hosp, .list-tel, .list-email,
+.list-address  {
+    word-break: break-word;
 }
 
 .list-date {
@@ -107,7 +112,7 @@ body {
 }
 
 .list-hosp {
-    width: 15%;
+    width: 10%;
 }
 
 .list-tel {
@@ -115,9 +120,47 @@ body {
 }
 
 .list-email {
-    width: 15%;
+    width: 10%;
 }   
 
 .list-price {
     width: 10%;
+}
+
+.list-address {
+    width: 20%;
+}
+
+@media (max-width: 800px) {
+    .category {
+        display: none;
+        word-break: normal;
+    }
+
+    #entry-success-container {
+        width: 98%;
+    }
+    
+    .list-row {
+        flex-direction: column;
+    }
+
+    .list-select, .list-date, .order-content, 
+    .list-price, .list-hosp, .list-tel, .list-email,
+    .list-address {
+        margin: 5px 0;
+        width: 90%;
+        text-align: start;
+        border-bottom: 1px dotted black;
+    }
+
+    .list-select {
+        border: none;
+        margin-bottom: 10px;
+    }
+
+    .order-content, .list-price {
+        font-weight: bolder;
+        background-color: aliceblue;
+    }
 }
