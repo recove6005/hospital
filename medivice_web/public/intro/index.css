@@ -91,7 +91,7 @@ header {
     display: flex;
     justify-content: right;
     align-items: center;
-
+    position: relative;
 }
 
 /* shoppingbag */
@@ -103,6 +103,7 @@ header {
     justify-content: center;
     align-items: center;
     transition-duration: 0.3s;
+    position: relative;
 }
 
 #shoppingbag:hover {
@@ -129,6 +130,25 @@ header {
 
 #menu-cart {
     display: none;
+}
+
+#cart-cnt {
+    position:absolute;
+    top: 10px;
+    right: 10px;
+    width: 12px;
+    height: 12px;
+    border-radius: 10px;
+    background-color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#cart-cnt p {
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
 }
 
 /* main */

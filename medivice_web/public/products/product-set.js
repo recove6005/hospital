@@ -7,11 +7,24 @@ const injectorStandard = document.getElementById('injector-standard');
 const quantity = document.getElementById('quantity');
 const price = document.getElementById('price');
 
+const cartCnt = document.getElementById('cart-cnt');
+const cntNumber = document.getElementById('cnt-number');
+let cartItemCnt = 0;
 
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
-    console.log(SET);
     price.value = SET.toLocaleString('ko-KR');
+
+    cartCnt.style.display = 'none';
+    var cart = getCart();
+    
+    for(var item in cart) {
+        if(cart[item].prodName === 'delete') continue;
+        else cartItemCnt++;
+    }
+
+    if(cartItemCnt > 0) cartCnt.style.display = 'flex';
+    cntNumber.innerText = cartItemCnt;
 });
 
 // 장바구니 로직

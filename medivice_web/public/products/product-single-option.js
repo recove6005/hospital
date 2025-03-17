@@ -6,6 +6,10 @@ let quantity;
 
 const price = document.getElementById('price');
 
+const cartCnt = document.getElementById('cart-cnt');
+const cntNumber = document.getElementById('cnt-number');
+let cartItemCnt = 0;
+
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -29,7 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
         quantity = document.getElementById('quantity-input-ea');
     }
 
+    cartCnt.style.display = 'none';
+    var cart = getCart();
     
+    for(var item in cart) {
+        if(cart[item].prodName === 'delete') continue;
+        else cartItemCnt++;
+    }
+
+    if(cartItemCnt > 0) cartCnt.style.display = 'flex';
+    cntNumber.innerText = cartItemCnt;
+});    
 
 // 장바구니 로직
 function addCart(prodName, standard, quantity, price) {
@@ -90,8 +104,8 @@ quantity.addEventListener('input', (e) => {
     }
 
     price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
-    });
 });
+
 
 // order form 로직
 async function order() {
