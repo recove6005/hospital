@@ -33,6 +33,20 @@ document.addEventListener('DOMContentLoaded', () => {
         quantity = document.getElementById('quantity-input-ea');
     }
 
+    quantity.addEventListener('input', (e) => {
+        var regex = /^\d+$/;
+        if (!regex.test(e.target.value) || e.target.value <= 0) { 
+            e.target.value = '';
+        }
+
+        var quantityValue = e.target.value;
+        if(quantityValue === '') {
+            quantityValue = 1;
+        }
+
+        price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
+    })
+
     cartCnt.style.display = 'none';
     var cart = getCart();
     
@@ -90,22 +104,6 @@ document.getElementById('order-btn').addEventListener('click', async (e) => {
     }
     order();
 });
-
-// 수량 input 마이너스값 제한, 문자열 처리
-quantity.addEventListener('input', (e) => {
-    var regex = /^\d+$/;
-    if (!regex.test(e.target.value) || e.target.value <= 0) { 
-        e.target.value = '';
-    }
-
-    var quantityValue = e.target.value;
-    if(quantityValue === '') {
-        quantityValue = 1;
-    }
-
-    price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
-});
-
 
 // order form 로직
 async function order() {
