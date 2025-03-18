@@ -12,7 +12,7 @@ class PatientPurseInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('환자 혈당 측정 내역', style: TextStyle(
+        title: const Text('회원 혈당 측정 내역', style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.grey,

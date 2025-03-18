@@ -50,7 +50,8 @@ document.getElementById('order-btn').addEventListener('click', async (e) => {
                 prodName: cart[product].prodName,
                 standard: cart[product].standard,
                 quantity: cart[product].quantity,
-                price: cart[product].price || 0
+                price: cart[product].price || 0,
+                details: cart[product].details || '',
             });
         }
     });

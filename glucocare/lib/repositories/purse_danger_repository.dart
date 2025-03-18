@@ -18,7 +18,7 @@ class PurseDangerRepository {
   static Future<List<PurseDangerModel>> selectAllDanger() async {
     List<PurseDangerModel> models = [];
     try {
-      var docSnapshot = await _store.collection('purse_danger').orderBy('check_time', descending: true).limit(200).get();
+      var docSnapshot = await _store.collection('purse_danger').orderBy('check_time', descending: true).limit(100).get();
       for (var doc in docSnapshot.docs) {
         PurseDangerModel model = PurseDangerModel.fromJson(doc.data());
         models.add(model);

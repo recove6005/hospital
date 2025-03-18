@@ -29,7 +29,7 @@ export const order = async (req, res) => {
             email: email,
             address: address,
             order_id: order_id,
-            price: price
+            price: price,
         });
 
         await setDoc(orderBackupRef, {
@@ -41,7 +41,7 @@ export const order = async (req, res) => {
             email: email,
             address: address,
             order_id: order_id,
-            price: price
+            price: price,
         })
 
         sendOrderMail(products, email, order_id, price);
@@ -78,6 +78,7 @@ const mailOptions = {
                     제품명: ${prodNameExchange(product.prodName)}
                     규격: ${product.standard}
                     수량: ${product.quantity}
+                    문의내역: ${product.details}
                 `
             }).join('\n')
         }

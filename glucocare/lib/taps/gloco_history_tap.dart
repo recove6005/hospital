@@ -567,7 +567,7 @@ class _GlucoHistoryForm extends State<GlucoHistoryForm> {
                                                             fontWeight: FontWeight.bold,
                                                             color: Colors.black,
                                                           ),),
-                                                      Text('${_glucoModels[index].value} mg/dL',
+                                                      Text('${_glucoModels[index].checkTimeName} ${_glucoModels[index].value} mg/dL',
                                                         style: const TextStyle(
                                                           fontSize: 18,
                                                           color: Colors.black,

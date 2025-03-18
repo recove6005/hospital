@@ -12,7 +12,7 @@ class PatientGlucoInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('환자 혈당 측정 내역', style: TextStyle(
+        title: const Text('회원 혈당 측정 내역', style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.grey,
@@ -93,7 +93,7 @@ class _PatientGlucoInfoFormState extends State<PatientGlucoInfoForm> {
                           children: [
                             Text('${_glucoModels[index].checkTime}'),
                             Text(
-                              '${_glucoModels[index].value} mg/dL',
+                              '${_glucoModels[index].checkTimeName} ${_glucoModels[index].value} mg/dL',
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

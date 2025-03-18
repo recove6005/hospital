@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <p>
                             ${order.products.map((product) => {
                                 return `
-                                    ${prodNameExchange(product.prodName)} / ${product.standard} / ${product.quantity}개 <br>
+                                    ${prodNameExchange(product.prodName)} / ${product.standard} / ${product.quantity}개 / ${product.details} <br>
                                 `;
                             })}
                             </p>
@@ -174,12 +174,12 @@ document.getElementById('download-btn').addEventListener('click', async () => {
     const datas = selectedOrders.map(order => { 
         return {
             '주문일자': order.order_date.substring(0, 10),
-            '주문 내용': order.products.map(product => `${prodNameExchange(product.prodName)} ${product.standard} ${product.quantity}개`).join(' / \n'),
+            '주문 내용': order.products.map(product => `${prodNameExchange(product.prodName)} ${product.standard} ${product.quantity}개 ${product.details}`).join(' / \n'),
             '합계': order.price,
             '병원명': order.hospital_name,
             '연락처': order.call,
             '이메일': order.email,
-            '배송지': order.address
+            '배송지': order.address,
         }
     });
     const worksheet = XLSX.utils.json_to_sheet(datas);

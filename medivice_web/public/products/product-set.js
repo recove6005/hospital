@@ -6,6 +6,7 @@ const snareStandard = document.getElementById('snare-standard');
 const injectorStandard = document.getElementById('injector-standard');
 const quantity = document.getElementById('quantity');
 const price = document.getElementById('price');
+const details = document.getElementById('details');
 
 const cartCnt = document.getElementById('cart-cnt');
 const cntNumber = document.getElementById('cnt-number');
@@ -28,13 +29,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 장바구니 로직
-function addCart(prodName, setStandard, quantity, price) {
+function addCart(prodName, setStandard, quantity, price, details) {
     var cart = getCart();
     cart[prodName] = { 
         prodName: prodName, 
         standard: setStandard, 
         quantity: quantity, 
         price: price,
+        details: details
     };
     setCart(cart);
 }
@@ -59,7 +61,7 @@ function addToShoppingBag() {
         quantity.value = 1;
     }
     const setStandard = `포스니 세트 (포셉 ${forcepStandard.value} / 스네어 ${snareStandard.value} / 인젝터 ${injectorStandard.value})`;
-    addCart(prodName.value, setStandard, quantity.value + 'set', price.value);
+    addCart(prodName.value, setStandard, quantity.value + 'set', price.value, details.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -84,6 +86,7 @@ async function order() {
         standard: setStandard,
         quantity: quantity.value + 'set',
         price: price.value,
+        details: details.value
     }
 
     const encodedProducts = encodeURIComponent(JSON.stringify(products));

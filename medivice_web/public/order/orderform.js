@@ -60,6 +60,9 @@ async function displayProducts() {
                 <div class="order-item" id="product-price">
                     <p>${product.price} 원</p>
                 </div>
+                <div class="order-item" id="product-details">
+                    <p>${product.details}</p>
+                </div>
             <div>
         `;
     });

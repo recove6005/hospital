@@ -17,7 +17,7 @@ class PatientWorningPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          '위험 환자 관리',
+          '건강 고위험군 회원 관리',
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,

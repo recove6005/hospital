@@ -16,7 +16,7 @@ class PatientInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('환자 정보', style: TextStyle(
+        title: const Text('회원 정보', style: TextStyle(
           fontSize: 20,
           fontWeight: FontWeight.bold,
           color: Colors.grey,

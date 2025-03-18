@@ -19,7 +19,7 @@ class ReservationEditPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('환자 진료 예약 변경', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+        title: const Text('회원 진료 예약 변경', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
       ),

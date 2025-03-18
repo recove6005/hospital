@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> {
                 if(_isAdmin)
                 ListTile(
                     leading: const Icon(Icons.search),
-                    title: const Text('환자 관리', style: TextStyle(
+                    title: const Text('회원 관리', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),
@@ -351,7 +351,7 @@ class _HomePageState extends State<HomePage> {
                 if(_isAdmin)
                 ListTile(
                     leading: const Icon(Icons.local_hospital),
-                    title: const Text('위험 환자 관리', style: TextStyle(
+                    title: const Text('건강 고위험군 회원', style: TextStyle(
                         fontSize: 20,
                         color: Colors.black
                     ),),

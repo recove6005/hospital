@@ -34,7 +34,7 @@ class _MyInfoFormState extends State<MyInfoForm> {
    String _name = '';
    String _gen = '';
    String _birthDate = '';
-   final String _state = '없음';
+   String _state = '없음';
 
   Future<void> _getModel() async {
     UserModel? model = await UserRepository.selectUserByUid();
@@ -43,6 +43,7 @@ class _MyInfoFormState extends State<MyInfoForm> {
         _name = model.name;
         _gen = model.gen;
         _birthDate = DateFormat('yyyy년 MM월 dd일').format(model.birthDate.toDate());
+        _state = model.state;
       });
     }
   }

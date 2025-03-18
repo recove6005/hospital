@@ -20,7 +20,7 @@ class ScheduleManagementPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("환자 예약 관리", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
+        title: const Text("회원 예약 관리", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.grey),),
         backgroundColor: Colors.white,
         shadowColor: Colors.white,
       ),

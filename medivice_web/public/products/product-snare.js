@@ -4,7 +4,7 @@ const prodName = document.getElementById('prodName');
 const standard = document.getElementById('standard');
 const quantity = document.getElementById('quantity');
 const price = document.getElementById('price');
-
+const details = document.getElementById('details');
 const cartCnt = document.getElementById('cart-cnt');
 const cntNumber = document.getElementById('cnt-number');
 let cartItemCnt = 0;
@@ -26,13 +26,14 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // 장바구니 로직
-function addCart(prodName, standard, quantity, price) {
+function addCart(prodName, standard, quantity, price, details) {
     var cart = getCart();
     cart[prodName] = { 
         prodName: prodName, 
         standard: standard, 
         quantity: quantity,     
         price: price,
+        details: details
     };
     setCart(cart);
 }
@@ -56,7 +57,7 @@ function addToShoppingBag() {
     if(quantity.value === '') {
         quantity.value = 1;
     }
-    addCart(prodName.value, standard.value, quantity.value + 'ea', price.value);
+    addCart(prodName.value, standard.value, quantity.value + 'ea', price.value, details.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -76,6 +77,7 @@ async function order() {
         standard: standard.value,
         quantity: quantity.value + 'ea',
         price: price.value,
+        details: details.value
     }
 
     const encodedProducts = encodeURIComponent(JSON.stringify(products));

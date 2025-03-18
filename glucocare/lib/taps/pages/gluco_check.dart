@@ -555,7 +555,7 @@ class _GlucoCheckFormState extends State<GlucoCheckForm> {
                               maxLength: 3,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
-                                rangeTextInputFormatter(0, 300),
+                                rangeTextInputFormatter(0, 600),
                               ],
                               onChanged: (text) {
                                 _getDiagnosis(text);

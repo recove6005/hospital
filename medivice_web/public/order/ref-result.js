@@ -29,16 +29,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         const quantityDiv = document.createElement('p');
         const standardDiv = document.createElement('p');
         const priceDiv = document.createElement('p');
+        const detailsDiv = document.createElement('p');
 
         prodNameDiv.textContent = `상품명: ${prodNameExchange(product.prodName)}`;
         quantityDiv.textContent = `수량: ${product.quantity}`;
         standardDiv.textContent = `규격: ${product.standard}`;
         priceDiv.textContent = `가격: ${product.price}원`;
+        detailsDiv.textContent = `문의내용: ${product.details}`;
 
         li.appendChild(prodNameDiv);
         li.appendChild(standardDiv);
         li.appendChild(quantityDiv);
         li.appendChild(priceDiv);
+        li.appendChild(detailsDiv);
         
         document.getElementById('products-list').appendChild(li);
     });
