@@ -13,7 +13,9 @@ body {
 }
 
 #logo {
-    margin: 20px;
+    margin: 30px;
+    width: 250px;
+    height: fit-content;
 }
 
 /* search */

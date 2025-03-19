@@ -64,6 +64,11 @@ header {
     align-items: center;
 }
 
+#logo {
+    width: 200px;
+    height: fit-content;
+}
+
 #header-center-container {
     width: 100%;
     display: flex;
@@ -113,14 +118,14 @@ header {
 #shoppingbag-img {
     width: 35px;
     height: 35px;
-    background-image: url('../images/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
+    background-image: url('/images/icon/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
     background-size: contain;
     background-repeat: no-repeat;
     transition: background-image 0.3s;
 }
 
 #shoppingbag:hover #shoppingbag-img {
-    background-image: url('../images/ic-cart-move.gif');
+    background-image: url('/images/icon/ic-cart-move.gif');
 }
 
 #shoppingbag p {
@@ -255,11 +260,6 @@ footer {
     gap: 40px;
 }
 
-#footer-content-wrapper img {
-    height: 50px;
-    width: auto;
-}
-
 #footer-content-wrapper div {
     display: flex;
     flex-direction: column;  /* 세로로 정렬되도록 변경 */
@@ -287,6 +287,10 @@ footer {
     border-top: 1px solid #eee;
 }
 
+#footer-logo {
+    width: 150px;
+    height: fit-content;
+}
 
 @media (max-width: 1200px)  {
     header {

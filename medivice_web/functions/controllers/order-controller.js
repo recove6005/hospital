@@ -68,7 +68,7 @@ const mailOptions = {
     from: process.env.EMAIL,
     to: email,
     subject: '[MEDIVICE] 주문서',
-    text: `
+    text: `<p style="font-weight:bold; font-size: 13px;>
         주문 번호: ${order_id}
         
         주문 제품
@@ -84,6 +84,7 @@ const mailOptions = {
         
 
         주문 금액: ${price} 원
+    </p>
     `,
 };
 

@@ -1,6 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { collection, doc, getDoc, setDoc, getDocs, orderBy, deleteDoc, where, query } from "firebase/firestore";
+import { collection, doc, setDoc, getDocs, orderBy, deleteDoc, where, query } from "firebase/firestore";
 import { store } from "../config/firebase-config.js";
 import nodemailer from 'nodemailer';
 import { prodNameExchange } from './constants.js';    
@@ -68,7 +68,7 @@ const mailOptions = {
     from: googleEmail,
     to: email,
     subject: '[MEDIVICE] 주문서',
-    text: `
+    text: `<p style="font-weight:bold; font-size: 18px;">
         주문 번호: ${order_id}
         
         주문 제품
@@ -84,6 +84,7 @@ const mailOptions = {
         }
         
         주문 금액: ${price} 원
+    </p>
     `,
 };
 

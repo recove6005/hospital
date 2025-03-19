@@ -13,7 +13,7 @@
         <div id="header-wrapper">
             <div id="logo-container">
                 <a href="/index.html">
-                    <img id="logo" src="" alt="로고">
+                    <img id="logo" src="/images/logo.png" alt="로고">
                 </a>
             </div>
             <div id="header-center-container">
@@ -59,14 +59,14 @@
                     <a href="product-single-option.html?prodName=nasal"><div>나잘케뉼라</div></a>
                 </li>
                 <li class="nav-menu" id="brush">
-                    <a href="product-single-option.html?prodName=brush"><div>내시경 세척브러시</div></a>
+                    <a href="product-single-option.html?prodName=brush"><div>내시경 세척브러쉬</div></a>
                 </li>
                 <li class="nav-menu" id="cleaning">
                     <a href="product-single-option.html?prodName=cleaning"><div>내시경 세척액</div></a>
                 </li>
-                <!-- <li class="nav-menu"id="pad">
+                <li class="nav-menu"id="pad">
                     <a href="product-single-option.html?prodName=pad"><div>내시경 패드</div></a>
-                </li> -->
+                </li>
                 <li class="nav-menu" id="sponge">
                     <a href="product-single-option.html?prodName=sponge"><div>내시경 세척스펀지</div></a>
                 </li>
@@ -115,21 +115,75 @@
                             <input id="prodName" name="prodName" type="hidden" value="mouthpiece">
                             <div class="product-title"><h1 id="product-name"></h1></div>
                             <div class="product-subtitle"><h2 id="product-subtitle"></h2></div>
+                            <input type="text" value="" id="standard" style="display: none;">
+                            <div class="input-form" id="standard-container-brush">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard" >
+                                    <option value="MDCB-01">MDCB-01</option>
+                                    <option value="MDCB-02 Brush1">MDCB-02 Brush1</option>
+                                    <option value="MDCB-02 Brush2">MDCB-02 Brush2</option>
+                                </select>
+                            </div>
+                            <div class="input-form" id="standard-container-cleaning">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard" >
+                                    <option value="페라플루디액">페라플루디액</option>
+                                    <option value="디터점스 오피에이액">디터점스 오피에이액</option>
+                                    <option value="디터점스 울트라">디터점스 울트라</option>
+                                    <option value="디터점스 에이크린액">디터점스 에이크린액</option>
+                                </select>
+                            </div>
+                            <div class="input-form" id="standard-container-gown-top">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard" >
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                            </div>
+                            <div class="input-form" id="standard-container-gown-set">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard">
+                                    <option value="M">M</option>
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                            </div>
+                            <div class="input-form" id="standard-container-gown-inner">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard" >
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                            </div>
+                            <div class="input-form" id="standard-container-gown-breast">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard"  >
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                            </div>
+                            <div class="input-form" id="standard-container-hospital-gown">
+                                <p>규격</p>
+                                <select class="contact-input" name="standard" id="standard" >
+                                    <option value="L">L</option>
+                                    <option value="XL">XL</option>
+                                </select>
+                            </div>
                             <div class="input-form" id="quantity-ea">
                                 <p>수량</p>
                                 <div class="contact-input">
                                     <input type="text" id="quantity-input-ea" name="quantity" type="quantity" placeholder="ea" required>
-                                    <p>ea</p>
+                                    <p>EA</p>
                                 </div>
                             </div>
                             <div class="input-form" id="quantity-box">
                                 <p>수량</p>
                                 <div class="contact-input">
                                     <input type="text" id="quantity-input-box" name="quantity" type="quantity" placeholder="box" required>
-                                    <p>box</p>
+                                    <p>BOX</p>
                                 </div>
                             </div>
-
                             <div class="input-form">
                                 <p>가격</p>
                                 <div class="contact-input">
@@ -137,7 +191,7 @@
                                     <p>원</p>
                                 </div>
                             </div>
-                            <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요." required></textarea>
+                            <textarea id="details" name="details" type="text" placeholder="문의하실 내용을 기입해 주세요."></textarea>
                         </div>
                         
                         <div class="button-wrapper">
@@ -147,6 +201,8 @@
                     </form>
             </div>
         </section>
+        <img src="" alt="spec" class="spec" id="spec-01">
+        <img src="" alt="spec" class="spec" id="spec-02">
     </main>
 </body>
 <script src="product-single-option.js" type="module" defer></script>

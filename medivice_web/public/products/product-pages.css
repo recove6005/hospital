@@ -64,6 +64,11 @@ header {
     align-items: center;
 }
 
+#logo {
+    width: 200px;
+    height: fit-content;
+}
+
 #header-center-container {
     width: 100%;
     display: flex;
@@ -113,14 +118,14 @@ header {
 #shoppingbag-img {
     width: 35px;
     height: 35px;
-    background-image: url('../images/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
+    background-image: url('/images/icon/ic-cart-stop.png'); /* 기본 이미지 URL 추가 */
     background-size: contain;
     background-repeat: no-repeat;
     transition: background-image 0.3s;
 }
 
 #shoppingbag:hover #shoppingbag-img {
-    background-image: url('../images/ic-cart-move.gif');
+    background-image: url('/images/icon/ic-cart-move.gif');
 }
 
 #shoppingbag p {
@@ -424,6 +429,23 @@ main {
     box-shadow: none;
 }
 
+.spec {
+    margin-top: 50px;
+    width: 50%;
+    min-width: 1050px;
+    height: fit-content;
+}
+
+#standard-container-brush, 
+#standard-container-cleaning,
+#standard-container-gown-top,
+#standard-container-gown-set,
+#standard-container-gown-inner,
+#standard-container-gown-breast,
+#standard-container-hospital-gown {
+    display: none;
+}
+
 @media screen and (max-width: 1090px) {
     header {
         position: absolute;
@@ -538,6 +560,11 @@ main {
     .button-wrapper button {
         width: 100%;
         margin: 5px 0;
+    }
+
+    .spec {
+        width: 90%;
+        min-width: 0px;
     }
 }
 

@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 장바구니 로직
 function addCart(prodName, standard, quantity, price, details) {
     var cart = getCart();
-    cart[prodName] = { 
+    cart[prodName+standard+quantity] = { 
         prodName: prodName, 
         standard: standard, 
         quantity: quantity, 

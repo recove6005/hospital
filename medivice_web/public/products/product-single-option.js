@@ -1,8 +1,9 @@
-import { getProdName, prodNameExchange, prodNameSubTitle, prodQuantityType } from '../constants.js';
+import { getProdName, getProdSpecImagePath, getProdThnImagePath, prodNameExchange, prodNameSubTitle, prodQuantityType } from '../constants.js';
 
 let prodName;
 let PRODNAME;
 let quantity;
+let standard;
 
 const price = document.getElementById('price');
 const details = document.getElementById('details');
@@ -10,8 +11,10 @@ const cartCnt = document.getElementById('cart-cnt');
 const cntNumber = document.getElementById('cnt-number');
 let cartItemCnt = 0;
 
+
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
+    //
     const urlParams = new URLSearchParams(window.location.search);
     prodName = urlParams.get('prodName');
     PRODNAME = getProdName(prodName);
@@ -57,12 +60,49 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if(cartItemCnt > 0) cartCnt.style.display = 'flex';
     cntNumber.innerText = cartItemCnt;
+
+    // 규격 설정
+    console.log(`prod name : ${prodName}`);
+    if(
+        prodName === 'brush' ||
+        prodName === 'cleaning' ||
+        prodName === 'gown-top' ||
+        prodName === 'gown-set' ||
+        prodName === 'gown-inner' ||
+        prodName === 'gown-breast' ||
+        prodName === 'hospital-gown'
+    ) {
+        document.getElementById(`standard-container-${prodName}`).style.display = 'flex';
+        standard = document.querySelector(`#standard-container-${prodName} #standard`);
+    }
+    else {
+        standard = document.querySelector('#standard');
+        standard.value = document.getElementById('product-subtitle').innerText;
+    }
+
+    
+
+    // 이미지 처리
+    const displayImage = document.getElementById('display-img');
+    const specImage = document.getElementById('spec-01');
+    const specImagePlus = document.getElementById('spec-02');
+
+    displayImage.src = getProdThnImagePath(prodName);
+    if(prodName === 'cleaning') {
+        specImage.src = getProdSpecImagePath(prodName+'-01');
+        specImagePlus.style.display = 'block';
+        specImagePlus.src = getProdSpecImagePath(prodName+'-02');
+        
+    } else {
+        specImage.src = getProdSpecImagePath(prodName);
+        specImagePlus.style.display = 'none';
+    }
 });    
 
 // 장바구니 로직
 function addCart(prodName, standard, quantity, price, details) {
     var cart = getCart();   
-    cart[prodName] = { 
+    cart[prodName+standard+quantity] = { 
         prodName: prodName, 
         standard: standard, 
         quantity: quantity, 
@@ -93,7 +133,8 @@ function addToShoppingBag() {
     if(quantity.value === '') {
         quantity.value = 1;
     }
-    addCart(prodName, document.getElementById('product-subtitle').innerText, quantity.value + prodQuantityType(prodName), price.value, details.value);
+
+    addCart(prodName, standard.value, quantity.value + prodQuantityType(prodName), price.value, details.value);
     alert('카트에 상품이 추가되었습니다.');
 }
 
@@ -114,7 +155,7 @@ async function order() {
     
     const products = {
         prodName: prodName,
-        standard: document.getElementById('product-subtitle').innerText,
+        standard: standard.value,
         quantity: quantity.value + prodQuantityType(prodName),
         price: price.value,
         details: details.value

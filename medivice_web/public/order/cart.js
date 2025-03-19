@@ -1,4 +1,4 @@
-import { prodNameExchange } from '../constants.js';
+import { getProdThnImagePath, prodNameExchange } from '../constants.js';
 
 function getCart() {
     var cartCookie = document.cookie.replace(/(?:(?:^|.*;\s*)cart\s*\=\s*([^;]*).*$)|^.*$/, "$1");
@@ -20,13 +20,14 @@ function displayCart() {
         else prodName = prodNameExchange(cart[product].prodName);
         
         const div = document.createElement('div');
+        const imagePath = getProdThnImagePath(cart[product].prodName);
         div.id = 'product-container';
         div.innerHTML = `
             <div id="product-select">
                 <input class="checkbox" id="${product}" type="checkbox" name="product" value="${product}">
             </div>
             <div id="product-image">
-                <img id="product-image" src="../images/main-${prodName}.png" alt="제품 이미지 준비 중">
+                <img id="product-image" src="${imagePath}" alt="제품 이미지 준비 중">
             </div>
             <div id="product-name">${prodName}</div>
             <div id="product-standard">${cart[product].standard}</div>

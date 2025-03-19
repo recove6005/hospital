@@ -7,7 +7,6 @@ const injectorStandard = document.getElementById('injector-standard');
 const quantity = document.getElementById('quantity');
 const price = document.getElementById('price');
 const details = document.getElementById('details');
-
 const cartCnt = document.getElementById('cart-cnt');
 const cntNumber = document.getElementById('cnt-number');
 let cartItemCnt = 0;
@@ -31,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // 장바구니 로직
 function addCart(prodName, setStandard, quantity, price, details) {
     var cart = getCart();
-    cart[prodName] = { 
+    cart[prodName+standard+quantity] = { 
         prodName: prodName, 
         standard: setStandard, 
         quantity: quantity, 
@@ -101,70 +100,6 @@ document.getElementById('quantity').addEventListener('input', (e) => {
         e.target.value = '';
     }
 });
-
-// 옵션 변경 시 가격 변경
-// forcepStandard.addEventListener('change', (e) => {
-//     var quantityValue = quantity.value;
-//     if(quantityValue === '') {
-//         quantityValue = 1;
-//     }
-
-//     switch(e.target.value) {
-//         case '위 1.8':
-//             forcepPrice = FORCEP.FORCEP_STOMATCH_18;
-//             break;
-//         case '위 2.3':
-//             forcepPrice = FORCEP.FORCEP_STOMATCH_23;
-//             break;
-//         case '대장 1.8':
-//             forcepPrice = FORCEP.FORCEP_COLON_18;
-//             break;
-//         case '대장 2.3':
-//             forcepPrice = FORCEP.FORCEP_COLON_23;
-//             break;
-//     }
-//     price.value = (SET * quantityValue).toLocaleString('ko-KR');
-// });
-
-// snareStandard.addEventListener('change', (e) => {
-//     var quantityValue = quantity.value;
-//     if(quantityValue === '') {
-//         quantityValue = 1;
-//     }
-   
-//     switch(e.target.value) {
-//         case '5m':
-//             snarePrice = SNARE.SNARE_5M;
-//             break;
-//         case '7m':
-//             snarePrice = SNARE.SNARE_7M;
-//             break;
-//         case '10m':
-//             snarePrice = SNARE.SNARE_10M;
-//             break;
-//         case '15m':
-//             snarePrice = SNARE.SNARE_15M;
-//             break;
-//     }       
-//     price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
-// });
-
-// injectorStandard.addEventListener('change', (e) => {
-//     var quantityValue = quantity.value;
-//     if(quantityValue === '') {
-//         quantityValue = 1;
-//     }
-   
-//     switch(e.target.value) {
-//         case '23G':
-//             injectorPrice = INJECTOR.INJECTOR_23G;
-//             break;
-//         case '25G':
-//             injectorPrice = INJECTOR.INJECTOR_25G;
-//             break;
-//     }
-//     price.value = ((forcepPrice + snarePrice + injectorPrice) * quantityValue).toLocaleString('ko-KR');
-// });
 
 // 수량 변경 시 가격 변경
 quantity.addEventListener('input', (e) => {

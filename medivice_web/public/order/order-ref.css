@@ -11,6 +11,11 @@ body {
     align-items: center;
 }
 
+#logo {
+    width: 250px;
+    height: fit-content;
+}
+
 #search-logo {
     height: 80px;
 }

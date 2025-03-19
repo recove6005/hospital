@@ -79,7 +79,7 @@ export function prodNameExchange(prodName) {
     if(prodName === 'set') return '포스니 세트';
     if(prodName === 'mouthpiece') return '마우스피스';
     if(prodName === 'nasal') return '나잘케뉼라';
-    if(prodName === 'brush') return '내시경 세척 브러시'; //
+    if(prodName === 'brush') return '내시경 세척 브러쉬'; //
     if(prodName === 'cleaning') return '내시경 세척액';
     if(prodName === 'pad') return '내시경 패드'; //
     if(prodName === 'sponge') return '내시경 세척스펀지';
@@ -95,6 +95,50 @@ export function prodNameExchange(prodName) {
     if(prodName === 'hospital-gown') return '일회용 입원복';
 }
 
+export function getProdThnImagePath(prodName) {
+    if(prodName === 'forcep') return '/images/thn/thn-forcep.png';
+    else if(prodName === 'snare') return '/images/thn/thn-snare.png';
+    else if(prodName === 'injector') return '/images/thn/thn-injector.png';
+    else if(prodName === 'set') return '/images/thn/thn-set.png';
+    else if(prodName === 'mouthpiece') return '/images/thn/thn-mouthpiece.png';
+    else if(prodName === 'pad') return '/images/thn/thn-pad.png'
+    else if(prodName === 'brush') return '/images/thn/thn-brush.png';
+    else if(prodName === 'cleaning') return '/images/thn/thn-cleaning.png';
+    else if(prodName === 'sponge') return '/images/thn/thn-sponge.png';
+    else if(prodName === 'nasal') return '/images/thn/thn-nasal.png';
+    else if(prodName === 'gown-top') return '/images/thn/thn-gown-top.png'; //
+    else if(prodName === 'gown-set') return '/images/thn/thn-gown-set.png'; //
+    else if(prodName === 'gown-pants') return '/images/thn/thn-gown-pants.png';
+    else if(prodName === 'gown-skirt') return '/images/thn/thn-gown-skirt.png';
+    else if(prodName === 'gown-inner') return '/images/thn/thn-gown-inner.png'; //
+    else if(prodName === 'gown-breast') return '/images/thn/thn-gown-breast.png'; //
+    else if(prodName === 'bed-cover') return '/images/thn/thn-bed-cover.png'; //
+    else if(prodName === 'pillow-cover') return '/images/thn/thn-pillow-cover.png';
+    else if(prodName === 'pillow-cover-bag') return '/images/thn/thn-pillow-cover-bag.png';
+    else if(prodName === 'hospital-gown') return '/images/thn/thn-hospital-gown.png';
+    else return '';
+}
+
+export function getProdSpecImagePath(prodName) {
+    if(prodName === 'mouthpiece') return '/images/spec/spec-mouthpiece.jpg';
+    else if(prodName === 'pad') return '/images/spec/spec-pad.jpg';
+    else if(prodName === 'brush') return '/images/spec/spec-brush.jpg';
+    else if(prodName === 'sponge') return '/images/spec/spec-sponge.png';
+    else if(prodName === 'nasal') return '/images/spec/spec-nasal.jpg';
+    else if(prodName === 'gown-top') return '/images/spec/spec-gown-top.png'; //
+    else if(prodName === 'gown-set') return '/images/spec/spec-gown-set.png'; //
+    else if(prodName === 'gown-pants') return '/images/spec/spec-gown-pants.jpg';
+    else if(prodName === 'gown-skirt') return '/images/spec/spec-gown-skirt.jpg';
+    else if(prodName === 'gown-inner') return '/images/spec/spec-gown-inner.jpg'; //
+    else if(prodName === 'gown-breast') return '/images/spec/spec-gown-breast.png'; //
+    else if(prodName === 'bed-cover') return '/images/spec/spec-bed-cover.jpg'; //
+    else if(prodName === 'pillow-cover') return '/images/spec/spec-pillow-cover.jpg';
+    else if(prodName === 'pillow-cover-bag') return '/images/spec/spec-pillow-cover-bag.jpg';
+    else if(prodName === 'hospital-gown') return '/images/spec/spec-hospital-gown.png';
+    else if(prodName === 'cleaning-01') return '/images/spec/spec-cleaning-01.jpg';
+    else if(prodName === 'cleaning-02') return '/images/spec/spec-cleaning-02.jpg';
+    else return '(ea)';
+}
 
 export function prodNameSubTitle(prodName) {
     if(prodName === 'mouthpiece') return '(50ea/box)';

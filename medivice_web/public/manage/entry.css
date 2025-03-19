@@ -11,8 +11,10 @@ body {
     align-items: center;
 }
 
-#entry-logo {
-    height: 80px;
+#logo {
+    width: 250px;
+    height: fit-content;
+    margin: 30px 0;
 }
 
 #entry-container {
