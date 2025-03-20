@@ -11,7 +11,6 @@ const cartCnt = document.getElementById('cart-cnt');
 const cntNumber = document.getElementById('cnt-number');
 let cartItemCnt = 0;
 
-
 // 초기화
 document.addEventListener('DOMContentLoaded', () => {
     //

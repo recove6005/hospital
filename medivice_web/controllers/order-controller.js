@@ -70,7 +70,8 @@ const mailOptions = {
     subject: '[MEDIVICE] 주문서',
     text: `<p style="font-weight:bold; font-size: 18px;">
         주문 번호: ${order_id}
-        
+        입금 계좌: 기업은행 017-505261-01-019 주식회사 메디바이스
+
         주문 제품
         ${
             products.map((product) => {
