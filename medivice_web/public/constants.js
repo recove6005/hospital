@@ -17,11 +17,17 @@ export const INJECTOR = {
     "INJECTOR_25G": 43860
 }
 
+export const CLEANING = { // 내시경 세척액
+    "CLEANING_01": 88000, // 에이크린
+    "CLEANING_02": 116000, // 오피에이
+    "CLEANING_03": 114000, // 울트라
+    "CLEANING_04": 144000 // 페라플루
+}
+
 export const SET = 55000;
 export const MOUTHPIECE = 43500; // 마우스피스 50ea
 export const NASAL = 189000; // 나잘케뉼라 200ea
 export const BRUSH = 1600; // 내시경 세척 브러시
-export const CLEANING = 15000; // 내시경 세척액
 export const PAD = 0; // 내시경 패드
 export const SPONGE = 4900; // 내시경 세척스펀지
 export const GOWN_TOP = 200000; // 일회용 검진복 상의 100ea
@@ -44,7 +50,7 @@ export function getProdName(prodName) {
     } else if(prodName === 'brush') {
         return BRUSH;
     } else if(prodName === 'cleaning') {
-        return CLEANING;
+        return CLEANING.CLEANING_04;
     } else if(prodName === 'pad') {
         return PAD;
     } else if(prodName === 'sponge') {
@@ -142,6 +148,7 @@ export function getProdSpecImagePath(prodName) {
 
 export function prodNameSubTitle(prodName) {
     if(prodName === 'mouthpiece') return '(50ea/box)';
+    else if(prodName === 'cleaning') return '(4L/box)';
     else if(prodName === 'nasal') return '(200ea/box)';
     else if(prodName === 'gown-top') return '(100ea/box)'; //
     else if(prodName === 'gown-set') return '(50ea/box)'; //
@@ -169,7 +176,8 @@ export function prodQuantityType(prodName) {
         prodName === 'bed-cover' ||
         prodName === 'pillow-cover' ||
         prodName === 'pillow-cover-bag' ||
-        prodName === 'hospital-gown'
+        prodName === 'hospital-gown' ||
+        prodName === 'cleaning'
     ) {
         return 'box';
     } else {

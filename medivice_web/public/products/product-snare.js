@@ -101,16 +101,16 @@ standard.addEventListener('change', (e) => {
     }
     
     switch(e.target.value) {
-        case '5m':
+        case '5mm':
             price.value = (SNARE.SNARE_5M*quantityValue).toLocaleString('ko-KR');
             break;
-        case '7m':
+        case '7mm':
             price.value = (SNARE.SNARE_7M*quantityValue).toLocaleString('ko-KR');
             break;
-        case '10m': 
+        case '10mm': 
             price.value = (SNARE.SNARE_10M*quantityValue).toLocaleString('ko-KR');
             break;
-        case '15m':
+        case '15mm':
             price.value = (SNARE.SNARE_15M*quantityValue).toLocaleString('ko-KR');
             break;
     }
@@ -124,16 +124,16 @@ quantity.addEventListener('input', (e) => {
     }
 
     switch(standard.value) {
-        case '5m':
+        case '5mm':
             price.value = SNARE.SNARE_5M;
             break;
-        case '7m':
+        case '7mm':
             price.value = SNARE.SNARE_7M;
             break;
-        case '10m':
+        case '10mm':
             price.value = SNARE.SNARE_10M;
             break;
-        case '15m':
+        case '15mm':
             price.value = SNARE.SNARE_15M;
             break;
     }

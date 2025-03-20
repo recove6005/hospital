@@ -1,4 +1,4 @@
-import { getProdName, getProdSpecImagePath, getProdThnImagePath, prodNameExchange, prodNameSubTitle, prodQuantityType } from '../constants.js';
+import { getProdName, getProdSpecImagePath, getProdThnImagePath, prodNameExchange, prodNameSubTitle, prodQuantityType, CLEANING } from '../constants.js';
 
 let prodName;
 let PRODNAME;
@@ -46,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
         if(quantityValue === '') {
             quantityValue = 1;
         }
-
         price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
     })
 
@@ -74,13 +73,28 @@ document.addEventListener('DOMContentLoaded', () => {
     ) {
         document.getElementById(`standard-container-${prodName}`).style.display = 'flex';
         standard = document.querySelector(`#standard-container-${prodName} #standard`);
+
+        // 옵션 가격 변경 - cleaning
+        if(prodName === 'cleaning') {
+            document.querySelector(`#standard-container-${prodName} #standard`).addEventListener('input', (e) => {
+                console.log(e.target.value);
+                if(e.target.value === '디터점스 에이크린액') PRODNAME = CLEANING.CLEANING_01;
+                else if(e.target.value === '디터점스 오피에이액') PRODNAME = CLEANING.CLEANING_02;
+                else if(e.target.value === '디터점스 울트라') PRODNAME = CLEANING.CLEANING_03;
+                else if(e.target.value === '페라플루디액') PRODNAME = CLEANING.CLEANING_04;
+
+                var quantityValue = quantity.value;
+                if(quantityValue === '') {
+                    quantityValue = 1;
+                }
+                price.value = (PRODNAME*quantityValue).toLocaleString('ko-KR');
+            });
+        }
     }
     else {
         standard = document.querySelector('#standard');
         standard.value = document.getElementById('product-subtitle').innerText;
     }
-
-    
 
     // 이미지 처리
     const displayImage = document.getElementById('display-img');
