@@ -1,0 +1,69 @@
+/* 기본 설정 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* body 스타일 */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    font-size: 16px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* 서비스 컨테이너 */
+.service, .class {
+    width: 50%;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+/* 서비스 제목 */
+.service p, .class p {
+    font-size: 18px;
+    font-weight: lighter;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+/* 서비스 가격 */
+.service span, .class span {
+    color: #00a99d;
+    font-weight: lighter;
+    font-size: 18px;
+}
+
+
+/* 세부 서비스 항목 간격 */
+.service p, .class p {
+    margin-bottom: 8px;
+}
+
+/* 제목 스타일 */
+h1, h2, h3 {
+    color: #00a99d;
+    margin-bottom: 20px;
+}
+
+/* 가격 정보 */
+.service span, .class span {
+    font-size: 1.2em;
+    color: #00a99d;
+}
+
+/* 구분선 추가 */
+.service {
+    border-bottom: 1px solid #e1e1e1;
+}
+
+#logo {
+    margin: 50px;
+}

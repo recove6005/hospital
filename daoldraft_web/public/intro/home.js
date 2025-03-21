@@ -62,7 +62,8 @@ document.addEventListener('click', function (e) {
 });
 
 document.getElementById("to-signin").addEventListener('click', () => {
-    window.location.href = "/page/login-email.html";
+    e.preventDefault();
+    // window.location.href = "/page/login-email.html";
 });
 
 // 드롭다운 메뉴 로그아웃
